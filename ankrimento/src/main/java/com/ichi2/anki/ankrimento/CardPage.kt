@@ -25,13 +25,38 @@ object CardPage {
     /** What only AnkiDroid's reviewer shows properly: typed answers, math, image occlusion. */
     private val NEEDS_REVIEWER = listOf("[[type:", "\\(", "\\[", "image-occlusion", "<canvas")
 
+    /** Desktop's `pycmd` for links in cards (a video extract's "▶ 0:19"), answered by [Links]. */
+    private const val PYCMD =
+        "window.pycmd = function (message) { if (window.AnkrimentoCard) AnkrimentoCard.pycmd(String(message)); return false; };"
+
+    /**
+     * What a card's links ask through `pycmd`, as desktop's reviewer answers it:
+     * a video extract's link opens the video at its moment.
+     */
+    class Links(
+        private val activity: android.app.Activity,
+    ) {
+        @android.webkit.JavascriptInterface
+        fun pycmd(message: String) {
+            val match = OPEN_VIDEO.matchEntire(message) ?: return
+            val cardId = match.groupValues[1].toLong()
+            val seconds = match.groupValues[2].toDouble()
+            activity.runOnUiThread { activity.startActivity(VideoReaderActivity.intentAt(activity, cardId, seconds)) }
+        }
+
+        private companion object {
+            val OPEN_VIDEO = Regex("""incremento_open_video:(\d+):(\d+(?:\.\d+)?)""")
+        }
+    }
+
     fun html(
         css: String,
         body: String,
     ): String =
         "<!doctype html><html><head><meta charset=\"utf-8\">" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
-            "<style>$css</style></head><body class=\"card\"><div id=\"qa\">${body.replace(AV_TAG, "")}</div></body></html>"
+            "<style>$css</style><script>$PYCMD</script></head>" +
+            "<body class=\"card\"><div id=\"qa\">${body.replace(AV_TAG, "")}</div></body></html>"
 
     /**
      * Whether a reader shows [card] as faithfully as the reviewer: no sound or

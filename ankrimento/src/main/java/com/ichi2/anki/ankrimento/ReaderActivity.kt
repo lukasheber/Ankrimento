@@ -279,7 +279,13 @@ abstract class ReaderActivity : ComponentActivity() {
             revisitOptions,
             onBack = if (canGoBack) ::goBack else null,
             reveal = revealAction,
-        ) { rating -> continueAfter(rating = rating) { LearnLoop.answer(this, cardId, rating, answerAlreadyShown) } }
+        ) { rating ->
+            continueAfter(rating = rating) {
+                LearnLoop.answer(this, cardId, rating, answerAlreadyShown) { suspended ->
+                    toast(getString(if (suspended) R.string.ankrimento_leech_suspended else R.string.ankrimento_leech))
+                }
+            }
+        }
     }
 
     private fun editPriority() {

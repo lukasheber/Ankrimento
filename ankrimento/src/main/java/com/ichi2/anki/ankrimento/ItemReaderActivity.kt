@@ -44,6 +44,7 @@ class ItemReaderActivity : ReaderActivity() {
                 settings.allowContentAccess = false
             }
         setReaderContent(webView)
+        webView.addJavascriptInterface(CardPage.Links(this), "AnkrimentoCard")
         lifecycleScope.launch { load() }
     }
 

@@ -218,4 +218,6 @@
     <string name="ankrimento_stats_pages_read">Pages read</string>
     <string name="ankrimento_stats_videos">Videos watched</string>
     <string name="ankrimento_stats_watch_time">Watch time</string>
+    <string name="ankrimento_leech">This card is a leech</string>
+    <string name="ankrimento_leech_suspended">This card is a leech and has been suspended</string>
 </resources>

@@ -57,6 +57,7 @@ class TextReaderActivity : ReaderActivity() {
                 },
             )
         setReaderContent(webView)
+        webView.addJavascriptInterface(CardPage.Links(this), "AnkrimentoCard")
         toggleBarsOnTap(webView)
         tools =
             listOf(

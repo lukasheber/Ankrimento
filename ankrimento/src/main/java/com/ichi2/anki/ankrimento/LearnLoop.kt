@@ -50,14 +50,18 @@ internal object LearnLoop {
         cardId: Long,
         rating: Rating,
         answerAlreadyShown: Boolean = false,
+        onLeech: (suspended: Boolean) -> Unit = {},
     ): Step {
         val state = withCol { sched.currentQueueState() }
         if (state == null || state.topCard.id != cardId) return NotCurrent
         // Desktop times a review from the question to the answer.
         if (!answerAlreadyShown) withCol { Ankrimento.answerShown(cardId) }
         val submitted = withCol { Ankrimento.ratingToSubmit(cardId, rating) }
+        // As the reviewer does: an Again that makes the card a leech is reported.
+        val leech = submitted == Rating.AGAIN && withCol { sched.stateIsLeech(state.states.again) }
         move(handler) { sched.answerCard(state, submitted) }
         withCol { Ankrimento.onCardAnswered(cardId, submitted) }
+        if (leech) onLeech(withCol { getCard(cardId).queue.buriedOrSuspended() })
         return next()
     }
 

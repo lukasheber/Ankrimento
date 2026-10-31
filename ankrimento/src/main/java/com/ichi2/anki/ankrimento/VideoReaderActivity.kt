@@ -50,13 +50,16 @@ class VideoReaderActivity : ReaderActivity() {
                 ReaderTool(getString(R.string.ankrimento_video_back_10)) { seekBy?.invoke(-10.0) },
             )
         lifecycleScope.launch {
-            val video =
+            var video =
                 runCatching { withCol { Ankrimento.videoOpen(cardId) } }.getOrElse { error ->
                     Timber.w(error, "Opening a video topic failed")
                     Toast.makeText(this@VideoReaderActivity, error.message ?: error.javaClass.simpleName, Toast.LENGTH_LONG).show()
                     finish()
                     return@launch
                 }
+            // A video extract's link opens the video at its moment.
+            val start = intent.getDoubleExtra(EXTRA_START, -1.0)
+            if (start >= 0) video = video.copy(position = start)
             lastPosition = video.position
             when (video.kind) {
                 "local" -> showLocal(video)
@@ -182,6 +185,7 @@ class VideoReaderActivity : ReaderActivity() {
     }
 
     companion object {
+        private const val EXTRA_START = "start"
         private const val PLAYER_URL = "https://appassets.androidplatform.net/assets/ankrimento/web/video_player.html"
         private const val PROGRESS_INTERVAL_MS = 5_000L
         private const val YOUTUBE_PLAYING = 1
@@ -193,5 +197,12 @@ class VideoReaderActivity : ReaderActivity() {
             context: Context,
             cardId: Long,
         ): Intent = ReaderActivity.intent(context, "video", cardId, session = false)!!
+
+        /** The video at [seconds] (a video extract's link). */
+        fun intentAt(
+            context: Context,
+            cardId: Long,
+            seconds: Double,
+        ): Intent = intent(context, cardId).putExtra(EXTRA_START, seconds)
     }
 }
