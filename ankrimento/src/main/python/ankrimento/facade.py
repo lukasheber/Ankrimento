@@ -745,6 +745,45 @@ def pdf_search(card_id: int, query: str) -> str:
     return _dumps(pdf_reader.search(card_id, query))
 
 
+def pdf_marks(card_id: int) -> str:
+    """The PDF's bookmarks and highlights, in page order."""
+    from ankrimento import pdf_reader
+
+    return _dumps(pdf_reader.marks(card_id))
+
+
+def pdf_add_bookmark(card_id: int, page: int) -> str:
+    """Bookmarks ``page``; returns the script that updates the viewer."""
+    from ankrimento import pdf_reader
+
+    return pdf_reader.add_bookmark(card_id, page)
+
+
+def pdf_delete_bookmark(card_id: int, bookmark_id: str) -> str:
+    from ankrimento import pdf_reader
+
+    return pdf_reader.delete_bookmark(card_id, bookmark_id)
+
+
+def pdf_highlight_color(card_id: int, highlight_id: str, color: str) -> str:
+    """Recolours a highlight; returns the script that updates the viewer."""
+    from ankrimento import pdf_reader
+
+    return pdf_reader.highlight_color(card_id, highlight_id, color)
+
+
+def pdf_highlight_note(card_id: int, highlight_id: str, note: str) -> str:
+    from ankrimento import pdf_reader
+
+    return pdf_reader.highlight_note(card_id, highlight_id, note)
+
+
+def pdf_delete_highlight(card_id: int, highlight_id: str) -> str:
+    from ankrimento import pdf_reader
+
+    return pdf_reader.delete_highlight(card_id, highlight_id)
+
+
 def pdf_message(card_id: int, message: str) -> str:
     """Apply a ``pycmd`` message from the PDF viewer; returns JavaScript to run."""
     from ankrimento import pdf_reader

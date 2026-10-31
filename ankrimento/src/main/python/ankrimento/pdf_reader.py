@@ -67,6 +67,11 @@ def _highlights_payload(card_id: int) -> list[dict]:
     payload = []
     for row in load_highlights(addon_dir, profile, int(card_id)):
         enriched = dict(row)
+        # The viewer paints a highlight with annotation data but no native annotation
+        # ("kind") transparent. Upstream's updates add bookkeeping to that data, and only
+        # desktop's PDF annotation sync, which the device lacks, adds the kind.
+        if not (enriched.get("pdf_annotation") or {}).get("kind"):
+            enriched.pop("pdf_annotation", None)
         enriched["linked_note_id"] = 0
         enriched["linked_highlight_count"] = 0
         payload.append(enriched)
@@ -493,3 +498,89 @@ def search(card_id: int, query: str, limit: int = 250) -> list[dict]:
         ),
         key=lambda hit: hit["page"],
     )
+
+
+# ── Bookmarks and highlights outside the viewer ──────────────────────────────
+#
+# Desktop edits them in the viewer's own panel. The device lists them in a
+# sheet; each change is made as the viewer's code makes it (its pycmd branch
+# or, for a recolour, its recolorHighlight), then the viewer is sent the new
+# list as desktop sends it.
+
+
+def marks(card_id: int) -> dict:
+    """The PDF's bookmarks (page, label, comment) and highlights (page, text, colour, note), in page order."""
+    bookmarks = [
+        {
+            "id": b["id"],
+            "page": int((b.get("location") or {}).get("page") or 1),
+            "label": b.get("label") or "",
+            "comment": b.get("comment_text") or "",
+        }
+        for b in _bookmarks_payload(card_id)
+    ]
+    highlights = [
+        {
+            "id": str(h.get("id") or ""),
+            "page": int(h.get("page") or 1),
+            "text": str(h.get("text") or ""),
+            "color": str(h.get("color") or "yellow"),
+            "note": str(h.get("note") or ""),
+        }
+        for h in _highlights_payload(card_id)
+        if h.get("color") != "snapshot"
+    ]
+    return {
+        "bookmarks": sorted(bookmarks, key=lambda b: b["page"]),
+        "highlights": sorted(highlights, key=lambda h: (h["page"], h["id"])),
+    }
+
+
+def add_bookmark(card_id: int, page: int) -> str:
+    """Mirrors the _MSG_BOOKMARK_ADD branch."""
+    return "".join(handle(card_id, MSG_BOOKMARK_ADD + json.dumps({"cardId": int(card_id), "page": int(page)})))
+
+
+def delete_bookmark(card_id: int, bookmark_id: str) -> str:
+    """Mirrors the _MSG_BOOKMARK_DELETE branch."""
+    return "".join(handle(card_id, MSG_BOOKMARK_DELETE + json.dumps({"cardId": int(card_id), "id": str(bookmark_id)})))
+
+
+def _highlights_script(card_id: int) -> str:
+    return _js_call("incrementoReceivePdfHighlights", _highlights_payload(card_id))
+
+
+def highlight_color(card_id: int, highlight_id: str, color: str) -> str:
+    """Mirrors the viewer's ``recolorHighlight``: the colour, and a native annotation's colour with it."""
+    from incremento.backend import pdf_highlights
+    from incremento.backend.highlight_colors import COLORS, normalize_highlight_color
+
+    addon_dir, profile = _context()
+    value = normalize_highlight_color(color)
+    original = next((h for h in pdf_highlights.load_highlights(addon_dir, profile, int(card_id)) if h["id"] == highlight_id), None)
+    if original is None or original.get("color") == "snapshot":
+        return ""
+    highlight = {**original, "color": value}
+    if original.get("pdf_annotation") and value in COLORS:
+        highlight["pdf_annotation"] = {**original["pdf_annotation"], "color": list(COLORS[value][0])}
+    pdf_highlights.update_highlight(addon_dir, profile, int(card_id), highlight)
+    return _highlights_script(card_id)
+
+
+def highlight_note(card_id: int, highlight_id: str, note: str) -> str:
+    """Desktop's highlight note editor: saves the note and updates it in the viewer."""
+    from incremento.backend import pdf_highlights
+
+    addon_dir, profile = _context()
+    updated = pdf_highlights.update_highlight_note(addon_dir, profile, int(card_id), str(highlight_id), str(note or ""))
+    if not updated:
+        return ""
+    return _js_call(
+        "incrementoUpdatePdfHighlightNote", str(highlight_id), updated.get("note", ""), updated.get("note_html", "")
+    )
+
+
+def delete_highlight(card_id: int, highlight_id: str) -> str:
+    """Mirrors the _MSG_HL_DEL branch, then sends the viewer the remaining highlights."""
+    handle(card_id, MSG_HL_DEL + json.dumps({"cardId": int(card_id), "id": str(highlight_id)}))
+    return _highlights_script(card_id)

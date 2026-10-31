@@ -26,6 +26,7 @@ import com.ichi2.anki.ankrimento.ui.FindBar
 import com.ichi2.anki.ankrimento.ui.FindHit
 import com.ichi2.anki.ankrimento.ui.FindSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.MarksSheet
 import com.ichi2.anki.ankrimento.ui.PdfViewSheet
 import com.ichi2.anki.ankrimento.ui.ReaderPager
 import com.ichi2.anki.ankrimento.ui.ReaderTool
@@ -79,7 +80,10 @@ class PdfReaderActivity : ReaderActivity() {
         super.onCreate(savedInstanceState)
         webView = ReaderWebView(this)
         webView.selectionActions =
-            listOf(ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS))
+            listOf(
+                ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS),
+                ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_highlight), HIGHLIGHT_JS),
+            )
         setReaderContent(webView)
         toggleBarsOnTap(webView)
         showViewerControls(false)
@@ -124,6 +128,7 @@ class PdfReaderActivity : ReaderActivity() {
                     "window.incrementoPdfOpenContents && window.incrementoPdfOpenContents();",
                 ),
                 ReaderTool(getString(R.string.ankrimento_pdf_find), IncrementoIcons.Search, onClick = ::showFind),
+                ReaderTool(getString(R.string.ankrimento_marks), IncrementoIcons.Bookmark, onClick = ::showMarks),
                 ReaderTool(getString(R.string.ankrimento_pdf_mark_read)) {
                     webView.evaluateJavascript("window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();", null)
                     toast(getString(R.string.ankrimento_marked_read))
@@ -133,6 +138,44 @@ class PdfReaderActivity : ReaderActivity() {
                     showViewerControls(!viewerControlsShown)
                 },
             )
+    }
+
+    /** The document's bookmarks and highlights; each change is applied, then the viewer and the sheet follow. */
+    private fun showMarks() {
+        changeMarks { "" }
+    }
+
+    private fun changeMarks(change: () -> String) {
+        lifecycleScope.launch {
+            runCatching {
+                withCol {
+                    val script = change()
+                    script to Ankrimento.pdfMarks(cardId)
+                }
+            }.onSuccess { (script, marks) ->
+                if (script.isNotEmpty()) webView.evaluateJavascript(script, null)
+                sheet = {
+                    MarksSheet(
+                        page = page,
+                        bookmarks = marks.bookmarks,
+                        highlights = marks.highlights,
+                        onOpenPage = { target ->
+                            sheet = null
+                            goToPage(target)
+                        },
+                        onAddBookmark = { changeMarks { Ankrimento.pdfAddBookmark(cardId, page) } },
+                        onDeleteBookmark = { id -> changeMarks { Ankrimento.pdfDeleteBookmark(cardId, id) } },
+                        onHighlightColor = { id, color -> changeMarks { Ankrimento.pdfHighlightColor(cardId, id, color) } },
+                        onHighlightNote = { id, note -> changeMarks { Ankrimento.pdfHighlightNote(cardId, id, note) } },
+                        onDeleteHighlight = { id -> changeMarks { Ankrimento.pdfDeleteHighlight(cardId, id) } },
+                        onDismiss = { sheet = null },
+                    )
+                }
+            }.onFailure { error ->
+                Timber.w(error, "Changing PDF bookmarks or highlights failed")
+                toast(error.message ?: error.javaClass.simpleName)
+            }
+        }
     }
 
     private fun showFind() {
@@ -517,6 +560,10 @@ class PdfReaderActivity : ReaderActivity() {
                 " page.cleanup(); await new Promise(function (r) { setTimeout(r, 0); }); }" +
                 " AnkrimentoPdfText.done(); doc.destroy();" +
                 " } catch (e) { AnkrimentoPdfText.failed(String((e && e.message) || e)); } })();"
+
+        /** Desktop's highlight shortcut (Ctrl+H), which highlights the selection in the default colour. */
+        private const val HIGHLIGHT_JS =
+            "window.dispatchEvent(new KeyboardEvent('keydown', {code: 'KeyH', key: 'h', ctrlKey: true, bubbles: true}));"
 
         /** Long enough for the page turn before the viewer is told which match to show. */
         private const val HIT_DELAY_MS = 450L

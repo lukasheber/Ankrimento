@@ -218,6 +218,17 @@
     <string name="ankrimento_marked_read">Marked as read up to here</string>
     <string name="ankrimento_add_to_incremento">Add to Incremento…</string>
     <string name="ankrimento_statistics_menu">Statistics</string>
+    <!-- PDF bookmarks and highlights -->
+    <string name="ankrimento_marks">Bookmarks and highlights</string>
+    <string name="ankrimento_marks_bookmarks">Bookmarks</string>
+    <string name="ankrimento_marks_highlights">Highlights</string>
+    <string name="ankrimento_marks_add_bookmark">Bookmark page %d</string>
+    <string name="ankrimento_marks_no_bookmarks">No bookmarks yet.</string>
+    <string name="ankrimento_marks_no_highlights">No highlights yet. Select text and choose Highlight, or extract it.</string>
+    <string name="ankrimento_marks_delete_bookmark">Delete bookmark</string>
+    <string name="ankrimento_marks_edit_highlight">Colour, note or delete</string>
+    <string name="ankrimento_marks_note">Note</string>
+    <string name="ankrimento_marks_delete_highlight">Delete highlight</string>
     <!-- Find in a PDF -->
     <string name="ankrimento_find_hint">Find in this document</string>
     <string name="ankrimento_find_searching">Searching…</string>

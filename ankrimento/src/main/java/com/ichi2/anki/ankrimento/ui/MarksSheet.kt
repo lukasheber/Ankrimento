@@ -1,0 +1,243 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+package com.ichi2.anki.ankrimento.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.ichi2.anki.ankrimento.R
+
+class MarkBookmark(
+    val id: String,
+    val page: Int,
+    val label: String,
+    val comment: String,
+)
+
+class MarkHighlight(
+    val id: String,
+    val page: Int,
+    val text: String,
+    val color: String,
+    val note: String,
+)
+
+/** Upstream's highlight colours, in its order. */
+internal val HIGHLIGHT_COLORS =
+    linkedMapOf(
+        "yellow" to Color(0xFFFFDC00),
+        "green" to Color(0xFF00C850),
+        "blue" to Color(0xFF1E90FF),
+        "pink" to Color(0xFFFF508C),
+        "aqua" to Color(0xFF2DD4BF),
+        "orange" to Color(0xFFFB923C),
+        "red" to Color(0xFFF87171),
+        "purple" to Color(0xFFA855F7),
+    )
+
+/**
+ * The document's bookmarks and highlights. A bookmark or a highlight opens its page;
+ * the page shown can be bookmarked; a highlight's colour and note are changed, or it is
+ * deleted, from its own dialog.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun MarksSheet(
+    page: Int,
+    bookmarks: List<MarkBookmark>,
+    highlights: List<MarkHighlight>,
+    onOpenPage: (Int) -> Unit,
+    onAddBookmark: () -> Unit,
+    onDeleteBookmark: (String) -> Unit,
+    onHighlightColor: (String, String) -> Unit,
+    onHighlightNote: (String, String) -> Unit,
+    onDeleteHighlight: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var tab by rememberSaveable { mutableIntStateOf(0) }
+    var chosen by remember { mutableStateOf<String?>(null) }
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+        Column(Modifier.navigationBarsPadding().padding(bottom = 8.dp)) {
+            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                listOf(R.string.ankrimento_marks_bookmarks, R.string.ankrimento_marks_highlights).forEachIndexed { index, label ->
+                    SegmentedButton(
+                        selected = tab == index,
+                        onClick = { tab = index },
+                        shape = SegmentedButtonDefaults.itemShape(index, 2),
+                    ) { Text(stringResource(label)) }
+                }
+            }
+            if (tab == 0) {
+                ListItem(
+                    headlineContent = { Text(stringResource(R.string.ankrimento_marks_add_bookmark, page)) },
+                    leadingContent = { Icon(IncrementoIcons.Bookmark, contentDescription = null) },
+                    modifier = Modifier.clickable(enabled = page > 0, onClick = onAddBookmark),
+                )
+                if (bookmarks.isEmpty()) Empty(R.string.ankrimento_marks_no_bookmarks)
+                LazyColumn(Modifier.heightIn(max = 480.dp)) {
+                    items(bookmarks, key = { it.id }) { bookmark ->
+                        ListItem(
+                            overlineContent = { Text(stringResource(R.string.ankrimento_page_short, bookmark.page)) },
+                            headlineContent = {
+                                Text(
+                                    bookmark.comment.ifEmpty { bookmark.label },
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                            },
+                            trailingContent = {
+                                IconButton(onClick = { onDeleteBookmark(bookmark.id) }) {
+                                    Icon(
+                                        IncrementoIcons.Delete,
+                                        contentDescription = stringResource(R.string.ankrimento_marks_delete_bookmark),
+                                    )
+                                }
+                            },
+                            modifier = Modifier.clickable { onOpenPage(bookmark.page) },
+                        )
+                    }
+                }
+            } else {
+                if (highlights.isEmpty()) Empty(R.string.ankrimento_marks_no_highlights)
+                LazyColumn(Modifier.heightIn(max = 560.dp)) {
+                    items(highlights, key = { it.id }) { highlight ->
+                        ListItem(
+                            overlineContent = { Text(stringResource(R.string.ankrimento_page_short, highlight.page)) },
+                            headlineContent = { Text(highlight.text, maxLines = 3, overflow = TextOverflow.Ellipsis) },
+                            supportingContent =
+                                highlight.note.takeIf { it.isNotEmpty() }?.let { note ->
+                                    { Text(note, fontStyle = FontStyle.Italic, maxLines = 2, overflow = TextOverflow.Ellipsis) }
+                                },
+                            leadingContent = { Swatch(HIGHLIGHT_COLORS[highlight.color] ?: Color.Gray, selected = false, size = 16) },
+                            trailingContent = {
+                                IconButton(onClick = { chosen = highlight.id }) {
+                                    Icon(
+                                        IncrementoIcons.More,
+                                        contentDescription = stringResource(R.string.ankrimento_marks_edit_highlight),
+                                    )
+                                }
+                            },
+                            modifier = Modifier.clickable { onOpenPage(highlight.page) },
+                        )
+                    }
+                }
+            }
+        }
+    }
+    highlights.firstOrNull { it.id == chosen }?.let { highlight ->
+        HighlightDialog(
+            highlight,
+            onColor = { onHighlightColor(highlight.id, it) },
+            onNote = { onHighlightNote(highlight.id, it) },
+            onDelete = {
+                chosen = null
+                onDeleteHighlight(highlight.id)
+            },
+            onDismiss = { chosen = null },
+        )
+    }
+}
+
+@Composable
+private fun Empty(text: Int) {
+    Text(
+        stringResource(text),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+    )
+}
+
+@Composable
+private fun Swatch(
+    color: Color,
+    selected: Boolean,
+    size: Int,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier
+            .size(size.dp)
+            .background(color, CircleShape)
+            .then(if (selected) Modifier.border(3.dp, MaterialTheme.colorScheme.onSurface, CircleShape) else Modifier),
+    )
+}
+
+/** A highlight's colour, note and deletion, as desktop's highlight menu offers them. */
+@Composable
+private fun HighlightDialog(
+    highlight: MarkHighlight,
+    onColor: (String) -> Unit,
+    onNote: (String) -> Unit,
+    onDelete: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var note by remember(highlight.id) { mutableStateOf(highlight.note) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.ankrimento_page_short, highlight.page)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(highlight.text, maxLines = 4, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    HIGHLIGHT_COLORS.forEach { (name, color) ->
+                        Swatch(color, selected = highlight.color == name, size = 28, modifier = Modifier.clickable { onColor(name) })
+                    }
+                }
+                OutlinedTextField(
+                    value = note,
+                    onValueChange = { note = it },
+                    label = { Text(stringResource(R.string.ankrimento_marks_note)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                if (note != highlight.note) onNote(note)
+                onDismiss()
+            }) { Text(stringResource(android.R.string.ok)) }
+        },
+        dismissButton = { TextButton(onClick = onDelete) { Text(stringResource(R.string.ankrimento_marks_delete_highlight)) } },
+    )
+}

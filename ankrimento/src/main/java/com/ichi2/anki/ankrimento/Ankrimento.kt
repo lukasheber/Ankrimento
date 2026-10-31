@@ -14,6 +14,8 @@ import com.chaquo.python.PyObject
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import com.ichi2.anki.CollectionManager
+import com.ichi2.anki.ankrimento.ui.MarkBookmark
+import com.ichi2.anki.ankrimento.ui.MarkHighlight
 import com.ichi2.anki.libanki.Collection
 import com.ichi2.anki.observability.ChangeManager
 import kotlinx.coroutines.CoroutineScope
@@ -317,6 +319,62 @@ object Ankrimento {
             PdfSearchHit(hit.getInt("page"), hit.getString("snippet"), hit.getString("excerpt"))
         }
     }
+
+    /** A PDF's bookmarks and highlights, in page order. */
+    data class PdfMarks(
+        val bookmarks: List<MarkBookmark>,
+        val highlights: List<MarkHighlight>,
+    )
+
+    @WorkerThread
+    fun pdfMarks(cardId: Long): PdfMarks {
+        val marks = JSONObject(requireFacade().callAttr("pdf_marks", cardId).toString())
+        val bookmarks = marks.getJSONArray("bookmarks")
+        val highlights = marks.getJSONArray("highlights")
+        return PdfMarks(
+            List(bookmarks.length()) { index ->
+                val b = bookmarks.getJSONObject(index)
+                MarkBookmark(b.getString("id"), b.getInt("page"), b.optString("label"), b.optString("comment"))
+            },
+            List(highlights.length()) { index ->
+                val h = highlights.getJSONObject(index)
+                MarkHighlight(h.getString("id"), h.getInt("page"), h.optString("text"), h.optString("color"), h.optString("note"))
+            },
+        )
+    }
+
+    /** Each of these changes a bookmark or highlight and returns the script that updates the viewer. */
+    @WorkerThread
+    fun pdfAddBookmark(
+        cardId: Long,
+        page: Int,
+    ): String = requireFacade().callAttr("pdf_add_bookmark", cardId, page).toString()
+
+    @WorkerThread
+    fun pdfDeleteBookmark(
+        cardId: Long,
+        bookmarkId: String,
+    ): String = requireFacade().callAttr("pdf_delete_bookmark", cardId, bookmarkId).toString()
+
+    @WorkerThread
+    fun pdfHighlightColor(
+        cardId: Long,
+        highlightId: String,
+        color: String,
+    ): String = requireFacade().callAttr("pdf_highlight_color", cardId, highlightId, color).toString()
+
+    @WorkerThread
+    fun pdfHighlightNote(
+        cardId: Long,
+        highlightId: String,
+        note: String,
+    ): String = requireFacade().callAttr("pdf_highlight_note", cardId, highlightId, note).toString()
+
+    @WorkerThread
+    fun pdfDeleteHighlight(
+        cardId: Long,
+        highlightId: String,
+    ): String = requireFacade().callAttr("pdf_delete_highlight", cardId, highlightId).toString()
 
     /** Desktop's saved session presets, and the one the current settings came from. */
     data class SessionPresets(

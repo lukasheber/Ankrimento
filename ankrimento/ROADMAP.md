@@ -81,7 +81,7 @@ Mobile principles that guide every item:
 | ✅ | Tap to hide the bars | |
 | ✅ | Find in document | A search sheet with the matching pages and excerpts; a match opens with its words highlighted, then a previous/next bar. Upstream's text index is filled by the viewer's pdf.js on the device (desktop uses PyMuPDF), through upstream's indexer, so Search ALL finds it too |
 | ✅ | Contents (outline) sheet: nested entries with page numbers, the current part marked | Through the viewer's own contents jump |
-| 🟡 | Bookmarks, annotations, highlight notes, colours | Reachable only through upstream's desktop panel; need native sheets |
+| 🟡 | Bookmarks, annotations, highlight notes, colours | Bookmarks and highlights sheet (⋮): bookmark the page, open or delete bookmarks; highlights by page with their colour (upstream's eight) and note, each opened, recoloured, noted or deleted; Highlight on the selection menu. Not yet: annotation styles (underline, strike-through) and bookmark comments |
 | ⬜ | Review all cards attached to the document [6] | |
 | ⬜ | Cross-references and page links [6] | |
 | ⬜ | DjVu documents [6] | |
