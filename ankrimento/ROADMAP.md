@@ -39,10 +39,10 @@ Mobile principles that guide every item:
 | ⬜ | Revisit → Choose date… | Desktop has it in the same menu |
 | ⬜ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | |
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
-| ⬜ | When a session finds nothing to study, say why (e.g. "Documents within topics: 0%") and offer the session settings | Today: upstream's short toast |
+| 🟡 | When a session finds nothing to study, say why and offer the session settings | Dialog with upstream's message and a Session settings button; not yet seen on a device (document topics always qualify, as upstream intends) |
 | ⬜ | Plain-text topics in a simple reader (no "Show answer") | Today they open in the reviewer |
 | ⬜ | Items in the same learning screen as topics: question, Show answer, then Fail/Pass or Anki's grades | Removes the last hand-off to the legacy reviewer |
-| ⬜ | Swipe between elements (left = next with the default choice, right = Back) | |
+| ➖ | Swipe between elements | Sideways swipe turns pages in the readers; moving between elements stays on the footer buttons, where a stray swipe cannot answer a topic |
 | 🟡 | Session settings: card count, topic/item mix | Basic dialog only |
 | ⬜ | Session presets: save, load, rename, delete | |
 | ⬜ | Advanced scheduler options: quotas, tag quotas, filters, card states, priority order, scope | One settings screen with sections |
@@ -83,6 +83,8 @@ Mobile principles that guide every item:
 | ⬜ | DjVu documents [6] | |
 | ⬜ | Searchable PDF text / OCR status [6, 13] | |
 | ⬜ | Pinch zoom | |
+| ⬜ | Swipe sideways to turn pages | |
+| ⬜ | Pull past the end of a page to go to the next ("Release for next page") | Through upstream's page turns, so its daily limit applies |
 
 ### EPUB
 
@@ -93,7 +95,8 @@ Mobile principles that guide every item:
 | ✅ | Contents sheet with chapter titles | |
 | ✅ | Long-press, then Extract / Highlight | |
 | ✅ | Progress strip (chapter, % of book); tap to hide the bars | |
-| ⬜ | Paged mode (horizontal page turns) as an option to scrolling | |
+| ⬜ | Paged mode (horizontal page turns) as an option to scrolling, in the Aa sheet | |
+| ⬜ | Pull past the end of a chapter to go to the next; swipe sideways between chapters in scroll mode | |
 | ⬜ | Search in book | |
 | 🟡 | Links and footnotes inside the book | Opened externally or ignored |
 | ⬜ | Highlights list and highlight notes | |
@@ -193,7 +196,7 @@ Mobile principles that guide every item:
 1. ~~Fixed Incremento entry on the main screen~~ (done). Priority chip on
    items. Explain empty sessions.
 2. Plain-text topics and items in the learning screen, so the loop never
-   leaves it, plus swipe.
+   leaves it. Page turning by swipe and pull-past-the-end in PDF and EPUB.
 3. Extract bottom sheet, Keep extracting, and video extract at timestamp.
 4. Hub and Library (Continue reading, Add sheet). Web pages imported as
    clean HTML / plain text.

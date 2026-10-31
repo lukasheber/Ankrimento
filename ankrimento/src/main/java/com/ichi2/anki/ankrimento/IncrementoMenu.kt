@@ -50,6 +50,9 @@ class IncrementoMenu(
     private val openReviewer: () -> Unit,
 ) : MenuProvider {
     private val settings = AnkrimentoSettings(activity)
+
+    /** A session was asked for and has not reached review: its message says why not. */
+    private var sessionStarting = false
     private var sessionDeckId by mutableStateOf<Long?>(null)
     private var sessionRemaining by mutableStateOf<Int?>(null)
 
@@ -79,8 +82,11 @@ class IncrementoMenu(
             activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 Ankrimento.events.collect { event ->
                     when (event) {
-                        Ankrimento.Event.EnterReview -> openReviewer()
-                        is Ankrimento.Event.Message -> toast(event.text)
+                        Ankrimento.Event.EnterReview -> {
+                            sessionStarting = false
+                            openReviewer()
+                        }
+                        is Ankrimento.Event.Message -> if (sessionStarting) explainEmptySession(event.text) else toast(event.text)
                         else -> Unit
                     }
                 }
@@ -189,11 +195,24 @@ class IncrementoMenu(
             CollectionManager.withCol { Ankrimento.start(activity, this) }
             // Bring in other devices' reading before choosing cards.
             if (!sync(reportUpToDate = false)) return
+            sessionStarting = true
             withContext(Dispatchers.IO) { Ankrimento.startSession() }
         }.onFailure { error ->
             Timber.w(error, "Incremento session failed")
             toast(activity.getString(R.string.ankrimento_session_failed, error.message ?: error.javaClass.simpleName))
         }
+    }
+
+    /** Upstream found nothing to study: say so where it can't be missed, with the settings that decide it. */
+    private fun explainEmptySession(message: String) {
+        sessionStarting = false
+        AlertDialog
+            .Builder(activity)
+            .setTitle(R.string.ankrimento_session_empty_title)
+            .setMessage(message)
+            .setPositiveButton(R.string.ankrimento_session_settings) { _, _ -> activity.lifecycleScope.launch { editSessionSettings() } }
+            .setNegativeButton(android.R.string.ok, null)
+            .show()
     }
 
     private suspend fun editSessionSettings() {

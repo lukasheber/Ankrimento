@@ -142,4 +142,5 @@
         <item quantity="one">In %d month</item>
         <item quantity="other">In %d months</item>
     </plurals>
+    <string name="ankrimento_session_empty_title">Nothing to study now</string>
 </resources>
