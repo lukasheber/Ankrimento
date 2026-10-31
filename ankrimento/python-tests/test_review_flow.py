@@ -236,3 +236,9 @@ def test_session_deck_name_is_upstreams(rt):
     from incremento.backend.session_selection import incremento_session_deck_name
 
     assert facade.session_deck_name() == incremento_session_deck_name(None) == "Incremento Session"
+
+
+def test_plain_topics_open_in_the_text_reader_and_items_do_not(rt, cards):
+    """Topics without a document still open in a reader (no "Show answer"); items stay cards."""
+    assert facade.card_reader(cards["topics"][0]) == "text"
+    assert facade.card_reader(cards["items"][0]) == ""

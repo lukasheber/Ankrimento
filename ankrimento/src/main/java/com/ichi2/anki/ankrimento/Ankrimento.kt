@@ -268,7 +268,7 @@ object Ankrimento {
         }
     }
 
-    /** The Incremento reader for [cardId]: "pdf", or "" when it has none. */
+    /** The reader for [cardId]: a document's ("pdf", "epub", …), "text" for any other topic, "" for an item. */
     @WorkerThread
     fun cardReader(cardId: Long): String = if (isStarted) requireFacade().callAttr("card_reader", cardId).toString() else ""
 

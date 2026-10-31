@@ -341,6 +341,7 @@ abstract class ReaderActivity : ComponentActivity() {
                     "web" -> WebReaderActivity::class.java
                     "video" -> VideoReaderActivity::class.java
                     "writing" -> WritingActivity::class.java
+                    "text" -> TextReaderActivity::class.java
                     else -> return null
                 }
             return Intent(context, activity).putExtra(EXTRA_CARD_ID, cardId).putExtra(EXTRA_SESSION, session)

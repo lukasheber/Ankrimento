@@ -467,7 +467,8 @@ def import_link(url: str, title: str = "", priority: float = 50.0) -> str:
 
 
 def card_reader(card_id: int) -> str:
-    """Which Incremento reader opens this card ("pdf", "epub", "web", "video"), or ""."""
+    """Which reader opens this card: a document's ("pdf", "epub", "web", "video",
+    "writing"), "text" for any other topic, or "" for an item."""
     note = runtime.current().col.get_card(int(card_id)).note()
     readers = {
         "Incremento PDF": "pdf",
@@ -476,7 +477,8 @@ def card_reader(card_id: int) -> str:
         "Incremento Video": "video",
         "Incremento Writing": "writing",
     }
-    return readers.get(note.note_type()["name"], "")
+    reader = readers.get(note.note_type()["name"], "")
+    return reader or ("text" if is_topic(card_id) else "")
 
 
 def card_title(card_id: int) -> str:

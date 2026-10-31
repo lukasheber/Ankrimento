@@ -40,7 +40,7 @@ Mobile principles that guide every item:
 | ⬜ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | |
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
 | 🟡 | When a session finds nothing to study, say why and offer the session settings | Dialog with upstream's message and a Session settings button; not yet seen on a device (document topics always qualify, as upstream intends) |
-| ⬜ | Plain-text topics in a simple reader (no "Show answer") | Today they open in the reviewer |
+| ✅ | Plain-text topics in a reader (no "Show answer"): the note as its template renders it, Aa settings, Extract on selection, review bar | |
 | ⬜ | Items in the same learning screen as topics: question, Show answer, then Fail/Pass or Anki's grades | Removes the last hand-off to the legacy reviewer |
 | ➖ | Swipe between elements | Sideways swipe turns pages in the readers; moving between elements stays on the footer buttons, where a stray swipe cannot answer a topic |
 | 🟡 | Session settings: card count, topic/item mix | Basic dialog only |
