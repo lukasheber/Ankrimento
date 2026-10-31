@@ -32,6 +32,7 @@ import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
 import com.ichi2.anki.ankrimento.ui.PriorityDialog
 import com.ichi2.anki.ankrimento.ui.ReaderLoading
+import com.ichi2.anki.ankrimento.ui.ReaderPager
 import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderScaffold
 import com.ichi2.anki.ankrimento.ui.ReaderTool
@@ -66,6 +67,9 @@ abstract class ReaderActivity : ComponentActivity() {
     /** How much of the document is read, shown under it. */
     protected var progress by mutableStateOf<ReaderProgress?>(null)
 
+    /** Page turning under a paged document. */
+    protected var pager by mutableStateOf<ReaderPager?>(null)
+
     /** A sheet the reader shows over the document (reading settings, contents), or null. */
     protected var sheet by mutableStateOf<(@Composable () -> Unit)?>(null)
 
@@ -91,6 +95,7 @@ abstract class ReaderActivity : ComponentActivity() {
                     onBack = ::leave,
                     chromeVisible = chromeVisible,
                     progress = progress,
+                    pager = pager,
                 ) { modifier ->
                     val view = content
                     if (view == null) {

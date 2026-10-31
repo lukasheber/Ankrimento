@@ -19,9 +19,13 @@ import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.PdfViewSheet
+import com.ichi2.anki.ankrimento.ui.ReaderPager
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
@@ -33,12 +37,19 @@ import java.io.FileInputStream
  * The page, the viewer scripts and the PDF are served from one origin, so
  * upstream's Content-Security-Policy (`'self'` only) applies as on desktop.
  *
- * The top bar calls the viewer's own controls (find, page turns, zoom, read
- * mark), and Extract is on the text-selection menu.
+ * The screen is a phone's PDF reader: the page fills it and a tap leaves
+ * only the page; the bar under it turns and scrubs pages; View holds page
+ * colour (upstream's appearance, kept per document and synced) and zoom;
+ * Extract is on the text-selection menu. Upstream's desktop panel stays one
+ * tap away, for its annotation and link tools.
  */
 class PdfReaderActivity : ReaderActivity() {
     private lateinit var webView: ReaderWebView
     private var viewerControlsShown = false
+    private var page = 0
+    private var pages = 0
+    private var zoom = 1.0
+    private var appearance = "original"
 
     /** Viewer messages, applied one at a time in the order sent. */
     private val messages = Channel<String>(Channel.UNLIMITED)
@@ -50,6 +61,7 @@ class PdfReaderActivity : ReaderActivity() {
         webView.selectionActions =
             listOf(ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS))
         setReaderContent(webView)
+        toggleBarsOnTap(webView)
         showViewerControls(false)
         lifecycleScope.launch {
             val path = withCol { Ankrimento.pdfPath(cardId) }
@@ -62,7 +74,7 @@ class PdfReaderActivity : ReaderActivity() {
         }
         lifecycleScope.launch {
             for (message in messages) {
-                showPage(message)
+                followViewer(message)
                 val script = runCatching { withCol { Ankrimento.pdfMessage(cardId, message) } }
                 script
                     .onSuccess { if (it.isNotEmpty()) webView.evaluateJavascript(it, null) }
@@ -81,21 +93,18 @@ class PdfReaderActivity : ReaderActivity() {
         webView.evaluateJavascript("document.body && document.body.classList.toggle('$COMPACT_CLASS', ${!show});", null)
         tools =
             listOf(
+                ReaderTool(getString(R.string.ankrimento_pdf_view), IncrementoIcons.Tune, ::showView),
                 ReaderTool(getString(R.string.ankrimento_pdf_find), IncrementoIcons.Search) {
                     // The find box is part of upstream's panel.
                     showViewerControls(true)
                     webView.evaluateJavascript("window.incrementoPdfOpenFind && window.incrementoPdfOpenFind();", null)
                 },
-                tool(R.string.ankrimento_pdf_previous, IncrementoIcons.Previous, "window.incrementoPdfNav && window.incrementoPdfNav(-1);"),
-                tool(R.string.ankrimento_pdf_next, IncrementoIcons.Next, "window.incrementoPdfNav && window.incrementoPdfNav(1);"),
-                tool(R.string.ankrimento_extract_selection, null, EXTRACT_JS),
                 tool(
                     R.string.ankrimento_pdf_mark_read,
                     IncrementoIcons.Bookmark,
                     "window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();",
                 ),
-                tool(R.string.ankrimento_zoom_in, null, "window.incrementoPdfZoom && window.incrementoPdfZoom(1);"),
-                tool(R.string.ankrimento_zoom_out, null, "window.incrementoPdfZoom && window.incrementoPdfZoom(-1);"),
+                tool(R.string.ankrimento_extract_selection, null, EXTRACT_JS),
                 ReaderTool(getString(if (show) R.string.ankrimento_pdf_hide_controls else R.string.ankrimento_pdf_show_controls)) {
                     showViewerControls(!viewerControlsShown)
                 },
@@ -108,11 +117,78 @@ class PdfReaderActivity : ReaderActivity() {
         script: String,
     ) = ReaderTool(getString(label), icon) { webView.evaluateJavascript(script, null) }
 
-    /** Upstream reports page turns as `incremento_pdf_nav:<card>:<page>`. */
-    private fun showPage(message: String) {
+    /** Upstream reports page turns as `incremento_pdf_nav:<card>:<page>` and zoom as `incremento_pdf_zoom:<card>:<zoom>`. */
+    private fun followViewer(message: String) {
         val parts = message.split(':')
-        if (parts.size != 3 || parts[0] != "incremento_pdf_nav") return
-        parts[2].toIntOrNull()?.let { subtitle = getString(R.string.ankrimento_pdf_page, it) }
+        if (parts.size != 3) return
+        when (parts[0]) {
+            "incremento_pdf_nav" -> parts[2].toIntOrNull()?.let { showPage(it, pages) }
+            "incremento_pdf_zoom" -> parts[2].toDoubleOrNull()?.let { zoom = it }
+        }
+    }
+
+    private fun showPage(
+        current: Int,
+        total: Int,
+    ) {
+        page = current
+        pages = total
+        pager = if (current > 0 && total > 0) ReaderPager(current, total, ::goToPage) else null
+    }
+
+    /** Turns pages as upstream's arrows do, so its daily page limit still applies. */
+    private fun goToPage(target: Int) {
+        val delta = target.coerceIn(1, pages.coerceAtLeast(1)) - page
+        if (delta != 0) webView.evaluateJavascript("window.incrementoPdfNav && window.incrementoPdfNav($delta);", null)
+    }
+
+    /** Reads the page, page count, zoom and appearance from the viewer, until it has the document. */
+    private fun readViewerState(attempt: Int = 0) {
+        webView.evaluateJavascript(STATE_JS) { result ->
+            val state = runCatching { JSONObject(JSONArray("[$result]").getString(0)) }.getOrNull()
+            val total = state?.optInt("pages", 0) ?: 0
+            if (state == null || total <= 0) {
+                if (attempt < STATE_ATTEMPTS) webView.postDelayed({ readViewerState(attempt + 1) }, STATE_RETRY_MS)
+                return@evaluateJavascript
+            }
+            zoom = state.optDouble("zoom", 1.0)
+            appearance = state.optString("appearance", "original")
+            showPage(state.optInt("page", 1), total)
+        }
+    }
+
+    private fun showView() {
+        sheet = {
+            PdfViewSheet(
+                appearance = appearance,
+                zoom = zoom,
+                onAppearance = { mode ->
+                    appearance = mode
+                    // Upstream's appearance menu: apply, then store it for this document.
+                    webView.evaluateJavascript(
+                        "window.incrementoSetPdfAppearanceMode && window.incrementoSetPdfAppearanceMode(${JSONObject.quote(mode)});" +
+                            " window.pycmd('incremento_pdf_appearance:' + JSON.stringify({cardId: $cardId, mode: ${JSONObject.quote(
+                                mode,
+                            )}}));",
+                        null,
+                    )
+                    showView()
+                },
+                onZoom = { direction ->
+                    webView.evaluateJavascript("window.incrementoPdfZoom && window.incrementoPdfZoom($direction);") { readViewerState() }
+                    zoom = (zoom + direction * ZOOM_STEP).coerceIn(ZOOM_MIN, ZOOM_MAX)
+                    showView()
+                },
+                onFitWidth = {
+                    // Upstream's zoom is relative to the page width; 100% fits it.
+                    val steps = ((1.0 - zoom) / ZOOM_STEP).let { kotlin.math.round(it).toInt() }
+                    if (steps != 0) webView.evaluateJavascript("window.incrementoPdfZoom && window.incrementoPdfZoom($steps);", null)
+                    zoom = 1.0
+                    showView()
+                },
+                onDismiss = { sheet = null },
+            )
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -161,6 +237,7 @@ class PdfReaderActivity : ReaderActivity() {
             webView.evaluateJavascript(script, null)
             webView.evaluateJavascript(COMPACT_STYLE_JS, null)
             showViewerControls(viewerControlsShown)
+            readViewerState()
         }
     }
 
@@ -204,6 +281,23 @@ class PdfReaderActivity : ReaderActivity() {
                 " var style = document.createElement('style'); style.id = 'ankrimento-style';" +
                 " style.textContent = 'body.$COMPACT_CLASS #pdf-controls { display: none !important; }';" +
                 " document.head.appendChild(style); })();"
+
+        /** The viewer's page and zoom, its appearance, and the page count from its "page / pages" indicator. */
+        private const val STATE_JS =
+            "(function () { var s = window.incrementoPdfWorkspaceState ? window.incrementoPdfWorkspaceState() : null;" +
+                " if (!s) return null; var pages = 0; var c = document.getElementById('pdf-controls');" +
+                " if (c) { var b = Array.prototype.slice.call(c.querySelectorAll('button'));" +
+                " for (var i = 0; i < b.length; i++) { var m = /(\\d+)\\s*\\/\\s*(\\d+)/.exec(b[i].textContent || '');" +
+                " if (m) { pages = Number(m[2]); break; } } }" +
+                " return JSON.stringify({page: s.page, zoom: s.zoom, pages: pages," +
+                " appearance: s.controls && s.controls.appearance}); })()"
+        private const val STATE_ATTEMPTS = 20
+        private const val STATE_RETRY_MS = 500L
+
+        /** Upstream's zoom steps (ZOOM_STEP, ZOOM_MIN, ZOOM_MAX in the viewer). */
+        private const val ZOOM_STEP = 0.1
+        private const val ZOOM_MIN = 0.25
+        private const val ZOOM_MAX = 4.0
 
         /** Desktop's first extract shortcut on the selection. */
         private const val EXTRACT_JS = "window.incrementoHandleExtractShortcut && window.incrementoHandleExtractShortcut(0);"

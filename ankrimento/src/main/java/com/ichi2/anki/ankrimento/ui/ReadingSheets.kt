@@ -27,6 +27,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
@@ -195,6 +196,49 @@ private fun <T> Choice(
                     onClick = { onSelect(option) },
                     shape = SegmentedButtonDefaults.itemShape(index, options.size),
                 ) { Text(stringResource(optionLabel(option)), maxLines = 1) }
+            }
+        }
+    }
+}
+
+/** A PDF's page colour (upstream's appearance, kept per document) and zoom, where 100% fits the width. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun PdfViewSheet(
+    appearance: String,
+    zoom: Double,
+    onAppearance: (String) -> Unit,
+    onZoom: (Int) -> Unit,
+    onFitWidth: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 24.dp)
+                    .navigationBarsPadding(),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                FilledTonalIconButton(onClick = { onZoom(-1) }, modifier = Modifier.size(56.dp)) {
+                    Text("\u2212", fontSize = 22.sp)
+                }
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("${(zoom * 100).roundToInt()}%", style = MaterialTheme.typography.titleLarge)
+                    Text(stringResource(R.string.ankrimento_zoom), style = MaterialTheme.typography.labelMedium)
+                }
+                FilledTonalIconButton(onClick = { onZoom(1) }, modifier = Modifier.size(56.dp)) {
+                    Text("+", fontSize = 22.sp)
+                }
+            }
+            OutlinedButton(onClick = onFitWidth, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.ankrimento_fit_width)) }
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                PAGE_STYLES.forEach { style ->
+                    PageSwatch(style, selected = style.mode == appearance) { onAppearance(style.mode) }
+                }
             }
         }
     }

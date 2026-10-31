@@ -116,4 +116,9 @@
     <string name="ankrimento_chapter_number">Chapter %d</string>
     <string name="ankrimento_reading_now">Reading now</string>
     <string name="ankrimento_book_progress">%d%%</string>
+    <!-- PDF view -->
+    <string name="ankrimento_page_of">Page %1$d of %2$d</string>
+    <string name="ankrimento_pdf_view">View</string>
+    <string name="ankrimento_zoom">Zoom</string>
+    <string name="ankrimento_fit_width">Fit to width</string>
 </resources>

@@ -74,6 +74,13 @@ internal class ReviewBarState(
     val onAnswer: (Rating) -> Unit,
 )
 
+/** A paged document's position: [page] of [pages], 1-based; [onPage] goes to another page. */
+class ReaderPager(
+    val page: Int,
+    val pages: Int,
+    val onPage: (Int) -> Unit,
+)
+
 /** Where the reader is in the document: [fraction] of it read, [label] for where ("Chapter 3 of 12"). */
 class ReaderProgress(
     val fraction: Float,
@@ -101,6 +108,7 @@ internal fun ReaderScaffold(
     onBack: () -> Unit,
     chromeVisible: Boolean = true,
     progress: ReaderProgress? = null,
+    pager: ReaderPager? = null,
     content: @Composable (Modifier) -> Unit,
 ) {
     Scaffold(
@@ -134,6 +142,7 @@ internal fun ReaderScaffold(
             AnimatedVisibility(chromeVisible, enter = expandVertically(expandFrom = Alignment.Top), exit = shrinkVertically()) {
                 Column {
                     if (progress != null) ProgressStrip(progress, insetBottom = review == null)
+                    if (pager != null) PagerStrip(pager, insetBottom = review == null)
                     if (review != null) ReviewBar(review)
                 }
             }
@@ -146,6 +155,51 @@ internal fun ReaderScaffold(
                 .consumeWindowInsets(padding)
                 .imePadding(),
         )
+    }
+}
+
+/**
+ * Page turning for a paged document: the arrows step a page, the slider
+ * scrubs through the whole document and goes there when let go.
+ */
+@Composable
+private fun PagerStrip(
+    pager: ReaderPager,
+    insetBottom: Boolean,
+) {
+    var dragged by remember(pager.page, pager.pages) { mutableStateOf<Float?>(null) }
+    val shown = dragged?.roundToInt() ?: pager.page
+    Surface(tonalElevation = 3.dp) {
+        Row(
+            modifier = (if (insetBottom) Modifier.navigationBarsPadding() else Modifier).fillMaxWidth().padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(onClick = { pager.onPage(pager.page - 1) }, enabled = pager.page > 1) {
+                Icon(IncrementoIcons.Previous, contentDescription = stringResource(R.string.ankrimento_pdf_previous))
+            }
+            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    stringResource(R.string.ankrimento_page_of, shown, pager.pages),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
+                if (pager.pages > 1) {
+                    Slider(
+                        value = dragged ?: pager.page.toFloat(),
+                        onValueChange = { dragged = it },
+                        onValueChangeFinished = {
+                            dragged?.roundToInt()?.let { if (it != pager.page) pager.onPage(it) }
+                            dragged = null
+                        },
+                        valueRange = 1f..pager.pages.toFloat(),
+                        modifier = Modifier.height(32.dp),
+                    )
+                }
+            }
+            IconButton(onClick = { pager.onPage(pager.page + 1) }, enabled = pager.page < pager.pages) {
+                Icon(IncrementoIcons.Next, contentDescription = stringResource(R.string.ankrimento_pdf_next))
+            }
+        }
     }
 }
 

@@ -71,6 +71,12 @@ internal object IncrementoIcons {
     val TextFormat by lazy {
         icon("text_format", "M5,17v2h14v-2H5zM9.5,12.8h5l0.9,2.2h2.1L12.75,4h-1.5L6.5,15h2.1l0.9,-2.2zM12,5.98L13.87,11h-3.74L12,5.98z")
     }
+    val Tune by lazy {
+        icon(
+            "tune",
+            "M3,17v2h6v-2H3zM3,5v2h10V5H3zM13,21v-2h8v-2h-8v-2h-2v6h2zM7,9v2H3v2h4v2h2V9H7zM21,13v-2H11v2h10zM15,9h2V7h4V5h-4V3h-2v6z",
+        )
+    }
     val Tree by lazy { icon("tree", "M22,11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z") }
     val Chart by lazy { icon("chart", "M5,9.2h3V19H5zM10.6,5h2.8v14h-2.8zM16.2,13H19v6h-2.8z") }
     val Document by lazy {
