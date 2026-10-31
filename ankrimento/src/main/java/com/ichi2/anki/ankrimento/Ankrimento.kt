@@ -116,16 +116,37 @@ object Ankrimento {
     }
 
     /**
-     * The rating to submit for a reviewer [button] (1-4). On topic cards buttons
-     * 1/2/3 mean More/Same/Less and are all answered as Good.
+     * Incremento's answer buttons for [cardId], or null when AnkiDroid's own
+     * buttons apply (Ankrimento not started, or an ordinary card).
+     */
+    @WorkerThread
+    fun answerButtons(cardId: Long): List<AnswerButton>? {
+        if (!isStarted) return null
+        val result = JSONObject(requireFacade().callAttr("answer_buttons", cardId).toString())
+        if (result.getString("mode") == "standard") return null
+        val buttons = result.getJSONArray("buttons")
+        return List(buttons.length()) { index ->
+            val button = buttons.getJSONObject(index)
+            AnswerButton(
+                rating = Rating.forNumber(button.getInt("slot") - 1),
+                label = button.getString("label"),
+                ease = button.getInt("ease"),
+                due = if (button.isNull("due")) null else button.getString("due"),
+            )
+        }
+    }
+
+    /**
+     * The ease (1-4) Anki should record when [rating]'s button is pressed.
+     * Topic choices and Pass are recorded as Good.
      */
     @WorkerThread
     fun beforeAnswer(
         cardId: Long,
-        button: Int,
-    ): AnswerDecision {
-        val result = JSONObject(requireFacade().callAttr("before_answer", cardId, button).toString())
-        return AnswerDecision(isTopic = result.getBoolean("topic"), ease = result.getInt("ease"))
+        rating: Rating,
+    ): Int {
+        val result = JSONObject(requireFacade().callAttr("before_answer", cardId, rating.number + 1).toString())
+        return result.getInt("ease")
     }
 
     /** Apply Incremento's post-answer scheduling after AnkiDroid answered [cardId]. */
@@ -147,7 +168,7 @@ object Ankrimento {
         rating: Rating,
     ): Rating {
         if (!isStarted) return rating
-        return Rating.forNumber(beforeAnswer(cardId, rating.number + 1).ease - 1)
+        return Rating.forNumber(beforeAnswer(cardId, rating) - 1)
     }
 
     /** Reviewer hook, after AnkiDroid's answer op created its undo step. */
@@ -176,8 +197,16 @@ object Ankrimento {
         }
     }
 
-    data class AnswerDecision(
-        val isTopic: Boolean,
+    /**
+     * One of Incremento's answer buttons, placed on AnkiDroid's [rating] button.
+     *
+     * @param ease what Anki records; its next-interval text applies when [due] is null
+     * @param due the next interval Incremento computed (topics)
+     */
+    data class AnswerButton(
+        val rating: Rating,
+        val label: String,
         val ease: Int,
+        val due: String?,
     )
 }

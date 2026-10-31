@@ -74,6 +74,8 @@ import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.Whiteboard.Companion.createInstance
 import com.ichi2.anki.Whiteboard.OnPaintColorChangeListener
+import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.showIncrementoAnswerButtons
 import com.ichi2.anki.cardviewer.Gesture
 import com.ichi2.anki.cardviewer.ViewerCommand
 import com.ichi2.anki.common.annotations.NeedsTest
@@ -1455,15 +1457,18 @@ open class Reviewer :
         easeButton3!!.requestFocus()
 
         // Show next review time
-        if (shouldShowNextReviewTime()) {
-            val state = queueState!!
-            launchCatchingTask {
-                val labels = withCol { sched.describeNextStates(state.states) }
+        val state = queueState!!
+        val cardId = currentCard!!.id
+        launchCatchingTask {
+            var labels: List<String>? = null
+            if (shouldShowNextReviewTime()) {
+                labels = withCol { sched.describeNextStates(state.states) }
                 easeButton1!!.nextTime = labels[0]
                 easeButton2!!.nextTime = labels[1]
                 easeButton3!!.nextTime = labels[2]
                 easeButton4!!.nextTime = labels[3]
             }
+            showIncrementoAnswerButtons(cardId, labels)
         }
     }
 
@@ -1581,14 +1586,16 @@ open class Reviewer :
         val state = queueState!!
         val cardId = currentCard!!.id
         Timber.d("answerCardInner: $cardId $rating")
+        val submitted = withCol { Ankrimento.ratingToSubmit(cardId, rating) }
         var wasLeech = false
         undoableOp(this) {
-            sched.answerCard(state, rating).also {
+            sched.answerCard(state, submitted).also {
                 wasLeech = sched.stateIsLeech(state.states.again)
             }
         }.also {
+            withCol { Ankrimento.onCardAnswered(cardId, submitted) }
             previousCardId = cardId
-            if (rating == Rating.AGAIN && wasLeech) {
+            if (submitted == Rating.AGAIN && wasLeech) {
                 state.topCard.load(getColUnsafe)
                 val leechMessage: String =
                     if (state.topCard.queue.buriedOrSuspended()) {

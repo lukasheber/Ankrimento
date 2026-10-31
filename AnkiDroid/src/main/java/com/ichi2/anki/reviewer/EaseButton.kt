@@ -125,9 +125,17 @@ class EaseButton(
         textColor: Int,
         @StringRes easeStringRes: Int,
     ) {
+        setup(backgroundColor, textColor, easeTextView.context.getText(easeStringRes))
+    }
+
+    fun setup(
+        backgroundColor: Int,
+        textColor: Int,
+        label: CharSequence,
+    ) {
         layout.visibility = View.VISIBLE
         layout.setBackgroundResource(backgroundColor)
-        easeTextView.setText(easeStringRes)
+        easeTextView.text = label
         easeTextView.setTextColor(textColor)
         easeTimeView.setTextColor(textColor)
     }

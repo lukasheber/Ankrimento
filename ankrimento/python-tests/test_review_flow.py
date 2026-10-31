@@ -63,8 +63,8 @@ def test_topic_answer_applies_a_factor_in_the_answer_undo_step(rt, cards, sessio
     card_id = next(cid for cid in selected if cid in cards["topics"])
     before = rt.col.get_card(card_id)
 
-    decision = json.loads(facade.before_answer(card_id, 1))  # 1 = More
-    assert decision == {"topic": True, "ease": 3}
+    decision = json.loads(facade.before_answer(card_id, 1))  # Again slot = More
+    assert decision == {"mode": "topic", "ease": 3}
 
     _answer_good(rt.col, card_id)
     facade.after_answer(card_id, decision["ease"])
@@ -95,9 +95,53 @@ def test_topic_answer_applies_a_factor_in_the_answer_undo_step(rt, cards, sessio
     assert json.loads(facade.topic_state(card_id))["a_factor"] == pytest.approx(3.5 * 0.9)
 
 
-def test_items_are_answered_unchanged(rt, cards):
-    decision = json.loads(facade.before_answer(cards["items"][0], 4))
-    assert decision == {"topic": False, "ease": 4}
+def test_topic_buttons_are_more_same_less_with_same_on_good(rt, cards):
+    buttons = json.loads(facade.answer_buttons(cards["topics"][1]))
+    assert buttons["mode"] == "topic"
+    assert [(b["slot"], b["label"], b["ease"]) for b in buttons["buttons"]] == [
+        (2, "More", 3),
+        (3, "Same", 3),
+        (4, "Less", 3),
+    ]
+    assert all(b["due"].endswith("d") for b in buttons["buttons"])
+
+
+@pytest.fixture
+def fail_pass_items(rt):
+    """Turn on Incremento's Fail/Pass item buttons (off in upstream's config.json)."""
+    from aqt import mw
+
+    config = mw.addonManager.getConfig("incremento")
+    previous = config["use_fail_pass_on_items"]
+    config["use_fail_pass_on_items"] = True
+    mw.addonManager.writeConfig("incremento", config)
+    yield
+    config["use_fail_pass_on_items"] = previous
+    mw.addonManager.writeConfig("incremento", config)
+
+
+def test_items_keep_ankidroid_buttons_by_default(rt, cards):
+    buttons = json.loads(facade.answer_buttons(cards["items"][0]))
+    assert buttons == {"mode": "standard", "buttons": []}
+    decision = json.loads(facade.before_answer(cards["items"][0], 2))
+    assert decision == {"mode": "standard", "ease": 2}
+
+
+def test_item_buttons_are_fail_and_pass(rt, cards, fail_pass_items):
+    from incremento.backend.i18n import t
+
+    buttons = json.loads(facade.answer_buttons(cards["items"][0]))
+    assert buttons["mode"] == "items_fail_pass"
+    assert [(b["slot"], b["label"], b["ease"]) for b in buttons["buttons"]] == [
+        (1, t("backend_item_fail"), 1),
+        (3, t("backend_item_pass"), 3),
+    ]
+
+
+@pytest.mark.parametrize(("slot", "ease"), [(1, 1), (2, 3), (3, 3), (4, 3)])
+def test_item_answers_map_to_fail_or_pass(rt, cards, fail_pass_items, slot, ease):
+    decision = json.loads(facade.before_answer(cards["items"][0], slot))
+    assert decision == {"mode": "items_fail_pass", "ease": ease}
 
 
 def test_priority_round_trips_through_incremento_db(rt, cards):

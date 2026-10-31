@@ -530,18 +530,18 @@ class ReviewerViewModel(
         mutationSignal.await()
         val state = queueState.await() ?: return
         val card = currentCard.await()
-        val rating = withCol { Ankrimento.ratingToSubmit(card.id, rating) }
+        val submitted = withCol { Ankrimento.ratingToSubmit(card.id, rating) }
         val answer =
             withCol {
                 sched.answerCard(
                     card = card,
                     states = state.states,
-                    rating,
+                    submitted,
                 )
             }
 
         undoableOp(handler = this) { sched.answerCard(answer) }
-        withCol { Ankrimento.onCardAnswered(card.id, rating) }
+        withCol { Ankrimento.onCardAnswered(card.id, submitted) }
         answerFeedbackFlow.emit(rating)
         savedStateHandle[KEY_PREVIOUS_CARD_ID] = card.id
 
