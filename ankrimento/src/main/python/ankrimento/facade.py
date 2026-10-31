@@ -488,6 +488,12 @@ def card_title(card_id: int) -> str:
     return _card_title(runtime.current().col.get_card(int(card_id)))
 
 
+def video_extract(card_id: int, seconds: float) -> None:
+    from ankrimento import video_reader
+
+    video_reader.extract_at(int(card_id), float(seconds))
+
+
 def writing_open(card_id: int) -> str:
     from ankrimento import writing
 

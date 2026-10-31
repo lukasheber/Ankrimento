@@ -41,3 +41,14 @@ def test_watch_time_is_recorded(rt, video_card):
         "SELECT SUM(watched_seconds) FROM video_watch_history WHERE card_id = ?", (video_card,)
     ).fetchone()[0]
     assert total >= 25.0
+
+
+def test_extract_at_a_moment_links_back_to_it_as_desktop_does(rt, video_card):
+    facade.video_extract(video_card, 75.0)
+    draft = json.loads(facade.extract_draft(video_card))
+    front = draft["fields"][0]
+    # frontend/video_dock.py:_do_video_add_card: "▶ <time> – <title>", opening the video at that second.
+    assert "&#9654; 01:15" in front or "&#9654; 1:15" in front
+    assert "A talk" in front
+    assert f"incremento_open_video:{video_card}:75.0" in front
+    facade.discard_extract(video_card)

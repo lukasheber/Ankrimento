@@ -138,17 +138,33 @@ internal fun ExtractSheet(
                 TextButton(onClick = onKeep) { Text(stringResource(R.string.ankrimento_extract_keep)) }
                 Button(
                     onClick = {
-                        val fields =
-                            draft.fields.mapIndexed { index, html ->
-                                val text = texts[index].trim()
-                                if (text == originals[index]) html else TextUtils.htmlEncode(text).replace("\n", "<br>")
-                            }
+                        val fields = draft.fields.mapIndexed { index, html -> fieldHtml(html, originals[index], texts[index]) }
                         onAdd(ExtractChoice(fields, noteType, isTopic, priority.roundToInt().toDouble()))
                     },
                     enabled = texts.firstOrNull()?.isNotBlank() == true,
                 ) { Text(stringResource(R.string.ankrimento_extract_add)) }
             }
         }
+    }
+}
+
+/**
+ * A field's HTML after editing: unchanged text keeps the document's formatting;
+ * text typed after it keeps that formatting too (a video extract's link back
+ * to its moment, say) and adds the rest as plain text; other edits become plain text.
+ */
+internal fun fieldHtml(
+    originalHtml: String,
+    originalText: String,
+    edited: String,
+): String {
+    val text = edited.trim()
+
+    fun plain(value: String) = TextUtils.htmlEncode(value).replace("\n", "<br>")
+    return when {
+        text == originalText -> originalHtml
+        originalText.isNotEmpty() && text.startsWith(originalText) -> originalHtml + plain(text.removePrefix(originalText))
+        else -> plain(text)
     }
 }
 

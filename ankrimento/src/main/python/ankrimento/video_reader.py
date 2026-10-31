@@ -59,6 +59,23 @@ def save_position(card_id: int, position: float, watched_seconds: float = 0.0) -
         record_video_watch(addon_dir, profile, int(card_id), watched, day_end_time=load_scheduler_config().day_end_time)
 
 
+def extract_at(card_id: int, seconds: float) -> None:
+    """Start an extract tied to this moment; mirrors ``frontend/video_dock.py:_do_video_add_card``:
+    the front links back to the video at that second ("▶ <time> – <title>")."""
+    from aqt import mw
+    from incremento.backend.video_manager import fmt_time
+
+    from ankrimento import extract
+
+    card_id, t = int(card_id), float(seconds)
+    note = runtime.current().col.get_card(card_id).note()
+    title = note.fields[0][:60].strip() if note.fields else ""
+    label = f"&#9654; {fmt_time(t)}" + (f" – {title}" if title else "")
+    link = f"<a href=\"#\" onclick=\"pycmd('incremento_open_video:{card_id}:{t}')\" style=\"color:#4a90d9;\">{label}</a>"
+    extract.add_html_to_draft(card_id, 0, link, page=int(t))
+    mw.notify_host("extract_draft", card_id=card_id)
+
+
 def import_video(url: str, title: str = "", deck_name: str = "Topics") -> int:
     """Add a YouTube/Vimeo link as an Incremento Video topic, as desktop's Add Video does."""
     from incremento.backend.video_manager import add_video_card, canonicalize_video_url

@@ -87,6 +87,13 @@ def add_to_draft(source_card_id: int, index: int, payload: dict, *, page: int, h
         draft.highlight_id = highlight_id
 
 
+def add_html_to_draft(source_card_id: int, index: int, html: str, *, page: int) -> None:
+    """A field the reader composed itself (e.g. a video link), stored as given."""
+    draft = _drafts.setdefault(int(source_card_id), Draft())
+    draft.fields[int(index)] = str(html)
+    draft.page = int(page)
+
+
 def discard(source_card_id: int) -> None:
     _drafts.pop(int(source_card_id), None)
 

@@ -122,8 +122,10 @@ Mobile principles that guide every item:
 | ✅ | YouTube (upstream player page) and local files | |
 | ✅ | Position resume and watch time, as desktop saves them | |
 | ⬜ | Vimeo | |
-| ⬜ | Native controls: play/pause, ±10 s, speed, seek | |
-| ⬜ | Extract at the current timestamp (card tied to the video moment) | Desktop's main video action |
+| ✅ | Extract at the current timestamp: the front links back to that moment, as desktop's "Add Card at this point" | |
+| 🟡 | Native controls: Back 10 seconds | Play/pause, speed and seek still come from the player itself |
+| ⬜ | Titles for shared links (e.g. the YouTube title instead of the URL) | |
+| ⬜ | Open a video extract's link at its moment, on mobile | Desktop opens it; the link is upstream's pycmd |
 | ⬜ | Video bookmarks | |
 | ⬜ | Captions (target/reference) | |
 | ➖ | Create Mobile Clip, Download Local Copy | Need FFmpeg/yt-dlp; desktop makes clips that sync as media |
@@ -200,7 +202,7 @@ Mobile principles that guide every item:
 1. ~~Fixed Incremento entry, priority chip, plain-text topics and items in
    the learning screen~~ (done).
 2. ~~Page turning by swipe and pull-past-the-end in PDF and EPUB~~ (done).
-3. Extract bottom sheet, Keep extracting, and video extract at timestamp.
+3. ~~Extract bottom sheet and video extract at timestamp~~ (done).
 4. Hub and Library (Continue reading, Add sheet). Web pages imported as
    clean HTML / plain text.
 5. Settings screen and session presets/advanced options.

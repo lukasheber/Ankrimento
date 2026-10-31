@@ -371,6 +371,15 @@ object Ankrimento {
         requireFacade().callAttr("epub_set_appearance", cardId, mode)
     }
 
+    /** Starts an extract from the video at [seconds], as desktop's "Add Card at this point". */
+    @WorkerThread
+    fun videoExtract(
+        cardId: Long,
+        seconds: Double,
+    ) {
+        requireFacade().callAttr("video_extract", cardId, seconds)
+    }
+
     /** Add a shared link: a video link as a video topic, anything else as a web topic. */
     @WorkerThread
     fun importLink(

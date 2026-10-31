@@ -155,4 +155,6 @@
     <string name="ankrimento_release_previous_page">Release for the previous page</string>
     <string name="ankrimento_release_next_chapter">Release for the next chapter</string>
     <string name="ankrimento_release_previous_chapter">Release for the previous chapter</string>
+    <string name="ankrimento_video_extract">Extract at this moment</string>
+    <string name="ankrimento_video_back_10">Back 10 seconds</string>
 </resources>

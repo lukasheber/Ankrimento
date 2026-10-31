@@ -19,6 +19,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.ReaderTool
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -37,8 +39,16 @@ class VideoReaderActivity : ReaderActivity() {
     private var readPlayer: (suspend () -> Pair<Double, Boolean>?)? = null
     private var lastPosition = 0.0
 
+    /** Moves playback by [seconds] in whichever player is shown. */
+    private var seekBy: ((Double) -> Unit)? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tools =
+            listOf(
+                ReaderTool(getString(R.string.ankrimento_video_extract), IncrementoIcons.Add, ::extractHere),
+                ReaderTool(getString(R.string.ankrimento_video_back_10)) { seekBy?.invoke(-10.0) },
+            )
         lifecycleScope.launch {
             val video =
                 runCatching { withCol { Ankrimento.videoOpen(cardId) } }.getOrElse { error ->
@@ -71,6 +81,16 @@ class VideoReaderActivity : ReaderActivity() {
             player.start()
         }
         readPlayer = { player.currentPosition / 1000.0 to player.isPlaying }
+        seekBy = { seconds -> player.seekTo((player.currentPosition + seconds * 1000).toInt().coerceAtLeast(0)) }
+    }
+
+    /** Desktop's "Add Card at this point": an extract whose front links back to this moment. */
+    private fun extractHere() {
+        lifecycleScope.launch {
+            val position = readPlayer?.invoke()?.first ?: lastPosition
+            runCatching { withCol { Ankrimento.videoExtract(cardId, position) } }
+                .onFailure { Timber.w(it, "Starting a video extract failed") }
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -105,6 +125,12 @@ class VideoReaderActivity : ReaderActivity() {
             runCatching { JSONObject(JSONObject("{\"v\":$result}").getString("v")) }
                 .getOrNull()
                 ?.let { it.getDouble("t") to (it.getInt("s") == YOUTUBE_PLAYING) }
+        }
+        seekBy = { seconds ->
+            webView.evaluateJavascript(
+                "window._ytp && window._ytp.seekTo && window._ytp.seekTo(Math.max(0, window._ytp.getCurrentTime() + $seconds), true);",
+                null,
+            )
         }
     }
 
