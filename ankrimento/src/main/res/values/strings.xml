@@ -48,6 +48,9 @@
     <string name="ankrimento_sync_conflict_message">Incremento data changed on this device and on %s since they last synced. Which version should be kept? The other is saved in a sync-conflicts folder.</string>
     <string name="ankrimento_sync_keep_device">Keep this device\'s</string>
     <string name="ankrimento_sync_keep_folder">Keep the other device\'s</string>
+    <string name="ankrimento_knowledge_tree">Incremento knowledge tree…</string>
+    <string name="ankrimento_knowledge_tree_empty">The knowledge tree is empty</string>
+    <string name="ankrimento_study_branch">Study this branch</string>
     <string name="ankrimento_session_settings">Incremento session settings…</string>
     <string name="ankrimento_settings_card_count">Cards per session</string>
     <string name="ankrimento_settings_topics">Topics: %d%% (the rest are items)</string>

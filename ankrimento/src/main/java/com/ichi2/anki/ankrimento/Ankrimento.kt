@@ -469,6 +469,34 @@ object Ankrimento {
         requireFacade().callAttr("discard_extract", sourceCardId)
     }
 
+    /** One entry of the knowledge tree, in display order with its [depth]. */
+    data class TreeNode(
+        val cardId: Long,
+        val depth: Int,
+        val title: String,
+        val kind: String,
+        val priority: Double?,
+    )
+
+    @WorkerThread
+    fun knowledgeTree(): List<TreeNode> {
+        val rows = JSONArray(requireFacade().callAttr("knowledge_tree").toString())
+        return List(rows.length()) { index ->
+            val row = rows.getJSONObject(index)
+            TreeNode(
+                cardId = row.getLong("card_id"),
+                depth = row.getInt("depth"),
+                title = row.optString("title"),
+                kind = row.optString("node_kind"),
+                priority = if (row.isNull("priority")) null else row.getDouble("priority"),
+            )
+        }
+    }
+
+    /** Start a session limited to [rootCardId]'s branch; [Event.EnterReview] follows. */
+    @WorkerThread
+    fun startBranchSession(rootCardId: Long): Boolean = requireFacade().callAttr("start_branch_session", rootCardId).toBoolean()
+
     /** Session settings (desktop's Basic view), as percentages. */
     data class SessionSettings(
         val cardCount: Int,

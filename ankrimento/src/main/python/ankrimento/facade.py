@@ -85,6 +85,40 @@ def save_session_settings(settings_json: str) -> None:
     save_addon_config(mw.addonManager, "incremento", config)
 
 
+def knowledge_tree() -> str:
+    """The knowledge tree in display order, as desktop's tree dialog loads it."""
+    from incremento.backend.knowledge_tree import load_knowledge_tree_snapshot
+
+    rt = runtime.current()
+    snapshot = load_knowledge_tree_snapshot(str(rt.addon_dir), rt.profile, rt.col)
+    parents = {int(row["card_id"]): row.get("parent_card_id") for row in snapshot.ordered_rows}
+
+    def depth(card_id: int) -> int:
+        level, parent = 0, parents.get(card_id)
+        while parent is not None and parent in parents and level < 64:
+            level, parent = level + 1, parents.get(parent)
+        return level
+
+    keys = ("card_id", "parent_card_id", "title", "node_kind", "priority")
+    return _dumps(
+        [{**{key: row.get(key) for key in keys}, "depth": depth(int(row["card_id"]))} for row in snapshot.ordered_rows]
+    )
+
+
+def start_branch_session(root_card_id: int) -> bool:
+    """A session limited to one branch of the tree, as desktop's "Study branch" starts it."""
+    from incremento.backend.knowledge_tree import build_branch_study_scope
+
+    from ankrimento import session
+
+    rt = runtime.current()
+    scope = build_branch_study_scope(str(rt.addon_dir), rt.profile, int(root_card_id), col=rt.col)
+    if scope is None:
+        return False
+    session.start(branch_scope=scope)
+    return True
+
+
 def question_shown(card_id: int) -> None:
     """Desktop wiring: ``reviewer_did_show_question``."""
     gui_hooks.reviewer_did_show_question(runtime.current().col.get_card(int(card_id)))

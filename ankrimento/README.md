@@ -87,6 +87,12 @@ AnkiDroid (Kotlin)
   word counts (`set_writing_word_stats`), as desktop's writing dock saves.
   "New Incremento writing…" creates one (`add_writing_card`).
 
+### Knowledge tree
+
+"Incremento knowledge tree…" lists upstream's tree (`load_knowledge_tree_snapshot`)
+indented; an entry offers studying its branch (`build_branch_study_scope` passed
+to `learnFunction`, as desktop's tree does) or editing its priority.
+
 ### Syncing Incremento data
 
 AnkiWeb syncs the cards; `syncfolder.py` syncs Incremento's own data

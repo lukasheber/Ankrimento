@@ -178,10 +178,13 @@ def test_review_time_is_recorded_like_desktop(rt):
     def total_seconds() -> float:
         if not stats_path.exists():
             return 0.0
-        seconds = json.loads(stats_path.read_text(encoding="utf8"))["time"]["lifetime"]["type"]
+        data = json.loads(stats_path.read_text(encoding="utf8"))
+        seconds = data.get("time", {}).get("lifetime", {}).get("type", {})
         return float(sum(seconds.values()))
 
     (card_id,) = _add_notes(rt.col, "Default", 1, "timed item")
+    # Time inside an Incremento session deck goes to that session's own stats.
+    rt.col.decks.select(rt.col.decks.id("Default"))
     before = total_seconds()
     facade.question_shown(card_id)
     _time.sleep(1.2)
