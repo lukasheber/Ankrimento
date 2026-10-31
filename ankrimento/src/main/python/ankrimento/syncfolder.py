@@ -34,6 +34,7 @@ reaches another device (whose import recovery would roll back its files).
 from __future__ import annotations
 
 import hashlib
+import importlib
 import json
 import os
 import shutil
@@ -46,6 +47,16 @@ from contextlib import closing
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
+
+#: Python package of Incremento's backend. Desktop installs from AnkiWeb live
+#: in a numbered add-on folder; the desktop add-on sets this accordingly.
+BACKEND_PACKAGE = "incremento.backend"
+
+
+def backend(module: str) -> Any:
+    """An upstream backend module, e.g. ``backend("paths")``."""
+    return importlib.import_module(f"{BACKEND_PACKAGE}.{module}")
+
 
 FORMAT = 1
 SNAPSHOT_NAME = "snapshot.json"
@@ -204,7 +215,8 @@ class SyncFolder:
         device_name: str,
     ) -> None:
         """``remote`` is the profile's folder: ``<sync root>/<profile>``."""
-        from incremento.backend.paths import get_user_files_dir, sanitize_profile_name
+        paths = backend("paths")
+        get_user_files_dir, sanitize_profile_name = paths.get_user_files_dir, paths.sanitize_profile_name
 
         self.profile = sanitize_profile_name(profile)
         self.addon_dir = Path(addon_dir)
@@ -233,7 +245,7 @@ class SyncFolder:
 
     def _local_files(self, known: dict[str, Any]) -> dict[str, dict[str, Any]]:
         """Synced files under user_files, reusing known hashes for unchanged files."""
-        from incremento.backend.export_bundle import should_skip_user_file
+        should_skip_user_file = backend("export_bundle").should_skip_user_file
 
         files: dict[str, dict[str, Any]] = {}
         if not self.user_files.is_dir():
@@ -265,7 +277,7 @@ class SyncFolder:
         return files
 
     def _snapshot_db(self, destination: Path) -> dict[str, Any]:
-        from incremento.backend.export_bundle import snapshot_database
+        snapshot_database = backend("export_bundle").snapshot_database
 
         info = snapshot_database(self.user_files / DB_NAME, destination)
         return {"size": destination.stat().st_size, "sha256": _sha256(destination), **info}
@@ -380,8 +392,8 @@ class SyncFolder:
         With ``force`` (resolving a conflict in the folder's favour) the
         local database is first kept under ``user_files/<profile>/sync-conflicts``.
         """
-        from incremento.backend import db as incremento_db
-        from incremento.backend.profile_startup import prepare_storage
+        incremento_db = backend("db")
+        prepare_storage = backend("profile_startup").prepare_storage
 
         status = self.status()
         if status.state == "conflict" and not force:
@@ -445,7 +457,7 @@ class SyncFolder:
         With ``force`` (resolving a conflict in this device's favour) the
         folder's newer snapshot is replaced.
         """
-        from incremento.backend.operation_journal import pending_import_recovery_needed
+        pending_import_recovery_needed = backend("operation_journal").pending_import_recovery_needed
 
         if pending_import_recovery_needed(str(self.addon_dir), self.profile):
             raise SyncError("An import is still pending on this device; finish it before syncing.")

@@ -78,9 +78,14 @@ a computer by Autosync, Dropsync, FolderSync or Syncthing. The profile name
 Ankrimento pulls before a session starts and pushes (releasing its lease)
 when the reviewer closes; "Sync Incremento data" syncs on demand.
 
-The desktop side needs the same module: `syncfolder.py` depends only on
-upstream backend modules so a desktop add-on can share it (see the issue
-proposing this upstream).
+The desktop side is the **Ankrimento Sync** add-on (`desktop-addon/`), which
+ships the same `syncfolder.py`; `python desktop-addon/build.py` writes
+`build/ankrimento_sync.ankiaddon`. It finds Incremento's add-on folder
+(numbered when installed from AnkiWeb), and syncs when a profile opens,
+after each AnkiWeb sync, and when the profile closes. Tools → Ankrimento
+Sync picks the folder (inside Google Drive, Dropbox…) and syncs on demand.
+Its Anki API use was checked against aqt 26.9.3; it has not yet been run
+inside Anki desktop.
 
 ### AnkiDroid hooks
 
