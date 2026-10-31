@@ -3,28 +3,22 @@
 package com.ichi2.anki.ankrimento
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.ViewGroup
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import android.widget.Button
-import android.widget.HorizontalScrollView
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.ReaderTool
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -33,11 +27,11 @@ import java.io.File
 /**
  * Incremento's EPUB reader: each extracted chapter in a WebView with desktop's
  * EPUB page script, whose console messages Incremento's backend handles.
- * The toolbar calls the page script's own actions, as desktop's toolbar does.
+ * The top bar and the text-selection menu call the page script's own
+ * actions, as desktop's toolbar does.
  */
-class EpubReaderActivity : ComponentActivity() {
-    private val cardId by lazy { intent.getLongExtra(EXTRA_CARD_ID, 0L) }
-    private lateinit var webView: WebView
+class EpubReaderActivity : ReaderActivity() {
+    private lateinit var webView: ReaderWebView
     private var section: Ankrimento.EpubSection? = null
     private var pendingScrollRatio: Double? = null
 
@@ -48,7 +42,7 @@ class EpubReaderActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         webView =
-            WebView(this).apply {
+            ReaderWebView(this).apply {
                 settings.javaScriptEnabled = true
                 settings.allowFileAccess = false
                 settings.allowContentAccess = false
@@ -63,13 +57,20 @@ class EpubReaderActivity : ComponentActivity() {
                         }
                     }
             }
-        setContentView(
-            LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                addView(webView, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
-                addView(toolbar())
-            },
-        )
+        webView.selectionActions =
+            listOf(
+                ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS),
+                ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_highlight), HIGHLIGHT_JS),
+            )
+        setReaderContent(webView)
+        tools =
+            listOf(
+                ReaderTool(getString(R.string.ankrimento_epub_previous), IncrementoIcons.Previous) { turnChapter(-1) },
+                ReaderTool(getString(R.string.ankrimento_epub_next), IncrementoIcons.Next) { turnChapter(1) },
+                ReaderTool(getString(R.string.ankrimento_epub_read_here), IncrementoIcons.Bookmark) { runScript(READ_MARKER_JS) },
+                ReaderTool(getString(R.string.ankrimento_extract_selection)) { runScript(EXTRACT_JS) },
+                ReaderTool(getString(R.string.ankrimento_highlight_selection)) { runScript(HIGHLIGHT_JS) },
+            )
         lifecycleScope.launch { load(null, null) }
         lifecycleScope.launch {
             for (message in messages) {
@@ -79,41 +80,15 @@ class EpubReaderActivity : ComponentActivity() {
                     .onFailure { Timber.w(it, "EPUB page message failed: %s", message.substringBefore(':')) }
             }
         }
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                Ankrimento.events.collect(::onEvent)
-            }
-        }
     }
 
-    private fun toolbar(): HorizontalScrollView {
-        val buttons =
-            LinearLayout(this).apply {
-                orientation = LinearLayout.HORIZONTAL
-            }
-
-        fun button(
-            label: Int,
-            action: () -> Unit,
-        ) = buttons.addView(
-            Button(this).apply {
-                setText(label)
-                setOnClickListener { action() }
-            },
-        )
-        button(R.string.ankrimento_epub_previous) { section?.let { lifecycleScope.launch { load(it.index - 1, 1.0) } } }
-        button(R.string.ankrimento_epub_extract) {
-            webView.evaluateJavascript("window.incrementoFillEpubField && window.incrementoFillEpubField(0);", null)
-        }
-        button(R.string.ankrimento_epub_highlight) {
-            webView.evaluateJavascript("window.incrementoAddEpubHighlight && window.incrementoAddEpubHighlight();", null)
-        }
-        button(R.string.ankrimento_epub_read_here) {
-            webView.evaluateJavascript("window.incrementoToggleEpubReadMarker && window.incrementoToggleEpubReadMarker();", null)
-        }
-        button(R.string.ankrimento_epub_next) { section?.let { lifecycleScope.launch { load(it.index + 1, 0.0) } } }
-        return HorizontalScrollView(this).apply { addView(buttons) }
+    /** The previous chapter opens at its end, the next at its start. */
+    private fun turnChapter(delta: Int) {
+        val current = section ?: return
+        lifecycleScope.launch { load(current.index + delta, if (delta < 0) 1.0 else 0.0) }
     }
+
+    private fun runScript(script: String) = webView.evaluateJavascript(script, null)
 
     /** Loads chapter [index] (the saved one when null) at [scrollRatio] (saved position when null). */
     private suspend fun load(
@@ -130,6 +105,7 @@ class EpubReaderActivity : ComponentActivity() {
                 return
             }
         section = opened
+        subtitle = getString(R.string.ankrimento_epub_chapter, opened.index + 1, opened.count)
         pendingScrollRatio = scrollRatio
         // Canonical: Incremento may resolve /data/user/0 to /data/data, or not.
         val root = File(opened.root).canonicalFile
@@ -157,30 +133,13 @@ class EpubReaderActivity : ComponentActivity() {
                     val current = section ?: return
                     lifecycleScope.launch {
                         val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio) }
+                        webView.evaluateJavascript(TOUCH_SELECTION_JS, null)
                         webView.evaluateJavascript(script, null)
                     }
                 }
             }
         val relative = File(opened.path).canonicalFile.relativeTo(root).invariantSeparatorsPath
         webView.loadUrl("https://$ORIGIN_HOST/epub/" + relative.split('/').joinToString("/") { Uri.encode(it) })
-    }
-
-    private fun onEvent(event: Ankrimento.Event) {
-        when (event) {
-            is Ankrimento.Event.ExtractDraft -> if (event.sourceCardId == cardId) ExtractDialog.showFor(this, cardId) { }
-            is Ankrimento.Event.OpenUrl -> openUrl(event.url)
-            is Ankrimento.Event.Message -> Toast.makeText(this, event.text, Toast.LENGTH_LONG).show()
-            is Ankrimento.Event.CloseReader -> if (event.cardId == cardId) finish()
-            Ankrimento.Event.EnterReview -> Unit
-        }
-    }
-
-    private fun openUrl(url: String) {
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-        } catch (e: ActivityNotFoundException) {
-            Timber.w(e, "No browser for %s", url)
-        }
     }
 
     override fun onDestroy() {
@@ -190,15 +149,29 @@ class EpubReaderActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val EXTRA_CARD_ID = "card_id"
         private const val ORIGIN_HOST = "appassets.androidplatform.net"
 
         /** Upstream's _PYCMD_BRIDGE; each message is prefix + nonce + ":" + message. */
         private const val MESSAGE_PREFIX = "__incremento_epub__:"
 
+        /**
+         * Upstream selects text by dragging a mouse and blocks native selection meanwhile;
+         * a finger's drag scrolls instead. Touches on the text keep Android's long-press
+         * selection (handles, and the Extract action); upstream's own controls still get theirs.
+         */
+        private const val TOUCH_SELECTION_JS =
+            "window.addEventListener('pointerdown', function (event) {" +
+                " var target = event.target; if (event.pointerType !== 'touch' || !target || !target.closest) return;" +
+                " if (target.closest('[class*=\"incremento-epub-\"]:not(.incremento-epub-highlight):not(.incremento-epub-scaled)')) return;" +
+                " event.stopPropagation(); }, true);"
+
+        private const val EXTRACT_JS = "window.incrementoFillEpubField && window.incrementoFillEpubField(0);"
+        private const val HIGHLIGHT_JS = "window.incrementoAddEpubHighlight && window.incrementoAddEpubHighlight();"
+        private const val READ_MARKER_JS = "window.incrementoToggleEpubReadMarker && window.incrementoToggleEpubReadMarker();"
+
         fun intent(
             context: Context,
             cardId: Long,
-        ): Intent = Intent(context, EpubReaderActivity::class.java).putExtra(EXTRA_CARD_ID, cardId)
+        ): Intent = ReaderActivity.intent(context, "epub", cardId, session = false)!!
     }
 }

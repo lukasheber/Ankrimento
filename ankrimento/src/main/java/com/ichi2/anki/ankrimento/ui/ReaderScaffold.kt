@@ -1,0 +1,246 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+package com.ichi2.anki.ankrimento.ui
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import anki.scheduler.CardAnswer.Rating
+import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.R
+import kotlin.math.roundToInt
+
+/** A reader action: an icon in the top bar when it has one, else an overflow entry. */
+class ReaderTool(
+    val label: String,
+    val icon: ImageVector? = null,
+    val onClick: () -> Unit,
+)
+
+/**
+ * What a reader shows in a session: Incremento's answer buttons for the
+ * card, and the topic actions desktop puts in the reviewer's menu.
+ */
+internal class ReviewBarState(
+    val buttons: List<Ankrimento.AnswerButton>,
+    val topicActions: List<ReaderTool>,
+    val onAnswer: (Rating) -> Unit,
+)
+
+/** Icons shown in the top bar before the rest move to the overflow menu. */
+private const val MAX_BAR_ICONS = 3
+
+/**
+ * A reader's screen: the document fills it; a top bar names it and holds
+ * the reader's tools; in a session, the review bar is at the bottom, within
+ * thumb reach, so reading ends with a single tap on how soon to return.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun ReaderScaffold(
+    title: String,
+    subtitle: String?,
+    tools: List<ReaderTool>,
+    menu: List<ReaderTool>,
+    review: ReviewBarState?,
+    onBack: () -> Unit,
+    content: @Composable (Modifier) -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column {
+                        Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium)
+                        if (!subtitle.isNullOrEmpty()) {
+                            Text(subtitle, maxLines = 1, style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_navigate_up))
+                    }
+                },
+                actions = {
+                    val barIcons = tools.filter { it.icon != null }.take(MAX_BAR_ICONS)
+                    barIcons.forEach { tool ->
+                        IconButton(onClick = tool.onClick) { Icon(tool.icon!!, contentDescription = tool.label) }
+                    }
+                    OverflowMenu(tools.filterNot { it in barIcons } + menu)
+                },
+            )
+        },
+        bottomBar = { if (review != null) ReviewBar(review) },
+    ) { padding: PaddingValues ->
+        content(
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .consumeWindowInsets(padding)
+                .imePadding(),
+        )
+    }
+}
+
+@Composable
+private fun OverflowMenu(entries: List<ReaderTool>) {
+    if (entries.isEmpty()) return
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(IncrementoIcons.More, contentDescription = stringResource(R.string.ankrimento_more_options))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            entries.forEach { entry ->
+                DropdownMenuItem(
+                    text = { Text(entry.label) },
+                    leadingIcon = entry.icon?.let { icon -> { Icon(icon, contentDescription = null) } },
+                    onClick = {
+                        expanded = false
+                        entry.onClick()
+                    },
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Incremento's answer buttons, left to right as on the reviewer, each with
+ * when the card returns. The middle choice is the filled one: it is the
+ * usual answer, and the eye finds it first.
+ */
+@Composable
+private fun ReviewBar(state: ReviewBarState) {
+    Surface(tonalElevation = 3.dp, shadowElevation = 3.dp) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            val buttons = state.buttons.sortedBy { it.rating.number }
+            buttons.forEachIndexed { index, button ->
+                val emphasized = buttons.size == 3 && index == 1
+                val modifier =
+                    Modifier
+                        .weight(1f)
+                        .heightIn(min = 56.dp)
+                        .padding(horizontal = 4.dp)
+                val label: @Composable () -> Unit = {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(button.label, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        if (!button.due.isNullOrEmpty()) {
+                            Text(button.due, style = MaterialTheme.typography.labelSmall, maxLines = 1)
+                        }
+                    }
+                }
+                val padding = ButtonDefaults.ContentPadding
+                if (emphasized) {
+                    Button(onClick = { state.onAnswer(button.rating) }, modifier = modifier, contentPadding = padding) { label() }
+                } else {
+                    FilledTonalButton(
+                        onClick = { state.onAnswer(button.rating) },
+                        modifier = modifier,
+                        contentPadding = padding,
+                    ) { label() }
+                }
+            }
+            if (state.topicActions.isNotEmpty()) {
+                Spacer(Modifier.width(4.dp))
+                OverflowMenu(state.topicActions)
+            }
+        }
+    }
+}
+
+/** Shown while a reader opens its document. */
+@Composable
+internal fun ReaderLoading(modifier: Modifier) {
+    Box(modifier, contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+}
+
+/**
+ * Incremento priority, 0 to 100, chosen with the thumb; the number stays in
+ * view as it changes.
+ */
+@Composable
+internal fun PriorityDialog(
+    initial: Double,
+    onDismiss: () -> Unit,
+    onConfirm: (Double) -> Unit,
+) {
+    var value by remember { mutableFloatStateOf(initial.toFloat().coerceIn(0f, 100f)) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.ankrimento_priority_title)) },
+        text = {
+            Column {
+                Text(
+                    value.roundToInt().toString(),
+                    style = MaterialTheme.typography.displaySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Slider(value = value, onValueChange = { value = it }, valueRange = 0f..100f, steps = 99)
+                HorizontalDivider()
+                Text(
+                    stringResource(R.string.ankrimento_priority_message),
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { onConfirm(value.roundToInt().toDouble()) },
+            ) { Text(stringResource(android.R.string.ok)) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } },
+    )
+}

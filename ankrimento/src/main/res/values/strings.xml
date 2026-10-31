@@ -15,14 +15,14 @@
         <item quantity="one">%d word</item>
         <item quantity="other">%d words</item>
     </plurals>
-    <string name="ankrimento_web_back">◀ Back</string>
+    <string name="ankrimento_web_back">Previous page</string>
     <string name="ankrimento_web_select_first">Select some text first</string>
     <string name="ankrimento_epub_missing">This card\'s EPUB file is not on this device</string>
-    <string name="ankrimento_epub_previous">◀ Chapter</string>
-    <string name="ankrimento_epub_next">Chapter ▶</string>
+    <string name="ankrimento_epub_previous">Previous chapter</string>
+    <string name="ankrimento_epub_next">Next chapter</string>
     <string name="ankrimento_epub_extract">Extract</string>
     <string name="ankrimento_epub_highlight">Highlight</string>
-    <string name="ankrimento_epub_read_here">Read to here</string>
+    <string name="ankrimento_epub_read_here">Mark read to here</string>
     <string name="ankrimento_extract_title">New card from extract</string>
     <string name="ankrimento_extract_front">Front</string>
     <string name="ankrimento_extract_back">Back</string>
@@ -75,4 +75,23 @@
     <string name="ankrimento_priority_message">0 to 100. With Incremento\'s default settings, lower numbers are more important.</string>
     <string name="ankrimento_profile">Incremento profile…</string>
     <string name="ankrimento_profile_message">The Anki profile name used on your computer (for syncing). Takes effect after restarting AnkiDroid.</string>
+    <!-- Reader screen -->
+    <string name="ankrimento_navigate_up">Back</string>
+    <string name="ankrimento_more_options">More options</string>
+    <string name="ankrimento_show_card">Show card</string>
+    <string name="ankrimento_open_reader">Open document</string>
+    <string name="ankrimento_revisit_in">Revisit in %s</string>
+    <string name="ankrimento_priority_title">Priority</string>
+    <string name="ankrimento_extract_selection">Extract selection</string>
+    <string name="ankrimento_highlight_selection">Highlight selection</string>
+    <string name="ankrimento_pdf_page">Page %d</string>
+    <string name="ankrimento_pdf_find">Find in document</string>
+    <string name="ankrimento_pdf_mark_read">Mark read to this page</string>
+    <string name="ankrimento_pdf_previous">Previous page</string>
+    <string name="ankrimento_pdf_next">Next page</string>
+    <string name="ankrimento_pdf_show_controls">Show reader controls</string>
+    <string name="ankrimento_pdf_hide_controls">Hide reader controls</string>
+    <string name="ankrimento_zoom_in">Zoom in</string>
+    <string name="ankrimento_zoom_out">Zoom out</string>
+    <string name="ankrimento_epub_chapter">Chapter %1$d of %2$d</string>
 </resources>

@@ -202,13 +202,19 @@ object Ankrimento {
         requireFacade().callAttr("start_session")
     }
 
-    /** Reviewer hook: a card's question is on screen. Records whether it is a topic. */
+    /** Reviewer hook: a card's question is on screen. Records whether it is a topic, and whether it has a reader. */
     @WorkerThread
     fun questionShown(cardId: Long) {
         if (!isStarted) return
         requireFacade().callAttr("question_shown", cardId)
         shownTopicCardId = if (requireFacade().callAttr("is_topic", cardId).toBoolean()) cardId else null
+        shownReaderCardId = if (cardReader(cardId).isNotEmpty()) cardId else null
     }
+
+    /** The card on screen in the reviewer, if it opens in an Incremento reader. */
+    @Volatile
+    var shownReaderCardId: Long? = null
+        private set
 
     /** The card on screen in the reviewer, if Incremento treats it as a topic. */
     @Volatile
@@ -261,6 +267,10 @@ object Ankrimento {
     /** The Incremento reader for [cardId]: "pdf", or "" when it has none. */
     @WorkerThread
     fun cardReader(cardId: Long): String = if (isStarted) requireFacade().callAttr("card_reader", cardId).toString() else ""
+
+    /** The title the knowledge tree shows for [cardId]. */
+    @WorkerThread
+    fun cardTitle(cardId: Long): String = requireFacade().callAttr("card_title", cardId).toString()
 
     /** Add a PDF file as an Incremento PDF topic card; returns the card id. */
     @WorkerThread

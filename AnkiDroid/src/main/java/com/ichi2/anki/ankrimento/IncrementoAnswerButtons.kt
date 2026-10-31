@@ -2,7 +2,11 @@
 
 package com.ichi2.anki.ankrimento
 
+import android.app.Activity
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.AbstractFlashcardViewer
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.launchCatchingTask
@@ -11,25 +15,72 @@ import com.ichi2.anki.reviewer.AnswerButtons.Companion.getBackgroundColors
 import com.ichi2.anki.reviewer.AnswerButtons.Companion.getTextColors
 
 /**
- * Tells Incremento a card's question is on screen (it times reviews from
- * here) and, like desktop's reader docks, opens the card's document.
+ * Opens a card's reader when its question is shown, as desktop's reader docks
+ * do, and records the answer the reader returns: in a session a topic is
+ * reviewed in its reader, and the reviewer moves straight to the next card.
+ *
+ * Register it while the reviewer is created (it registers an activity result).
+ *
+ * @param leaveSession closes the reviewer, as its Back does
  */
-internal fun AbstractFlashcardViewer.notifyIncrementoQuestionShown(cardId: CardId) {
-    if (!Ankrimento.isStarted) return
-    launchCatchingTask {
-        val reader =
-            withCol {
-                Ankrimento.questionShown(cardId)
-                Ankrimento.cardReader(cardId)
+internal class IncrementoReaders(
+    private val viewer: AbstractFlashcardViewer,
+    private val leaveSession: () -> Unit,
+) {
+    /**
+     * The card whose reader is open, or that the reader returned to the
+     * reviewer to show; redrawing that card does not reopen its reader.
+     */
+    private var openedCardId: CardId? = null
+
+    private val launcher =
+        viewer.registerForActivityResult(ActivityResultContracts.StartActivityForResult(), ::onReaderClosed)
+
+    /** Tells Incremento a card's question is on screen (it times reviews from here), then opens its reader. */
+    fun questionShown(cardId: CardId) {
+        if (!Ankrimento.isStarted) return
+        viewer.launchCatchingTask {
+            val reader =
+                withCol {
+                    Ankrimento.questionShown(cardId)
+                    Ankrimento.cardReader(cardId)
+                }
+            // Topic actions depend on the card just shown.
+            viewer.invalidateOptionsMenu()
+            if (cardId != openedCardId) open(cardId, reader)
+        }
+    }
+
+    /** Opens [cardId]'s reader to review it, from the menu after "Show card". */
+    fun reopen(cardId: CardId) {
+        viewer.launchCatchingTask { open(cardId, withCol { Ankrimento.cardReader(cardId) }) }
+    }
+
+    private fun open(
+        cardId: CardId,
+        reader: String,
+    ) {
+        val intent = ReaderActivity.intent(viewer, reader, cardId, session = true) ?: return
+        openedCardId = cardId
+        launcher.launch(intent)
+    }
+
+    private fun onReaderClosed(result: ActivityResult) {
+        val cardId = result.data?.getLongExtra(ReaderActivity.EXTRA_CARD_ID, 0L)
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                // The card is done with; if it comes back, its reader opens again.
+                openedCardId = null
+                val rating = result.data?.getIntExtra(ReaderActivity.EXTRA_RATING, -1) ?: -1
+                // Without a rating, a topic action rescheduled the card and the reviewer redraws itself.
+                if (rating < 0 || cardId == null || viewer.currentCard?.id != cardId) return
+                viewer.launchCatchingTask {
+                    // Desktop's answer timing starts when the answer is shown.
+                    withCol { Ankrimento.answerShown(cardId) }
+                    viewer.answerCard(Rating.forNumber(rating))
+                }
             }
-        // Topic actions depend on the card just shown.
-        invalidateOptionsMenu()
-        when (reader) {
-            "pdf" -> startActivity(PdfReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
-            "epub" -> startActivity(EpubReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
-            "web" -> startActivity(WebReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
-            "video" -> startActivity(VideoReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
-            "writing" -> startActivity(WritingActivity.intent(this@notifyIncrementoQuestionShown, cardId))
+            ReaderActivity.RESULT_LEAVE_SESSION -> leaveSession()
         }
     }
 }

@@ -36,6 +36,7 @@ def test_import_creates_a_pdf_topic_with_the_desktop_layout(rt, pdf_card):
     assert path.read_bytes() == _MINIMAL_PDF
     assert facade.get_priority(pdf_card) == 20.0
     assert facade.card_reader(pdf_card) == "pdf"
+    assert facade.card_title(pdf_card) == "Reading Notes"
     assert json.loads(facade.answer_buttons(pdf_card))["mode"] == "topic"
 
 

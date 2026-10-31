@@ -11,7 +11,6 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.view.Gravity
 import android.widget.EditText
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
 import kotlinx.coroutines.Job
@@ -23,8 +22,7 @@ import timber.log.Timber
  * A writing topic's Markdown, edited in place and saved as desktop's writing
  * dock saves it (backups per the settings, daily word counts).
  */
-class WritingActivity : ComponentActivity() {
-    private val cardId by lazy { intent.getLongExtra(EXTRA_CARD_ID, 0L) }
+class WritingActivity : ReaderActivity() {
     private lateinit var editor: EditText
     private var loaded = false
     private var savedText = ""
@@ -41,7 +39,7 @@ class WritingActivity : ComponentActivity() {
                 setPadding(padding, padding, padding, padding)
                 background = null
             }
-        setContentView(editor)
+        setReaderContent(editor)
         lifecycleScope.launch {
             savedText = withCol { Ankrimento.writingOpen(cardId) }
             editor.setText(savedText)
@@ -84,7 +82,7 @@ class WritingActivity : ComponentActivity() {
         runCatching { withCol { Ankrimento.writingSave(cardId, text) } }
             .onSuccess { words ->
                 savedText = text
-                title = resources.getQuantityString(R.plurals.ankrimento_writing_words, words, words)
+                subtitle = resources.getQuantityString(R.plurals.ankrimento_writing_words, words, words)
             }.onFailure { Timber.w(it, "Saving writing failed") }
     }
 
@@ -95,12 +93,11 @@ class WritingActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val EXTRA_CARD_ID = "card_id"
         private const val AUTOSAVE_DELAY_MS = 2_000L
 
         fun intent(
             context: Context,
             cardId: Long,
-        ): Intent = Intent(context, WritingActivity::class.java).putExtra(EXTRA_CARD_ID, cardId)
+        ): Intent = ReaderActivity.intent(context, "writing", cardId, session = false)!!
     }
 }

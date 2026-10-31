@@ -15,7 +15,6 @@ import android.webkit.WebView
 import android.widget.MediaController
 import android.widget.Toast
 import android.widget.VideoView
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
@@ -33,9 +32,7 @@ import java.io.File
  * its web page and Qt's player. Saves where playback stopped and observed
  * watch time, as desktop does.
  */
-class VideoReaderActivity : ComponentActivity() {
-    private val cardId by lazy { intent.getLongExtra(EXTRA_CARD_ID, 0L) }
-
+class VideoReaderActivity : ReaderActivity() {
     /** Current position and whether it is playing, read from whichever player is shown. */
     private var readPlayer: (suspend () -> Pair<Double, Boolean>?)? = null
     private var lastPosition = 0.0
@@ -66,7 +63,7 @@ class VideoReaderActivity : ComponentActivity() {
 
     private fun showLocal(video: Ankrimento.Video) {
         val player = VideoView(this)
-        setContentView(player)
+        setReaderContent(player)
         player.setMediaController(MediaController(this).apply { setAnchorView(player) })
         player.setVideoURI(Uri.fromFile(File(video.path)))
         player.setOnPreparedListener {
@@ -79,7 +76,7 @@ class VideoReaderActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun showYouTube(video: Ankrimento.Video) {
         val webView = WebView(this)
-        setContentView(webView)
+        setReaderContent(webView)
         val assetLoader =
             WebViewAssetLoader
                 .Builder()
@@ -159,7 +156,6 @@ class VideoReaderActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val EXTRA_CARD_ID = "card_id"
         private const val PLAYER_URL = "https://appassets.androidplatform.net/assets/ankrimento/web/video_player.html"
         private const val PROGRESS_INTERVAL_MS = 5_000L
         private const val YOUTUBE_PLAYING = 1
@@ -170,6 +166,6 @@ class VideoReaderActivity : ComponentActivity() {
         fun intent(
             context: Context,
             cardId: Long,
-        ): Intent = Intent(context, VideoReaderActivity::class.java).putExtra(EXTRA_CARD_ID, cardId)
+        ): Intent = ReaderActivity.intent(context, "video", cardId, session = false)!!
     }
 }

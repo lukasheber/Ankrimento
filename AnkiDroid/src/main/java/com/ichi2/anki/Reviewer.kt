@@ -75,8 +75,8 @@ import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.Whiteboard.Companion.createInstance
 import com.ichi2.anki.Whiteboard.OnPaintColorChangeListener
 import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.IncrementoReaders
 import com.ichi2.anki.ankrimento.IncrementoReviewerMenu
-import com.ichi2.anki.ankrimento.notifyIncrementoQuestionShown
 import com.ichi2.anki.ankrimento.showIncrementoAnswerButtons
 import com.ichi2.anki.cardviewer.Gesture
 import com.ichi2.anki.cardviewer.ViewerCommand
@@ -245,6 +245,8 @@ open class Reviewer :
             FlashCardViewerResultCallback(),
         )
 
+    private val incrementoReaders = IncrementoReaders(this) { closeReviewer(RESULT_DEFAULT) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         if (showedActivityFailedScreen(savedInstanceState)) {
             return
@@ -272,7 +274,7 @@ open class Reviewer :
         startLoadingCollection()
         registerOnForgetHandler { listOf(currentCardId!!) }
         // currentCardId throws before a card is shown; currentCard is null then.
-        addMenuProvider(IncrementoReviewerMenu(this) { currentCard?.id }, this)
+        addMenuProvider(IncrementoReviewerMenu(this, { currentCard?.id }, incrementoReaders::reopen), this)
         previousCardId = savedInstanceState?.getLongOrNull(STATE_PREVIOUS_CARD_ID)
     }
 
@@ -1650,7 +1652,7 @@ open class Reviewer :
         answerTimer.setupForCard(getColUnsafe, currentCard!!)
         delayedHide(100)
         super.displayCardQuestion()
-        notifyIncrementoQuestionShown(currentCard!!.id)
+        incrementoReaders.questionShown(currentCard!!.id)
     }
 
     @VisibleForTesting

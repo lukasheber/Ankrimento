@@ -28,6 +28,7 @@ buildscript {
 
 plugins {
     id("ankidroid.android.library")
+    id("ankidroid.android.compose")
     id("com.chaquo.python") version "17.2.0"
 }
 
@@ -178,6 +179,7 @@ dependencies {
     implementation(project(":libanki"))
     addAnkiBackendDependencies(project)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.core)
     implementation(libs.androidx.webkit)

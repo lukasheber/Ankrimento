@@ -13,6 +13,7 @@ import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.EpubReaderActivity
 import com.ichi2.anki.ankrimento.PdfReaderActivity
+import com.ichi2.anki.ankrimento.ReaderActivity
 import com.ichi2.anki.ankrimento.VideoReaderActivity
 import com.ichi2.anki.ankrimento.WebReaderActivity
 import com.ichi2.anki.libanki.Collection
@@ -67,6 +68,12 @@ class AnkrimentoSmokeTestActivity : Activity() {
                     }
                     intent.getLongExtra(EXTRA_VIDEO, 0L).takeIf { it > 0 }?.let { cardId ->
                         startActivity(VideoReaderActivity.intent(this@AnkrimentoSmokeTestActivity, cardId))
+                    }
+                    // Optional: `--el open <card id>` opens that card's reader, whatever its kind.
+                    intent.getLongExtra(EXTRA_OPEN, 0L).takeIf { it > 0 }?.let { cardId ->
+                        val reader = withContext(Dispatchers.IO) { CollectionManager.withCol { Ankrimento.cardReader(cardId) } }
+                        log("card $cardId opens in the '$reader' reader")
+                        ReaderActivity.intent(this@AnkrimentoSmokeTestActivity, reader, cardId, session = false)?.let(::startActivity)
                     }
                     // Optional: `--es epub <path>` likewise for the EPUB reader.
                     intent.getStringExtra(EXTRA_EPUB)?.let { path ->
@@ -168,5 +175,6 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_EPUB = "epub"
         const val EXTRA_WEB = "web"
         const val EXTRA_VIDEO = "video"
+        const val EXTRA_OPEN = "open"
     }
 }

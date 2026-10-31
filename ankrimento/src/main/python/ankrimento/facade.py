@@ -472,6 +472,13 @@ def card_reader(card_id: int) -> str:
     return readers.get(note.note_type()["name"], "")
 
 
+def card_title(card_id: int) -> str:
+    """The title the knowledge tree shows for this card (its first field, as text)."""
+    from incremento.backend.knowledge_tree import _card_title
+
+    return _card_title(runtime.current().col.get_card(int(card_id)))
+
+
 def writing_open(card_id: int) -> str:
     from ankrimento import writing
 

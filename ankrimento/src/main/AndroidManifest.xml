@@ -5,7 +5,7 @@
             android:name="com.ichi2.anki.ankrimento.PdfReaderActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:exported="false"
-            android:theme="@android:style/Theme.Material.NoActionBar" />
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity
             android:name="com.ichi2.anki.ankrimento.EpubReaderActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
@@ -20,11 +20,11 @@
             android:name="com.ichi2.anki.ankrimento.VideoReaderActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:exported="false"
-            android:theme="@android:style/Theme.Material.NoActionBar" />
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity
             android:name="com.ichi2.anki.ankrimento.WritingActivity"
             android:exported="false"
-            android:theme="@android:style/Theme.Material.Light"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.ichi2.anki.ankrimento.ShareToIncrementoActivity"

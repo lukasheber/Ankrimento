@@ -3,25 +3,23 @@
 package com.ichi2.anki.ankrimento
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.lifecycle.Lifecycle
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.ReaderTool
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,10 +32,13 @@ import java.io.FileInputStream
  *
  * The page, the viewer scripts and the PDF are served from one origin, so
  * upstream's Content-Security-Policy (`'self'` only) applies as on desktop.
+ *
+ * The top bar calls the viewer's own controls (find, page turns, zoom, read
+ * mark), and Extract is on the text-selection menu.
  */
-class PdfReaderActivity : ComponentActivity() {
-    private val cardId by lazy { intent.getLongExtra(EXTRA_CARD_ID, 0L) }
-    private lateinit var webView: WebView
+class PdfReaderActivity : ReaderActivity() {
+    private lateinit var webView: ReaderWebView
+    private var viewerControlsShown = false
 
     /** Viewer messages, applied one at a time in the order sent. */
     private val messages = Channel<String>(Channel.UNLIMITED)
@@ -45,8 +46,11 @@ class PdfReaderActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        webView = WebView(this)
-        setContentView(webView)
+        webView = ReaderWebView(this)
+        webView.selectionActions =
+            listOf(ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS))
+        setReaderContent(webView)
+        showViewerControls(false)
         lifecycleScope.launch {
             val path = withCol { Ankrimento.pdfPath(cardId) }
             if (path.isEmpty()) {
@@ -58,17 +62,57 @@ class PdfReaderActivity : ComponentActivity() {
         }
         lifecycleScope.launch {
             for (message in messages) {
+                showPage(message)
                 val script = runCatching { withCol { Ankrimento.pdfMessage(cardId, message) } }
                 script
                     .onSuccess { if (it.isNotEmpty()) webView.evaluateJavascript(it, null) }
                     .onFailure { Timber.w(it, "PDF viewer message failed: %s", message.substringBefore(':')) }
             }
         }
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                Ankrimento.events.collect(::onEvent)
-            }
-        }
+    }
+
+    /**
+     * Shows or hides upstream's own control panel. Hidden, the page has the
+     * screen and the top bar holds the everyday tools; shown, every desktop
+     * control (annotations, page links, bookmarks, the find box) is there.
+     */
+    private fun showViewerControls(show: Boolean) {
+        viewerControlsShown = show
+        webView.evaluateJavascript("document.body && document.body.classList.toggle('$COMPACT_CLASS', ${!show});", null)
+        tools =
+            listOf(
+                ReaderTool(getString(R.string.ankrimento_pdf_find), IncrementoIcons.Search) {
+                    // The find box is part of upstream's panel.
+                    showViewerControls(true)
+                    webView.evaluateJavascript("window.incrementoPdfOpenFind && window.incrementoPdfOpenFind();", null)
+                },
+                tool(R.string.ankrimento_pdf_previous, IncrementoIcons.Previous, "window.incrementoPdfNav && window.incrementoPdfNav(-1);"),
+                tool(R.string.ankrimento_pdf_next, IncrementoIcons.Next, "window.incrementoPdfNav && window.incrementoPdfNav(1);"),
+                tool(R.string.ankrimento_extract_selection, null, EXTRACT_JS),
+                tool(
+                    R.string.ankrimento_pdf_mark_read,
+                    IncrementoIcons.Bookmark,
+                    "window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();",
+                ),
+                tool(R.string.ankrimento_zoom_in, null, "window.incrementoPdfZoom && window.incrementoPdfZoom(1);"),
+                tool(R.string.ankrimento_zoom_out, null, "window.incrementoPdfZoom && window.incrementoPdfZoom(-1);"),
+                ReaderTool(getString(if (show) R.string.ankrimento_pdf_hide_controls else R.string.ankrimento_pdf_show_controls)) {
+                    showViewerControls(!viewerControlsShown)
+                },
+            )
+    }
+
+    private fun tool(
+        label: Int,
+        icon: ImageVector?,
+        script: String,
+    ) = ReaderTool(getString(label), icon) { webView.evaluateJavascript(script, null) }
+
+    /** Upstream reports page turns as `incremento_pdf_nav:<card>:<page>`. */
+    private fun showPage(message: String) {
+        val parts = message.split(':')
+        if (parts.size != 3 || parts[0] != "incremento_pdf_nav") return
+        parts[2].toIntOrNull()?.let { subtitle = getString(R.string.ankrimento_pdf_page, it) }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -115,33 +159,13 @@ class PdfReaderActivity : ComponentActivity() {
         lifecycleScope.launch {
             val script = withCol { Ankrimento.pdfStartScript(cardId, PDF_URL, WORKER_URL) }
             webView.evaluateJavascript(script, null)
+            webView.evaluateJavascript(COMPACT_STYLE_JS, null)
+            showViewerControls(viewerControlsShown)
         }
     }
 
-    private fun onEvent(event: Ankrimento.Event) {
-        when (event) {
-            is Ankrimento.Event.CloseReader -> if (event.cardId == cardId) finish()
-            is Ankrimento.Event.OpenUrl -> openUrl(event.url)
-            is Ankrimento.Event.Message -> Toast.makeText(this, event.text, Toast.LENGTH_LONG).show()
-            is Ankrimento.Event.ExtractDraft -> if (event.sourceCardId == cardId) showExtractDialog()
-            Ankrimento.Event.EnterReview -> Unit
-        }
-    }
-
-    private fun showExtractDialog() {
-        ExtractDialog.showFor(this, cardId) { script ->
-            if (script.isNotEmpty()) webView.evaluateJavascript(script, null)
-        }
-    }
-
-    private fun openUrl(url: String) {
-        val uri = Uri.parse(url)
-        if (uri.scheme !in setOf("http", "https")) return
-        try {
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
-        } catch (e: ActivityNotFoundException) {
-            Timber.w(e, "No browser for %s", url)
-        }
+    override fun onExtractCreated(script: String) {
+        if (script.isNotEmpty()) webView.evaluateJavascript(script, null)
     }
 
     override fun onDestroy() {
@@ -158,19 +182,35 @@ class PdfReaderActivity : ComponentActivity() {
     }
 
     companion object {
-        private const val EXTRA_CARD_ID = "card_id"
         private const val ORIGIN = "https://appassets.androidplatform.net"
         private const val VIEWER_URL = "$ORIGIN/assets/ankrimento/web/pdf_dock.html"
         private const val WORKER_URL = "$ORIGIN/assets/ankrimento/web/pdfjs/pdf.worker.min.js"
         private const val PDF_URL = "$ORIGIN/ankrimento-pdf/document.pdf"
 
-        /** Desktop's `pycmd`, defined before the viewer's scripts run. */
+        /** Desktop's `pycmd`, and touch selection, set up before the viewer's scripts run. */
         private const val PYCMD_SCRIPT =
-            "window.pycmd = function (message) { AnkrimentoPdfHost.pycmd(String(message)); return false; };"
+            "window.pycmd = function (message) { AnkrimentoPdfHost.pycmd(String(message)); return false; };" +
+                // Upstream selects text by dragging a mouse and blocks native selection meanwhile;
+                // a finger's drag scrolls instead. Touches on the text keep Android's long-press
+                // selection (handles, and the Extract action), which never reaches upstream's drag.
+                " window.addEventListener('pointerdown', function (event) {" +
+                " if (event.pointerType === 'touch' && event.target && event.target.closest &&" +
+                " event.target.closest('#pdf-text-layer')) event.stopPropagation(); }, true);"
+
+        /** Marks the page while upstream's control panel is hidden. */
+        private const val COMPACT_CLASS = "ankrimento-compact"
+        private const val COMPACT_STYLE_JS =
+            "(function () { if (document.getElementById('ankrimento-style')) return;" +
+                " var style = document.createElement('style'); style.id = 'ankrimento-style';" +
+                " style.textContent = 'body.$COMPACT_CLASS #pdf-controls { display: none !important; }';" +
+                " document.head.appendChild(style); })();"
+
+        /** Desktop's first extract shortcut on the selection. */
+        private const val EXTRACT_JS = "window.incrementoHandleExtractShortcut && window.incrementoHandleExtractShortcut(0);"
 
         fun intent(
             context: Context,
             cardId: Long,
-        ): Intent = Intent(context, PdfReaderActivity::class.java).putExtra(EXTRA_CARD_ID, cardId)
+        ): Intent = ReaderActivity.intent(context, "pdf", cardId, session = false)!!
     }
 }

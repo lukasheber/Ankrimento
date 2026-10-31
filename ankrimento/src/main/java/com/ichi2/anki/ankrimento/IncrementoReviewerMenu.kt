@@ -18,13 +18,16 @@ import timber.log.Timber
 
 /**
  * Incremento's reviewer actions, as on desktop: Done, Postpone and
- * "Revisit in…" for topics, and Priority for any card.
+ * "Revisit in…" for topics, and Priority for any card. A card shown after
+ * its reader returned to it ("Show card") can open the reader again.
  *
  * @param currentCardId the card on screen, if any
+ * @param openReader reviews the card in its reader
  */
 class IncrementoReviewerMenu(
     private val activity: ComponentActivity,
     private val currentCardId: () -> Long?,
+    private val openReader: (Long) -> Unit,
 ) : MenuProvider {
     override fun onCreateMenu(
         menu: Menu,
@@ -32,6 +35,9 @@ class IncrementoReviewerMenu(
     ) {
         if (!Ankrimento.isStarted) return
         val cardId = currentCardId() ?: return
+        if (Ankrimento.shownReaderCardId == cardId) {
+            menu.add(Menu.NONE, R.id.ankrimento_open_reader, Menu.CATEGORY_SECONDARY, R.string.ankrimento_open_reader)
+        }
         if (Ankrimento.shownTopicCardId == cardId) {
             menu.add(Menu.NONE, R.id.ankrimento_topic_done, Menu.CATEGORY_SECONDARY, R.string.ankrimento_topic_done)
             menu.add(Menu.NONE, R.id.ankrimento_topic_postpone, Menu.CATEGORY_SECONDARY, R.string.ankrimento_topic_postpone)
@@ -47,6 +53,7 @@ class IncrementoReviewerMenu(
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         val cardId = currentCardId() ?: return false
         when (menuItem.itemId) {
+            R.id.ankrimento_open_reader -> openReader(cardId)
             R.id.ankrimento_topic_done -> act { Ankrimento.topicDone(cardId) }
             R.id.ankrimento_topic_postpone -> act { Ankrimento.topicPostpone(cardId) }
             R.id.ankrimento_topic_revisit_3 -> act { Ankrimento.topicRevisit(cardId, 3) }
