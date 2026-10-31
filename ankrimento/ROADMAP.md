@@ -35,7 +35,7 @@ Mobile principles that guide every item:
 | ✅ | Topics answered in their reader: More / Same / Less with due intervals | |
 | ✅ | Next element opens straight away, without passing through the reviewer | |
 | ✅ | Back to the previous element (one undo, only while nothing changed since) | |
-| ✅ | Topic actions: Done, Postpone, Revisit 3/6/12 months | A row of chips above the answers (Revisit opens its choices) |
+| ✅ | Topic actions: Read to here (PDF, EPUB), Done, Postpone, Revisit 3/6/12 months | A row of chips above the answers |
 | ⬜ | Revisit → Choose date… | Desktop has it in the same menu |
 | ⬜ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | |
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
@@ -45,7 +45,7 @@ Mobile principles that guide every item:
 | ⬜ | Items with sound, typed answers, math (MathJax) and image occlusion in the learning screen | |
 | ⬜ | Leech notice when an item becomes a leech in the learning screen | The reviewer shows one |
 | ➖ | Swipe between elements | Sideways swipe turns pages in the readers; moving between elements stays on the footer buttons, where a stray swipe cannot answer a topic |
-| 🟡 | Session settings: card count, topic/item mix | Basic dialog only |
+| ✅ | Session settings: card count, topic/item and document mix, random/priority, card states, top-up | In the settings screen |
 | ⬜ | Session presets: save, load, rename, delete | |
 | ⬜ | Advanced scheduler options: quotas, tag quotas, filters, card states, priority order, scope | One settings screen with sections |
 | ⬜ | Session preview before starting | |
@@ -189,7 +189,8 @@ Mobile principles that guide every item:
 
 | Status | Feature | Mobile notes |
 |---|---|---|
-| ⬜ | Settings screen: upstream's extraction, review, topic and writing options, plus sync folder and profile | Today spread over menu dialogs |
+| ✅ | Settings screen (the Incremento card's gear): session, review, extraction and priority, reading, this device's profile | Upstream's own settings, normalized by upstream on every change |
+| ⬜ | More of upstream's settings (writing, PDF details, shortcuts that make sense on a phone) | |
 | ⬜ | Translations: upstream's locales for backend messages are shipped; Android strings are English only | |
 | ⬜ | Getting Started guide (first run) | |
 | ➖ | Dependency installer [13] | Desktop tools (FFmpeg, OCR) |
@@ -207,7 +208,7 @@ Mobile principles that guide every item:
 3. ~~Extract bottom sheet and video extract at timestamp~~ (done).
 4. ~~Library with Continue reading and Add; web pages as articles; link
    titles~~ (done).
-5. Settings screen and session presets/advanced options.
+5. ~~Settings screen~~ (done); session presets and advanced options.
 6. Native PDF tools: search, contents, bookmarks, highlights/notes.
 7. Knowledge tree screen, Search ALL, statistics screen, focus timer.
 8. Backup/restore, translations.

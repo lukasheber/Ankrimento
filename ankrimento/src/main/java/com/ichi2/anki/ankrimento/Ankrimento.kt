@@ -282,6 +282,26 @@ object Ankrimento {
         val done: Boolean,
     )
 
+    /** The Incremento settings shown on mobile (upstream's config keys), as JSON. */
+    @WorkerThread
+    fun settingsValues(): JSONObject = JSONObject(requireFacade().callAttr("settings_values").toString())
+
+    /** Saves one setting; returns the value upstream kept after normalizing it. */
+    @WorkerThread
+    fun setSetting(
+        key: String,
+        value: Any,
+    ): Any {
+        val json =
+            JSONObject()
+                .put("v", value)
+                .toString()
+                .removePrefix("{\"v\":")
+                .removeSuffix("}")
+        val kept = requireFacade().callAttr("set_setting", key, json).toString()
+        return JSONObject("{\"v\":$kept}").get("v")
+    }
+
     /** Every Incremento document, as desktop's bookshelf lists them. */
     @WorkerThread
     fun library(): List<LibraryEntry> {

@@ -45,18 +45,27 @@ internal class ReaderWebView(
             context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-                    if (selecting || selectingAtTouchDown) return false
+                    if (selecting || selectingAtTouchDown || onTap == null) return false
                     val hit = hitTestResult.type
                     if (hit == HitTestResult.SRC_ANCHOR_TYPE || hit == HitTestResult.SRC_IMAGE_ANCHOR_TYPE) return false
-                    onTap?.invoke()
-                    return onTap != null
+                    // Only a tap on the text or the page itself: the page's own controls (upstream's
+                    // highlight colours, notes and handles; buttons) must keep their popups open. What
+                    // was under the finger is judged at touch-down, before a control reacts (a colour
+                    // swatch closes its palette as it is chosen).
+                    evaluateJavascript("window.__ankrimentoPlainTap === true") { result ->
+                        if (result == "true") onTap?.invoke()
+                    }
+                    return true
                 }
             },
         )
 
     @Suppress("ClickableViewAccessibility") // Taps still reach the page; this only observes them.
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.actionMasked == MotionEvent.ACTION_DOWN) selectingAtTouchDown = selecting
+        if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+            selectingAtTouchDown = selecting
+            if (onTap != null) evaluateJavascript("window.__ankrimentoPlainTap = ($PLAIN_TAP_JS)(${event.x}, ${event.y});", null)
+        }
         taps.onTouchEvent(event)
         return super.onTouchEvent(event)
     }
@@ -115,5 +124,13 @@ internal class ReaderWebView(
 
     private companion object {
         const val FIRST_ITEM_ID = 0x1e00
+
+        /** Whether the page point under view coordinates (x, y) is plain content rather than a control. */
+        const val PLAIN_TAP_JS =
+            "function (x, y) { var e = document.elementFromPoint(x / devicePixelRatio, y / devicePixelRatio);" +
+                " if (!e || !e.closest) return true; if (window.getSelection && String(window.getSelection())) return false;" +
+                " return !e.closest('a, button, input, textarea, select, label, summary, [contenteditable], [onclick]," +
+                " [role=button], [role=menu], [role=menuitem], [role=dialog], [role=slider], [role=checkbox], [role=radio]," +
+                " [data-highlight-id], [class*=\"incremento-\"]:not(html):not(body)'); }"
     }
 }

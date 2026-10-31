@@ -62,6 +62,7 @@ class PdfReaderActivity : ReaderActivity() {
             listOf(ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS))
         setReaderContent(webView)
         toggleBarsOnTap(webView)
+        readToHere = { webView.evaluateJavascript("window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();", null) }
         showViewerControls(false)
         lifecycleScope.launch {
             val path = withCol { Ankrimento.pdfPath(cardId) }

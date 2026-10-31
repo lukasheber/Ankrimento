@@ -80,6 +80,9 @@ abstract class ReaderActivity : ComponentActivity() {
     /** A sheet the reader shows over the document (reading settings, contents), or null. */
     protected var sheet by mutableStateOf<(@Composable () -> Unit)?>(null)
 
+    /** Upstream's "Read to here" for this document (PDF, EPUB): offered first among a topic's actions. */
+    protected var readToHere: (() -> Unit)? = null
+
     /** While set, the review bar offers Show answer, which runs it, instead of the answers (items). */
     protected var revealAction by mutableStateOf<(() -> Unit)?>(null)
 
@@ -244,7 +247,8 @@ abstract class ReaderActivity : ComponentActivity() {
         val topic = Ankrimento.shownTopicCardId == cardId
         val topicActions =
             if (topic) {
-                listOf(
+                listOfNotNull(
+                    readToHere?.let { ReaderTool(getString(R.string.ankrimento_read_to_here), IncrementoIcons.Bookmark, onClick = it) },
                     ReaderTool(getString(R.string.ankrimento_done), IncrementoIcons.Check) { topicAction { Ankrimento.topicDone(cardId) } },
                     ReaderTool(getString(R.string.ankrimento_postpone)) { topicAction { Ankrimento.topicPostpone(cardId) } },
                 )

@@ -76,6 +76,7 @@ class EpubReaderActivity : ReaderActivity() {
             )
         setReaderContent(webView)
         toggleBarsOnTap(webView)
+        readToHere = { runScript(READ_MARKER_JS) }
         webView.addJavascriptInterface(PageTurns(), "AnkrimentoPages")
         preferences = ReadingPreferences.load(this)
         tools =

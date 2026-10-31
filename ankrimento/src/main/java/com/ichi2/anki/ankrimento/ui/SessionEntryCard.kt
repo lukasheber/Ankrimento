@@ -61,7 +61,7 @@ internal fun SessionEntryCard(
                 Icon(IncrementoIcons.Book, contentDescription = stringResource(R.string.ankrimento_library))
             }
             IconButton(onClick = onSettings) {
-                Icon(IncrementoIcons.Settings, contentDescription = stringResource(R.string.ankrimento_session_settings))
+                Icon(IncrementoIcons.Settings, contentDescription = stringResource(R.string.ankrimento_settings))
             }
         }
     }

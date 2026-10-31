@@ -508,6 +508,20 @@ def card_reader(card_id: int) -> str:
     return reader or ("text" if is_topic(card_id) else "")
 
 
+def settings_values() -> str:
+    """The Incremento settings shown on mobile, from upstream's config."""
+    from ankrimento import settings
+
+    return _dumps(settings.values())
+
+
+def set_setting(key: str, value_json: str) -> str:
+    """Saves one mobile setting (value as JSON); returns the value upstream kept, as JSON."""
+    from ankrimento import settings
+
+    return _dumps(settings.set_value(str(key), json.loads(value_json)))
+
+
 def library() -> str:
     """Every Incremento document, with kind, title, priority and reading position."""
     from ankrimento import library as documents

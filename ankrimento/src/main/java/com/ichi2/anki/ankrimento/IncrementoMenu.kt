@@ -112,7 +112,7 @@ class IncrementoMenu(
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.ankrimento_start_session -> activity.lifecycleScope.launch { startSession() }
-            R.id.ankrimento_session_settings -> activity.lifecycleScope.launch { editSessionSettings() }
+            R.id.ankrimento_session_settings -> editSessionSettings()
             R.id.ankrimento_knowledge_tree -> activity.lifecycleScope.launch { showKnowledgeTree() }
             R.id.ankrimento_statistics -> activity.lifecycleScope.launch { showStatistics() }
             R.id.ankrimento_add_pdf -> pickPdf.launch(arrayOf("application/pdf"))
@@ -135,7 +135,7 @@ class IncrementoMenu(
                         SessionEntryCard(
                             remaining = sessionRemaining,
                             onStudy = { activity.lifecycleScope.launch { continueOrStartSession() } },
-                            onSettings = { activity.lifecycleScope.launch { editSessionSettings() } },
+                            onSettings = { activity.startActivity(IncrementoSettingsActivity.intent(activity)) },
                             onLibrary = { activity.startActivity(IncrementoHubActivity.intent(activity)) },
                         )
                     }
@@ -209,20 +209,14 @@ class IncrementoMenu(
             .Builder(activity)
             .setTitle(R.string.ankrimento_session_empty_title)
             .setMessage(message)
-            .setPositiveButton(R.string.ankrimento_session_settings) { _, _ -> activity.lifecycleScope.launch { editSessionSettings() } }
+            .setPositiveButton(R.string.ankrimento_session_settings) { _, _ -> editSessionSettings() }
             .setNegativeButton(android.R.string.ok, null)
             .show()
     }
 
-    private suspend fun editSessionSettings() {
-        val settings =
-            CollectionManager.withCol {
-                Ankrimento.start(activity, this)
-                Ankrimento.sessionSettings()
-            }
-        SessionSettingsDialog.show(activity, settings) { changed ->
-            activity.lifecycleScope.launch { CollectionManager.withCol { Ankrimento.saveSessionSettings(changed) } }
-        }
+    /** Session settings are the first section of the settings screen. */
+    private fun editSessionSettings() {
+        activity.startActivity(IncrementoSettingsActivity.intent(activity))
     }
 
     /** Imports a picked document with [import] (Incremento copies it into its own folder). */
