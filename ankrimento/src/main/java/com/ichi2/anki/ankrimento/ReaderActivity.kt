@@ -41,6 +41,7 @@ import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReviewBarState
 import com.ichi2.anki.ankrimento.ui.RevisitDateDialog
 import com.ichi2.anki.libanki.Collection
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -80,9 +81,6 @@ abstract class ReaderActivity : ComponentActivity() {
 
     /** A sheet the reader shows over the document (reading settings, contents), or null. */
     protected var sheet by mutableStateOf<(@Composable () -> Unit)?>(null)
-
-    /** Upstream's "Read to here" for this document (PDF, EPUB): offered first among a topic's actions. */
-    protected var readToHere: (() -> Unit)? = null
 
     /** While set, the review bar offers Show answer, which runs it, instead of the answers (items). */
     protected var revealAction by mutableStateOf<(() -> Unit)?>(null)
@@ -191,6 +189,15 @@ abstract class ReaderActivity : ComponentActivity() {
         }
     }
 
+    /** Asks the page to report where reading stopped now (it does so shortly after scrolling). */
+    protected open fun reportPosition() = Unit
+
+    /** Before the reader closes: the page's last position, given time to arrive and be saved. */
+    private suspend fun keepPosition() {
+        reportPosition()
+        delay(POSITION_REPORT_MS)
+    }
+
     /** Runs when the extract sheet created a card from this document, with the script that marks the source. */
     protected open fun onExtractCreated(script: String) = Unit
 
@@ -256,7 +263,6 @@ abstract class ReaderActivity : ComponentActivity() {
         val topicActions =
             if (topic) {
                 listOfNotNull(
-                    readToHere?.let { ReaderTool(getString(R.string.ankrimento_read_to_here), IncrementoIcons.Bookmark, onClick = it) },
                     ReaderTool(getString(R.string.ankrimento_done), IncrementoIcons.Check) { topicAction { Ankrimento.topicDone(cardId) } },
                     ReaderTool(getString(R.string.ankrimento_postpone)) { topicAction { Ankrimento.topicPostpone(cardId) } },
                 )
@@ -332,6 +338,7 @@ abstract class ReaderActivity : ComponentActivity() {
                 moving = false
                 return@launch
             }
+            keepPosition()
             if (next == LearnLoop.NotCurrent) {
                 finishWith(RESULT_OK, rating)
                 return@launch
@@ -352,7 +359,10 @@ abstract class ReaderActivity : ComponentActivity() {
 
     /** Back: in a session, ends it; the reviewer closes too. */
     private fun leave() {
-        if (inSession) finishWith(RESULT_LEAVE_SESSION, null) else finish()
+        lifecycleScope.launch {
+            keepPosition()
+            if (inSession) finishWith(RESULT_LEAVE_SESSION, null) else finish()
+        }
     }
 
     private fun finishWith(
@@ -391,6 +401,9 @@ abstract class ReaderActivity : ComponentActivity() {
 
         /** The reader closed to show its card in the reviewer. */
         const val RESULT_SHOW_CARD = RESULT_FIRST_USER
+
+        /** Longer than upstream's pages wait after a scroll before reporting it (140 to 180 ms). */
+        private const val POSITION_REPORT_MS = 450L
 
         /** The reader closed with Back: the session ends. */
         const val RESULT_LEAVE_SESSION = RESULT_FIRST_USER + 1

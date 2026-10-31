@@ -194,6 +194,13 @@ object Ankrimento {
     private val operationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
+     * Work that outlives a reader's screen: saving what its page reported
+     * (reading position, highlights). A reader closed right after a scroll
+     * still has its last position saved.
+     */
+    val readerScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    /**
      * Start a session with Incremento's saved scheduler settings, as desktop's
      * "Start Incremental Learning" does. Returns at once; [Event.EnterReview]
      * follows when the session deck is ready, or an [Event.Message].

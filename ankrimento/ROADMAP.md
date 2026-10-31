@@ -35,7 +35,7 @@ Mobile principles that guide every item:
 | ✅ | Topics answered in their reader: More / Same / Less with due intervals | |
 | ✅ | Next element opens straight away, without passing through the reviewer | |
 | ✅ | Back to the previous element (one undo, only while nothing changed since) | |
-| ✅ | Topic actions: Read to here (PDF, EPUB), Done, Postpone, Revisit 3/6/12 months | A row of chips above the answers |
+| ✅ | Topic actions: Done, Postpone, Revisit 3/6/12 months or a chosen date | A row of chips above the answers. Mark read to here is in the reader's ⋮ menu |
 | ✅ | Revisit → Choose date… (date picker, tomorrow onwards) | Upstream's revisit with a date, so desktop keeps it out of reading sessions until then |
 | ⬜ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | |
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
@@ -95,7 +95,7 @@ Mobile principles that guide every item:
 
 | Status | Feature | Mobile notes |
 |---|---|---|
-| ✅ | Upstream page script, position restore, read marker | |
+| ✅ | Upstream page script, position restore, read marker | The position is saved when leaving or moving on, even right after a scroll. The read marker is saved as desktop saves it but not drawn on the phone (a toast confirms) |
 | ✅ | Aa sheet: text size and page colour (synced per book); typeface, spacing, margins (device) | |
 | ✅ | Contents sheet with chapter titles | |
 | ✅ | Long-press, then Extract / Highlight | |

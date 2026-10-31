@@ -64,7 +64,6 @@ class PdfReaderActivity : ReaderActivity() {
             listOf(ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS))
         setReaderContent(webView)
         toggleBarsOnTap(webView)
-        readToHere = { webView.evaluateJavascript("window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();", null) }
         showViewerControls(false)
         lifecycleScope.launch {
             val path = withCol { Ankrimento.pdfPath(cardId) }
@@ -75,16 +74,16 @@ class PdfReaderActivity : ReaderActivity() {
             }
             openViewer(File(path))
         }
-        lifecycleScope.launch {
+        Ankrimento.readerScope.launch {
             for (message in messages) {
-                followViewer(message)
+                if (!isDestroyed) followViewer(message)
                 if (message.startsWith(CONTENTS_PREFIX)) {
-                    showContents(message.removePrefix(CONTENTS_PREFIX))
+                    if (!isDestroyed) showContents(message.removePrefix(CONTENTS_PREFIX))
                     continue
                 }
                 val script = runCatching { withCol { Ankrimento.pdfMessage(cardId, message) } }
                 script
-                    .onSuccess { if (it.isNotEmpty()) webView.evaluateJavascript(it, null) }
+                    .onSuccess { if (it.isNotEmpty() && !isDestroyed) webView.evaluateJavascript(it, null) }
                     .onFailure { Timber.w(it, "PDF viewer message failed: %s", message.substringBefore(':')) }
             }
         }
@@ -111,17 +110,19 @@ class PdfReaderActivity : ReaderActivity() {
                     showViewerControls(true)
                     webView.evaluateJavascript("window.incrementoPdfOpenFind && window.incrementoPdfOpenFind();", null)
                 },
-                tool(
-                    R.string.ankrimento_pdf_mark_read,
-                    IncrementoIcons.Bookmark,
-                    "window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();",
-                ),
+                ReaderTool(getString(R.string.ankrimento_pdf_mark_read)) {
+                    webView.evaluateJavascript("window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();", null)
+                    toast(getString(R.string.ankrimento_marked_read))
+                },
                 tool(R.string.ankrimento_extract_selection, null, EXTRACT_JS),
                 ReaderTool(getString(if (show) R.string.ankrimento_pdf_hide_controls else R.string.ankrimento_pdf_show_controls)) {
                     showViewerControls(!viewerControlsShown)
                 },
             )
     }
+
+    /** The viewer reports its scroll position shortly after a scroll. */
+    override fun reportPosition() = webView.evaluateJavascript("window.dispatchEvent(new Event('scroll'));", null)
 
     private fun tool(
         label: Int,

@@ -99,13 +99,16 @@ class WebReaderActivity : ReaderActivity() {
             nonce = bridgeNonce
             webView.loadUrl(url)
         }
-        lifecycleScope.launch {
+        Ankrimento.readerScope.launch {
             for (message in messages) {
                 runCatching { withCol { Ankrimento.webMessage(cardId, message) } }
                     .onFailure { Timber.w(it, "Web bridge message failed") }
             }
         }
     }
+
+    /** Upstream's web bridge reports the position when the page is hidden. */
+    override fun reportPosition() = webView.evaluateJavascript("window.dispatchEvent(new Event('pagehide'));", null)
 
     private fun extractSelection() {
         webView.evaluateJavascript(SELECTION_JS) { result -> extract(decodeJsString(result)) }

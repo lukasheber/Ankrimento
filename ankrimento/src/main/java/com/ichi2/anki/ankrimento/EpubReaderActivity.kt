@@ -76,14 +76,17 @@ class EpubReaderActivity : ReaderActivity() {
             )
         setReaderContent(webView)
         toggleBarsOnTap(webView)
-        readToHere = { runScript(READ_MARKER_JS) }
         webView.addJavascriptInterface(PageTurns(), "AnkrimentoPages")
         preferences = ReadingPreferences.load(this)
         tools =
             listOf(
                 ReaderTool(getString(R.string.ankrimento_reading_settings), IncrementoIcons.TextFormat, ::showReadingSettings),
                 ReaderTool(getString(R.string.ankrimento_contents), IncrementoIcons.Contents, ::showContents),
-                ReaderTool(getString(R.string.ankrimento_epub_read_here), IncrementoIcons.Bookmark) { runScript(READ_MARKER_JS) },
+                ReaderTool(getString(R.string.ankrimento_epub_read_here)) {
+                    webView.evaluateJavascript(READ_MARKER_JS) { placed ->
+                        if (placed == "true") toast(getString(R.string.ankrimento_marked_read))
+                    }
+                },
                 ReaderTool(getString(R.string.ankrimento_epub_previous)) { turnChapter(-1) },
                 ReaderTool(getString(R.string.ankrimento_epub_next)) { turnChapter(1) },
                 ReaderTool(getString(R.string.ankrimento_extract_selection)) { runScript(EXTRACT_JS) },
@@ -96,12 +99,12 @@ class EpubReaderActivity : ReaderActivity() {
                     .getOrNull()
             load(null, null)
         }
-        lifecycleScope.launch {
+        Ankrimento.readerScope.launch {
             for (message in messages) {
                 val current = section ?: continue
-                showProgress(current, message)
+                if (!isDestroyed) showProgress(current, message)
                 runCatching { withCol { Ankrimento.epubMessage(cardId, current.index, message) } }
-                    .onSuccess { target -> target?.let { (index, ratio) -> load(index, ratio) } }
+                    .onSuccess { target -> if (!isDestroyed) target?.let { (index, ratio) -> load(index, ratio) } }
                     .onFailure { Timber.w(it, "EPUB page message failed: %s", message.substringBefore(':')) }
             }
         }
@@ -114,6 +117,9 @@ class EpubReaderActivity : ReaderActivity() {
     }
 
     private fun runScript(script: String) = webView.evaluateJavascript(script, null)
+
+    /** Upstream's page reports its position shortly after a scroll. */
+    override fun reportPosition() = runScript("window.dispatchEvent(new Event('scroll'));")
 
     /** Pulling past a chapter's end or start ([PageGestures]) turns to the next or previous chapter. */
     private inner class PageTurns {
@@ -245,6 +251,7 @@ class EpubReaderActivity : ReaderActivity() {
                     lifecycleScope.launch {
                         val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio) }
                         webView.evaluateJavascript(TOUCH_SELECTION_JS, null)
+                        webView.evaluateJavascript(HIDE_READ_MARKER_JS, null)
                         webView.evaluateJavascript(script, null)
                         webView.evaluateJavascript(preferences.script(), null)
                         webView.evaluateJavascript(
@@ -292,6 +299,12 @@ class EpubReaderActivity : ReaderActivity() {
         private const val EXTRACT_JS = "window.incrementoFillEpubField && window.incrementoFillEpubField(0);"
         private const val HIGHLIGHT_JS = "window.incrementoAddEpubHighlight && window.incrementoAddEpubHighlight();"
         private const val READ_MARKER_JS = "window.incrementoToggleEpubReadMarker && window.incrementoToggleEpubReadMarker();"
+
+        /** The read mark is kept (desktop shows it) but not drawn over the text on a phone. */
+        private const val HIDE_READ_MARKER_JS =
+            "(function () { var s = document.createElement('style');" +
+                " s.textContent = '#incremento-epub-read-marker, .incremento-epub-read-marker-arrow { display: none !important; }';" +
+                " document.head.appendChild(s); })();"
 
         fun intent(
             context: Context,
