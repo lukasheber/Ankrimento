@@ -231,6 +231,47 @@ def topic_state(card_id: int) -> str:
     )
 
 
+def import_pdf(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0) -> int:
+    """Add a PDF as an Incremento PDF topic card, as desktop's Add PDF does.
+
+    The file is copied into ``user_files/<profile>/pdfs``; returns the card id.
+    """
+    from incremento.backend.pdf_manager import add_pdf_card
+    from incremento.backend.priority_manager import set_priority
+
+    rt = runtime.current()
+    card_id = add_pdf_card(str(rt.addon_dir), rt.col, path, title, deck_name=deck_name, profile=rt.profile)
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return int(card_id)
+
+
+def card_reader(card_id: int) -> str:
+    """Which Incremento reader opens this card ("pdf"), or "" for none."""
+    note = runtime.current().col.get_card(int(card_id)).note()
+    if note.note_type()["name"] == "Incremento PDF":
+        return "pdf"
+    return ""
+
+
+def pdf_path(card_id: int) -> str:
+    from ankrimento import pdf_reader
+
+    return pdf_reader.pdf_path(int(card_id))
+
+
+def pdf_start_script(card_id: int, file_url: str, worker_url: str) -> str:
+    from ankrimento import pdf_reader
+
+    return pdf_reader.start_script(int(card_id), file_url, worker_url)
+
+
+def pdf_message(card_id: int, message: str) -> str:
+    """Apply a ``pycmd`` message from the PDF viewer; returns JavaScript to run."""
+    from ankrimento import pdf_reader
+
+    return "\n".join(pdf_reader.handle(int(card_id), message))
+
+
 def get_priority(card_id: int) -> float:
     from incremento.backend.priority_manager import get_priority as _get_priority
 

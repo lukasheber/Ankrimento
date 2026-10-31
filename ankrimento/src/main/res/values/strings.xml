@@ -2,4 +2,8 @@
 <resources>
     <string name="ankrimento_start_session">Start Incremento session</string>
     <string name="ankrimento_session_failed">Incremento session failed: %s</string>
+    <string name="ankrimento_add_pdf">Add PDF to Incremento</string>
+    <string name="ankrimento_pdf_added">Added “%s” to Incremento</string>
+    <string name="ankrimento_pdf_add_failed">Adding the PDF failed: %s</string>
+    <string name="ankrimento_pdf_missing">This card\'s PDF file is not on this device</string>
 </resources>

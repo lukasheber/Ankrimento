@@ -1,0 +1,88 @@
+"""Importing a PDF and reading it through the viewer's own messages."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+
+from ankrimento import facade
+
+# A one-page PDF, small enough to keep inline.
+_MINIMAL_PDF = (
+    b"%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n"
+    b"2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n"
+    b"3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 200 200]>>endobj\n"
+    b"trailer<</Root 1 0 R>>\n%%EOF\n"
+)
+
+
+@pytest.fixture(scope="module")
+def pdf_card(rt, tmp_path_factory):
+    source = tmp_path_factory.mktemp("pdf") / "Reading Notes.pdf"
+    source.write_bytes(_MINIMAL_PDF)
+    card_id = facade.import_pdf(str(source), "Reading Notes", priority=20.0)
+    return card_id
+
+
+def test_import_creates_a_pdf_topic_with_the_desktop_layout(rt, pdf_card):
+    card = rt.col.get_card(pdf_card)
+    note = card.note()
+    assert note.note_type()["name"] == "Incremento PDF"
+    assert rt.col.decks.name(card.did) == "Topics"
+    path = Path(facade.pdf_path(pdf_card))
+    assert path.parent == rt.addon_dir / "user_files" / rt.profile / "pdfs"
+    assert path.read_bytes() == _MINIMAL_PDF
+    assert facade.get_priority(pdf_card) == 20.0
+    assert facade.card_reader(pdf_card) == "pdf"
+    assert json.loads(facade.answer_buttons(pdf_card))["mode"] == "topic"
+
+
+def test_start_script_opens_the_viewer_at_the_saved_page(rt, pdf_card):
+    script = facade.pdf_start_script(pdf_card, "https://host/pdf", "https://host/worker.js")
+    assert "window._pdfFileUrl = \"https://host/pdf\"" in script
+    assert f"window.incrementoPdfStart({pdf_card}, " in script
+
+
+def test_navigation_zoom_scroll_and_read_marker_are_saved(rt, pdf_card):
+    from incremento.backend import pdf_manager
+
+    addon_dir, profile = str(rt.addon_dir), rt.profile
+    facade.pdf_message(pdf_card, f"incremento_pdf_nav:{pdf_card}:3")
+    facade.pdf_message(pdf_card, f"incremento_pdf_zoom:{pdf_card}:1.5")
+    facade.pdf_message(pdf_card, "incremento_pdf_scroll:" + json.dumps({"cardId": pdf_card, "scrollRatio": 0.25}))
+    facade.pdf_message(pdf_card, "incremento_pdf_mark_read:" + json.dumps({"cardId": pdf_card, "readPage": 2}))
+    assert pdf_manager.get_page(addon_dir, profile, pdf_card) == 3
+    assert pdf_manager.get_zoom(addon_dir, profile, pdf_card) == 1.5
+    assert pdf_manager.get_scroll_ratio(addon_dir, profile, pdf_card) == 0.25
+    assert pdf_manager.get_read_page(addon_dir, profile, pdf_card) == 2
+
+    script = facade.pdf_start_script(pdf_card, "u", "w")
+    assert f"window.incrementoPdfStart({pdf_card}, \"" in script
+    assert ", 3, 1.5, 0.25, 2, " in script
+
+
+def test_highlights_round_trip(rt, pdf_card):
+    from incremento.backend.pdf_highlights import load_highlights
+
+    highlight = {"id": "h1", "page": 1, "color": "yellow", "text": "key idea",
+                 "rects": [{"x": 0.1, "y": 0.1, "w": 0.2, "h": 0.05}]}
+    facade.pdf_message(pdf_card, "incremento_pdf_hl_add:" + json.dumps({"cardId": pdf_card, "highlight": highlight}))
+    assert [h["text"] for h in load_highlights(str(rt.addon_dir), rt.profile, pdf_card)] == ["key idea"]
+    assert "key idea" in facade.pdf_start_script(pdf_card, "u", "w")
+
+    facade.pdf_message(pdf_card, "incremento_pdf_hl_del:" + json.dumps({"cardId": pdf_card, "id": "h1"}))
+    assert load_highlights(str(rt.addon_dir), rt.profile, pdf_card) == []
+
+
+def test_bookmarks_are_pushed_back_to_the_viewer(rt, pdf_card):
+    js = facade.pdf_message(pdf_card, "incremento_pdf_bookmark_add:" + json.dumps({"cardId": pdf_card, "page": 1}))
+    assert js.startswith("window.incrementoReceivePdfBookmarks")
+    bookmarks = json.loads(js[js.index("(", js.index("&&")) + 1 : js.rindex(")")])
+    assert [b["location"]["page"] for b in bookmarks] == [1]
+
+
+def test_finished_suspends_the_document(rt, pdf_card):
+    facade.pdf_message(pdf_card, f"incremento_pdf_finished:{pdf_card}")
+    assert rt.col.get_card(pdf_card).queue == -1

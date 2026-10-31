@@ -15,6 +15,7 @@ import com.android.build.api.dsl.LibraryExtension
 import com.ichi2.anki.gradle.addAnkiBackendDependencies
 import java.net.URI
 import java.security.MessageDigest
+import javax.inject.Inject
 
 buildscript {
     dependencies {
@@ -103,6 +104,40 @@ val incrementoAddonSource =
         into(layout.buildDirectory.dir("ankrimento/addon"))
     }
 
+/** Copies upstream's web readers into generated APK assets under ankrimento/web. */
+abstract class IncrementoWebAssets : DefaultTask() {
+    @get:InputDirectory
+    abstract val webDir: DirectoryProperty
+
+    @get:OutputDirectory
+    abstract val outputDir: DirectoryProperty
+
+    @get:Inject
+    abstract val files: FileSystemOperations
+
+    @TaskAction
+    fun copy() {
+        files.sync {
+            from(webDir) {
+                include("pdf_dock.html", "dist/**", "pdfjs/**")
+                into("ankrimento/web")
+            }
+            into(outputDir)
+        }
+    }
+}
+
+val incrementoWebAssets =
+    tasks.register<IncrementoWebAssets>("incrementoWebAssets") {
+        webDir.set(rootProject.layout.projectDirectory.dir("vendor/incremento/web"))
+    }
+
+androidComponents {
+    onVariants { variant ->
+        variant.sources.assets?.addGeneratedSourceDirectory(incrementoWebAssets, IncrementoWebAssets::outputDir)
+    }
+}
+
 chaquopy {
     defaultConfig {
         version = "3.13"
@@ -145,6 +180,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.core)
+    implementation(libs.androidx.webkit)
     implementation(libs.jakewharton.timber)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.protobuf.kotlin.lite)

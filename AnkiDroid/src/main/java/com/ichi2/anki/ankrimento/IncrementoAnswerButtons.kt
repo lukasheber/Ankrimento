@@ -10,10 +10,20 @@ import com.ichi2.anki.libanki.CardId
 import com.ichi2.anki.reviewer.AnswerButtons.Companion.getBackgroundColors
 import com.ichi2.anki.reviewer.AnswerButtons.Companion.getTextColors
 
-/** Tells Incremento a card's question is on screen; it times reviews from here. */
+/**
+ * Tells Incremento a card's question is on screen (it times reviews from
+ * here) and, like desktop's reader docks, opens the card's document.
+ */
 internal fun AbstractFlashcardViewer.notifyIncrementoQuestionShown(cardId: CardId) {
     if (!Ankrimento.isStarted) return
-    launchCatchingTask { withCol { Ankrimento.questionShown(cardId) } }
+    launchCatchingTask {
+        val reader =
+            withCol {
+                Ankrimento.questionShown(cardId)
+                Ankrimento.cardReader(cardId)
+            }
+        if (reader == "pdf") startActivity(PdfReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
+    }
 }
 
 /**

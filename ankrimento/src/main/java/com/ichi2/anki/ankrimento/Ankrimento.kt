@@ -47,6 +47,22 @@ object Ankrimento {
             val kind: String,
             val text: String,
         ) : Event
+
+        /** The reader showing [cardId] should close (e.g. the document was finished). */
+        data class CloseReader(
+            val cardId: Long,
+        ) : Event
+
+        /** A link in a document should open in the browser. */
+        data class OpenUrl(
+            val url: String,
+        ) : Event
+
+        /** Text extracted from a document, for a new card. */
+        data class Extract(
+            val sourceCardId: Long,
+            val text: String,
+        ) : Event
     }
 
     private val mutableEvents = MutableSharedFlow<Event>(extraBufferCapacity = 16)
@@ -144,6 +160,36 @@ object Ankrimento {
         }
     }
 
+    /** The Incremento reader for [cardId]: "pdf", or "" when it has none. */
+    @WorkerThread
+    fun cardReader(cardId: Long): String = if (isStarted) requireFacade().callAttr("card_reader", cardId).toString() else ""
+
+    /** Add a PDF file as an Incremento PDF topic card; returns the card id. */
+    @WorkerThread
+    fun importPdf(
+        path: String,
+        title: String,
+    ): Long = requireFacade().callAttr("import_pdf", path, title).toLong()
+
+    /** The managed PDF file of [cardId], or "" when the file is missing. */
+    @WorkerThread
+    fun pdfPath(cardId: Long): String = requireFacade().callAttr("pdf_path", cardId).toString()
+
+    /** JavaScript that opens [cardId]'s PDF in upstream's viewer at its saved position. */
+    @WorkerThread
+    fun pdfStartScript(
+        cardId: Long,
+        fileUrl: String,
+        workerUrl: String,
+    ): String = requireFacade().callAttr("pdf_start_script", cardId, fileUrl, workerUrl).toString()
+
+    /** Apply a `pycmd` message from the PDF viewer; returns JavaScript to run (may be empty). */
+    @WorkerThread
+    fun pdfMessage(
+        cardId: Long,
+        message: String,
+    ): String = requireFacade().callAttr("pdf_message", cardId, message).toString()
+
     /** Pick session cards with the saved Incremento scheduler settings. */
     @WorkerThread
     fun selectSession(): List<Long> {
@@ -238,6 +284,9 @@ object Ankrimento {
             }
             "message" -> mutableEvents.tryEmit(Event.Message(fields.getString("kind"), fields.getString("text")))
             "move_to_state" -> if (fields.getString("state") == "review") mutableEvents.tryEmit(Event.EnterReview)
+            "pdf_close" -> mutableEvents.tryEmit(Event.CloseReader(fields.getLong("card_id")))
+            "open_url" -> mutableEvents.tryEmit(Event.OpenUrl(fields.getString("url")))
+            "pdf_extract" -> mutableEvents.tryEmit(Event.Extract(fields.getLong("card_id"), fields.getString("text")))
             else -> Timber.d("Ankrimento event %s %s", event, fieldsJson)
         }
     }

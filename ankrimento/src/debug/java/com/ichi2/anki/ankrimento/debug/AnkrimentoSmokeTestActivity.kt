@@ -11,6 +11,7 @@ import anki.scheduler.CardAnswer.Rating
 import com.chaquo.python.Python
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.PdfReaderActivity
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import java.io.File
 
 /**
  * Debug builds only: runs Ankrimento's review flow on the device's real
@@ -48,6 +50,14 @@ class AnkrimentoSmokeTestActivity : Activity() {
                     val event = withTimeout(60_000) { Ankrimento.events.first() }
                     log("learnFunction session: $event")
                     check(event == Ankrimento.Event.EnterReview) { "session did not reach review" }
+
+                    // Optional: `--es pdf <path readable by the app>` imports it and opens the reader.
+                    intent.getStringExtra(EXTRA_PDF)?.let { path ->
+                        val title = File(path).nameWithoutExtension
+                        val cardId = withContext(Dispatchers.IO) { CollectionManager.withCol { Ankrimento.importPdf(path, title) } }
+                        log("imported PDF card $cardId")
+                        startActivity(PdfReaderActivity.intent(this@AnkrimentoSmokeTestActivity, cardId))
+                    }
                 }
             result
                 .onSuccess { log("PASSED") }
@@ -136,5 +146,6 @@ class AnkrimentoSmokeTestActivity : Activity() {
     private companion object {
         const val TAG = "AnkrimentoSmoke"
         const val SMOKE_TAG = "ankrimento-smoke"
+        const val EXTRA_PDF = "pdf"
     }
 }

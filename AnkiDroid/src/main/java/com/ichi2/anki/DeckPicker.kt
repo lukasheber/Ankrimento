@@ -100,7 +100,7 @@ import com.ichi2.anki.android.back.exitViaDoubleTapBackCallback
 import com.ichi2.anki.android.input.ShortcutGroup
 import com.ichi2.anki.android.input.shortcut
 import com.ichi2.anki.android.view.locationInWindow
-import com.ichi2.anki.ankrimento.IncrementoSessionMenu
+import com.ichi2.anki.ankrimento.IncrementoMenu
 import com.ichi2.anki.common.android.AdaptionUtil
 import com.ichi2.anki.common.android.animationDisabled
 import com.ichi2.anki.common.android.appContext
@@ -553,7 +553,7 @@ open class DeckPicker :
 
         registerReceiver()
 
-        addMenuProvider(IncrementoSessionMenu(this) { openReviewer() }, this)
+        addMenuProvider(IncrementoMenu(this) { openReviewer() }, this)
 
         // create inherited navigation drawer layout here so that it can be used by parent class
         initNavigationDrawer()
