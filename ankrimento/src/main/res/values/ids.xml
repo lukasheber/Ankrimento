@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="ankrimento_start_session" type="id" />
-    <item name="ankrimento_add_pdf" type="id" />
-    <item name="ankrimento_add_epub" type="id" />
-    <item name="ankrimento_new_writing" type="id" />
-    <item name="ankrimento_sync_now" type="id" />
-    <item name="ankrimento_sync_folder" type="id" />
-    <item name="ankrimento_profile" type="id" />
     <item name="ankrimento_topic_done" type="id" />
     <item name="ankrimento_topic_postpone" type="id" />
     <item name="ankrimento_topic_revisit_3" type="id" />
@@ -14,7 +7,4 @@
     <item name="ankrimento_topic_revisit_12" type="id" />
     <item name="ankrimento_priority" type="id" />
     <item name="ankrimento_open_reader" type="id" />
-    <item name="ankrimento_session_settings" type="id" />
-    <item name="ankrimento_knowledge_tree" type="id" />
-    <item name="ankrimento_statistics" type="id" />
 </resources>

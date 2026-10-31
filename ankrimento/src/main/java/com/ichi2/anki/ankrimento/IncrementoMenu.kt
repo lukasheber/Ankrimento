@@ -3,25 +3,20 @@
 package com.ichi2.anki.ankrimento
 
 import android.app.AlertDialog
-import android.net.Uri
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
-import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.ichi2.anki.CollectionManager
+import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
+import com.ichi2.anki.ankrimento.ui.SessionCardAction
 import com.ichi2.anki.ankrimento.ui.SessionEntryCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,47 +24,29 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 /**
- * Incremento's entries in the deck list menu.
+ * Incremento on the deck list: the fixed way in at the top
+ * ([attachSessionEntry]), the session deck as a card that continues the
+ * session, or starts one when it is empty. Tapping the session deck in the
+ * list does the same ([onDeckClick]).
  *
- * - "Start Incremento session", like desktop's "Start Incremental Learning":
- *   Incremento picks the cards with its saved scheduler settings, fills the
- *   "Incremento Session" deck (which becomes the current deck) and asks for
- *   the reviewer, which [openReviewer] opens.
- * - "Add PDF to Incremento", like desktop's Add PDF.
+ * Starting a session is desktop's "Start Incremental Learning": Incremento
+ * picks the cards with its saved scheduler settings, fills the "Incremento
+ * Session" deck (which becomes the current deck) and asks for the reviewer,
+ * which [openReviewer] opens.
  *
- * And the fixed way in, at the top of the deck list ([attachSessionEntry]):
- * the session deck as a card that continues the session, or starts one when
- * it is empty. Tapping the session deck in the list does the same
- * ([onDeckClick]).
+ * The card's menu leads to Incremento's other places: the library (and its
+ * Add), the knowledge tree, statistics, and syncing when a folder is set.
  */
 class IncrementoMenu(
     private val activity: ComponentActivity,
     private val openReviewer: () -> Unit,
-) : MenuProvider {
+) {
     private val settings = AnkrimentoSettings(activity)
 
     /** A session was asked for and has not reached review: its message says why not. */
     private var sessionStarting = false
     private var sessionDeckId by mutableStateOf<Long?>(null)
     private var sessionRemaining by mutableStateOf<Int?>(null)
-
-    private val pickPdf =
-        activity.registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri != null) activity.lifecycleScope.launch { importDocument(uri, "document.pdf", Ankrimento::importPdf) }
-        }
-
-    private val pickEpub =
-        activity.registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri != null) activity.lifecycleScope.launch { importDocument(uri, "book.epub", Ankrimento::importEpub) }
-        }
-
-    private val pickSyncFolder =
-        activity.registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-            if (uri != null) {
-                Ankrimento.setSyncFolder(activity, uri)
-                activity.lifecycleScope.launch { syncNow() }
-            }
-        }
 
     init {
         activity.lifecycleScope.launch(Dispatchers.IO) {
@@ -91,40 +68,6 @@ class IncrementoMenu(
         }
     }
 
-    override fun onCreateMenu(
-        menu: Menu,
-        menuInflater: MenuInflater,
-    ) {
-        if (!Ankrimento.isSupported) return
-        menu.add(Menu.NONE, R.id.ankrimento_start_session, Menu.CATEGORY_SECONDARY, R.string.ankrimento_start_session)
-        menu.add(Menu.NONE, R.id.ankrimento_session_settings, Menu.CATEGORY_SECONDARY, R.string.ankrimento_session_settings)
-        menu.add(Menu.NONE, R.id.ankrimento_knowledge_tree, Menu.CATEGORY_SECONDARY, R.string.ankrimento_knowledge_tree)
-        menu.add(Menu.NONE, R.id.ankrimento_statistics, Menu.CATEGORY_SECONDARY, R.string.ankrimento_statistics)
-        menu.add(Menu.NONE, R.id.ankrimento_add_pdf, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_pdf)
-        menu.add(Menu.NONE, R.id.ankrimento_add_epub, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_epub)
-        menu.add(Menu.NONE, R.id.ankrimento_new_writing, Menu.CATEGORY_SECONDARY, R.string.ankrimento_new_writing)
-        menu.add(Menu.NONE, R.id.ankrimento_sync_now, Menu.CATEGORY_SECONDARY, R.string.ankrimento_sync_now)
-        menu.add(Menu.NONE, R.id.ankrimento_sync_folder, Menu.CATEGORY_SECONDARY, R.string.ankrimento_sync_folder)
-        menu.add(Menu.NONE, R.id.ankrimento_profile, Menu.CATEGORY_SECONDARY, R.string.ankrimento_profile)
-    }
-
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        when (menuItem.itemId) {
-            R.id.ankrimento_start_session -> activity.lifecycleScope.launch { startSession() }
-            R.id.ankrimento_session_settings -> editSessionSettings()
-            R.id.ankrimento_knowledge_tree -> activity.startActivity(KnowledgeTreeActivity.intent(activity))
-            R.id.ankrimento_statistics -> activity.startActivity(StatisticsActivity.intent(activity))
-            R.id.ankrimento_add_pdf -> pickPdf.launch(arrayOf("application/pdf"))
-            R.id.ankrimento_add_epub -> pickEpub.launch(arrayOf("application/epub+zip"))
-            R.id.ankrimento_new_writing -> newWriting()
-            R.id.ankrimento_sync_now -> activity.lifecycleScope.launch { syncNow() }
-            R.id.ankrimento_sync_folder -> pickSyncFolder.launch(null)
-            R.id.ankrimento_profile -> editProfile()
-            else -> return false
-        }
-        return true
-    }
-
     /** Puts the session card at the top of [container], kept current whenever the deck list shows. */
     fun attachSessionEntry(container: ViewGroup) {
         val card =
@@ -135,7 +78,7 @@ class IncrementoMenu(
                             remaining = sessionRemaining,
                             onStudy = { activity.lifecycleScope.launch { continueOrStartSession() } },
                             onSettings = { activity.startActivity(IncrementoSettingsActivity.intent(activity)) },
-                            onLibrary = { activity.startActivity(IncrementoHubActivity.intent(activity)) },
+                            actions = cardActions(),
                         )
                     }
                 }
@@ -145,6 +88,26 @@ class IncrementoMenu(
             activity.repeatOnLifecycle(Lifecycle.State.RESUMED) { refreshSessionEntry() }
         }
     }
+
+    private fun cardActions(): List<SessionCardAction> =
+        listOfNotNull(
+            SessionCardAction(IncrementoIcons.Book, R.string.ankrimento_library) {
+                activity.startActivity(IncrementoHubActivity.intent(activity))
+            },
+            SessionCardAction(IncrementoIcons.Add, R.string.ankrimento_add_to_incremento) {
+                activity.startActivity(IncrementoHubActivity.intent(activity, add = true))
+            },
+            SessionCardAction(IncrementoIcons.Tree, R.string.ankrimento_knowledge_tree_title) {
+                activity.startActivity(KnowledgeTreeActivity.intent(activity))
+            },
+            SessionCardAction(IncrementoIcons.Chart, R.string.ankrimento_statistics_menu) {
+                activity.startActivity(StatisticsActivity.intent(activity))
+            },
+            // The folder is chosen in settings; a session start syncs too.
+            settings.syncFolder?.let {
+                SessionCardAction(IncrementoIcons.Sync, R.string.ankrimento_sync_now) { activity.lifecycleScope.launch { syncNow() } }
+            },
+        )
 
     /** Whether [fullDeckName] is the session deck, which the deck list shows as the session card instead. */
     fun isSessionDeck(fullDeckName: String): Boolean = fullDeckName == settings.sessionDeckName
@@ -218,20 +181,6 @@ class IncrementoMenu(
         activity.startActivity(IncrementoSettingsActivity.intent(activity))
     }
 
-    /** Imports a picked document with [import] (Incremento copies it into its own folder). */
-    private suspend fun importDocument(
-        uri: Uri,
-        fallbackName: String,
-        import: (path: String, title: String) -> Long,
-    ) {
-        runCatching { DocumentImport.import(activity, uri, fallbackName, import) }
-            .onSuccess { (_, title) -> toast(activity.getString(R.string.ankrimento_pdf_added, title)) }
-            .onFailure { error ->
-                Timber.w(error, "Adding a document failed")
-                toast(activity.getString(R.string.ankrimento_pdf_add_failed, error.message ?: error.javaClass.simpleName))
-            }
-    }
-
     private suspend fun syncNow() {
         runCatching {
             CollectionManager.withCol { Ankrimento.start(activity, this) }
@@ -282,44 +231,6 @@ class IncrementoMenu(
             .setPositiveButton(R.string.ankrimento_sync_keep_device) { _, _ -> resolve("keep_device") }
             .setNegativeButton(R.string.ankrimento_sync_keep_folder) { _, _ -> resolve("keep_folder") }
             .setNeutralButton(android.R.string.cancel, null)
-            .show()
-    }
-
-    private fun newWriting() {
-        val input = EditText(activity).apply { setHint(R.string.ankrimento_new_writing_title) }
-        AlertDialog
-            .Builder(activity)
-            .setTitle(R.string.ankrimento_new_writing)
-            .setView(input)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                val title =
-                    input.text
-                        .toString()
-                        .trim()
-                        .ifEmpty { return@setPositiveButton }
-                activity.lifecycleScope.launch {
-                    runCatching {
-                        CollectionManager.withCol {
-                            Ankrimento.start(activity, this)
-                            Ankrimento.createWriting(title)
-                        }
-                    }.onSuccess { cardId -> activity.startActivity(WritingActivity.intent(activity, cardId)) }
-                        .onFailure { toast(activity.getString(R.string.ankrimento_pdf_add_failed, it.message ?: it.javaClass.simpleName)) }
-                }
-            }.setNegativeButton(android.R.string.cancel, null)
-            .show()
-    }
-
-    private fun editProfile() {
-        val settings = AnkrimentoSettings(activity)
-        val input = EditText(activity).apply { setText(settings.profile) }
-        AlertDialog
-            .Builder(activity)
-            .setTitle(R.string.ankrimento_profile)
-            .setMessage(R.string.ankrimento_profile_message)
-            .setView(input)
-            .setPositiveButton(android.R.string.ok) { _, _ -> settings.profile = input.text.toString() }
-            .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 

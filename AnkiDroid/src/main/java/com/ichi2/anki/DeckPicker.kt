@@ -556,7 +556,7 @@ open class DeckPicker :
 
         registerReceiver()
 
-        incrementoMenu = IncrementoMenu(this) { openReviewer() }.also { addMenuProvider(it, this) }
+        incrementoMenu = IncrementoMenu(this) { openReviewer() }
         incrementoMenu.attachSessionEntry(findViewById(R.id.deckpicker_view))
 
         // create inherited navigation drawer layout here so that it can be used by parent class

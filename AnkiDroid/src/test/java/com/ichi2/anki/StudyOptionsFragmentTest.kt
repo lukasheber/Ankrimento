@@ -432,6 +432,26 @@ class StudyOptionsFragmentTest : RobolectricTest() {
             scenario.withFragment(block)
         }
 
+    @Test
+    fun `the Incremento session deck has no Study button, other filtered decks keep it`() =
+        runTest {
+            addBasicNote()
+            withStudyOptions {
+                val filtered = addDynamicDeck("Filtered deck", search = "deck:Default")
+                col.decks.select(filtered)
+                refreshAndAwait()
+                assertIs<StudyOptionsState.StudyOptions>(viewModel.state)
+                assertEquals(View.VISIBLE, binding.studyoptionsStart.visibility)
+
+                // The deck card on the deck list starts and continues the session.
+                col.sched.emptyFilteredDeck(filtered)
+                col.decks.select(addDynamicDeck("Incremento Session", search = "deck:Default"))
+                refreshAndAwait()
+                assertIs<StudyOptionsState.StudyOptions>(viewModel.state)
+                assertEquals(View.GONE, binding.studyoptionsStart.visibility)
+            }
+        }
+
     private val StudyOptionsFragment.binding
         get() = FragmentStudyOptionsBinding.bind(requireView())
 

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ankrimento_start_session">Start Incremento session</string>
     <string name="ankrimento_session_failed">Incremento session failed: %s</string>
-    <string name="ankrimento_add_pdf">Add PDF to Incremento</string>
     <string name="ankrimento_pdf_added">Added “%s” to Incremento</string>
     <string name="ankrimento_pdf_add_failed">Adding the document failed: %s</string>
     <string name="ankrimento_pdf_missing">This card\'s PDF file is not on this device</string>
-    <string name="ankrimento_add_epub">Add EPUB to Incremento</string>
     <string name="ankrimento_share_label">Add to Incremento</string>
     <string name="ankrimento_share_no_link">Share a web link to add it to Incremento</string>
     <string name="ankrimento_new_writing">New Incremento writing…</string>
@@ -36,7 +33,8 @@
     <string name="ankrimento_extract_added">Card added</string>
     <string name="ankrimento_extract_failed">Adding the card failed: %s</string>
     <string name="ankrimento_sync_now">Sync Incremento data</string>
-    <string name="ankrimento_sync_folder">Incremento sync folder…</string>
+    <string name="ankrimento_sync_folder">Sync folder</string>
+    <string name="ankrimento_sync_folder_none">Not set. Choose a folder to sync Incremento data with your other devices</string>
     <string name="ankrimento_sync_no_folder">Choose an Incremento sync folder first</string>
     <string name="ankrimento_sync_pulled">Incremento data updated from %s</string>
     <string name="ankrimento_sync_pushed">Incremento data saved to the sync folder</string>
@@ -49,12 +47,10 @@
     <string name="ankrimento_sync_conflict_message">Incremento data changed on this device and on %s since they last synced. Which version should be kept? The other is saved in a sync-conflicts folder.</string>
     <string name="ankrimento_sync_keep_device">Keep this device\'s</string>
     <string name="ankrimento_sync_keep_folder">Keep the other device\'s</string>
-    <string name="ankrimento_statistics">Incremento statistics…</string>
     <string name="ankrimento_statistics_title">Incremento statistics</string>
     <string name="ankrimento_stats_today">Today (cards · time)</string>
     <string name="ankrimento_stats_lifetime">All time (cards · time)</string>
     <string name="ankrimento_stats_media">Last 7 days: %1$d pages read, %2$d videos, %3$s watched</string>
-    <string name="ankrimento_knowledge_tree">Incremento knowledge tree…</string>
     <string name="ankrimento_knowledge_tree_empty">The knowledge tree is empty</string>
     <string name="ankrimento_study_branch">Study this branch</string>
     <string name="ankrimento_session_settings">Incremento session settings…</string>
@@ -66,7 +62,7 @@
     <string name="ankrimento_topic_revisit_12">12 months</string>
     <string name="ankrimento_priority">Incremento priority…</string>
     <string name="ankrimento_priority_message">0 to 100. With Incremento\'s default settings, lower numbers are more important.</string>
-    <string name="ankrimento_profile">Incremento profile…</string>
+    <string name="ankrimento_profile">Incremento profile</string>
     <string name="ankrimento_profile_message">The Anki profile name used on your computer (for syncing). Takes effect after restarting AnkiDroid.</string>
     <!-- Reader screen -->
     <string name="ankrimento_navigate_up">Back</string>
@@ -220,4 +216,6 @@
     <string name="ankrimento_leech">This card is a leech</string>
     <string name="ankrimento_leech_suspended">This card is a leech and has been suspended</string>
     <string name="ankrimento_marked_read">Marked as read up to here</string>
+    <string name="ankrimento_add_to_incremento">Add to Incremento…</string>
+    <string name="ankrimento_statistics_menu">Statistics</string>
 </resources>

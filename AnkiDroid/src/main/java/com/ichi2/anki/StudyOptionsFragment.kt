@@ -42,6 +42,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import anki.collection.OpChanges
 import com.ichi2.anki.CollectionManager.TR
+import com.ichi2.anki.ankrimento.AnkrimentoSettings
 import com.ichi2.anki.backend.stripHTMLScriptAndStyleTags
 import com.ichi2.anki.common.crashreporting.CrashReportService
 import com.ichi2.anki.dialogs.customstudy.CustomStudyDialog
@@ -396,6 +397,10 @@ class StudyOptionsFragment :
                 buttonStart.setText(CommonString.studyoptions_start)
             }
             is StudyOptionsState.Loading -> return
+        }
+        // Incremento's session deck is studied from its card on the deck list.
+        if (state.deckNameOrNull() == AnkrimentoSettings(requireContext()).sessionDeckName) {
+            buttonStart.visibility = View.GONE
         }
 
         val isDynamic =

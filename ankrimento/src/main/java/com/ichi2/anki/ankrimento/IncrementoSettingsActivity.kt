@@ -4,11 +4,14 @@ package com.ichi2.anki.ankrimento
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.DocumentsContract
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -62,11 +65,24 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private var values by mutableStateOf<JSONObject?>(null)
     private val device by lazy { AnkrimentoSettings(this) }
     private var profile by mutableStateOf("")
+    private var syncFolder by mutableStateOf<Uri?>(null)
+
+    private val pickSyncFolder =
+        registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+            if (uri == null) return@registerForActivityResult
+            runCatching { Ankrimento.setSyncFolder(this, uri) }
+                .onSuccess { syncFolder = device.syncFolder }
+                .onFailure { error ->
+                    Timber.w(error, "Choosing the sync folder failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         profile = device.profile
+        syncFolder = device.syncFolder
         setContent { IncrementoTheme { Settings() } }
         lifecycleScope.launch {
             runCatching {
@@ -221,7 +237,21 @@ class IncrementoSettingsActivity : ComponentActivity() {
             device.profile = it
             profile = device.profile
         }
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_sync_folder)) },
+            supportingContent = {
+                Text(syncFolder?.let(::folderName) ?: stringResource(R.string.ankrimento_sync_folder_none))
+            },
+            modifier = Modifier.clickable { pickSyncFolder.launch(syncFolder) },
+        )
     }
+
+    /** The picked folder as the user knows it: "Documents/Incremento" from "primary:Documents/Incremento". */
+    private fun folderName(folder: Uri): String =
+        runCatching { DocumentsContract.getTreeDocumentId(folder) }
+            .getOrNull()
+            ?.let { id -> id.substringAfter(':').ifEmpty { id } }
+            ?: folder.toString()
 
     @Composable
     private fun Header(label: Int) {

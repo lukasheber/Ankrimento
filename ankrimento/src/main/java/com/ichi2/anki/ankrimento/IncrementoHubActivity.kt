@@ -111,6 +111,7 @@ class IncrementoHubActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        adding = savedInstanceState == null && intent.getBooleanExtra(EXTRA_ADD, false)
         setContent { IncrementoTheme { Library() } }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) { load() }
@@ -404,6 +405,12 @@ class IncrementoHubActivity : ComponentActivity() {
                 "writing" to R.string.ankrimento_kind_writing,
             )
 
-        fun intent(context: Context) = Intent(context, IncrementoHubActivity::class.java)
+        private const val EXTRA_ADD = "add"
+
+        /** The library; with [add], its Add sheet open. */
+        fun intent(
+            context: Context,
+            add: Boolean = false,
+        ) = Intent(context, IncrementoHubActivity::class.java).putExtra(EXTRA_ADD, add)
     }
 }

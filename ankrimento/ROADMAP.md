@@ -38,7 +38,7 @@ Mobile principles that guide every item:
 | ✅ | Topic actions: Done, Postpone, Revisit 3/6/12 months or a chosen date | A row of chips above the answers. Mark read to here is in the reader's ⋮ menu |
 | ✅ | Revisit → Choose date… (date picker, tomorrow onwards) | Upstream's revisit with a date, so desktop keeps it out of reading sessions until then |
 | ⬜ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | |
-| ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
+| ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for settings, ⋮ for Library, Add, Knowledge tree, Statistics (and Sync now when a folder is set) | The deck's own row is hidden from the list; on a tablet its side panel has no Study button |
 | 🟡 | When a session finds nothing to study, say why and offer the session settings | Dialog with upstream's message and a Session settings button; not yet seen on a device (document topics always qualify, as upstream intends) |
 | ✅ | Plain-text topics in a reader (no "Show answer"): the note as its template renders it, Aa settings, Extract on selection, review bar | |
 | ✅ | Items in the same learning screen as topics: question, Show answer, then Anki's grades (or Fail/Pass when enabled), with intervals, Back and the priority chip | Session deck only; cards with sound, typed answers, math or image occlusion still use the reviewer |
@@ -58,7 +58,7 @@ Mobile principles that guide every item:
 | Status | Feature | Mobile notes |
 |---|---|---|
 | ✅ | Library screen (from the Incremento card): Continue reading on this device, documents by kind with position and priority, Add | |
-| ⬜ | Move the remaining deck-list menu items (knowledge tree, statistics, sync, profile) into the hub and a settings screen | |
+| ✅ | Deck-list overflow menu free of Incremento items: each has its place on the card, in the library or in settings | |
 | ⬜ | Library search, sort (title, priority, recent) and covers | |
 | ✅ | Add sheet: PDF, EPUB, web or video link, writing | Audio still to add |
 | ✅ | Share a link from any app to Incremento (web or video topic) | |
@@ -191,7 +191,7 @@ Mobile principles that guide every item:
 
 | Status | Feature | Mobile notes |
 |---|---|---|
-| ✅ | Settings screen (the Incremento card's gear): session, review, extraction and priority, reading, this device's profile | Upstream's own settings, normalized by upstream on every change |
+| ✅ | Settings screen (the Incremento card's gear): session, review, extraction and priority, reading, this device's profile and sync folder | Upstream's own settings, normalized by upstream on every change |
 | ⬜ | More of upstream's settings (writing, PDF details, shortcuts that make sense on a phone) | |
 | ⬜ | Translations: upstream's locales for backend messages are shipped; Android strings are English only | |
 | ⬜ | Getting Started guide (first run) | |
