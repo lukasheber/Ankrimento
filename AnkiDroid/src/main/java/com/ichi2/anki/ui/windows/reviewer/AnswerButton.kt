@@ -32,7 +32,11 @@ class AnswerButton : MaterialButton {
         setNextTime(nextTime)
     }
 
+    /** Replaces the ease name (e.g. Incremento's "More"); null restores it. */
+    var label: String? = null
+
     fun setNextTime(nextTime: String?) {
+        val name = label ?: easeName
         text =
             if (nextTime != null) {
                 buildSpannedString {
@@ -40,10 +44,10 @@ class AnswerButton : MaterialButton {
                         append(nextTime)
                     }
                     append("\n")
-                    append(easeName)
+                    append(name)
                 }
             } else {
-                easeName
+                name
             }
     }
 }

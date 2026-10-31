@@ -139,6 +139,9 @@ class ReviewerViewModel(
 
     val isAutoAdvanceEnabledFlow = MutableStateFlow(autoAdvance.isEnabled)
     val answerButtonsNextTimeFlow: MutableStateFlow<AnswerButtonsNextTime?> = MutableStateFlow(null)
+
+    /** Incremento's answer buttons for the current card, or null for AnkiDroid's own. */
+    val incrementoButtonsFlow: MutableStateFlow<List<Ankrimento.AnswerButton>?> = MutableStateFlow(null)
     private val shouldShowNextTimes = asyncIO { repository.getShouldShowNextTimes() }
 
     init {
@@ -225,6 +228,8 @@ class ReviewerViewModel(
         } ?: ""
 
         updateNextTimes()
+        val shownCardId = currentCard.await().id
+        withCol { Ankrimento.answerShown(shownCardId) }
         showAnswer()
         loadAndPlayMedia(CardSide.ANSWER)
         if (!autoAdvance.shouldWaitForAudio()) {
@@ -608,6 +613,12 @@ class ReviewerViewModel(
         autoAdvance.onCardChange(card)
         onCardUpdatedFlow.emit(Unit) // must be before showQuestion()
         showQuestion()
+        incrementoButtonsFlow.emit(
+            withCol {
+                Ankrimento.questionShown(card.id)
+                Ankrimento.answerButtons(card.id)
+            },
+        )
         loadAndPlayMedia(CardSide.QUESTION)
         canBuryNoteFlow.emit(isBuryNoteAvailable(card))
         canSuspendNoteFlow.emit(isSuspendNoteAvailable(card))

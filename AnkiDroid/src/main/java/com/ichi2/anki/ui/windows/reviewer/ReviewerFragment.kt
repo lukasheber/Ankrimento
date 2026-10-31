@@ -412,6 +412,11 @@ class ReviewerFragment :
             .collectIn(lifecycleScope) { times ->
                 binding.answerArea.setNextTimes(times)
             }
+        viewModel.incrementoButtonsFlow
+            .flowWithLifecycle(lifecycle)
+            .collectIn(lifecycleScope) { buttons ->
+                binding.answerArea.setIncrementoButtons(buttons)
+            }
 
         val insetsController = WindowInsetsControllerCompat(window, binding.rootLayout)
         viewModel.showingAnswer.collectLatestIn(lifecycleScope) { isAnswerShown ->

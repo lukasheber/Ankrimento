@@ -128,7 +128,7 @@ inside Anki desktop.
 |---|---|
 | `DeckPicker.onCreate` | registers `IncrementoMenu` ("Start Incremento session", "Add PDF to Incremento") |
 | legacy `Reviewer` (AnkiDroid's default) | answer remap and post-answer scheduling, Incremento's answer buttons, question/answer shown, reviewer closed, opening a PDF topic's reader |
-| `ReviewerViewModel.answerCardInternal` (new study screen) | answer remap and post-answer scheduling; its buttons keep AnkiDroid's labels (todo) |
+| new study screen (`ReviewerViewModel`, `AnswerAreaView`, `AnswerButton`, `ReviewerFragment`) | answer remap and post-answer scheduling, Incremento's answer buttons, question/answer shown; readers are not opened automatically there yet |
 | `EaseButton` | a `setup` overload taking a text label |
 
 The hooks do nothing until Ankrimento has started (an Incremento session or a PDF import).

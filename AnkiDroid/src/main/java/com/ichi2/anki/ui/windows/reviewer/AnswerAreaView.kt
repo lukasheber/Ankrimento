@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.view.updateLayoutParams
 import anki.scheduler.CardAnswer.Rating
+import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.databinding.ViewAnswerAreaBinding
 
 class AnswerAreaView : FrameLayout {
@@ -28,11 +29,38 @@ class AnswerAreaView : FrameLayout {
         binding.easyButton.setOnClickListener { onRatingClicked(Rating.EASY) }
     }
 
+    private var nextTimes: AnswerButtonsNextTime? = null
+    private var incrementoButtons: List<Ankrimento.AnswerButton>? = null
+    private var hardAndEasyHidden = false
+
     fun setNextTimes(times: AnswerButtonsNextTime?) {
-        binding.againButton.setNextTime(times?.again)
-        binding.hardButton.setNextTime(times?.hard)
-        binding.goodButton.setNextTime(times?.good)
-        binding.easyButton.setNextTime(times?.easy)
+        nextTimes = times
+        renderButtons()
+    }
+
+    /** Incremento's buttons for the card (More/Same/Less, Fail/Pass), or null for AnkiDroid's. */
+    fun setIncrementoButtons(buttons: List<Ankrimento.AnswerButton>?) {
+        incrementoButtons = buttons
+        renderButtons()
+    }
+
+    private fun renderButtons() {
+        val times = nextTimes
+        val ankiTimes = listOf(times?.again, times?.hard, times?.good, times?.easy)
+        val views = listOf(binding.againButton, binding.hardButton, binding.goodButton, binding.easyButton)
+        views.forEachIndexed { index, view ->
+            val incremento = incrementoButtons
+            val button = incremento?.firstOrNull { it.rating.number == index }
+            view.label = button?.label
+            view.visibility =
+                when {
+                    incremento != null -> if (button != null) VISIBLE else GONE
+                    hardAndEasyHidden && (index == 1 || index == 3) -> GONE
+                    else -> VISIBLE
+                }
+            val time = if (button != null) button.due ?: ankiTimes.getOrNull(button.ease - 1) else ankiTimes[index]
+            view.setNextTime(if (times == null) null else time)
+        }
     }
 
     fun setRelativeHeight(buttonsHeightPercentage: Int) {
@@ -55,7 +83,7 @@ class AnswerAreaView : FrameLayout {
     }
 
     fun hideHardAndEasyButtons() {
-        binding.hardButton.visibility = GONE
-        binding.easyButton.visibility = GONE
+        hardAndEasyHidden = true
+        renderButtons()
     }
 }
