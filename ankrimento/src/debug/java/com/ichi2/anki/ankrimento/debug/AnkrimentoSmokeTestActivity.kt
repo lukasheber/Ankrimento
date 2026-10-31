@@ -1,0 +1,133 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+package com.ichi2.anki.ankrimento.debug
+
+import android.app.Activity
+import android.os.Bundle
+import android.util.Log
+import android.widget.ScrollView
+import android.widget.TextView
+import anki.scheduler.CardAnswer.Rating
+import com.chaquo.python.Python
+import com.ichi2.anki.CollectionManager
+import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.libanki.Collection
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+/**
+ * Debug builds only: runs Ankrimento's review flow on the device's real
+ * collection and logs each step under the `AnkrimentoSmoke` tag.
+ *
+ * `adb shell am start -n com.ichi2.anki.debug/com.ichi2.anki.ankrimento.debug.AnkrimentoSmokeTestActivity`
+ *
+ * Adds a few notes tagged `ankrimento-smoke` to the "Topics" and "Default" decks.
+ */
+class AnkrimentoSmokeTestActivity : Activity() {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private lateinit var output: TextView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        output = TextView(this).apply { setTextIsSelectable(true) }
+        setContentView(ScrollView(this).apply { addView(output) })
+        scope.launch {
+            val result =
+                runCatching {
+                    withContext(Dispatchers.IO) {
+                        CollectionManager.withCol { runSmokeTest(this) }
+                    }
+                }
+            result
+                .onSuccess { log("PASSED") }
+                .onFailure { error ->
+                    Log.e(TAG, "FAILED", error)
+                    log("FAILED: ${Log.getStackTraceString(error)}")
+                }
+        }
+    }
+
+    override fun onDestroy() {
+        scope.cancel()
+        super.onDestroy()
+    }
+
+    private fun runSmokeTest(col: Collection) {
+        val topics = ensureNotes(col, "Topics", "topic")
+        ensureNotes(col, "Default", "item")
+        log("notes ready: ${topics.size} topic cards")
+
+        val startedAt = System.currentTimeMillis()
+        Ankrimento.start(this, col)
+        log("python started in ${System.currentTimeMillis() - startedAt} ms")
+
+        val selected = Ankrimento.selectSession()
+        log("selected ${selected.size} cards")
+        check(selected.isNotEmpty()) { "no cards selected" }
+        val deckId = Ankrimento.buildSessionDeck(selected)
+        val deckCards = col.findCards("did:$deckId")
+        log("session deck $deckId holds ${deckCards.size} cards")
+        check(deckCards.toSet() == selected.toSet()) { "deck does not match selection" }
+
+        val topicCardId = selected.first { it in topics }
+        val before = col.getCard(topicCardId)
+        val rating = Ankrimento.ratingToSubmit(topicCardId, Rating.AGAIN) // button 1 = More
+        log("topic button 1 -> submit $rating")
+        check(rating == Rating.GOOD) { "topic answer should be submitted as Good" }
+
+        col.sched.answerCard(col.getCard(topicCardId), rating)
+        Ankrimento.onCardAnswered(topicCardId, rating)
+        val facade = Python.getInstance().getModule("ankrimento.facade")
+        val state = facade.callAttr("topic_state", topicCardId).toString()
+        val answered = col.getCard(topicCardId)
+        log("topic state $state; card ivl=${answered.ivl} oDid=${answered.oDid}")
+        check(state.contains("\"a_factor\":3.15")) { "A-factor should be 3.5 x 0.9" }
+        check(answered.oDid == 0L) { "answered card should return to its home deck" }
+
+        col.undo()
+        val restored = col.getCard(topicCardId)
+        log("after one undo: ivl=${restored.ivl} queue=${restored.queue} did=${restored.did}")
+        check(restored.ivl == before.ivl && restored.queue == before.queue && restored.did == before.did) {
+            "one undo should restore the answer and the A-factor interval together"
+        }
+        // col.undo() bypasses ChangeManager, so reconcile as Ankrimento does after any op.
+        facade.callAttr("undo_state_changed")
+        val stateAfterUndo = facade.callAttr("topic_state", topicCardId).toString()
+        log("topic state after undo: $stateAfterUndo")
+        check(stateAfterUndo == "null") { "undo should remove the topic's A-factor state" }
+    }
+
+    private fun ensureNotes(
+        col: Collection,
+        deckName: String,
+        prefix: String,
+    ): Set<Long> {
+        val query = "\"deck:$deckName\" tag:$SMOKE_TAG"
+        val existing = col.findCards(query)
+        if (existing.isNotEmpty()) return existing.toSet()
+        val deckId = col.decks.id(deckName)
+        val notetype = checkNotNull(col.notetypes.byName("Basic")) { "Basic note type missing" }
+        repeat(3) { index ->
+            val note = col.newNote(notetype)
+            note.setField(0, "$prefix $index")
+            note.setField(1, "back")
+            note.addTag(SMOKE_TAG)
+            col.addNote(note, deckId)
+        }
+        return col.findCards(query).toSet()
+    }
+
+    private fun log(message: String) {
+        Log.i(TAG, message)
+        runOnUiThread { output.append("$message\n") }
+    }
+
+    private companion object {
+        const val TAG = "AnkrimentoSmoke"
+        const val SMOKE_TAG = "ankrimento-smoke"
+    }
+}

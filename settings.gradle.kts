@@ -31,6 +31,7 @@ include(
     ":anki-common",
     ":api",
     ":AnkiDroid",
+    ":ankrimento",
     ":baselineprofile",
     ":common",
     ":common:android",

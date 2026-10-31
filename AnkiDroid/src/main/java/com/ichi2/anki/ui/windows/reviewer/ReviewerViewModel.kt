@@ -13,6 +13,7 @@ import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.Flag
 import com.ichi2.anki.Reviewer
+import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.asyncIO
 import com.ichi2.anki.cardviewer.SingleCardSide
 import com.ichi2.anki.cardviewer.appendNoSuggestAttributes
@@ -529,6 +530,7 @@ class ReviewerViewModel(
         mutationSignal.await()
         val state = queueState.await() ?: return
         val card = currentCard.await()
+        val rating = withCol { Ankrimento.ratingToSubmit(card.id, rating) }
         val answer =
             withCol {
                 sched.answerCard(
@@ -539,6 +541,7 @@ class ReviewerViewModel(
             }
 
         undoableOp(handler = this) { sched.answerCard(answer) }
+        withCol { Ankrimento.onCardAnswered(card.id, rating) }
         answerFeedbackFlow.emit(rating)
         savedStateHandle[KEY_PREVIOUS_CARD_ID] = card.id
 

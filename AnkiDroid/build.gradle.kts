@@ -746,6 +746,7 @@ dependencies {
 
     // modules
     implementation(project(":anki-common"))
+    implementation(project(":ankrimento"))
     implementation(project(":common"))
     implementation(project(":common:android"))
     implementation(project(":compat"))
