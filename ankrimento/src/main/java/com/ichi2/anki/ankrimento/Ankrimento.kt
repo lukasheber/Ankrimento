@@ -272,6 +272,19 @@ object Ankrimento {
     @WorkerThread
     fun sessionDeckName(): String = requireFacade().callAttr("session_deck_name").toString()
 
+    /**
+     * The advanced session options, as upstream reads them: `topics_filter`, `items_filter`,
+     * `tags` (tag and weight), `other_cards`, `content_types` (type, enabled, weight),
+     * `media_outside_tags`, `strict` and `scope`.
+     */
+    @WorkerThread
+    fun sessionOptions(): JSONObject = JSONObject(requireFacade().callAttr("session_options").toString())
+
+    /** Saves some of the advanced session options; returns them all. Throws for a filter Anki can't search. */
+    @WorkerThread
+    fun setSessionOptions(changes: JSONObject): JSONObject =
+        JSONObject(requireFacade().callAttr("set_session_options", changes.toString()).toString())
+
     /** Desktop's saved session presets, and the one the current settings came from. */
     data class SessionPresets(
         val selected: String?,

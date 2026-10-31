@@ -207,6 +207,20 @@ def session_deck_name() -> str:
     return incremento_session_deck_name(presets.selected())
 
 
+def session_options() -> str:
+    """The advanced session options: filters, tag and content-type quotas, enforcement, scope."""
+    from ankrimento import session_options
+
+    return _dumps(session_options.get())
+
+
+def set_session_options(changes_json: str) -> str:
+    """Writes some advanced session options; returns them all as upstream reads them back."""
+    from ankrimento import session_options
+
+    return _dumps(session_options.set_options(json.loads(changes_json)))
+
+
 def session_presets() -> str:
     """The saved session presets and the one the current settings came from (or null)."""
     from ankrimento import presets

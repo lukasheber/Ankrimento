@@ -491,6 +491,11 @@ class IncrementoSettingsActivity : ComponentActivity() {
         Toggle(R.string.ankrimento_settings_include_learning, s.includeLearning) { saveSession(s.copy(includeLearning = it)) }
         Toggle(R.string.ankrimento_settings_include_due, s.includeDue) { saveSession(s.copy(includeDue = it)) }
         Toggle(R.string.ankrimento_settings_auto_refill, s.autoRefill) { saveSession(s.copy(autoRefill = it)) }
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_options_title)) },
+            supportingContent = { Text(stringResource(R.string.ankrimento_options_summary)) },
+            modifier = Modifier.clickable { startActivity(SessionOptionsActivity.intent(this)) },
+        )
     }
 
     @Composable
