@@ -11,6 +11,8 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.Toast
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
@@ -20,6 +22,9 @@ import androidx.webkit.WebViewFeature
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.ContentsEntry
 import com.ichi2.anki.ankrimento.ui.ContentsSheet
+import com.ichi2.anki.ankrimento.ui.FindBar
+import com.ichi2.anki.ankrimento.ui.FindHit
+import com.ichi2.anki.ankrimento.ui.FindSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.PdfViewSheet
 import com.ichi2.anki.ankrimento.ui.ReaderPager
@@ -44,6 +49,11 @@ import java.io.FileInputStream
  * colour (upstream's appearance, kept per document and synced) and zoom;
  * Extract is on the text-selection menu. Upstream's desktop panel stays one
  * tap away, for its annotation and link tools.
+ *
+ * Find searches upstream's per-page text index. Desktop fills it with PyMuPDF,
+ * which the device lacks, so the viewer's pdf.js reads each page's text in the
+ * background the first time (and when the file changes) and hands it to
+ * upstream's indexer.
  */
 class PdfReaderActivity : ReaderActivity() {
     private lateinit var webView: ReaderWebView
@@ -52,6 +62,14 @@ class PdfReaderActivity : ReaderActivity() {
     private var pages = 0
     private var zoom = 1.0
     private var appearance = "original"
+
+    private var findQuery = ""
+    private var findHits = emptyList<Ankrimento.PdfSearchHit>()
+    private var findIndex = -1
+    private var findStatus: String? = null
+    private var textChecked = false
+    private var readingText = false
+    private val textPages = sortedMapOf<Int, String>()
 
     /** Viewer messages, applied one at a time in the order sent. */
     private val messages = Channel<String>(Channel.UNLIMITED)
@@ -105,11 +123,7 @@ class PdfReaderActivity : ReaderActivity() {
                     IncrementoIcons.Contents,
                     "window.incrementoPdfOpenContents && window.incrementoPdfOpenContents();",
                 ),
-                ReaderTool(getString(R.string.ankrimento_pdf_find), IncrementoIcons.Search) {
-                    // The find box is part of upstream's panel.
-                    showViewerControls(true)
-                    webView.evaluateJavascript("window.incrementoPdfOpenFind && window.incrementoPdfOpenFind();", null)
-                },
+                ReaderTool(getString(R.string.ankrimento_pdf_find), IncrementoIcons.Search, onClick = ::showFind),
                 ReaderTool(getString(R.string.ankrimento_pdf_mark_read)) {
                     webView.evaluateJavascript("window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();", null)
                     toast(getString(R.string.ankrimento_marked_read))
@@ -119,6 +133,122 @@ class PdfReaderActivity : ReaderActivity() {
                     showViewerControls(!viewerControlsShown)
                 },
             )
+    }
+
+    private fun showFind() {
+        sheet = {
+            FindSheet(
+                query = findQuery,
+                hits = findHits.map { FindHit(it.page, it.snippet) },
+                status = findStatus,
+                onSearch = ::search,
+                onHit = { index ->
+                    sheet = null
+                    openHit(index)
+                },
+                onDismiss = { sheet = null },
+            )
+        }
+    }
+
+    private fun search(query: String) {
+        closeFind()
+        findQuery = query
+        findStatus = if (query.isEmpty()) null else getString(R.string.ankrimento_find_searching)
+        showFind()
+        if (query.isEmpty()) return
+        lifecycleScope.launch {
+            val (hits, state) =
+                runCatching { withCol { Ankrimento.pdfSearch(cardId, query) to Ankrimento.pdfIndexState(cardId) } }
+                    .getOrElse { error ->
+                        Timber.w(error, "PDF search failed")
+                        emptyList<Ankrimento.PdfSearchHit>() to ""
+                    }
+            if (query != findQuery) return@launch
+            findHits = hits
+            findStatus =
+                when {
+                    readingText -> getString(R.string.ankrimento_find_reading)
+                    hits.isEmpty() && state == "empty" -> getString(R.string.ankrimento_find_no_text)
+                    else -> null
+                }
+            if (sheet != null) showFind()
+        }
+    }
+
+    /** Opens the page of match [index], with the matches highlighted as desktop's find shows them. */
+    private fun openHit(index: Int) {
+        val hit = findHits.getOrNull(index) ?: return
+        findIndex = index
+        goToPage(hit.page)
+        val hits = JSONArray(findHits.map { JSONObject().put("page", it.page).put("snippet", it.snippet).put("excerpt", it.excerpt) })
+        val state = JSONObject().put("query", findQuery).put("hits", hits).put("activeIndex", index)
+        // After the page turn, so the viewer scrolls to the match on the page it shows.
+        webView.postDelayed(
+            {
+                webView.evaluateJavascript(
+                    "window.incrementoReceivePdfSearchState && window.incrementoReceivePdfSearchState($state);",
+                    null,
+                )
+            },
+            HIT_DELAY_MS,
+        )
+        overlay = {
+            FindBar(
+                position = findIndex,
+                total = findHits.size,
+                onPrevious = { openHit(findIndex - 1) },
+                onNext = { openHit(findIndex + 1) },
+                onShowAll = ::showFind,
+                onClose = ::closeFind,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        }
+    }
+
+    private fun closeFind() {
+        if (overlay == null) return
+        overlay = null
+        findIndex = -1
+        webView.evaluateJavascript(
+            "window.incrementoReceivePdfSearchState && window.incrementoReceivePdfSearchState({query: '', hits: [], activeIndex: -1});",
+            null,
+        )
+    }
+
+    /**
+     * Reads the document's text for find when upstream's index lacks it: never read, or the file
+     * changed. Upstream's import records "empty" when it has nothing to read text with, as here,
+     * so the PDFs this device has read are remembered.
+     */
+    private fun ensureTextIndex() {
+        if (textChecked) return
+        textChecked = true
+        lifecycleScope.launch {
+            val state = runCatching { withCol { Ankrimento.pdfIndexState(cardId) } }.getOrDefault("current")
+            val readHere = cardId.toString() in textRead()
+            if (state == "stale" || (state == "empty" && !readHere)) {
+                readingText = true
+                webView.evaluateJavascript(EXTRACT_TEXT_JS, null)
+            }
+        }
+    }
+
+    private fun textRead(): Set<String> = getSharedPreferences(TEXT_PREFERENCES, MODE_PRIVATE).getStringSet(KEY_TEXT_READ, null).orEmpty()
+
+    private fun indexText() {
+        val pages = synchronized(textPages) { textPages.values.toList() }
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.pdfIndexPages(cardId, pages) } }
+                .onSuccess {
+                    getSharedPreferences(TEXT_PREFERENCES, MODE_PRIVATE)
+                        .edit()
+                        .putStringSet(KEY_TEXT_READ, textRead() + cardId.toString())
+                        .apply()
+                }.onFailure { Timber.w(it, "Indexing the PDF's text failed") }
+            readingText = false
+            if (findQuery.isNotEmpty() && findIndex < 0) search(findQuery)
+        }
     }
 
     /** The viewer reports its scroll position shortly after a scroll. */
@@ -167,6 +297,7 @@ class PdfReaderActivity : ReaderActivity() {
             zoom = state.optDouble("zoom", 1.0)
             appearance = state.optString("appearance", "original")
             showPage(state.optInt("page", 1), total)
+            ensureTextIndex()
         }
     }
 
@@ -265,6 +396,7 @@ class PdfReaderActivity : ReaderActivity() {
                 }
             }
         webView.addJavascriptInterface(Bridge(), "AnkrimentoPdfHost")
+        webView.addJavascriptInterface(TextBridge(), "AnkrimentoPdfText")
         if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
             WebViewCompat.addDocumentStartJavaScript(webView, PYCMD_SCRIPT, setOf(ORIGIN))
         } else {
@@ -314,6 +446,28 @@ class PdfReaderActivity : ReaderActivity() {
         }
     }
 
+    /** Receives the page texts the viewer's pdf.js reads for find. */
+    private inner class TextBridge {
+        @JavascriptInterface
+        fun page(
+            number: Int,
+            text: String,
+        ) {
+            synchronized(textPages) { textPages[number] = text }
+        }
+
+        @JavascriptInterface
+        fun done() {
+            runOnUiThread { if (!isDestroyed) indexText() }
+        }
+
+        @JavascriptInterface
+        fun failed(message: String) {
+            Timber.w("Reading the PDF's text failed: %s", message)
+            readingText = false
+        }
+    }
+
     companion object {
         private const val ORIGIN = "https://appassets.androidplatform.net"
         private const val VIEWER_URL = "$ORIGIN/assets/ankrimento/web/pdf_dock.html"
@@ -351,6 +505,25 @@ class PdfReaderActivity : ReaderActivity() {
                 " var state = window.incrementoPdfWorkspaceState ? window.incrementoPdfWorkspaceState() : null;" +
                 " var zoom = state && state.zoom ? state.zoom : 1; var steps = Math.round((zoom * scale - zoom) / 0.1);" +
                 " if (steps && window.incrementoPdfZoom) window.incrementoPdfZoom(steps); }, { passive: true }); })();"
+
+        /** Every page's text through the viewer's pdf.js, one page at a time, yielding between pages. */
+        private const val EXTRACT_TEXT_JS =
+            "(async function () { if (window.__ankrimentoText) return; window.__ankrimentoText = true;" +
+                " try { var doc = await window.pdfjsLib.getDocument({url: '$PDF_URL', isEvalSupported: false}).promise;" +
+                " for (var i = 1; i <= doc.numPages; i++) { var page = await doc.getPage(i);" +
+                " var content = await page.getTextContent();" +
+                " AnkrimentoPdfText.page(i, content.items.map(function (item) {" +
+                " return (item.str || '') + (item.hasEOL ? '\\n' : ' '); }).join(''));" +
+                " page.cleanup(); await new Promise(function (r) { setTimeout(r, 0); }); }" +
+                " AnkrimentoPdfText.done(); doc.destroy();" +
+                " } catch (e) { AnkrimentoPdfText.failed(String((e && e.message) || e)); } })();"
+
+        /** Long enough for the page turn before the viewer is told which match to show. */
+        private const val HIT_DELAY_MS = 450L
+
+        /** The PDFs whose text this device read itself (upstream records them as "empty" otherwise). */
+        private const val TEXT_PREFERENCES = "ankrimento_pdf_text"
+        private const val KEY_TEXT_READ = "read"
 
         /** The viewer's request to show its outline, as desktop's contents popup gets it. */
         private const val CONTENTS_PREFIX = "incremento_pdf_contents:"

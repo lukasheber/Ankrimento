@@ -218,6 +218,19 @@
     <string name="ankrimento_marked_read">Marked as read up to here</string>
     <string name="ankrimento_add_to_incremento">Add to Incremento…</string>
     <string name="ankrimento_statistics_menu">Statistics</string>
+    <!-- Find in a PDF -->
+    <string name="ankrimento_find_hint">Find in this document</string>
+    <string name="ankrimento_find_searching">Searching…</string>
+    <string name="ankrimento_find_reading">Reading the document\'s text… Results will include the pages read so far once it is done.</string>
+    <string name="ankrimento_find_no_text">This PDF has no text to search (a scan without a text layer).</string>
+    <string name="ankrimento_find_previous">Previous match</string>
+    <string name="ankrimento_find_next">Next match</string>
+    <string name="ankrimento_find_close">Close find</string>
+    <string name="ankrimento_find_position">%1$d of %2$d</string>
+    <plurals name="ankrimento_find_pages">
+        <item quantity="one">%d page</item>
+        <item quantity="other">%d pages</item>
+    </plurals>
     <!-- Session presets -->
     <string name="ankrimento_preset">Preset</string>
     <string name="ankrimento_preset_current">Current settings</string>

@@ -14,11 +14,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -82,6 +86,9 @@ abstract class ReaderActivity : ComponentActivity() {
     /** A sheet the reader shows over the document (reading settings, contents), or null. */
     protected var sheet by mutableStateOf<(@Composable () -> Unit)?>(null)
 
+    /** Drawn over the reader's page, such as find's previous/next bar. */
+    protected var overlay by mutableStateOf<(@Composable BoxScope.() -> Unit)?>(null)
+
     /** While set, the review bar offers Show answer, which runs it, instead of the answers (items). */
     protected var revealAction by mutableStateOf<(() -> Unit)?>(null)
 
@@ -123,7 +130,10 @@ abstract class ReaderActivity : ComponentActivity() {
                     if (view == null) {
                         ReaderLoading(modifier)
                     } else {
-                        key(view) { AndroidView(factory = { view }, modifier = modifier) }
+                        Box(modifier) {
+                            key(view) { AndroidView(factory = { view }, modifier = Modifier.fillMaxSize()) }
+                            overlay?.invoke(this)
+                        }
                     }
                 }
                 sheet?.invoke()

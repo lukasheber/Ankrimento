@@ -79,7 +79,7 @@ Mobile principles that guide every item:
 | ✅ | Long-press selection, then Extract from the selection menu | |
 | ✅ | Highlight left by extraction; mark read to here | |
 | ✅ | Tap to hide the bars | |
-| 🟡 | Find in document | Opens upstream's panel; needs a native search bar with results |
+| ✅ | Find in document | A search sheet with the matching pages and excerpts; a match opens with its words highlighted, then a previous/next bar. Upstream's text index is filled by the viewer's pdf.js on the device (desktop uses PyMuPDF), through upstream's indexer, so Search ALL finds it too |
 | ✅ | Contents (outline) sheet: nested entries with page numbers, the current part marked | Through the viewer's own contents jump |
 | 🟡 | Bookmarks, annotations, highlight notes, colours | Reachable only through upstream's desktop panel; need native sheets |
 | ⬜ | Review all cards attached to the document [6] | |

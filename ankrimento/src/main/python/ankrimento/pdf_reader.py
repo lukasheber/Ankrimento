@@ -392,3 +392,104 @@ def handle(card_id: int, msg: str) -> list[str]:
     # Desktop-only features (annotation sync, snapshots, linked references,
     # due-card review from the reader) are not handled yet.
     return []
+
+
+# ── Find in document ──────────────────────────────────────────────────────────
+#
+# Desktop extracts each page's text with PyMuPDF (search_indexer), which the
+# device doesn't have; the viewer's own pdf.js extracts it instead and hands it
+# to upstream's indexer as its extractor, so the index and its state are
+# recorded exactly as desktop records them (and Search ALL finds the text).
+
+
+def index_state(card_id: int) -> str:
+    """The PDF's text index: "current", "empty" (no text found), "stale" (missing or older than the file) or "missing" (no file).
+
+    Upstream's import records "empty" when it has no extractor, as on the device, so
+    the host keeps track of which "empty" PDFs the viewer has actually read.
+    """
+    import time
+
+    from incremento.backend.db import get_connection
+    from incremento.backend.search_indexer import _signature, _state_is_current
+
+    path = pdf_path(card_id)
+    if not path:
+        return "missing"
+    addon_dir, profile = _context()
+    row = get_connection(addon_dir, profile).execute(
+        "SELECT status, source_mtime_ns, source_size, indexed_at FROM document_index_state WHERE kind='pdf' AND card_id=?",
+        (int(card_id),),
+    ).fetchone()
+    mtime_ns, size_bytes = _signature(path)
+    # index_pdf_documents' own freshness check.
+    if not _state_is_current(row, mtime_ns=mtime_ns, size_bytes=size_bytes, now=int(time.time())):
+        return "stale"
+    return "empty" if row[0] == "empty" else "current"
+
+
+def index_pages(card_id: int, pages: list[str]) -> None:
+    """Indexes the page texts the viewer extracted, through upstream's indexer."""
+    from incremento.backend.search_indexer import index_pdf_documents
+
+    path = pdf_path(card_id)
+    if not path:
+        return
+    addon_dir, profile = _context()
+    index_pdf_documents(
+        addon_dir,
+        profile,
+        [(int(card_id), path)],
+        extractor=lambda *args, **kwargs: [str(text or "") for text in pages],
+        force=True,
+    )
+
+
+def _search_snippet(text: str, query: str, max_len: int = 180) -> str:
+    """Mirrors ``_pdf_search_snippet``."""
+    import re
+
+    plain = " ".join(str(text or "").split())
+    if not plain:
+        return ""
+    lowered = plain.lower()
+    needle = str(query or "").strip().lower()
+    idx = lowered.find(needle) if needle else -1
+    if idx < 0:
+        tokens = [tok for tok in re.findall(r"\w+", needle) if len(tok) >= 2]
+        for token in tokens:
+            idx = lowered.find(token)
+            if idx >= 0:
+                break
+    if idx < 0:
+        return plain[:max_len]
+    start = max(0, idx - (max_len // 3))
+    end = min(len(plain), start + max_len)
+    snippet = plain[start:end]
+    if start > 0:
+        snippet = "..." + snippet
+    if end < len(plain):
+        snippet += "..."
+    return snippet
+
+
+def search(card_id: int, query: str, limit: int = 250) -> list[dict]:
+    """Mirrors ``current_card_pdf_search_hits``: the pages matching ``query``, in page order."""
+    from incremento.backend.db import search_pdf_text_index_for_card
+
+    normalized = str(query or "").strip()
+    if not normalized:
+        return []
+    addon_dir, profile = _context()
+    rows = search_pdf_text_index_for_card(addon_dir, profile, int(card_id), normalized, limit=limit)
+    return sorted(
+        (
+            {
+                "page": int(page),
+                "snippet": _search_snippet(text or "", normalized),
+                "excerpt": _search_snippet(text or "", normalized, max_len=260),
+            }
+            for page, text in rows
+        ),
+        key=lambda hit: hit["page"],
+    )

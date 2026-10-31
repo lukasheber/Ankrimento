@@ -724,6 +724,27 @@ def pdf_start_script(card_id: int, file_url: str, worker_url: str) -> str:
     return pdf_reader.start_script(int(card_id), file_url, worker_url)
 
 
+def pdf_index_state(card_id: int) -> str:
+    """The PDF's text index for find: "current", "empty", "stale" or "missing"."""
+    from ankrimento import pdf_reader
+
+    return pdf_reader.index_state(card_id)
+
+
+def pdf_index_pages(card_id: int, pages_json: str) -> None:
+    """Indexes the page texts the viewer extracted, through upstream's indexer."""
+    from ankrimento import pdf_reader
+
+    pdf_reader.index_pages(card_id, json.loads(pages_json))
+
+
+def pdf_search(card_id: int, query: str) -> str:
+    """The pages matching ``query``: page, snippet and the longer excerpt the viewer highlights."""
+    from ankrimento import pdf_reader
+
+    return _dumps(pdf_reader.search(card_id, query))
+
+
 def pdf_message(card_id: int, message: str) -> str:
     """Apply a ``pycmd`` message from the PDF viewer; returns JavaScript to run."""
     from ankrimento import pdf_reader

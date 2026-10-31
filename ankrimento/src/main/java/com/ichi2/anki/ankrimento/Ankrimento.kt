@@ -285,6 +285,39 @@ object Ankrimento {
     fun setSessionOptions(changes: JSONObject): JSONObject =
         JSONObject(requireFacade().callAttr("set_session_options", changes.toString()).toString())
 
+    /** The PDF's text index for find: "current", "empty" (no text found), "stale" or "missing". */
+    @WorkerThread
+    fun pdfIndexState(cardId: Long): String = requireFacade().callAttr("pdf_index_state", cardId).toString()
+
+    /** Indexes the page texts the viewer extracted, through upstream's indexer. */
+    @WorkerThread
+    fun pdfIndexPages(
+        cardId: Long,
+        pages: List<String>,
+    ) {
+        requireFacade().callAttr("pdf_index_pages", cardId, JSONArray(pages).toString())
+    }
+
+    /** A page matching a search: its number, a short excerpt, and the longer one the viewer highlights. */
+    data class PdfSearchHit(
+        val page: Int,
+        val snippet: String,
+        val excerpt: String,
+    )
+
+    /** The pages of the PDF matching [query], in page order (upstream's search of the text index). */
+    @WorkerThread
+    fun pdfSearch(
+        cardId: Long,
+        query: String,
+    ): List<PdfSearchHit> {
+        val hits = JSONArray(requireFacade().callAttr("pdf_search", cardId, query).toString())
+        return List(hits.length()) { index ->
+            val hit = hits.getJSONObject(index)
+            PdfSearchHit(hit.getInt("page"), hit.getString("snippet"), hit.getString("excerpt"))
+        }
+    }
+
     /** Desktop's saved session presets, and the one the current settings came from. */
     data class SessionPresets(
         val selected: String?,
