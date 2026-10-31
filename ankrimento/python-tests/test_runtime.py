@@ -56,3 +56,22 @@ def test_upstream_modules_import_under_their_desktop_names(rt):
 
     assert session._ADDON_PKG == "incremento"
     assert topic_scheduler._ADDON_DIR == str(rt.addon_dir)
+
+
+def test_interrupted_imports_are_recovered_at_start_like_desktop(rt):
+    """Desktop recovers interrupted imports when a profile opens; so does Ankrimento's start."""
+    from incremento.backend.operation_journal import ImportOperation, pending_import_recovery_needed
+
+    from ankrimento import wiring
+
+    operation = ImportOperation(str(rt.addon_dir), rt.profile, "pdf")
+    operation.__enter__()  # interrupted: never exits, no card created
+    staged = rt.addon_dir / "user_files" / rt.profile / "pdfs" / "interrupted.pdf"
+    staged.parent.mkdir(parents=True, exist_ok=True)
+    operation.track_created_relpath("pdfs/interrupted.pdf")
+    staged.write_bytes(b"%PDF-1.4")
+    assert pending_import_recovery_needed(str(rt.addon_dir), rt.profile)
+
+    wiring.recover_interrupted_imports(rt.col)
+    assert not pending_import_recovery_needed(str(rt.addon_dir), rt.profile)
+    assert not staged.exists()

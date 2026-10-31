@@ -51,7 +51,8 @@ AnkiDroid (Kotlin)
 | `reviewer_did_show_question/answer`, `state_did_change`: review time, session timing | done (`wiring.py`, session) |
 | focus-timer widget, diagnostics | not ported (desktop Qt UI / support bundle) |
 | `undo_state_did_change`: topic and custom-schedule reconciliation | done (`undo_state_changed`, after every `ChangeManager` op) |
-| profile open: postpone/skip runtimes, interrupted-import recovery | todo |
+| profile open: interrupted-import recovery | done (`wiring.recover_interrupted_imports` at start) |
+| profile open: postpone/skip timers | partial: expired timed postpones are released when a session starts (`learnFunction`) |
 
 ### Readers and extraction
 

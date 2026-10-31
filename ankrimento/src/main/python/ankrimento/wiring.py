@@ -46,6 +46,22 @@ def _finish_learning_leech(_reviewer: Any, card: Any, ease: int) -> None:
         _leech_tracker.clear()
 
 
+def recover_interrupted_imports(col: Any) -> None:
+    """Desktop wiring: ``_start_profile_reconciliation`` on profile open.
+
+    Finishes or rolls back imports that an earlier run left pending; does
+    nothing (and reads nothing from the collection) when none are.
+    """
+    from incremento.backend.operation_journal import pending_import_recovery_needed
+    from incremento.backend.paths import get_active_profile
+    from incremento.backend.reconciliation import reconcile_pending_imports
+
+    addon_dir = mw.addonManager.addonsFolder("incremento")
+    profile = get_active_profile()
+    if pending_import_recovery_needed(addon_dir, profile):
+        reconcile_pending_imports(addon_dir, profile, col)
+
+
 def install() -> None:
     global _installed, _leech_tracker
     if _installed:

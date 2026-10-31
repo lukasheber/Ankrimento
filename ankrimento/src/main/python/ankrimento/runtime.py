@@ -65,6 +65,7 @@ def start(
     from ankrimento import wiring
 
     wiring.install()
+    wiring.recover_interrupted_imports(col)
 
     _runtime = Runtime(col=col, addon_dir=addon_dir, profile=paths.get_active_profile())
     return _runtime
