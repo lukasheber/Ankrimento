@@ -142,7 +142,7 @@ Mobile principles that guide every item:
 
 | Status | Feature | Mobile notes |
 |---|---|---|
-| 🟡 | Extract to a new card: front/back, note type, topic/item, priority | Works; AlertDialog to become a Material bottom sheet |
+| ✅ | Extract to a new card in a bottom sheet: Item/Topic, front/back, note type, priority slider; Keep extracting keeps the draft | |
 | ✅ | Priority editor (slider, 0 to 100) | |
 | ✅ | **Priority always in reach on topics and items**: a "P 50" chip on screen, one tap to change it | Done for topics and items (chip in the top bar) |
 | ⬜ | "Keep extracting" queue (several extracts, then one review) | Button exists; needs mobile flow |

@@ -27,8 +27,9 @@
     <string name="ankrimento_extract_front">Front</string>
     <string name="ankrimento_extract_back">Back</string>
     <string name="ankrimento_extract_note_type">Note type</string>
-    <string name="ankrimento_extract_topic">Topic (read incrementally) instead of item</string>
-    <string name="ankrimento_extract_priority">Priority</string>
+    <string name="ankrimento_extract_item">Item</string>
+    <string name="ankrimento_extract_as_topic">Topic</string>
+    <string name="ankrimento_extract_priority_value">Priority %d</string>
     <string name="ankrimento_extract_add">Add</string>
     <string name="ankrimento_extract_keep">Keep extracting</string>
     <string name="ankrimento_extract_discard">Discard</string>

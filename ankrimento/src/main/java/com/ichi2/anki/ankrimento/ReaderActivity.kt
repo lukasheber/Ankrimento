@@ -28,6 +28,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.ExtractChoice
+import com.ichi2.anki.ankrimento.ui.ExtractSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
 import com.ichi2.anki.ankrimento.ui.PriorityDialog
@@ -182,11 +184,50 @@ abstract class ReaderActivity : ComponentActivity() {
 
     private fun onEvent(event: Ankrimento.Event) {
         when (event) {
-            is Ankrimento.Event.ExtractDraft -> if (event.sourceCardId == cardId) ExtractDialog.showFor(this, cardId, ::onExtractCreated)
+            is Ankrimento.Event.ExtractDraft -> if (event.sourceCardId == cardId) showExtractSheet()
             is Ankrimento.Event.CloseReader -> if (event.cardId == cardId) finish()
             is Ankrimento.Event.OpenUrl -> openUrl(event.url)
             is Ankrimento.Event.Message -> toast(event.text)
             Ankrimento.Event.EnterReview -> Unit
+        }
+    }
+
+    /** The pending extract from this document, in the extract sheet. */
+    private fun showExtractSheet() {
+        lifecycleScope.launch {
+            val draft =
+                runCatching { withCol { Ankrimento.extractDraft(cardId) } }.getOrElse { error ->
+                    Timber.w(error, "Loading the extract failed")
+                    return@launch
+                }
+            sheet = {
+                ExtractSheet(
+                    draft = draft,
+                    onAdd = { choice ->
+                        sheet = null
+                        addExtract(choice)
+                    },
+                    onKeep = { sheet = null },
+                    onDiscard = {
+                        sheet = null
+                        lifecycleScope.launch { withCol { Ankrimento.discardExtract(cardId) } }
+                    },
+                )
+            }
+        }
+    }
+
+    private fun addExtract(choice: ExtractChoice) {
+        lifecycleScope.launch {
+            runCatching {
+                withCol { Ankrimento.createExtract(cardId, choice.fields, choice.noteType, choice.isTopic, choice.priority) }
+            }.onSuccess { script ->
+                onExtractCreated(script)
+                toast(getString(R.string.ankrimento_extract_added))
+            }.onFailure { error ->
+                Timber.w(error, "Adding an extract failed")
+                toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
+            }
         }
     }
 
