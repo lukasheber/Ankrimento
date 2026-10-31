@@ -172,7 +172,7 @@ Mobile principles that guide every item:
 | ⏸ | Incremento data via a shared folder (SAF: Drive, Dropbox, …), conflict-safe snapshots | Works on the device; further sync work waits for an agreement with upstream's author on the sync format |
 | ⏸ | Desktop "Ankrimento Sync" add-on | Built and API-checked; deferred until there is an agreement with upstream's author |
 | ⏸ | Sync status on the hub (last sync, conflicts, Sync now) | With the sync work above |
-| ⬜ | Full backup and restore [12] | |
+| ⬜ | Full backup / restore (same ZIP as desktop) [12] | Next. Upstream's own export and restore, so a phone backup restores on desktop and back: cards with scheduling and media, plus Incremento's folder (database, PDFs, EPUBs, videos, writings). In the Incremento settings, under Backup |
 | ⬜ | Support bundle [12] | |
 | ⬜ | Clean up unused data [13] | |
 | ⬜ | Card-format updates notice [13] | |
@@ -211,9 +211,10 @@ Mobile principles that guide every item:
 4. ~~Library with Continue reading and Add; web pages as articles; link
    titles~~ (done).
 5. ~~Settings screen~~ (done); session presets and advanced options.
-6. Native PDF tools: search, contents, bookmarks, highlights/notes.
-7. Knowledge tree screen, Search ALL, statistics screen, focus timer.
-8. Backup/restore, translations.
+6. Full backup / restore (same ZIP as desktop).
+7. Native PDF tools: search, contents, bookmarks, highlights/notes.
+8. Knowledge tree screen, Search ALL, statistics screen, focus timer.
+9. Translations.
 
 Deferred: sync add-on and other sync work (until agreed with upstream's
 author), SuperMemo import, Webpage to PDF.
