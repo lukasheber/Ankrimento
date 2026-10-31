@@ -93,6 +93,12 @@ AnkiDroid (Kotlin)
 indented; an entry offers studying its branch (`build_branch_study_scope` passed
 to `learnFunction`, as desktop's tree does) or editing its priority.
 
+### Statistics
+
+"Incremento statistics…" summarizes upstream's `load_stats`,
+`load_media_activity` and `load_daily_history`: today, all time, pages read,
+video watch time and the last seven days.
+
 ### Syncing Incremento data
 
 AnkiWeb syncs the cards; `syncfolder.py` syncs Incremento's own data

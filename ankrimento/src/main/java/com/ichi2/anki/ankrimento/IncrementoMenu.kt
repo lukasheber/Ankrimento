@@ -80,6 +80,7 @@ class IncrementoMenu(
         menu.add(Menu.NONE, R.id.ankrimento_start_session, Menu.CATEGORY_SECONDARY, R.string.ankrimento_start_session)
         menu.add(Menu.NONE, R.id.ankrimento_session_settings, Menu.CATEGORY_SECONDARY, R.string.ankrimento_session_settings)
         menu.add(Menu.NONE, R.id.ankrimento_knowledge_tree, Menu.CATEGORY_SECONDARY, R.string.ankrimento_knowledge_tree)
+        menu.add(Menu.NONE, R.id.ankrimento_statistics, Menu.CATEGORY_SECONDARY, R.string.ankrimento_statistics)
         menu.add(Menu.NONE, R.id.ankrimento_add_pdf, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_pdf)
         menu.add(Menu.NONE, R.id.ankrimento_add_epub, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_epub)
         menu.add(Menu.NONE, R.id.ankrimento_new_writing, Menu.CATEGORY_SECONDARY, R.string.ankrimento_new_writing)
@@ -93,6 +94,7 @@ class IncrementoMenu(
             R.id.ankrimento_start_session -> activity.lifecycleScope.launch { startSession() }
             R.id.ankrimento_session_settings -> activity.lifecycleScope.launch { editSessionSettings() }
             R.id.ankrimento_knowledge_tree -> activity.lifecycleScope.launch { showKnowledgeTree() }
+            R.id.ankrimento_statistics -> activity.lifecycleScope.launch { showStatistics() }
             R.id.ankrimento_add_pdf -> pickPdf.launch(arrayOf("application/pdf"))
             R.id.ankrimento_add_epub -> pickEpub.launch(arrayOf("application/epub+zip"))
             R.id.ankrimento_new_writing -> newWriting()
@@ -213,6 +215,15 @@ class IncrementoMenu(
             .setNegativeButton(R.string.ankrimento_sync_keep_folder) { _, _ -> resolve("keep_folder") }
             .setNeutralButton(android.R.string.cancel, null)
             .show()
+    }
+
+    private suspend fun showStatistics() {
+        val stats =
+            CollectionManager.withCol {
+                Ankrimento.start(activity, this)
+                Ankrimento.statistics()
+            }
+        StatisticsDialog.show(activity, stats)
     }
 
     /** The knowledge tree, indented; an entry offers studying its branch or its priority. */

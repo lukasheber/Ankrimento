@@ -85,6 +85,45 @@ def save_session_settings(settings_json: str) -> None:
     save_addon_config(mw.addonManager, "incremento", config)
 
 
+def statistics(days: int = 7) -> str:
+    """Incremento's statistics: today, lifetime, reading/watching and a daily trend.
+
+    Read with upstream's ``load_stats``, ``load_media_activity`` and
+    ``load_daily_history``, as desktop's statistics dialog reads them.
+    """
+    from incremento.backend.scheduler_config import load_scheduler_config
+    from incremento.backend.statistics import load_daily_history, load_media_activity, load_stats
+
+    rt = runtime.current()
+    addon_dir, profile = str(rt.addon_dir), rt.profile
+    day_end = load_scheduler_config().day_end_time
+    stats = load_stats(addon_dir, profile)
+    time_block = stats.get("time", {})
+    history = load_daily_history(addon_dir, profile, days=int(days), day_end_time=day_end)
+    return _dumps(
+        {
+            "today": {
+                "cards": stats.get("daily", {}).get("counts", {}).get("type", {}),
+                "seconds": time_block.get("daily", {}).get("seconds", {}).get("type", {}),
+            },
+            "lifetime": {
+                "cards": stats.get("lifetime", {}).get("type", {}),
+                "seconds": time_block.get("lifetime", {}).get("type", {}),
+            },
+            "media": load_media_activity(addon_dir, profile, days=int(days), day_end_time=day_end),
+            "history": [
+                {
+                    "date": row["date"],
+                    "cards": sum(row["counts"].get("type", {}).values()),
+                    "seconds": sum(row["seconds"].get("type", {}).values()),
+                    "pages": row["reading"]["pages"],
+                }
+                for row in history
+            ],
+        }
+    )
+
+
 def knowledge_tree() -> str:
     """The knowledge tree in display order, as desktop's tree dialog loads it."""
     from incremento.backend.knowledge_tree import load_knowledge_tree_snapshot

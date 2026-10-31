@@ -469,6 +469,10 @@ object Ankrimento {
         requireFacade().callAttr("discard_extract", sourceCardId)
     }
 
+    /** Incremento's statistics over the last [days] (see `facade.statistics`), as JSON. */
+    @WorkerThread
+    fun statistics(days: Int = 7): JSONObject = JSONObject(requireFacade().callAttr("statistics", days).toString())
+
     /** One entry of the knowledge tree, in display order with its [depth]. */
     data class TreeNode(
         val cardId: Long,

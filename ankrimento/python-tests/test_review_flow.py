@@ -193,3 +193,11 @@ def test_review_time_is_recorded_like_desktop(rt):
     _answer_good(rt.col, card_id)
     facade.after_answer(card_id, ease)
     assert total_seconds() >= before + 1.0
+
+
+def test_statistics_summarize_upstream_stats(rt):
+    stats = json.loads(facade.statistics(7))
+    assert set(stats) == {"today", "lifetime", "media", "history"}
+    assert len(stats["history"]) == 7
+    assert sum(stats["lifetime"]["seconds"].values()) >= 0
+    assert "pages" in stats["media"]
