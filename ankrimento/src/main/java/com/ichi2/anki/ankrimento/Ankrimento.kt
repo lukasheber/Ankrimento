@@ -151,6 +151,46 @@ object Ankrimento {
     @WorkerThread
     fun fullBackupName(): String = "incremento_${profileStorageName()}_full_backup_${LocalDate.now()}.zip"
 
+    /** What a full backup holds, from upstream's restore pre-check. */
+    data class RestoreCheck(
+        val sourceProfile: String,
+        val profileMismatch: Boolean,
+        val cards: Int,
+        val media: Int,
+        val files: Int,
+        val missingCovers: Int,
+    )
+
+    /** Checks the full backup [file] and stages it; nothing on the device changes yet. */
+    @WorkerThread
+    fun stageRestore(file: File): RestoreCheck {
+        val report = JSONObject(requireFacade().callAttr("restore_stage", file.absolutePath).toString())
+        return RestoreCheck(
+            sourceProfile = report.getString("source_profile"),
+            profileMismatch = report.getBoolean("profile_mismatch"),
+            cards = report.getInt("cards"),
+            media = report.getInt("media"),
+            files = report.getInt("files"),
+            missingCovers = report.getInt("missing_covers"),
+        )
+    }
+
+    /** Puts the staged Incremento files in place (this device's are kept until [finishRestore]); returns the Anki package. */
+    @WorkerThread
+    fun restoreReplaceFiles(): String = requireFacade().callAttr("restore_replace_files").toString()
+
+    /** After the collection restore: keeps the restored files, or puts this device's back. */
+    @WorkerThread
+    fun finishRestore(succeeded: Boolean) {
+        requireFacade().callAttr("restore_finish", succeeded)
+    }
+
+    /** Drops a staged restore the user did not confirm. */
+    @WorkerThread
+    fun discardRestore() {
+        requireFacade().callAttr("restore_discard")
+    }
+
     /** Writes desktop's full backup ZIP of this profile (cards, media, Incremento's folder) to [file]. */
     @WorkerThread
     fun exportFullBackup(file: File): FullBackup {

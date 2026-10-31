@@ -12,6 +12,7 @@ import com.chaquo.python.Python
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.EpubReaderActivity
+import com.ichi2.anki.ankrimento.FullBackupRestore
 import com.ichi2.anki.ankrimento.PdfReaderActivity
 import com.ichi2.anki.ankrimento.ReaderActivity
 import com.ichi2.anki.ankrimento.VideoReaderActivity
@@ -45,7 +46,22 @@ class AnkrimentoSmokeTestActivity : Activity() {
         setContentView(ScrollView(this).apply { addView(output) })
         // `--el open <card id>` opens that card's reader; with `--ez only true`, imports and
         // `open` run without the session check (which needs cards due). `--es backup <path>`
-        // writes a full backup there.
+        // writes a full backup there; `--es restore <path>` restores one (replacing the collection).
+        intent.getStringExtra(EXTRA_RESTORE)?.let { path ->
+            scope.launch {
+                runCatching {
+                    log(
+                        "restore check: ${CollectionManager.withCol {
+                            Ankrimento.start(this@AnkrimentoSmokeTestActivity, this)
+                            Ankrimento.stageRestore(File(path))
+                        }}",
+                    )
+                    FullBackupRestore.restoreStaged(this@AnkrimentoSmokeTestActivity)
+                    log("restored: ${CollectionManager.withCol { cardCount() }} cards")
+                }.onFailure { log("restore failed: $it") }
+            }
+            return
+        }
         if (intent.getBooleanExtra(EXTRA_ONLY, false)) {
             scope.launch {
                 val opened =
@@ -202,5 +218,6 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_OPEN = "open"
         const val EXTRA_ONLY = "only"
         const val EXTRA_BACKUP = "backup"
+        const val EXTRA_RESTORE = "restore"
     }
 }

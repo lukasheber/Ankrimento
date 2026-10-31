@@ -2,13 +2,26 @@
 
 from __future__ import annotations
 
+import copy
 import errno
 import json
 import os
 import zipfile
 from pathlib import Path
 
+import pytest
+
 from ankrimento import backup, facade
+
+
+@pytest.fixture(autouse=True)
+def _keep_config(rt):
+    """Restores write Incremento's settings; later tests expect them as they were."""
+    from aqt import mw
+
+    saved = copy.deepcopy(mw.addonManager.getConfig("incremento"))
+    yield
+    mw.addonManager.writeConfig("incremento", saved)
 
 
 def test_full_backup_is_desktops_zip_and_passes_upstreams_restore_check(rt, tmp_path):
@@ -88,3 +101,63 @@ def test_full_backup_reaches_a_folder_on_other_storage(rt, tmp_path, monkeypatch
 
     assert zipfile.is_zipfile(archive_path)
     assert [path.name for path in archive_path.parent.iterdir()] == ["backup.zip"]
+
+
+def _files(folder):
+    # Not SQLite's -wal/-shm files, which come and go as the database is opened and closed.
+    return {
+        path.relative_to(folder).as_posix()
+        for path in folder.rglob("*")
+        if path.is_file() and not path.name.endswith(("-wal", "-shm"))
+    }
+
+
+def test_restore_puts_the_backups_files_in_place_and_rolls_back_if_the_collection_restore_fails(rt, tmp_path):
+    from incremento.backend import paths
+
+    runtime_dir = paths.get_user_files_dir(str(rt.addon_dir), rt.profile)
+    facade.writing_save(facade.create_writing("Before the backup"), "kept")
+    archive_path = tmp_path / "backup.zip"
+    facade.export_full_backup(str(archive_path))
+    in_backup = _files(runtime_dir)
+    facade.writing_save(facade.create_writing("After the backup"), "newer")
+    current = _files(runtime_dir)
+    assert current - in_backup
+
+    report = json.loads(facade.restore_stage(str(archive_path)))
+    assert report["cards"] > 0
+    assert report["source_profile"] == rt.profile
+    package = facade.restore_replace_files()
+    assert zipfile.is_zipfile(package)
+    assert not (current - in_backup) & _files(runtime_dir)
+
+    # The host could not restore the collection: this device's files come back.
+    facade.restore_finish(False)
+    assert _files(runtime_dir) == current
+
+    facade.restore_stage(str(archive_path))
+    facade.restore_replace_files()
+    facade.restore_finish(True)
+    restored = _files(runtime_dir)
+    assert not (current - in_backup) & restored
+    assert {name for name in in_backup if name.startswith("writing/")} <= restored
+    # Nothing is left behind beside the profile's folder.
+    assert sorted(path.name for path in runtime_dir.parent.iterdir()) == [rt.profile]
+
+
+def test_restore_keeps_this_devices_automatic_backup_settings(rt, tmp_path):
+    from aqt import mw
+    from incremento.backend.config_service import load_addon_config, save_addon_config
+
+    archive_path = tmp_path / "backup.zip"
+    facade.export_full_backup(str(archive_path))
+    config = load_addon_config(mw.addonManager, "incremento")
+    config["automatic_backups"] = {rt.profile: {"enabled": False, "directory": "this device"}}
+    save_addon_config(mw.addonManager, "incremento", config)
+
+    facade.restore_stage(str(archive_path))
+    facade.restore_replace_files()
+    facade.restore_finish(True)
+
+    kept = load_addon_config(mw.addonManager, "incremento")["automatic_backups"][rt.profile]
+    assert kept["directory"] == "this device"

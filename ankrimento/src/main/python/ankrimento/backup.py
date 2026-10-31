@@ -178,6 +178,131 @@ def _without_second_collection(restore_bundle: Any):
         yield
 
 
+class _Restore:
+    """A restore in progress: upstream's staged backup, then the swapped Incremento folder."""
+
+    def __init__(self, staged: Any, staging_dir: Path) -> None:
+        self.staged = staged
+        self.staging_dir = staging_dir
+        self.swap: Any = None
+        self.previous_config: dict | None = None
+
+    def cleanup(self) -> None:
+        self.staged.cleanup()
+        shutil.rmtree(self.staging_dir, ignore_errors=True)
+
+
+_restore: _Restore | None = None
+
+
+def stage_restore(path: str) -> dict[str, Any]:
+    """Checks a full backup and unpacks it beside this profile's folder (upstream's pre-check and staging).
+
+    Nothing on the device changes yet; returns what the backup holds, for the user to confirm.
+    """
+    from incremento.backend import paths, restore_bundle
+
+    discard_restore()
+    rt = runtime.current()
+    report = precheck(path)
+    staging_dir = Path(tempfile.mkdtemp(prefix="incremento-restore-"))
+    try:
+        # Upstream stages the collection beside the live one; here the host restores the
+        # collection from the package, so it is staged in a temporary folder instead.
+        staged = restore_bundle.stage_backup(
+            path, report, staging_dir / "collection.anki2", paths.get_user_files_dir(str(rt.addon_dir), rt.profile)
+        )
+    except BaseException:
+        shutil.rmtree(staging_dir, ignore_errors=True)
+        raise
+    global _restore
+    _restore = _Restore(staged, staging_dir)
+    return {
+        "source_profile": report.source_profile,
+        "target_profile": report.target_profile,
+        "profile_mismatch": report.profile_mismatch,
+        "cards": report.card_count,
+        "media": report.media_count,
+        "files": report.profile_file_count,
+        "missing_covers": report.missing_cover_count,
+    }
+
+
+def replace_files() -> str:
+    """Puts the staged Incremento folder and settings in place, keeping this device's until :func:`finish_restore`.
+
+    Returns the backup's Anki package, which the host restores as the collection
+    (AnkiDroid's own collection-package import), as desktop swaps in the collection file.
+    """
+    import copy
+
+    from aqt import mw
+    from incremento.backend import paths, restore_bundle
+    from incremento.backend.config_service import load_addon_config, save_addon_config
+    from incremento.backend.db import close_connection
+
+    restore = _require_restore()
+    rt = runtime.current()
+    addon_dir = str(rt.addon_dir)
+    runtime_dir = paths.get_user_files_dir(addon_dir, rt.profile)
+    close_connection(addon_dir, rt.profile)
+    previous = restore.staged.runtime_stage_dir / "previous"
+    swap = restore_bundle.BackupSwap([])
+    if runtime_dir.exists():
+        os.replace(runtime_dir, previous)
+    try:
+        os.replace(restore.staged.runtime, runtime_dir)
+    except BaseException:
+        if previous.exists():
+            os.replace(previous, runtime_dir)
+        raise
+    swap.changes.append((runtime_dir, previous if previous.exists() else None))
+    restore.swap = swap
+    # As desktop's restore: the backup's settings, but this device's automatic-backup folders.
+    restore.previous_config = copy.deepcopy(load_addon_config(mw.addonManager, "incremento"))
+    restored = copy.deepcopy(restore.staged.config)
+    restored["automatic_backups"] = copy.deepcopy(restore.previous_config.get("automatic_backups", {}))
+    save_addon_config(mw.addonManager, "incremento", restored)
+    return str(restore.staged.profile_stage_dir / "package.apkg")
+
+
+def finish_restore(succeeded: bool) -> None:
+    """After the host's collection restore: keep the restored folder, or put this device's back."""
+    from aqt import mw
+    from incremento.backend.config_service import save_addon_config
+    from incremento.backend.db import close_connection
+
+    global _restore
+    restore = _require_restore()
+    rt = runtime.current()
+    try:
+        if restore.swap is not None:
+            if succeeded:
+                restore.swap.commit()
+            else:
+                close_connection(str(rt.addon_dir), rt.profile)
+                restore.swap.rollback()
+                if restore.previous_config is not None:
+                    save_addon_config(mw.addonManager, "incremento", restore.previous_config)
+    finally:
+        restore.cleanup()
+        _restore = None
+
+
+def discard_restore() -> None:
+    """Drops a staged restore that was not confirmed."""
+    global _restore
+    if _restore is not None and _restore.swap is None:
+        _restore.cleanup()
+        _restore = None
+
+
+def _require_restore() -> _Restore:
+    if _restore is None:
+        raise RuntimeError("No full backup is staged for restore")
+    return _restore
+
+
 def _add_covers(col: Any, apkg_path: Path) -> None:
     """Adds referenced PDF/EPUB cover images missing from the package, as upstream's exporter did."""
     from incremento.backend.backup_media import _safe_cover_filename

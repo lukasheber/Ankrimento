@@ -710,6 +710,34 @@ def export_full_backup(out_path: str) -> str:
     return _dumps(backup.export(out_path))
 
 
+def restore_stage(path: str) -> str:
+    """Checks a full backup and stages it; nothing changes yet. What it holds, for confirmation."""
+    from ankrimento import backup
+
+    return _dumps(backup.stage_restore(path))
+
+
+def restore_replace_files() -> str:
+    """Puts the staged Incremento files in place; returns the Anki package for the collection restore."""
+    from ankrimento import backup
+
+    return backup.replace_files()
+
+
+def restore_finish(succeeded: bool) -> None:
+    """Keeps the restored files after the collection restore, or puts this device's back."""
+    from ankrimento import backup
+
+    backup.finish_restore(succeeded)
+
+
+def restore_discard() -> None:
+    """Drops a staged restore the user did not confirm."""
+    from ankrimento import backup
+
+    backup.discard_restore()
+
+
 def sync(store: Any, device_name: str, action: str = "sync") -> str:
     """Sync Incremento's data with the sync folder ``store`` (its profile folder).
 

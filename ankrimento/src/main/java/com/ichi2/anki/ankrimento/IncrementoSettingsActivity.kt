@@ -75,6 +75,16 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private var syncFolder by mutableStateOf<Uri?>(null)
     private var backingUp by mutableStateOf(false)
 
+    /** A progress message while a backup is checked or restored. */
+    private var restoring by mutableStateOf<Int?>(null)
+    private var restoreCheck by mutableStateOf<Ankrimento.RestoreCheck?>(null)
+    private val restoreFile by lazy { File(cacheDir, "full-backup-restore.zip") }
+
+    private val pickBackup =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) checkBackup(uri)
+        }
+
     private val saveBackup =
         registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
             if (uri != null) exportBackup(uri)
@@ -143,6 +153,53 @@ class IncrementoSettingsActivity : ComponentActivity() {
         }
     }
 
+    /** Copies the chosen backup beside the app and has upstream check and stage it, for the user to confirm. */
+    private fun checkBackup(source: Uri) {
+        restoring = R.string.ankrimento_restore_checking
+        lifecycleScope.launch {
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    val input = contentResolver.openInputStream(source) ?: error("Cannot read the chosen file")
+                    input.use { stream -> restoreFile.outputStream().use { stream.copyTo(it) } }
+                }
+                withCol { Ankrimento.stageRestore(restoreFile) }
+            }.onSuccess { restoreCheck = it }
+                .onFailure { error ->
+                    Timber.w(error, "Checking a full backup failed")
+                    withContext(Dispatchers.IO) { restoreFile.delete() }
+                    toast(getString(R.string.ankrimento_restore_check_failed, error.message ?: error.javaClass.simpleName))
+                }
+            restoring = null
+        }
+    }
+
+    private fun cancelRestore() {
+        restoreCheck = null
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.discardRestore() } }
+            withContext(Dispatchers.IO) { restoreFile.delete() }
+        }
+    }
+
+    private fun restoreBackup() {
+        restoreCheck = null
+        restoring = R.string.ankrimento_restore_working
+        lifecycleScope.launch {
+            val restored =
+                runCatching { FullBackupRestore.restoreStaged(this@IncrementoSettingsActivity) }
+                    .onFailure { error ->
+                        Timber.w(error, "Restoring a full backup failed")
+                        toast(getString(R.string.ankrimento_restore_failed, error.message ?: error.javaClass.simpleName))
+                    }.isSuccess
+            withContext(Dispatchers.IO) { restoreFile.delete() }
+            restoring = null
+            if (!restored) return@launch
+            toast(getString(R.string.ankrimento_restore_done))
+            // Incremento's state in memory belongs to the replaced profile: start afresh.
+            AnkrimentoApp.restartApp?.invoke(applicationContext) ?: finishAffinity()
+        }
+    }
+
     /** Writes the backup beside the app, then copies it to the file the user chose (a cloud folder works too). */
     private fun exportBackup(destination: Uri) {
         backingUp = true
@@ -199,19 +256,53 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 BackupSection()
             }
         }
-        if (backingUp) {
-            AlertDialog(
-                onDismissRequest = {},
-                confirmButton = {},
-                title = { Text(stringResource(R.string.ankrimento_backup_export)) },
-                text = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        CircularProgressIndicator(Modifier.size(24.dp))
-                        Text(stringResource(R.string.ankrimento_backup_working), Modifier.padding(start = 16.dp))
+        if (backingUp) Working(R.string.ankrimento_backup_export, R.string.ankrimento_backup_working)
+        restoring?.let { Working(R.string.ankrimento_backup_restore, it) }
+        restoreCheck?.let { ConfirmRestore(it) }
+    }
+
+    @Composable
+    private fun Working(
+        title: Int,
+        message: Int,
+    ) {
+        AlertDialog(
+            onDismissRequest = {},
+            confirmButton = {},
+            title = { Text(stringResource(title)) },
+            text = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator(Modifier.size(24.dp))
+                    Text(stringResource(message), Modifier.padding(start = 16.dp))
+                }
+            },
+        )
+    }
+
+    /** Upstream's confirmation: what the backup holds, and that it replaces everything on this device. */
+    @Composable
+    private fun ConfirmRestore(check: Ankrimento.RestoreCheck) {
+        AlertDialog(
+            onDismissRequest = ::cancelRestore,
+            title = { Text(stringResource(R.string.ankrimento_restore_confirm_title)) },
+            text = {
+                Column {
+                    Text(
+                        stringResource(R.string.ankrimento_restore_contents, check.sourceProfile, check.cards, check.media, check.files),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    if (check.profileMismatch) {
+                        Text(stringResource(R.string.ankrimento_restore_other_profile), Modifier.padding(top = 8.dp))
                     }
-                },
-            )
-        }
+                    if (check.missingCovers > 0) {
+                        Text(stringResource(R.string.ankrimento_restore_missing_covers, check.missingCovers), Modifier.padding(top = 8.dp))
+                    }
+                    Text(stringResource(R.string.ankrimento_restore_replaces), Modifier.padding(top = 8.dp))
+                }
+            },
+            confirmButton = { TextButton(onClick = ::restoreBackup) { Text(stringResource(R.string.ankrimento_restore_confirm)) } },
+            dismissButton = { TextButton(onClick = ::cancelRestore) { Text(stringResource(android.R.string.cancel)) } },
+        )
     }
 
     @Composable
@@ -221,6 +312,14 @@ class IncrementoSettingsActivity : ComponentActivity() {
             headlineContent = { Text(stringResource(R.string.ankrimento_backup_export)) },
             supportingContent = { Text(stringResource(R.string.ankrimento_backup_export_summary)) },
             modifier = Modifier.clickable(enabled = !backingUp, onClick = ::chooseBackupFile),
+        )
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_backup_restore)) },
+            supportingContent = { Text(stringResource(R.string.ankrimento_backup_restore_summary)) },
+            modifier =
+                Modifier.clickable(enabled = restoring == null) {
+                    pickBackup.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream"))
+                },
         )
     }
 

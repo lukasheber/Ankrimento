@@ -25,6 +25,7 @@ import anki.collection.OpChanges
 import com.ichi2.anki.AnkiDroidApp.Companion.sharedPreferencesTestingOverride
 import com.ichi2.anki.analytics.initializeAnalytics
 import com.ichi2.anki.analytics.launchPreviousAnrReporting
+import com.ichi2.anki.ankrimento.AnkrimentoApp
 import com.ichi2.anki.browser.IdsFile
 import com.ichi2.anki.browser.SharedPreferencesLastDeckIdRepository
 import com.ichi2.anki.common.android.AdaptionUtil
@@ -61,6 +62,7 @@ import com.ichi2.anki.multimedia.MultimediaArgsStorage
 import com.ichi2.anki.multiprofile.ProfileContextWrapper
 import com.ichi2.anki.multiprofile.ProfileManager
 import com.ichi2.anki.multiprofile.isPhoenixProcess
+import com.ichi2.anki.multiprofile.safeRestartApp
 import com.ichi2.anki.navigation.initializeNavigator
 import com.ichi2.anki.observability.ChangeManager
 import com.ichi2.anki.preferences.SharedPreferencesProvider
@@ -194,6 +196,8 @@ open class AnkiDroidApp :
         initializeNavigator()
         initializeWidgetRepository()
         WidgetNotificationScheduler.register { scheduleNotification() }
+        AnkrimentoApp.safetyBackup = { performBackupInBackground(force = true) }
+        AnkrimentoApp.restartApp = { context -> safeRestartApp(context) }
         WidgetStatus.register(Prefs) { context -> AnkiDroidWidgetSmall.UpdateService().doUpdate(context) }
         Animations.setPreferencesProvider { context -> PrefsRepository(context) }
         CollectionLockedException.messageProvider = {

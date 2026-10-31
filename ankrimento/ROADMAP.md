@@ -172,7 +172,7 @@ Mobile principles that guide every item:
 | ⏸ | Incremento data via a shared folder (SAF: Drive, Dropbox, …), conflict-safe snapshots | Works on the device; further sync work waits for an agreement with upstream's author on the sync format |
 | ⏸ | Desktop "Ankrimento Sync" add-on | Built and API-checked; deferred until there is an agreement with upstream's author |
 | ⏸ | Sync status on the hub (last sync, conflicts, Sync now) | With the sync work above |
-| 🟡 | Full backup / restore (same ZIP as desktop) [12] | Export done (settings → Backup; upstream's restore pre-check accepts it on desktop); restore next. Upstream's own export and restore, so a phone backup restores on desktop and back: cards with scheduling and media, plus Incremento's folder (database, PDFs, EPUBs, videos, writings). In the Incremento settings, under Backup |
+| ✅ | Full backup / restore (same ZIP as desktop) [12] | Settings → Backup. Export: upstream's restore pre-check accepts it on desktop. Restore: upstream's pre-check and staging, an AnkiDroid safety backup, Incremento's folder swapped and the collection restored through AnkiDroid's own collection import (rolled back if it fails), then the app restarts. Automatic backups not yet. Upstream's own export and restore, so a phone backup restores on desktop and back: cards with scheduling and media, plus Incremento's folder (database, PDFs, EPUBs, videos, writings). In the Incremento settings, under Backup |
 | ⬜ | Support bundle [12] | |
 | ⬜ | Clean up unused data [13] | |
 | ⬜ | Card-format updates notice [13] | |
@@ -211,7 +211,7 @@ Mobile principles that guide every item:
 4. ~~Library with Continue reading and Add; web pages as articles; link
    titles~~ (done).
 5. ~~Settings screen~~ (done); session presets and advanced options.
-6. Full backup / restore (same ZIP as desktop).
+6. ~~Full backup / restore (same ZIP as desktop)~~ (done; automatic backups later).
 7. Native PDF tools: search, contents, bookmarks, highlights/notes.
 8. Knowledge tree screen, Search ALL, statistics screen, focus timer.
 9. Translations.
