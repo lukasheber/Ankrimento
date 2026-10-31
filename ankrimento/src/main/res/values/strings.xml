@@ -199,4 +199,6 @@
     <string name="ankrimento_settings_device">This device</string>
     <string name="ankrimento_read_to_here">Read to here</string>
     <string name="ankrimento_choose_date">Choose date…</string>
+    <string name="ankrimento_contents_empty">This document has no contents list.</string>
+    <string name="ankrimento_page_short">p. %d</string>
 </resources>

@@ -18,6 +18,8 @@ import androidx.webkit.WebViewClientCompat
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.ContentsEntry
+import com.ichi2.anki.ankrimento.ui.ContentsSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.PdfViewSheet
 import com.ichi2.anki.ankrimento.ui.ReaderPager
@@ -76,6 +78,10 @@ class PdfReaderActivity : ReaderActivity() {
         lifecycleScope.launch {
             for (message in messages) {
                 followViewer(message)
+                if (message.startsWith(CONTENTS_PREFIX)) {
+                    showContents(message.removePrefix(CONTENTS_PREFIX))
+                    continue
+                }
                 val script = runCatching { withCol { Ankrimento.pdfMessage(cardId, message) } }
                 script
                     .onSuccess { if (it.isNotEmpty()) webView.evaluateJavascript(it, null) }
@@ -95,6 +101,11 @@ class PdfReaderActivity : ReaderActivity() {
         tools =
             listOf(
                 ReaderTool(getString(R.string.ankrimento_pdf_view), IncrementoIcons.Tune, ::showView),
+                tool(
+                    R.string.ankrimento_contents,
+                    IncrementoIcons.Contents,
+                    "window.incrementoPdfOpenContents && window.incrementoPdfOpenContents();",
+                ),
                 ReaderTool(getString(R.string.ankrimento_pdf_find), IncrementoIcons.Search) {
                     // The find box is part of upstream's panel.
                     showViewerControls(true)
@@ -155,6 +166,32 @@ class PdfReaderActivity : ReaderActivity() {
             zoom = state.optDouble("zoom", 1.0)
             appearance = state.optString("appearance", "original")
             showPage(state.optInt("page", 1), total)
+        }
+    }
+
+    /**
+     * The viewer's outline (it sends it when asked, as desktop's contents
+     * popup receives it); choosing an entry jumps through the viewer's own
+     * contents jump, which also keeps the daily page limit.
+     */
+    private fun showContents(payload: String) {
+        val data = runCatching { JSONObject(payload) }.getOrNull() ?: return
+        val token = data.optInt("token", -1)
+        val raw = data.optJSONArray("entries") ?: JSONArray()
+        val entries = List(raw.length()) { raw.getJSONObject(it) }
+        val shown =
+            entries.map {
+                ContentsEntry(it.optString("title"), it.optInt("depth"), getString(R.string.ankrimento_page_short, it.optInt("page")))
+            }
+        val current = entries.indexOfLast { it.optInt("page") <= page }
+        sheet = {
+            ContentsSheet(shown, current, numbered = false, onChapter = { index ->
+                sheet = null
+                webView.evaluateJavascript(
+                    "window.incrementoPdfContentsJump && window.incrementoPdfContentsJump(${entries[index]}, $token);",
+                    null,
+                )
+            }, onDismiss = { sheet = null })
         }
     }
 
@@ -284,6 +321,9 @@ class PdfReaderActivity : ReaderActivity() {
                 " window.addEventListener('pointerdown', function (event) {" +
                 " if (event.pointerType === 'touch' && event.target && event.target.closest &&" +
                 " event.target.closest('#pdf-text-layer')) event.stopPropagation(); }, true);"
+
+        /** The viewer's request to show its outline, as desktop's contents popup gets it. */
+        private const val CONTENTS_PREFIX = "incremento_pdf_contents:"
 
         /** Marks the page while upstream's control panel is hidden. */
         private const val COMPACT_CLASS = "ankrimento-compact"

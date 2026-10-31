@@ -79,7 +79,7 @@ Mobile principles that guide every item:
 | ✅ | Highlight left by extraction; mark read to here | |
 | ✅ | Tap to hide the bars | |
 | 🟡 | Find in document | Opens upstream's panel; needs a native search bar with results |
-| ⬜ | Contents (outline) sheet | Upstream sends `incremento_pdf_contents`, which isn't handled yet |
+| ✅ | Contents (outline) sheet: nested entries with page numbers, the current part marked | Through the viewer's own contents jump |
 | 🟡 | Bookmarks, annotations, highlight notes, colours | Reachable only through upstream's desktop panel; need native sheets |
 | ⬜ | Review all cards attached to the document [6] | |
 | ⬜ | Cross-references and page links [6] | |

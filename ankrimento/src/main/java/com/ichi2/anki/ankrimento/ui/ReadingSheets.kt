@@ -244,12 +244,31 @@ internal fun PdfViewSheet(
     }
 }
 
-/** The book's chapters; the one being read is marked and in view. */
-@OptIn(ExperimentalMaterial3Api::class)
+/** One line of a document's contents: [depth] indents it; [detail] is shown at its end (a page number). */
+internal class ContentsEntry(
+    val title: String,
+    val depth: Int = 0,
+    val detail: String? = null,
+)
+
+/** A book's chapters as contents, numbered. */
 @Composable
 internal fun ContentsSheet(
     chapters: List<String>,
     current: Int,
+    onChapter: (Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    ContentsSheet(chapters.map { ContentsEntry(it) }, current, numbered = true, onChapter, onDismiss)
+}
+
+/** A document's contents; the part being read (if known) is marked and in view. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun ContentsSheet(
+    entries: List<ContentsEntry>,
+    current: Int,
+    numbered: Boolean,
     onChapter: (Int) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -259,27 +278,42 @@ internal fun ContentsSheet(
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
         )
+        if (entries.isEmpty()) {
+            Text(
+                stringResource(R.string.ankrimento_contents_empty),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(24.dp).navigationBarsPadding(),
+            )
+            return@ModalBottomSheet
+        }
         val list = rememberLazyListState(initialFirstVisibleItemIndex = (current - 2).coerceAtLeast(0))
         LazyColumn(state = list, modifier = Modifier.navigationBarsPadding()) {
-            itemsIndexed(chapters) { index, title ->
+            itemsIndexed(entries) { index, entry ->
                 val reading = index == current
                 ListItem(
                     headlineContent = {
                         Text(
-                            title.ifBlank { stringResource(R.string.ankrimento_chapter_number, index + 1) },
+                            entry.title.ifBlank { stringResource(R.string.ankrimento_chapter_number, index + 1) },
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             fontWeight = if (reading) FontWeight.SemiBold else null,
+                            modifier = Modifier.padding(start = (entry.depth.coerceIn(0, 6) * 16).dp),
                         )
                     },
-                    leadingContent = {
-                        Text(
-                            "${index + 1}",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = if (reading) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.width(28.dp),
-                        )
-                    },
+                    leadingContent =
+                        if (numbered) {
+                            {
+                                Text(
+                                    "${index + 1}",
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = if (reading) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.width(28.dp),
+                                )
+                            }
+                        } else {
+                            null
+                        },
+                    trailingContent = entry.detail?.let { detail -> { Text(detail, style = MaterialTheme.typography.labelMedium) } },
                     supportingContent = if (reading) ({ Text(stringResource(R.string.ankrimento_reading_now)) }) else null,
                     colors =
                         if (reading) {
