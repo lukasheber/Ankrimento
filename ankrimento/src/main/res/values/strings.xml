@@ -206,4 +206,16 @@
     <string name="ankrimento_open">Open</string>
     <string name="ankrimento_expand">Unfold</string>
     <string name="ankrimento_collapse">Fold</string>
+    <!-- Statistics screen -->
+    <string name="ankrimento_stats_reviewed_today">reviewed today</string>
+    <string name="ankrimento_stats_time_today">studied today</string>
+    <string name="ankrimento_stats_pages_today">pages today</string>
+    <string name="ankrimento_stats_last_days">Cards per day, last 7 days</string>
+    <string name="ankrimento_stats_day">%1$s: %2$d cards · %3$s · %4$d pages</string>
+    <string name="ankrimento_stats_by_kind_today">Today, by kind</string>
+    <string name="ankrimento_stats_by_kind_lifetime">All time, by kind</string>
+    <string name="ankrimento_stats_reading">Reading and watching, last 7 days</string>
+    <string name="ankrimento_stats_pages_read">Pages read</string>
+    <string name="ankrimento_stats_videos">Videos watched</string>
+    <string name="ankrimento_stats_watch_time">Watch time</string>
 </resources>

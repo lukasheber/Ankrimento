@@ -160,7 +160,8 @@ Mobile principles that guide every item:
 
 | Status | Feature | Mobile notes |
 |---|---|---|
-| 🟡 | Statistics | Dialog with 7-day summary; needs a screen with charts and history |
+| ✅ | Statistics screen: today's tiles, cards per day for 7 days (tap a day), by kind today and all time, reading and watching | From the Library's top bar and the menu |
+| ⬜ | Longer history (30 days, a year), tag charts, the focus timer's numbers | Desktop has them |
 | ⬜ | Focus timer | Persistent chip in the reader top bar |
 
 ## 6. Sync, data and safety [12, 13]

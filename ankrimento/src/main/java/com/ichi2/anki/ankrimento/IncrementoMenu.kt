@@ -113,7 +113,7 @@ class IncrementoMenu(
             R.id.ankrimento_start_session -> activity.lifecycleScope.launch { startSession() }
             R.id.ankrimento_session_settings -> editSessionSettings()
             R.id.ankrimento_knowledge_tree -> activity.startActivity(KnowledgeTreeActivity.intent(activity))
-            R.id.ankrimento_statistics -> activity.lifecycleScope.launch { showStatistics() }
+            R.id.ankrimento_statistics -> activity.startActivity(StatisticsActivity.intent(activity))
             R.id.ankrimento_add_pdf -> pickPdf.launch(arrayOf("application/pdf"))
             R.id.ankrimento_add_epub -> pickEpub.launch(arrayOf("application/epub+zip"))
             R.id.ankrimento_new_writing -> newWriting()
@@ -283,15 +283,6 @@ class IncrementoMenu(
             .setNegativeButton(R.string.ankrimento_sync_keep_folder) { _, _ -> resolve("keep_folder") }
             .setNeutralButton(android.R.string.cancel, null)
             .show()
-    }
-
-    private suspend fun showStatistics() {
-        val stats =
-            CollectionManager.withCol {
-                Ankrimento.start(activity, this)
-                Ankrimento.statistics()
-            }
-        StatisticsDialog.show(activity, stats)
     }
 
     private fun newWriting() {

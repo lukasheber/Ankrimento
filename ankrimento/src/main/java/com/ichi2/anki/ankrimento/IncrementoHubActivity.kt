@@ -192,6 +192,9 @@ class IncrementoHubActivity : ComponentActivity() {
                         }
                     },
                     actions = {
+                        IconButton(onClick = { startActivity(StatisticsActivity.intent(this@IncrementoHubActivity)) }) {
+                            Icon(IncrementoIcons.Chart, contentDescription = stringResource(R.string.ankrimento_statistics_title))
+                        }
                         IconButton(onClick = { startActivity(KnowledgeTreeActivity.intent(this@IncrementoHubActivity)) }) {
                             Icon(IncrementoIcons.Tree, contentDescription = stringResource(R.string.ankrimento_knowledge_tree_title))
                         }
