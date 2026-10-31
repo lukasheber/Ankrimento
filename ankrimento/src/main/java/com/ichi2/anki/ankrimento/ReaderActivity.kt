@@ -84,6 +84,7 @@ abstract class ReaderActivity : ComponentActivity() {
     private var title by mutableStateOf("")
     private var answerButtons by mutableStateOf<List<Ankrimento.AnswerButton>>(emptyList())
     private var editedPriority by mutableStateOf<Double?>(null)
+    private var priority by mutableStateOf<Double?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -98,6 +99,8 @@ abstract class ReaderActivity : ComponentActivity() {
                     review = reviewBar(),
                     onBack = ::leave,
                     chromeVisible = chromeVisible,
+                    priority = priority,
+                    onPriority = ::editPriority,
                     progress = progress,
                     pager = pager,
                 ) { modifier ->
@@ -110,9 +113,12 @@ abstract class ReaderActivity : ComponentActivity() {
                 }
                 sheet?.invoke()
                 editedPriority?.let { current ->
-                    PriorityDialog(current, onDismiss = { editedPriority = null }) { priority ->
+                    PriorityDialog(current, onDismiss = { editedPriority = null }) { chosen ->
                         editedPriority = null
-                        lifecycleScope.launch { withCol { Ankrimento.setPriority(cardId, priority) } }
+                        lifecycleScope.launch {
+                            withCol { Ankrimento.setPriority(cardId, chosen) }
+                            priority = chosen
+                        }
                     }
                 }
             }
@@ -124,6 +130,7 @@ abstract class ReaderActivity : ComponentActivity() {
                 withCol {
                     // The reviewer tells Incremento about the cards it shows; the loop's are shown here.
                     if (inSession && !intent.getBooleanExtra(EXTRA_QUESTION_SHOWN, false)) Ankrimento.questionShown(cardId)
+                    priority = Ankrimento.priority(cardId)
                     Ankrimento.cardTitle(cardId) to if (inSession) Ankrimento.answerButtons(cardId) else null
                 }
             }.onSuccess { (cardTitle, buttons) ->
@@ -175,7 +182,6 @@ abstract class ReaderActivity : ComponentActivity() {
 
     private fun menu(): List<ReaderTool> =
         buildList {
-            add(ReaderTool(getString(R.string.ankrimento_priority), onClick = ::editPriority))
             if (inSession) {
                 add(ReaderTool(getString(R.string.ankrimento_show_card)) { finishWith(RESULT_SHOW_CARD, null) })
             }

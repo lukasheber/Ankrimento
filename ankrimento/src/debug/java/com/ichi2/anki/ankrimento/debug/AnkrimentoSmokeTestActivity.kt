@@ -43,6 +43,21 @@ class AnkrimentoSmokeTestActivity : Activity() {
         super.onCreate(savedInstanceState)
         output = TextView(this).apply { setTextIsSelectable(true) }
         setContentView(ScrollView(this).apply { addView(output) })
+        // `--el open <card id>` alone opens that card's reader, without the session check.
+        intent.getLongExtra(EXTRA_OPEN, 0L).takeIf { it > 0 && intent.extras?.size() == 1 }?.let { cardId ->
+            scope.launch {
+                val reader =
+                    withContext(Dispatchers.IO) {
+                        CollectionManager.withCol {
+                            Ankrimento.start(this@AnkrimentoSmokeTestActivity, this)
+                            Ankrimento.cardReader(cardId)
+                        }
+                    }
+                log("card $cardId opens in the '$reader' reader")
+                ReaderActivity.intent(this@AnkrimentoSmokeTestActivity, reader, cardId, session = false)?.let(::startActivity)
+            }
+            return
+        }
         scope.launch {
             val result =
                 runCatching {

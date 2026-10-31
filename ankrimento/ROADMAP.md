@@ -133,6 +133,7 @@ Mobile principles that guide every item:
 |---|---|---|
 | 🟡 | Extract to a new card: front/back, note type, topic/item, priority | Works; AlertDialog to become a Material bottom sheet |
 | ✅ | Priority editor (slider, 0 to 100) | |
+| 🟡 | **Priority always in reach on topics and items**: a "P 50" chip on screen, one tap to change it | Topic readers: done (chip in the top bar). Items: needs the learning screen (today it is in the reviewer's menu) |
 | ⬜ | "Keep extracting" queue (several extracts, then one review) | Button exists; needs mobile flow |
 | ⬜ | Extract card from the current reviewer card [11] | |
 | ⬜ | Add Card dock / card from scratch with priority [11] | |
@@ -186,6 +187,7 @@ Mobile principles that guide every item:
 ## Order of work
 
 1. Fixed Incremento entry on the main screen (the session deck).
+   Priority chip on every topic and item.
 2. Plain-text topics and items in the learning screen, so the loop never
    leaves it, plus swipe.
 3. Extract bottom sheet, Keep extracting, and video extract at timestamp.

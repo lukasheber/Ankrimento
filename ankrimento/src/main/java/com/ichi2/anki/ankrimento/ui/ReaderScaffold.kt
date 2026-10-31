@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -109,6 +110,8 @@ internal fun ReaderScaffold(
     review: ReviewBarState?,
     onBack: () -> Unit,
     chromeVisible: Boolean = true,
+    priority: Double? = null,
+    onPriority: () -> Unit = {},
     progress: ReaderProgress? = null,
     pager: ReaderPager? = null,
     content: @Composable (Modifier) -> Unit,
@@ -131,6 +134,7 @@ internal fun ReaderScaffold(
                         }
                     },
                     actions = {
+                        if (priority != null) PriorityChip(priority, onPriority)
                         val barIcons = tools.filter { it.icon != null }.take(MAX_BAR_ICONS)
                         barIcons.forEach { tool ->
                             IconButton(onClick = tool.onClick) { Icon(tool.icon!!, contentDescription = tool.label) }
@@ -313,6 +317,22 @@ private fun ReviewBar(state: ReviewBarState) {
     }
 }
 
+/**
+ * The element's Incremento priority, always in view: SuperMemo's most used
+ * control is one tap away rather than in a menu.
+ */
+@Composable
+private fun PriorityChip(
+    priority: Double,
+    onClick: () -> Unit,
+) {
+    AssistChip(
+        onClick = onClick,
+        label = { Text(stringResource(R.string.ankrimento_priority_chip, priority.roundToInt())) },
+        modifier = Modifier.padding(end = 4.dp),
+    )
+}
+
 /** Shown while a reader opens its document. */
 @Composable
 internal fun ReaderLoading(modifier: Modifier) {
@@ -341,7 +361,7 @@ internal fun PriorityDialog(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth(),
                 )
-                Slider(value = value, onValueChange = { value = it }, valueRange = 0f..100f, steps = 99)
+                Slider(value = value, onValueChange = { value = it }, valueRange = 0f..100f)
                 HorizontalDivider()
                 Text(
                     stringResource(R.string.ankrimento_priority_message),

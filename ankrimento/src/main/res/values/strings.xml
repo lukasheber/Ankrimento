@@ -124,4 +124,5 @@
     <!-- Learning loop -->
     <string name="ankrimento_previous_element">Previous element</string>
     <string name="ankrimento_back_unavailable">Can\'t go back: that would also undo what you changed here</string>
+    <string name="ankrimento_priority_chip">P %d</string>
 </resources>
