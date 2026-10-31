@@ -97,7 +97,9 @@ class EpubReaderActivity : ReaderActivity() {
                 runCatching { withCol { Ankrimento.epubReading(cardId) } }
                     .onFailure { Timber.w(it, "Loading the book's reading settings failed") }
                     .getOrNull()
-            load(null, null)
+            // A section asked for (Search ALL) from its start; otherwise where reading stopped.
+            val start = intent.getIntExtra(EXTRA_START, -1).takeIf { it >= 0 }
+            load(start, start?.let { 0.0 })
         }
         Ankrimento.readerScope.launch {
             for (message in messages) {

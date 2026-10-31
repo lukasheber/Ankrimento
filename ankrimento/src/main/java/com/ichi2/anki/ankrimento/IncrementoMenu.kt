@@ -97,6 +97,9 @@ class IncrementoMenu(
             SessionCardAction(IncrementoIcons.Add, R.string.ankrimento_add_to_incremento) {
                 activity.startActivity(IncrementoHubActivity.intent(activity, add = true))
             },
+            SessionCardAction(IncrementoIcons.Search, R.string.ankrimento_search_all) {
+                activity.startActivity(SearchAllActivity.intent(activity))
+            },
             SessionCardAction(IncrementoIcons.Tree, R.string.ankrimento_knowledge_tree_title) {
                 activity.startActivity(KnowledgeTreeActivity.intent(activity))
             },

@@ -193,6 +193,9 @@ class IncrementoHubActivity : ComponentActivity() {
                         }
                     },
                     actions = {
+                        IconButton(onClick = { startActivity(SearchAllActivity.intent(this@IncrementoHubActivity)) }) {
+                            Icon(IncrementoIcons.Search, contentDescription = stringResource(R.string.ankrimento_search_all))
+                        }
                         IconButton(onClick = { startActivity(StatisticsActivity.intent(this@IncrementoHubActivity)) }) {
                             Icon(IncrementoIcons.Chart, contentDescription = stringResource(R.string.ankrimento_statistics_title))
                         }

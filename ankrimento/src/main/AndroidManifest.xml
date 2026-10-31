@@ -40,6 +40,11 @@
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity
+            android:name="com.ichi2.anki.ankrimento.SearchAllActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+        <activity
             android:name="com.ichi2.anki.ankrimento.SessionOptionsActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />

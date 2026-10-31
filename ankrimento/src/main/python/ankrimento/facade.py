@@ -207,6 +207,25 @@ def session_deck_name() -> str:
     return incremento_session_deck_name(presets.selected())
 
 
+def search_all(query: str) -> str:
+    """Upstream's Search ALL with the saved filters: sections of documents and results, each with where it opens."""
+    from ankrimento import search_all
+
+    return _dumps(search_all.search(query))
+
+
+def search_all_filters() -> str:
+    from ankrimento import search_all
+
+    return _dumps(search_all.filters())
+
+
+def set_search_all_filter(name: str, enabled: bool) -> None:
+    from ankrimento import search_all
+
+    search_all.set_filter(name, enabled)
+
+
 def session_options() -> str:
     """The advanced session options: filters, tag and content-type quotas, enforcement, scope."""
     from ankrimento import session_options

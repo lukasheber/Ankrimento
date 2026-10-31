@@ -287,6 +287,26 @@ object Ankrimento {
     fun setSessionOptions(changes: JSONObject): JSONObject =
         JSONObject(requireFacade().callAttr("set_session_options", changes.toString()).toString())
 
+    /**
+     * Upstream's Search ALL with the saved filters: `sections`, each with a `heading` and `groups`
+     * (a document `title`, or none, and its `items`: `label`, `snippet`, and where it opens:
+     * `kind` "pdf", "epub" or "card", `card_id`, `position`).
+     */
+    @WorkerThread
+    fun searchAll(query: String): JSONObject = JSONObject(requireFacade().callAttr("search_all", query).toString())
+
+    /** Desktop's Search ALL filters and whether each is on. */
+    @WorkerThread
+    fun searchAllFilters(): JSONObject = JSONObject(requireFacade().callAttr("search_all_filters").toString())
+
+    @WorkerThread
+    fun setSearchAllFilter(
+        name: String,
+        enabled: Boolean,
+    ) {
+        requireFacade().callAttr("set_search_all_filter", name, enabled)
+    }
+
     /** The PDF's text index for find: "current", "empty" (no text found), "stale" or "missing". */
     @WorkerThread
     fun pdfIndexState(cardId: Long): String = requireFacade().callAttr("pdf_index_state", cardId).toString()

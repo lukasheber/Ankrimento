@@ -401,6 +401,12 @@ abstract class ReaderActivity : ComponentActivity() {
 
     companion object {
         const val EXTRA_CARD_ID = "card_id"
+
+        /** Where to open: a PDF page (from 1) or an EPUB section (from 0). */
+        const val EXTRA_START = "start"
+
+        /** Words to find and highlight once open (PDF). */
+        const val EXTRA_FIND = "find"
         private const val EXTRA_SESSION = "session"
 
         /** The reviewer already told Incremento this card's question is on screen. */
@@ -441,5 +447,14 @@ abstract class ReaderActivity : ComponentActivity() {
                 }
             return Intent(context, activity).putExtra(EXTRA_CARD_ID, cardId).putExtra(EXTRA_SESSION, session)
         }
+
+        /** A PDF at [position] (a page) or an EPUB at [position] (a section), outside a session, finding [query]. */
+        fun intentAt(
+            context: Context,
+            reader: String,
+            cardId: Long,
+            position: Int,
+            query: String,
+        ): Intent? = intent(context, reader, cardId, session = false)?.putExtra(EXTRA_START, position)?.putExtra(EXTRA_FIND, query)
     }
 }

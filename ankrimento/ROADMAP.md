@@ -62,7 +62,7 @@ Mobile principles that guide every item:
 | ⬜ | Library search, sort (title, priority, recent) and covers | |
 | ✅ | Add sheet: PDF, EPUB, web or video link, writing | Audio still to add |
 | ✅ | Share a link from any app to Incremento (web or video topic) | |
-| ⬜ | Search ALL: highlights, sources, document text, cards [9] | |
+| ✅ | Search ALL: highlights, sources, document text, cards [9] | From the Incremento card's ⋮ and the Library: upstream's own search with desktop's filters (as chips, saved as desktop saves them), results grouped as desktop groups them; a result opens its PDF page with the words highlighted, its EPUB section, or its card. PDF text is off by default, as on desktop |
 | ✅ | Knowledge tree screen [9]: fold/unfold branches, kind and priority per node; Open, Study this branch, Priority | From the Library's top bar and the menu |
 | ⬜ | Knowledge tree: reveal the current card, go to parent, search, postpone a subtree | |
 | ➖ | Command palette, keyboard shortcuts [14] | Replaced by visible tools and gestures; hardware keyboard shortcuts maybe later |

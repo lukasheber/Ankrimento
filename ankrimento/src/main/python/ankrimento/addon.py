@@ -18,7 +18,8 @@ ADDON_PACKAGE = "incremento"
 
 # Only the Qt-free parts of the add-on ship to mobile. The Qt UI (frontend/,
 # __init__.py), web assets and the browser extension are desktop-only, except
-# frontend/epub_dock.py (read, never imported, for its EPUB page script) and the
+# frontend/epub_dock.py (read, never imported, for its EPUB page script),
+# frontend/search_all_results.py (Search ALL's Qt-free search pipeline) and the
 # web dock's bridge script.
 SHIPPED_ENTRIES = (
     "backend",
@@ -26,6 +27,7 @@ SHIPPED_ENTRIES = (
     "config.json",
     "manifest.json",
     "frontend/epub_dock.py",
+    "frontend/search_all_results.py",
     "web/web_dock_bridge.js",
 )
 

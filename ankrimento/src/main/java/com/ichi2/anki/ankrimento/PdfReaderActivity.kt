@@ -69,6 +69,7 @@ class PdfReaderActivity : ReaderActivity() {
     private var findIndex = -1
     private var findStatus: String? = null
     private var textChecked = false
+    private var startHandled = false
     private var readingText = false
     private val textPages = sortedMapOf<Int, String>()
 
@@ -249,6 +250,26 @@ class PdfReaderActivity : ReaderActivity() {
         }
     }
 
+    /** Opens the page and words asked for (Search ALL): the match on that page, highlighted. */
+    private fun openStart() {
+        val start = intent.getIntExtra(EXTRA_START, 0)
+        val query = intent.getStringExtra(EXTRA_FIND).orEmpty().trim()
+        if (query.isEmpty()) {
+            if (start > 0) goToPage(start)
+            return
+        }
+        lifecycleScope.launch {
+            val hits = runCatching { withCol { Ankrimento.pdfSearch(cardId, query) } }.getOrDefault(emptyList())
+            findQuery = query
+            findHits = hits
+            val index = hits.indexOfFirst { it.page == start }
+            when {
+                index >= 0 -> openHit(index)
+                start > 0 -> goToPage(start)
+            }
+        }
+    }
+
     private fun closeFind() {
         if (overlay == null) return
         overlay = null
@@ -341,6 +362,10 @@ class PdfReaderActivity : ReaderActivity() {
             appearance = state.optString("appearance", "original")
             showPage(state.optInt("page", 1), total)
             ensureTextIndex()
+            if (!startHandled) {
+                startHandled = true
+                openStart()
+            }
         }
     }
 

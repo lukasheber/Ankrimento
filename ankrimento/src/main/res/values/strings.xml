@@ -218,6 +218,21 @@
     <string name="ankrimento_marked_read">Marked as read up to here</string>
     <string name="ankrimento_add_to_incremento">Add to Incremento…</string>
     <string name="ankrimento_statistics_menu">Statistics</string>
+    <!-- Search ALL -->
+    <string name="ankrimento_search_all">Search ALL</string>
+    <string name="ankrimento_search_all_hint">Search highlights, documents and cards</string>
+    <string name="ankrimento_search_all_intro">Search across highlights and their notes, the cards made from documents, document text, text in images, and all cards.</string>
+    <string name="ankrimento_search_all_short">Type at least three letters.</string>
+    <string name="ankrimento_search_all_none">No matches.</string>
+    <string name="ankrimento_search_all_cards">Cards</string>
+    <string name="ankrimento_search_all_pdf_highlights">PDF highlights</string>
+    <string name="ankrimento_search_all_epub_highlights">EPUB highlights</string>
+    <string name="ankrimento_search_all_annotations">Notes</string>
+    <string name="ankrimento_search_all_pdf_sources">Cards from PDFs</string>
+    <string name="ankrimento_search_all_epub_sources">Cards from EPUBs</string>
+    <string name="ankrimento_search_all_pdf_content">PDF text</string>
+    <string name="ankrimento_search_all_epub_content">EPUB text</string>
+    <string name="ankrimento_search_all_image_ocr">Text in images</string>
     <!-- PDF bookmarks and highlights -->
     <string name="ankrimento_marks">Bookmarks and highlights</string>
     <string name="ankrimento_marks_bookmarks">Bookmarks</string>
