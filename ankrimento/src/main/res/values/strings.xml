@@ -17,4 +17,20 @@
     <string name="ankrimento_extract_discard">Discard</string>
     <string name="ankrimento_extract_added">Card added</string>
     <string name="ankrimento_extract_failed">Adding the card failed: %s</string>
+    <string name="ankrimento_sync_now">Sync Incremento data</string>
+    <string name="ankrimento_sync_folder">Incremento sync folder…</string>
+    <string name="ankrimento_sync_no_folder">Choose an Incremento sync folder first</string>
+    <string name="ankrimento_sync_pulled">Incremento data updated from %s</string>
+    <string name="ankrimento_sync_pushed">Incremento data saved to the sync folder</string>
+    <string name="ankrimento_sync_up_to_date">Incremento data is up to date</string>
+    <string name="ankrimento_sync_incomplete">The sync folder is still receiving another device\'s changes; try again shortly</string>
+    <string name="ankrimento_sync_open_elsewhere">Incremento is open on %s</string>
+    <string name="ankrimento_sync_failed">Syncing Incremento data failed: %s</string>
+    <string name="ankrimento_sync_resolved">Incremento data synced</string>
+    <string name="ankrimento_sync_conflict_title">Incremento data changed in two places</string>
+    <string name="ankrimento_sync_conflict_message">Incremento data changed on this device and on %s since they last synced. Which version should be kept? The other is saved in a sync-conflicts folder.</string>
+    <string name="ankrimento_sync_keep_device">Keep this device\'s</string>
+    <string name="ankrimento_sync_keep_folder">Keep the other device\'s</string>
+    <string name="ankrimento_profile">Incremento profile…</string>
+    <string name="ankrimento_profile_message">The Anki profile name used on your computer (for syncing). Takes effect after restarting AnkiDroid.</string>
 </resources>

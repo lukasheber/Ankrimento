@@ -27,6 +27,39 @@ class _Host:
         return self._kotlin_host.dbCommand(data)
 
 
+class SafStore:
+    """Adapts the Kotlin ``SafStore`` (Storage Access Framework) to ``syncfolder.Store``."""
+
+    def __init__(self, kotlin_store: Any) -> None:
+        self._store = kotlin_store
+
+    def read_text(self, rel: str) -> str | None:
+        text = self._store.readText(rel)
+        return None if text is None else str(text)
+
+    def write_text(self, rel: str, text: str) -> None:
+        self._store.writeText(rel, text)
+
+    def upload(self, local: Path, rel: str) -> None:
+        self._store.upload(str(local), rel)
+
+    def download(self, rel: str, local: Path) -> None:
+        self._store.download(rel, str(local))
+
+    def size(self, rel: str) -> int | None:
+        size = int(self._store.size(rel))
+        return None if size < 0 else size
+
+    def delete(self, rel: str) -> None:
+        self._store.delete(rel)
+
+
+def sync(kotlin_store: Any, device_name: str, action: str) -> str:
+    from ankrimento import facade
+
+    return facade.sync(SafStore(kotlin_store), device_name, action)
+
+
 class _Closure(dynamic_proxy(Runnable)):  # type: ignore[misc]
     def __init__(self, closure: Callable[[], None]) -> None:
         super().__init__()

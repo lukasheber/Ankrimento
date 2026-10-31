@@ -65,6 +65,23 @@ AnkiDroid (Kotlin)
   schema change forcing a one-way full sync.
 - EPUB, web, video and writing readers: todo.
 
+### Syncing Incremento data
+
+AnkiWeb syncs the cards; `syncfolder.py` syncs Incremento's own data
+(`user_files/<profile>`: `incremento.db` and managed files) and settings
+through a shared folder. The module documents the format. On Android the
+folder is picked with the Storage Access Framework ("Incremento sync
+folder…"), so it can be a folder kept in step with Google Drive, Dropbox or
+a computer by Autosync, Dropsync, FolderSync or Syncthing. The profile name
+("Incremento profile…") must match the desktop profile.
+
+Ankrimento pulls before a session starts and pushes (releasing its lease)
+when the reviewer closes; "Sync Incremento data" syncs on demand.
+
+The desktop side needs the same module: `syncfolder.py` depends only on
+upstream backend modules so a desktop add-on can share it (see the issue
+proposing this upstream).
+
 ### AnkiDroid hooks
 
 | Where | What |

@@ -2,4 +2,7 @@
 <resources>
     <item name="ankrimento_start_session" type="id" />
     <item name="ankrimento_add_pdf" type="id" />
+    <item name="ankrimento_sync_now" type="id" />
+    <item name="ankrimento_sync_folder" type="id" />
+    <item name="ankrimento_profile" type="id" />
 </resources>

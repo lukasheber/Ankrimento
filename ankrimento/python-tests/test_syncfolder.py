@@ -108,6 +108,17 @@ def test_a_snapshot_still_uploading_is_not_pulled(rt, devices):
     assert b.status().state == "remote_incomplete"
 
 
+def test_a_half_written_snapshot_record_is_not_mistaken_for_none(rt, devices):
+    """Some stores overwrite in place; a torn snapshot.json must not look like an empty folder."""
+    a, b, _ = devices
+    a.push()
+    text = (a.remote.root / "snapshot.json").read_text()
+    (a.remote.root / "snapshot.json").write_text(text[: len(text) // 2])
+    assert b.status().state == "remote_incomplete"
+    with pytest.raises(SyncError):
+        b.push(force=True)
+
+
 def test_lease_warns_other_devices(rt, devices):
     from incremento.backend.priority_manager import set_priority
 
@@ -130,3 +141,30 @@ def test_push_waits_for_pending_imports(rt, devices):
     with ImportOperation(str(a.addon_dir), a.profile, "pdf"):
         with pytest.raises(SyncError, match="pending"):
             a.push()
+
+
+def test_facade_sync_holds_and_releases_the_lease(rt, tmp_path):
+    store = LocalStore(tmp_path / "folder" / rt.profile)
+    try:
+        assert json.loads(facade.sync(store, "Phone", "status"))["state"] == "push"
+        assert json.loads(facade.sync(store, "Phone", "sync"))["state"] == "push"
+        assert json.loads((store.root / "lease.json").read_text())["device_name"] == "Phone"
+        assert json.loads(facade.sync(store, "Phone", "status"))["state"] == "in_sync"
+        facade.sync(store, "Phone", "release")
+        assert not (store.root / "lease.json").exists()
+    finally:
+        (rt.addon_dir / "user_files" / rt.profile / ".ankrimento-sync.json").unlink(missing_ok=True)
+
+
+def test_a_device_without_settings_does_not_erase_anothers(rt, devices):
+    """A fresh phone has no Incremento settings yet ({}); pushing must not wipe desktop's."""
+    from incremento.backend.priority_manager import set_priority
+
+    a, b, config_b = devices
+    desktop_settings = a.read_config()
+    assert desktop_settings
+    set_priority(str(b.addon_dir), b.profile, 5151, 3.0)
+    b.push()
+    a.pull(force=True)
+    assert a.read_config() == desktop_settings
+    assert config_b.values == {}

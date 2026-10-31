@@ -84,6 +84,10 @@ class LeaseHeld(SyncError):
     """Another device has the profile open."""
 
 
+class RemoteIncomplete(SyncError):
+    """The sync service is still delivering the folder's latest snapshot."""
+
+
 @dataclass
 class Status:
     """What a sync would do.
@@ -308,9 +312,18 @@ class SyncFolder:
         self.remote.write_text(rel, json.dumps(value, indent=1, sort_keys=True))
 
     def _remote_snapshot(self) -> dict[str, Any] | None:
-        snapshot = self._read_remote_json(SNAPSHOT_NAME)
-        if not isinstance(snapshot, dict):
+        """The folder's snapshot record, or None when the folder has none yet."""
+        text = self.remote.read_text(SNAPSHOT_NAME)
+        if text is None:
             return None
+        try:
+            snapshot = json.loads(text)
+        except ValueError:
+            snapshot = None
+        if not isinstance(snapshot, dict) or "snapshot_id" not in snapshot:
+            # Present but unreadable: being written. Treating it as absent
+            # would let this device push over a newer snapshot.
+            raise RemoteIncomplete("The sync folder is being updated; try again later.")
         if snapshot.get("format") != FORMAT:
             raise SyncError(f"Sync folder format {snapshot.get('format')} is not supported; update Ankrimento.")
         return snapshot
@@ -346,7 +359,10 @@ class SyncFolder:
 
     def status(self) -> Status:
         state = self._state()
-        snapshot = self._remote_snapshot()
+        try:
+            snapshot = self._remote_snapshot()
+        except RemoteIncomplete:
+            return Status("remote_incomplete")
         local_changed, _ = self._local_changes(state)
         if snapshot is None:
             return Status("push")
@@ -415,7 +431,7 @@ class SyncFolder:
             for rel in set(state.get("files") or {}) - set(snapshot["files"]):
                 (self.user_files / rel).unlink(missing_ok=True)
             config = self._read_remote_json(CONFIG_NAME)
-            if isinstance(config, dict):
+            if isinstance(config, dict) and config:
                 self.write_config(config)
         finally:
             shutil.rmtree(staging, ignore_errors=True)
@@ -455,7 +471,9 @@ class SyncFolder:
         for rel in set(remote_files) - set(files):
             self.remote.delete(f"{FILES_DIR}/{rel}")
         config = self.read_config()
-        self._write_remote_json(CONFIG_NAME, config)
+        if config:
+            # A device that never saved settings has {}; it must not erase others'.
+            self._write_remote_json(CONFIG_NAME, config)
 
         snapshot = {
             "format": FORMAT,

@@ -20,6 +20,11 @@ def _dumps(value: Any) -> str:
     return json.dumps(value, separators=(",", ":"))
 
 
+def profile_name() -> str:
+    """The profile's storage name (user_files/<name>), as upstream sanitizes it."""
+    return runtime.current().profile
+
+
 def start_session() -> None:
     """Start an Incremento session with upstream's ``learnFunction``.
 
@@ -297,6 +302,49 @@ def discard_extract(source_card_id: int) -> None:
     from ankrimento import extract
 
     extract.discard(int(source_card_id))
+
+
+def sync(store: Any, device_name: str, action: str = "sync") -> str:
+    """Sync Incremento's data with the sync folder ``store`` (its profile folder).
+
+    ``action``: ``"status"``, ``"sync"`` (pull or push as needed, then hold the
+    lease), ``"keep_device"`` / ``"keep_folder"`` (resolve a conflict),
+    ``"release"`` (push if needed and release the lease, when closing).
+    Returns the resulting status.
+    """
+    from aqt import mw
+    from incremento.backend.topic_scheduler import reset_topic_answer_runtime_state
+
+    from ankrimento.syncfolder import SyncFolder
+
+    rt = runtime.current()
+    folder = SyncFolder(
+        store,
+        rt.addon_dir,
+        rt.profile,
+        read_config=lambda: dict(mw.addonManager.addonMeta("incremento").get("config", {})),
+        write_config=lambda config: mw.addonManager.writeConfig("incremento", config),
+        device_name=device_name,
+    )
+    status = folder.status()
+    if action == "sync":
+        status = folder.sync()
+        if status.state in {"pull", "push"}:
+            folder.acquire_lease()
+    elif action == "keep_device":
+        folder.push(force=True)
+    elif action == "keep_folder":
+        folder.pull(force=True)
+    elif action == "release":
+        if status.state == "push":
+            folder.push(force=True)
+        folder.release_lease()
+    if action in {"sync", "keep_folder"} and status.state in {"pull", "conflict"}:
+        # Incremento's in-memory answer state referred to the replaced database.
+        reset_topic_answer_runtime_state()
+    return _dumps(
+        {"state": status.state, "remote_device": status.remote_device, "lease_holder": status.lease_holder}
+    )
 
 
 def get_priority(card_id: int) -> float:

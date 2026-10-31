@@ -3,6 +3,8 @@
 package com.ichi2.anki.ankrimento
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.util.Base64
 import androidx.annotation.WorkerThread
@@ -75,15 +77,20 @@ object Ankrimento {
     val isStarted: Boolean
         get() = facade != null
 
+    private var syncStore: SafStore? = null
+    private var deviceName = ""
+
     @WorkerThread
     @Synchronized
     fun start(
         context: Context,
         col: Collection,
-        profile: String = DEFAULT_PROFILE,
     ) {
         if (facade != null) return
         check(isSupported) { "Ankrimento needs a 64-bit device" }
+        val settings = AnkrimentoSettings(context)
+        val profile = settings.profile
+        deviceName = settings.deviceName
         if (!Python.isStarted()) {
             Python.start(AndroidPlatform(context.applicationContext))
         }
@@ -105,7 +112,44 @@ object Ankrimento {
         )
         facade = python.getModule("ankrimento.facade")
         ChangeManager.subscribe(operationListener)
+        settings.syncFolder?.let { syncStore = SafStore(context.applicationContext, it, profileStorageName()) }
         Timber.i("Ankrimento started for profile '%s'", profile)
+    }
+
+    /** The profile's folder name in user_files/ and in the sync folder. */
+    private fun profileStorageName(): String = requireFacade().callAttr("profile_name").toString()
+
+    /** What a sync did, or would do: see `ankrimento.syncfolder.Status`. */
+    data class SyncResult(
+        val state: String,
+        val remoteDevice: String,
+        val leaseHolder: String,
+    )
+
+    val isSyncConfigured: Boolean
+        get() = syncStore != null
+
+    /** Use [folder] (picked with ACTION_OPEN_DOCUMENT_TREE) to sync Incremento data. */
+    fun setSyncFolder(
+        context: Context,
+        folder: Uri,
+    ) {
+        val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        context.contentResolver.takePersistableUriPermission(folder, flags)
+        AnkrimentoSettings(context).syncFolder = folder
+        if (isStarted) syncStore = SafStore(context.applicationContext, folder, profileStorageName())
+    }
+
+    /**
+     * Sync with the sync folder; null when none is set. [action] is "status",
+     * "sync", "keep_device", "keep_folder" or "release" (see `facade.sync`).
+     */
+    @WorkerThread
+    fun sync(action: String = "sync"): SyncResult? {
+        val store = syncStore ?: return null
+        val result = Python.getInstance().getModule("ankrimento.android").callAttr("sync", store, deviceName, action)
+        val json = JSONObject(result.toString())
+        return SyncResult(json.getString("state"), json.getString("remote_device"), json.getString("lease_holder"))
     }
 
     /**
@@ -150,12 +194,14 @@ object Ankrimento {
         if (isStarted) requireFacade().callAttr("answer_shown", cardId)
     }
 
-    /** Reviewer hook: the reviewer is closing. */
+    /** Reviewer hook: the reviewer is closing; also pushes to the sync folder. */
     fun reviewerClosed() {
         if (!isStarted) return
         operationScope.launch {
             runCatching { CollectionManager.withCol { requireFacade().callAttr("reviewer_closed") } }
                 .onFailure { Timber.w(it, "Incremento reviewer_closed failed") }
+            runCatching { CollectionManager.withCol { sync("release") } }
+                .onFailure { Timber.w(it, "Incremento sync on close failed") }
         }
     }
 
