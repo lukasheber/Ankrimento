@@ -153,6 +153,20 @@ def section_script(card_id: int, section_index: int, nonce: str, scroll_ratio: f
     )
 
 
+def reading(card_id: int) -> dict[str, Any]:
+    """The per-book settings desktop's EPUB dock applies, and the chapter titles its contents list shows."""
+    from incremento.backend.epub_appearance import get_appearance
+    from incremento.backend.epub_manager import get_epub_font_scale
+
+    addon_dir, profile = _context()
+    _, metadata = _metadata(card_id)
+    return {
+        "text_scale": get_epub_font_scale(addon_dir, profile, int(card_id)),
+        "appearance": get_appearance(addon_dir, profile, int(card_id)),
+        "contents": [str(section.get("title") or "") for section in metadata.get("sections") or []],
+    }
+
+
 def handle(card_id: int, section_index: int, msg: str) -> dict[str, Any]:
     """Apply one message (prefix and nonce already removed).
 

@@ -560,6 +560,29 @@ def epub_message(card_id: int, section_index: int, message: str) -> str:
     return _dumps(epub_reader.handle(int(card_id), int(section_index), message))
 
 
+def epub_reading(card_id: int) -> str:
+    """Reading settings desktop keeps per book (text scale, appearance) and the chapter titles."""
+    from ankrimento import epub_reader
+
+    return _dumps(epub_reader.reading(int(card_id)))
+
+
+def epub_set_text_scale(card_id: int, scale: float) -> float:
+    """Desktop's text size control: stored per book, within upstream's limits; returns the stored scale."""
+    from incremento.backend.epub_manager import set_epub_font_scale
+
+    rt = runtime.current()
+    return set_epub_font_scale(str(rt.addon_dir), rt.profile, int(card_id), float(scale))
+
+
+def epub_set_appearance(card_id: int, mode: str) -> None:
+    """Desktop's appearance choice ("original", "dark", "night"), stored per book."""
+    from incremento.backend.epub_appearance import set_appearance
+
+    rt = runtime.current()
+    set_appearance(str(rt.addon_dir), rt.profile, int(card_id), str(mode))
+
+
 def pdf_path(card_id: int) -> str:
     from ankrimento import pdf_reader
 

@@ -94,4 +94,26 @@
     <string name="ankrimento_zoom_in">Zoom in</string>
     <string name="ankrimento_zoom_out">Zoom out</string>
     <string name="ankrimento_epub_chapter">Chapter %1$d of %2$d</string>
+    <!-- EPUB reading settings -->
+    <string name="ankrimento_reading_settings">Text and page</string>
+    <string name="ankrimento_text_size">Text size</string>
+    <string name="ankrimento_page_original">Original</string>
+    <string name="ankrimento_page_dark">Dark</string>
+    <string name="ankrimento_page_night">Night</string>
+    <string name="ankrimento_typeface">Typeface</string>
+    <string name="ankrimento_typeface_original">Book</string>
+    <string name="ankrimento_typeface_serif">Serif</string>
+    <string name="ankrimento_typeface_sans">Sans</string>
+    <string name="ankrimento_line_spacing">Line spacing</string>
+    <string name="ankrimento_spacing_compact">Compact</string>
+    <string name="ankrimento_spacing_normal">Normal</string>
+    <string name="ankrimento_spacing_relaxed">Relaxed</string>
+    <string name="ankrimento_margins">Margins</string>
+    <string name="ankrimento_margins_narrow">Narrow</string>
+    <string name="ankrimento_margins_normal">Normal</string>
+    <string name="ankrimento_margins_wide">Wide</string>
+    <string name="ankrimento_contents">Contents</string>
+    <string name="ankrimento_chapter_number">Chapter %d</string>
+    <string name="ankrimento_reading_now">Reading now</string>
+    <string name="ankrimento_book_progress">%d%%</string>
 </resources>

@@ -68,6 +68,9 @@ internal object IncrementoIcons {
                 "-3.6,-3.6s1.62,-3.6 3.6,-3.6s3.6,1.62 3.6,3.6S13.98,15.6 12,15.6z",
         )
     }
+    val TextFormat by lazy {
+        icon("text_format", "M5,17v2h14v-2H5zM9.5,12.8h5l0.9,2.2h2.1L12.75,4h-1.5L6.5,15h2.1l0.9,-2.2zM12,5.98L13.87,11h-3.74L12,5.98z")
+    }
     val Tree by lazy { icon("tree", "M22,11V3h-7v3H9V3H2v8h7V8h2v10h4v3h7v-8h-7v3h-2V8h2v3z") }
     val Chart by lazy { icon("chart", "M5,9.2h3V19H5zM10.6,5h2.8v14h-2.8zM16.2,13H19v6h-2.8z") }
     val Document by lazy {

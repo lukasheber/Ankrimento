@@ -14,11 +14,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -28,6 +32,7 @@ import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
 import com.ichi2.anki.ankrimento.ui.PriorityDialog
 import com.ichi2.anki.ankrimento.ui.ReaderLoading
+import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderScaffold
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReviewBarState
@@ -58,6 +63,15 @@ abstract class ReaderActivity : ComponentActivity() {
     /** The reader's own tools, most used first. */
     protected var tools by mutableStateOf<List<ReaderTool>>(emptyList())
 
+    /** How much of the document is read, shown under it. */
+    protected var progress by mutableStateOf<ReaderProgress?>(null)
+
+    /** A sheet the reader shows over the document (reading settings, contents), or null. */
+    protected var sheet by mutableStateOf<(@Composable () -> Unit)?>(null)
+
+    /** False while only the document shows (immersive reading). */
+    private var chromeVisible by mutableStateOf(true)
+
     private var content by mutableStateOf<View?>(null)
     private var title by mutableStateOf("")
     private var answerButtons by mutableStateOf<List<Ankrimento.AnswerButton>>(emptyList())
@@ -75,6 +89,8 @@ abstract class ReaderActivity : ComponentActivity() {
                     menu = menu(),
                     review = reviewBar(),
                     onBack = ::leave,
+                    chromeVisible = chromeVisible,
+                    progress = progress,
                 ) { modifier ->
                     val view = content
                     if (view == null) {
@@ -83,6 +99,7 @@ abstract class ReaderActivity : ComponentActivity() {
                         key(view) { AndroidView(factory = { view }, modifier = modifier) }
                     }
                 }
+                sheet?.invoke()
                 editedPriority?.let { current ->
                     PriorityDialog(current, onDismiss = { editedPriority = null }) { priority ->
                         editedPriority = null
@@ -114,6 +131,19 @@ abstract class ReaderActivity : ComponentActivity() {
         // wraps its content lays pages out in a zero-height viewport (100vh = 0).
         view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         content = view
+    }
+
+    /** A tap on the page hides the bars and the status bar, for reading alone; another brings them back. */
+    internal fun toggleBarsOnTap(view: ReaderWebView) {
+        view.onTap = { showChrome(!chromeVisible) }
+    }
+
+    private fun showChrome(show: Boolean) {
+        chromeVisible = show
+        WindowCompat.getInsetsController(window, window.decorView).apply {
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            if (show) show(WindowInsetsCompat.Type.systemBars()) else hide(WindowInsetsCompat.Type.systemBars())
+        }
     }
 
     /** Runs when the extract sheet created a card from this document, with the script that marks the source. */

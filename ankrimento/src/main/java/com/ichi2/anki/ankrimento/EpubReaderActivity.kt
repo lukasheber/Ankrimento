@@ -17,10 +17,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.ContentsSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderTool
+import com.ichi2.anki.ankrimento.ui.ReadingSettingsSheet
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import timber.log.Timber
 import java.io.File
 
@@ -29,11 +33,18 @@ import java.io.File
  * EPUB page script, whose console messages Incremento's backend handles.
  * The top bar and the text-selection menu call the page script's own
  * actions, as desktop's toolbar does.
+ *
+ * Reading is set up as in an ebook app: "Aa" holds text size and page colour
+ * (the book's settings, shared with desktop) and this device's typography;
+ * the contents list jumps between chapters; a tap on the page leaves only
+ * the text; the strip under it shows how far into the book the reader is.
  */
 class EpubReaderActivity : ReaderActivity() {
     private lateinit var webView: ReaderWebView
     private var section: Ankrimento.EpubSection? = null
     private var pendingScrollRatio: Double? = null
+    private var reading: Ankrimento.EpubReading? = null
+    private lateinit var preferences: ReadingPreferences
 
     /** Page-script messages, applied one at a time in the order sent. */
     private val messages = Channel<String>(Channel.UNLIMITED)
@@ -63,18 +74,29 @@ class EpubReaderActivity : ReaderActivity() {
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_highlight), HIGHLIGHT_JS),
             )
         setReaderContent(webView)
+        toggleBarsOnTap(webView)
+        preferences = ReadingPreferences.load(this)
         tools =
             listOf(
-                ReaderTool(getString(R.string.ankrimento_epub_previous), IncrementoIcons.Previous) { turnChapter(-1) },
-                ReaderTool(getString(R.string.ankrimento_epub_next), IncrementoIcons.Next) { turnChapter(1) },
+                ReaderTool(getString(R.string.ankrimento_reading_settings), IncrementoIcons.TextFormat, ::showReadingSettings),
+                ReaderTool(getString(R.string.ankrimento_contents), IncrementoIcons.Contents, ::showContents),
                 ReaderTool(getString(R.string.ankrimento_epub_read_here), IncrementoIcons.Bookmark) { runScript(READ_MARKER_JS) },
+                ReaderTool(getString(R.string.ankrimento_epub_previous)) { turnChapter(-1) },
+                ReaderTool(getString(R.string.ankrimento_epub_next)) { turnChapter(1) },
                 ReaderTool(getString(R.string.ankrimento_extract_selection)) { runScript(EXTRACT_JS) },
                 ReaderTool(getString(R.string.ankrimento_highlight_selection)) { runScript(HIGHLIGHT_JS) },
             )
-        lifecycleScope.launch { load(null, null) }
+        lifecycleScope.launch {
+            reading =
+                runCatching { withCol { Ankrimento.epubReading(cardId) } }
+                    .onFailure { Timber.w(it, "Loading the book's reading settings failed") }
+                    .getOrNull()
+            load(null, null)
+        }
         lifecycleScope.launch {
             for (message in messages) {
                 val current = section ?: continue
+                showProgress(current, message)
                 runCatching { withCol { Ankrimento.epubMessage(cardId, current.index, message) } }
                     .onSuccess { target -> target?.let { (index, ratio) -> load(index, ratio) } }
                     .onFailure { Timber.w(it, "EPUB page message failed: %s", message.substringBefore(':')) }
@@ -89,6 +111,82 @@ class EpubReaderActivity : ReaderActivity() {
     }
 
     private fun runScript(script: String) = webView.evaluateJavascript(script, null)
+
+    /** Upstream reports the reading position as `incremento_epub_progress:{"scrollRatio": …}`. */
+    private fun showProgress(
+        current: Ankrimento.EpubSection,
+        message: String,
+    ) {
+        if (!message.startsWith(PROGRESS_PREFIX)) return
+        val ratio =
+            runCatching { JSONObject(message.removePrefix(PROGRESS_PREFIX)).optDouble("scrollRatio", 0.0) }.getOrDefault(0.0)
+        showProgress(current, ratio)
+    }
+
+    private fun showProgress(
+        current: Ankrimento.EpubSection,
+        chapterRatio: Double,
+    ) {
+        val fraction = (current.index + chapterRatio.coerceIn(0.0, 1.0)) / current.count.coerceAtLeast(1)
+        progress = ReaderProgress(fraction.toFloat(), getString(R.string.ankrimento_epub_chapter, current.index + 1, current.count))
+    }
+
+    private fun showReadingSettings() {
+        val book = reading ?: return
+        sheet = {
+            ReadingSettingsSheet(
+                textScale = book.textScale,
+                appearance = book.appearance,
+                preferences = preferences,
+                onTextScale = ::setTextScale,
+                onAppearance = ::setAppearance,
+                onPreferences = { chosen ->
+                    preferences = chosen
+                    chosen.save(this)
+                    runScript(chosen.script())
+                    showReadingSettings()
+                },
+                onDismiss = { sheet = null },
+            )
+        }
+    }
+
+    private fun setTextScale(scale: Double) {
+        lifecycleScope.launch {
+            val kept = withCol { Ankrimento.epubSetTextScale(cardId, scale) }
+            reading = reading?.copy(textScale = kept)
+            runScript(
+                "window.incrementoSetEpubTextScale && window.incrementoSetEpubTextScale($kept);" +
+                    " window.dispatchEvent(new Event('resize'));",
+            )
+            showReadingSettings()
+        }
+    }
+
+    private fun setAppearance(mode: String) {
+        lifecycleScope.launch {
+            withCol { Ankrimento.epubSetAppearance(cardId, mode) }
+            reading = reading?.copy(appearance = mode)
+            runScript("window.incrementoSetEpubAppearance && window.incrementoSetEpubAppearance(${JSONObject.quote(mode)});")
+            showReadingSettings()
+        }
+    }
+
+    private fun showContents() {
+        val chapters = reading?.contents ?: return
+        val current = section ?: return
+        sheet = {
+            ContentsSheet(
+                chapters,
+                current.index,
+                onChapter = { index ->
+                    sheet = null
+                    lifecycleScope.launch { load(index, 0.0) }
+                },
+                onDismiss = { sheet = null },
+            )
+        }
+    }
 
     /** Loads chapter [index] (the saved one when null) at [scrollRatio] (saved position when null). */
     private suspend fun load(
@@ -105,7 +203,9 @@ class EpubReaderActivity : ReaderActivity() {
                 return
             }
         section = opened
-        subtitle = getString(R.string.ankrimento_epub_chapter, opened.index + 1, opened.count)
+        subtitle = reading?.contents?.getOrNull(opened.index)?.takeIf { it.isNotBlank() }
+            ?: getString(R.string.ankrimento_epub_chapter, opened.index + 1, opened.count)
+        showProgress(opened, scrollRatio ?: 0.0)
         pendingScrollRatio = scrollRatio
         // Canonical: Incremento may resolve /data/user/0 to /data/data, or not.
         val root = File(opened.root).canonicalFile
@@ -135,6 +235,7 @@ class EpubReaderActivity : ReaderActivity() {
                         val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio) }
                         webView.evaluateJavascript(TOUCH_SELECTION_JS, null)
                         webView.evaluateJavascript(script, null)
+                        webView.evaluateJavascript(preferences.script(), null)
                     }
                 }
             }
@@ -153,6 +254,7 @@ class EpubReaderActivity : ReaderActivity() {
 
         /** Upstream's _PYCMD_BRIDGE; each message is prefix + nonce + ":" + message. */
         private const val MESSAGE_PREFIX = "__incremento_epub__:"
+        private const val PROGRESS_PREFIX = "incremento_epub_progress:"
 
         /**
          * Upstream selects text by dragging a mouse and blocks native selection meanwhile;

@@ -2,6 +2,9 @@
 
 package com.ichi2.anki.ankrimento.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -26,6 +30,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -69,6 +74,12 @@ internal class ReviewBarState(
     val onAnswer: (Rating) -> Unit,
 )
 
+/** Where the reader is in the document: [fraction] of it read, [label] for where ("Chapter 3 of 12"). */
+class ReaderProgress(
+    val fraction: Float,
+    val label: String,
+)
+
 /** Icons shown in the top bar before the rest move to the overflow menu. */
 private const val MAX_BAR_ICONS = 3
 
@@ -76,6 +87,8 @@ private const val MAX_BAR_ICONS = 3
  * A reader's screen: the document fills it; a top bar names it and holds
  * the reader's tools; in a session, the review bar is at the bottom, within
  * thumb reach, so reading ends with a single tap on how soon to return.
+ *
+ * With [chromeVisible] false only the document shows, as in an ebook app.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,34 +99,45 @@ internal fun ReaderScaffold(
     menu: List<ReaderTool>,
     review: ReviewBarState?,
     onBack: () -> Unit,
+    chromeVisible: Boolean = true,
+    progress: ReaderProgress? = null,
     content: @Composable (Modifier) -> Unit,
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium)
-                        if (!subtitle.isNullOrEmpty()) {
-                            Text(subtitle, maxLines = 1, style = MaterialTheme.typography.bodySmall)
+            AnimatedVisibility(chromeVisible, enter = expandVertically(), exit = shrinkVertically()) {
+                TopAppBar(
+                    title = {
+                        Column {
+                            Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleMedium)
+                            if (!subtitle.isNullOrEmpty()) {
+                                Text(subtitle, maxLines = 1, style = MaterialTheme.typography.bodySmall)
+                            }
                         }
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_navigate_up))
-                    }
-                },
-                actions = {
-                    val barIcons = tools.filter { it.icon != null }.take(MAX_BAR_ICONS)
-                    barIcons.forEach { tool ->
-                        IconButton(onClick = tool.onClick) { Icon(tool.icon!!, contentDescription = tool.label) }
-                    }
-                    OverflowMenu(tools.filterNot { it in barIcons } + menu)
-                },
-            )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_navigate_up))
+                        }
+                    },
+                    actions = {
+                        val barIcons = tools.filter { it.icon != null }.take(MAX_BAR_ICONS)
+                        barIcons.forEach { tool ->
+                            IconButton(onClick = tool.onClick) { Icon(tool.icon!!, contentDescription = tool.label) }
+                        }
+                        OverflowMenu(tools.filterNot { it in barIcons } + menu)
+                    },
+                )
+            }
         },
-        bottomBar = { if (review != null) ReviewBar(review) },
+        bottomBar = {
+            AnimatedVisibility(chromeVisible, enter = expandVertically(expandFrom = Alignment.Top), exit = shrinkVertically()) {
+                Column {
+                    if (progress != null) ProgressStrip(progress, insetBottom = review == null)
+                    if (review != null) ReviewBar(review)
+                }
+            }
+        },
     ) { padding: PaddingValues ->
         content(
             Modifier
@@ -122,6 +146,37 @@ internal fun ReaderScaffold(
                 .consumeWindowInsets(padding)
                 .imePadding(),
         )
+    }
+}
+
+/** A thin bar of how much is read, with where the reader is and the percentage. */
+@Composable
+private fun ProgressStrip(
+    progress: ReaderProgress,
+    insetBottom: Boolean,
+) {
+    Surface(tonalElevation = 3.dp) {
+        Column(if (insetBottom) Modifier.navigationBarsPadding() else Modifier) {
+            LinearProgressIndicator(
+                progress = { progress.fraction.coerceIn(0f, 1f) },
+                modifier = Modifier.fillMaxWidth().height(3.dp),
+                drawStopIndicator = {},
+                gapSize = 0.dp,
+            )
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
+                Text(
+                    progress.label,
+                    style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    stringResource(R.string.ankrimento_book_progress, (progress.fraction.coerceIn(0f, 1f) * 100).roundToInt()),
+                    style = MaterialTheme.typography.labelMedium,
+                )
+            }
+        }
     }
 }
 

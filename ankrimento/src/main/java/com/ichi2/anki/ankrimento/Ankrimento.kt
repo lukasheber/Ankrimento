@@ -331,6 +331,42 @@ object Ankrimento {
         return navigate.getInt("section_index") to navigate.getDouble("scroll_ratio")
     }
 
+    /**
+     * What desktop keeps per book: [textScale] (0.7 to 2.2) and [appearance]
+     * ("original", "dark", "night"); with the chapter titles.
+     */
+    data class EpubReading(
+        val textScale: Double,
+        val appearance: String,
+        val contents: List<String>,
+    )
+
+    @WorkerThread
+    fun epubReading(cardId: Long): EpubReading {
+        val json = JSONObject(requireFacade().callAttr("epub_reading", cardId).toString())
+        val contents = json.getJSONArray("contents")
+        return EpubReading(
+            textScale = json.getDouble("text_scale"),
+            appearance = json.getString("appearance"),
+            contents = List(contents.length()) { contents.getString(it) },
+        )
+    }
+
+    /** Stores the book's text scale as desktop's text size buttons do; returns the scale kept. */
+    @WorkerThread
+    fun epubSetTextScale(
+        cardId: Long,
+        scale: Double,
+    ): Double = requireFacade().callAttr("epub_set_text_scale", cardId, scale).toDouble()
+
+    @WorkerThread
+    fun epubSetAppearance(
+        cardId: Long,
+        mode: String,
+    ) {
+        requireFacade().callAttr("epub_set_appearance", cardId, mode)
+    }
+
     /** Add a shared link: a video link as a video topic, anything else as a web topic. */
     @WorkerThread
     fun importLink(

@@ -88,3 +88,21 @@ def test_extract_from_an_epub_records_the_chapter(rt, epub_card):
         (epub_card, created["note_id"]),
     ).fetchone()
     assert row == (1,)
+
+
+def test_reading_settings_are_upstreams_per_book_values(rt, epub_card):
+    reading = json.loads(facade.epub_reading(epub_card))
+    assert reading == {"text_scale": 1.0, "appearance": "original", "contents": ["Chapter One", "Chapter Two"]}
+
+    assert facade.epub_set_text_scale(epub_card, 1.35) == pytest.approx(1.35)
+    assert facade.epub_set_text_scale(epub_card, 9.0) == pytest.approx(2.2)  # upstream's limit
+    facade.epub_set_appearance(epub_card, "night")
+    reading = json.loads(facade.epub_reading(epub_card))
+    assert reading["text_scale"] == pytest.approx(2.2)
+    assert reading["appearance"] == "night"
+    # Desktop builds the page script from the same values.
+    assert '"textScale": 2.2' in facade.epub_script(epub_card, 0, "n")
+    with pytest.raises(ValueError):
+        facade.epub_set_appearance(epub_card, "sepia")
+    facade.epub_set_text_scale(epub_card, 1.0)
+    facade.epub_set_appearance(epub_card, "original")
