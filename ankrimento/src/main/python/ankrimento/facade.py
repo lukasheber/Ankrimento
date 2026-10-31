@@ -360,10 +360,46 @@ def import_epub(path: str, title: str, deck_name: str = "Topics", priority: floa
     return int(card_id)
 
 
+def import_web(url: str, title: str = "", deck_name: str = "Topics", priority: float = 50.0) -> int:
+    """Add a web page as an Incremento Web topic card, as desktop's Web Page does."""
+    from incremento.backend.priority_manager import set_priority
+    from incremento.backend.web_manager import add_web_card
+
+    rt = runtime.current()
+    card_id = add_web_card(rt.col, url, title, deck_name=deck_name)
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return int(card_id)
+
+
 def card_reader(card_id: int) -> str:
-    """Which Incremento reader opens this card ("pdf" or "epub"), or "" for none."""
+    """Which Incremento reader opens this card ("pdf", "epub" or "web"), or "" for none."""
     note = runtime.current().col.get_card(int(card_id)).note()
-    return {"Incremento PDF": "pdf", "Incremento EPUB": "epub"}.get(note.note_type()["name"], "")
+    readers = {"Incremento PDF": "pdf", "Incremento EPUB": "epub", "Incremento Web": "web"}
+    return readers.get(note.note_type()["name"], "")
+
+
+def web_open(card_id: int) -> str:
+    from ankrimento import web_reader
+
+    return _dumps(web_reader.open_page(int(card_id)))
+
+
+def web_script(card_id: int, nonce: str, current_url: str) -> str:
+    from ankrimento import web_reader
+
+    return web_reader.bridge_script(int(card_id), nonce, current_url)
+
+
+def web_message(card_id: int, message: str) -> None:
+    from ankrimento import web_reader
+
+    web_reader.handle(int(card_id), message)
+
+
+def web_extract(card_id: int, text: str) -> bool:
+    from ankrimento import web_reader
+
+    return web_reader.extract(int(card_id), text)
 
 
 def epub_open(card_id: int, section_index: int = -1) -> str:

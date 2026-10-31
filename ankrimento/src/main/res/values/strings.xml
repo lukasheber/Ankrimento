@@ -7,6 +7,10 @@
     <string name="ankrimento_pdf_add_failed">Adding the document failed: %s</string>
     <string name="ankrimento_pdf_missing">This card\'s PDF file is not on this device</string>
     <string name="ankrimento_add_epub">Add EPUB to Incremento</string>
+    <string name="ankrimento_share_label">Add to Incremento</string>
+    <string name="ankrimento_share_no_link">Share a web link to add it to Incremento</string>
+    <string name="ankrimento_web_back">◀ Back</string>
+    <string name="ankrimento_web_select_first">Select some text first</string>
     <string name="ankrimento_epub_missing">This card\'s EPUB file is not on this device</string>
     <string name="ankrimento_epub_previous">◀ Chapter</string>
     <string name="ankrimento_epub_next">Chapter ▶</string>

@@ -97,7 +97,7 @@ val incrementoAddonSource =
         from("src/addon/python")
         from(rootProject.file("vendor/incremento")) {
             // The Qt-free part of the add-on; see ankrimento.addon.SHIPPED_ENTRIES.
-            include("backend/**", "locales/**", "config.json", "manifest.json", "frontend/epub_dock.py")
+            include("backend/**", "locales/**", "config.json", "manifest.json", "frontend/epub_dock.py", "web/web_dock_bridge.js")
             exclude("**/__pycache__/**", "**/AGENTS.md")
             into("ankrimento_addon_source/incremento")
         }

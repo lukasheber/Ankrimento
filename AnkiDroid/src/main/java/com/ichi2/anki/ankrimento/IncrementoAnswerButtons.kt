@@ -27,6 +27,7 @@ internal fun AbstractFlashcardViewer.notifyIncrementoQuestionShown(cardId: CardI
         when (reader) {
             "pdf" -> startActivity(PdfReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
             "epub" -> startActivity(EpubReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
+            "web" -> startActivity(WebReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
         }
     }
 }

@@ -71,7 +71,13 @@ AnkiDroid (Kotlin)
   bridge feeds the ported handlers (progress, read marker, highlights,
   chapter navigation, extraction with an `epub_card_sources` row). The
   toolbar calls the page script's own actions, as desktop's does.
-- Web, video and writing readers: todo.
+- **Web** (`web_reader.py`, `WebReaderActivity`): the page with desktop's
+  `web/web_dock_bridge.js` (shipped as data), which saves the URL and scroll
+  position and restores them (`incrementoApplyRestoreState`). Extract offers
+  the selection. "Add to Incremento" in Android's share sheet
+  (`ShareToIncrementoActivity`) adds a shared link through `add_web_card`.
+  Not yet: desktop's extraction anchors and snapshots.
+- Video and writing readers: todo.
 
 ### Syncing Incremento data
 

@@ -321,6 +321,43 @@ object Ankrimento {
         return navigate.getInt("section_index") to navigate.getDouble("scroll_ratio")
     }
 
+    /** Add a web page as an Incremento Web topic card; returns the card id. */
+    @WorkerThread
+    fun importWeb(
+        url: String,
+        title: String,
+    ): Long = requireFacade().callAttr("import_web", url, title).toLong()
+
+    /** The page to open for web topic [cardId] and a nonce for its bridge messages. */
+    @WorkerThread
+    fun webOpen(cardId: Long): Pair<String, String> {
+        val json = JSONObject(requireFacade().callAttr("web_open", cardId).toString())
+        return json.getString("url") to json.getString("nonce")
+    }
+
+    /** Desktop's web bridge script, with the saved position restore, for [currentUrl]. */
+    @WorkerThread
+    fun webScript(
+        cardId: Long,
+        nonce: String,
+        currentUrl: String,
+    ): String = requireFacade().callAttr("web_script", cardId, nonce, currentUrl).toString()
+
+    @WorkerThread
+    fun webMessage(
+        cardId: Long,
+        message: String,
+    ) {
+        requireFacade().callAttr("web_message", cardId, message)
+    }
+
+    /** Start an extract from selected page text; false when nothing is selected. */
+    @WorkerThread
+    fun webExtract(
+        cardId: Long,
+        text: String,
+    ): Boolean = requireFacade().callAttr("web_extract", cardId, text).toBoolean()
+
     /** The managed PDF file of [cardId], or "" when the file is missing. */
     @WorkerThread
     fun pdfPath(cardId: Long): String = requireFacade().callAttr("pdf_path", cardId).toString()

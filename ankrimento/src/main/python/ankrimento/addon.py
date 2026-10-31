@@ -18,8 +18,16 @@ ADDON_PACKAGE = "incremento"
 
 # Only the Qt-free parts of the add-on ship to mobile. The Qt UI (frontend/,
 # __init__.py), web assets and the browser extension are desktop-only, except
-# frontend/epub_dock.py, which is read (never imported) for its EPUB page script.
-SHIPPED_ENTRIES = ("backend", "locales", "config.json", "manifest.json", "frontend/epub_dock.py")
+# frontend/epub_dock.py (read, never imported, for its EPUB page script) and the
+# web dock's bridge script.
+SHIPPED_ENTRIES = (
+    "backend",
+    "locales",
+    "config.json",
+    "manifest.json",
+    "frontend/epub_dock.py",
+    "web/web_dock_bridge.js",
+)
 
 _INSTALL_STAMP = ".ankrimento-install"
 
