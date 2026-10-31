@@ -249,6 +249,58 @@ object Ankrimento {
         title: String,
     ): Long = requireFacade().callAttr("import_pdf", path, title).toLong()
 
+    /** Add an EPUB file as an Incremento EPUB topic card; returns the card id. */
+    @WorkerThread
+    fun importEpub(
+        path: String,
+        title: String,
+    ): Long = requireFacade().callAttr("import_epub", path, title).toLong()
+
+    /** A chapter of an EPUB topic, extracted to [root]; [path] is the chapter file. */
+    data class EpubSection(
+        val root: String,
+        val path: String,
+        val index: Int,
+        val count: Int,
+        val nonce: String,
+    )
+
+    /** The chapter to show: [sectionIndex], or the saved one when null. */
+    @WorkerThread
+    fun epubOpen(
+        cardId: Long,
+        sectionIndex: Int? = null,
+    ): EpubSection {
+        val json = JSONObject(requireFacade().callAttr("epub_open", cardId, sectionIndex ?: -1).toString())
+        return EpubSection(
+            root = json.getString("root"),
+            path = json.getString("path"),
+            index = json.getInt("section_index"),
+            count = json.getInt("section_count"),
+            nonce = json.getString("nonce"),
+        )
+    }
+
+    /** Desktop's EPUB page script for a loaded chapter; [scrollRatio] null restores the saved position. */
+    @WorkerThread
+    fun epubScript(
+        cardId: Long,
+        section: EpubSection,
+        scrollRatio: Double?,
+    ): String = requireFacade().callAttr("epub_script", cardId, section.index, section.nonce, scrollRatio ?: -1.0).toString()
+
+    /** Apply a page-script message; returns the chapter to load next and its scroll ratio, if any. */
+    @WorkerThread
+    fun epubMessage(
+        cardId: Long,
+        sectionIndex: Int,
+        message: String,
+    ): Pair<Int, Double>? {
+        val json = JSONObject(requireFacade().callAttr("epub_message", cardId, sectionIndex, message).toString())
+        val navigate = json.optJSONObject("navigate") ?: return null
+        return navigate.getInt("section_index") to navigate.getDouble("scroll_ratio")
+    }
+
     /** The managed PDF file of [cardId], or "" when the file is missing. */
     @WorkerThread
     fun pdfPath(cardId: Long): String = requireFacade().callAttr("pdf_path", cardId).toString()

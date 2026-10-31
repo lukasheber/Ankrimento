@@ -38,7 +38,12 @@ class IncrementoMenu(
 ) : MenuProvider {
     private val pickPdf =
         activity.registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri != null) activity.lifecycleScope.launch { importPdf(uri) }
+            if (uri != null) activity.lifecycleScope.launch { importDocument(uri, "document.pdf", Ankrimento::importPdf) }
+        }
+
+    private val pickEpub =
+        activity.registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) activity.lifecycleScope.launch { importDocument(uri, "book.epub", Ankrimento::importEpub) }
         }
 
     private val pickSyncFolder =
@@ -71,6 +76,7 @@ class IncrementoMenu(
         menu.add(Menu.NONE, R.id.ankrimento_start_session, Menu.CATEGORY_SECONDARY, R.string.ankrimento_start_session)
         menu.add(Menu.NONE, R.id.ankrimento_session_settings, Menu.CATEGORY_SECONDARY, R.string.ankrimento_session_settings)
         menu.add(Menu.NONE, R.id.ankrimento_add_pdf, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_pdf)
+        menu.add(Menu.NONE, R.id.ankrimento_add_epub, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_epub)
         menu.add(Menu.NONE, R.id.ankrimento_sync_now, Menu.CATEGORY_SECONDARY, R.string.ankrimento_sync_now)
         menu.add(Menu.NONE, R.id.ankrimento_sync_folder, Menu.CATEGORY_SECONDARY, R.string.ankrimento_sync_folder)
         menu.add(Menu.NONE, R.id.ankrimento_profile, Menu.CATEGORY_SECONDARY, R.string.ankrimento_profile)
@@ -81,6 +87,7 @@ class IncrementoMenu(
             R.id.ankrimento_start_session -> activity.lifecycleScope.launch { startSession() }
             R.id.ankrimento_session_settings -> activity.lifecycleScope.launch { editSessionSettings() }
             R.id.ankrimento_add_pdf -> pickPdf.launch(arrayOf("application/pdf"))
+            R.id.ankrimento_add_epub -> pickEpub.launch(arrayOf("application/epub+zip"))
             R.id.ankrimento_sync_now -> activity.lifecycleScope.launch { syncNow() }
             R.id.ankrimento_sync_folder -> pickSyncFolder.launch(null)
             R.id.ankrimento_profile -> editProfile()
@@ -113,11 +120,16 @@ class IncrementoMenu(
         }
     }
 
-    private suspend fun importPdf(uri: Uri) {
-        Timber.i("Adding a PDF to Incremento")
+    /** Imports a picked document with [import] (Incremento copies it into its own folder). */
+    private suspend fun importDocument(
+        uri: Uri,
+        fallbackName: String,
+        import: (path: String, title: String) -> Long,
+    ) {
+        Timber.i("Adding a document to Incremento")
         runCatching {
-            val name = displayName(uri) ?: "document.pdf"
-            // Incremento copies the file into its own PDF folder; stage it first.
+            val name = displayName(uri) ?: fallbackName
+            // Stage the picked file where Incremento's importer can read it.
             val staged = File(activity.cacheDir, "ankrimento-import").apply { mkdirs() }.resolve(File(name).name)
             withContext(Dispatchers.IO) {
                 activity.contentResolver.openInputStream(uri).use { input ->
@@ -128,7 +140,7 @@ class IncrementoMenu(
             try {
                 CollectionManager.withCol {
                     Ankrimento.start(activity, this)
-                    Ankrimento.importPdf(staged.absolutePath, staged.nameWithoutExtension)
+                    import(staged.absolutePath, staged.nameWithoutExtension)
                 }
             } finally {
                 staged.delete()
@@ -137,7 +149,7 @@ class IncrementoMenu(
         }.onSuccess { title ->
             toast(activity.getString(R.string.ankrimento_pdf_added, title))
         }.onFailure { error ->
-            Timber.w(error, "Adding a PDF failed")
+            Timber.w(error, "Adding a document failed")
             toast(activity.getString(R.string.ankrimento_pdf_add_failed, error.message ?: error.javaClass.simpleName))
         }
     }

@@ -11,6 +11,7 @@ import anki.scheduler.CardAnswer.Rating
 import com.chaquo.python.Python
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.EpubReaderActivity
 import com.ichi2.anki.ankrimento.PdfReaderActivity
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.CoroutineScope
@@ -58,6 +59,13 @@ class AnkrimentoSmokeTestActivity : Activity() {
                         log("imported PDF card $cardId")
                         startActivity(PdfReaderActivity.intent(this@AnkrimentoSmokeTestActivity, cardId))
                     }
+                    // Optional: `--es epub <path>` likewise for the EPUB reader.
+                    intent.getStringExtra(EXTRA_EPUB)?.let { path ->
+                        val title = File(path).nameWithoutExtension
+                        val cardId = withContext(Dispatchers.IO) { CollectionManager.withCol { Ankrimento.importEpub(path, title) } }
+                        log("imported EPUB card $cardId")
+                        startActivity(EpubReaderActivity.intent(this@AnkrimentoSmokeTestActivity, cardId))
+                    }
                 }
             result
                 .onSuccess { log("PASSED") }
@@ -88,9 +96,10 @@ class AnkrimentoSmokeTestActivity : Activity() {
         val deckId = Ankrimento.buildSessionDeck(selected)
         val deckCards = col.findCards("did:$deckId")
         log("session deck $deckId holds ${deckCards.size} cards")
-        check(deckCards.toSet() == selected.toSet()) { "deck does not match selection" }
+        // Buried cards (e.g. postponed topics) are selected but cannot enter a filtered deck.
+        check(deckCards.isNotEmpty() && selected.containsAll(deckCards)) { "deck holds cards that were not selected" }
 
-        val topicCardId = selected.first { it in topics }
+        val topicCardId = deckCards.first { it in topics }
         val before = col.getCard(topicCardId)
         val rating = Ankrimento.ratingToSubmit(topicCardId, Rating.AGAIN) // button 1 = More
         log("topic button 1 -> submit $rating")
@@ -147,5 +156,6 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val TAG = "AnkrimentoSmoke"
         const val SMOKE_TAG = "ankrimento-smoke"
         const val EXTRA_PDF = "pdf"
+        const val EXTRA_EPUB = "epub"
     }
 }

@@ -129,29 +129,8 @@ class PdfReaderActivity : ComponentActivity() {
     }
 
     private fun showExtractDialog() {
-        lifecycleScope.launch {
-            val draft = withCol { Ankrimento.extractDraft(cardId) }
-            ExtractDialog.show(
-                this@PdfReaderActivity,
-                draft,
-                onAdd = { result -> addExtract(result) },
-                onDiscard = { lifecycleScope.launch { withCol { Ankrimento.discardExtract(cardId) } } },
-            )
-        }
-    }
-
-    private fun addExtract(result: ExtractDialog.Result) {
-        lifecycleScope.launch {
-            runCatching {
-                withCol { Ankrimento.createExtract(cardId, result.fields, result.noteType, result.isTopic, result.priority) }
-            }.onSuccess { script ->
-                if (script.isNotEmpty()) webView.evaluateJavascript(script, null)
-                Toast.makeText(this@PdfReaderActivity, R.string.ankrimento_extract_added, Toast.LENGTH_SHORT).show()
-            }.onFailure { error ->
-                Timber.w(error, "Adding an extract failed")
-                val message = getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName)
-                Toast.makeText(this@PdfReaderActivity, message, Toast.LENGTH_LONG).show()
-            }
+        ExtractDialog.showFor(this, cardId) { script ->
+            if (script.isNotEmpty()) webView.evaluateJavascript(script, null)
         }
     }
 

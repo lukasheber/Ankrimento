@@ -24,7 +24,10 @@ internal fun AbstractFlashcardViewer.notifyIncrementoQuestionShown(cardId: CardI
             }
         // Topic actions depend on the card just shown.
         invalidateOptionsMenu()
-        if (reader == "pdf") startActivity(PdfReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
+        when (reader) {
+            "pdf" -> startActivity(PdfReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
+            "epub" -> startActivity(EpubReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
+        }
     }
 }
 

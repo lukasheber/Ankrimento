@@ -17,8 +17,9 @@ from pathlib import Path
 ADDON_PACKAGE = "incremento"
 
 # Only the Qt-free parts of the add-on ship to mobile. The Qt UI (frontend/,
-# __init__.py), web assets and the browser extension are desktop-only.
-SHIPPED_ENTRIES = ("backend", "locales", "config.json", "manifest.json")
+# __init__.py), web assets and the browser extension are desktop-only, except
+# frontend/epub_dock.py, which is read (never imported) for its EPUB page script.
+SHIPPED_ENTRIES = ("backend", "locales", "config.json", "manifest.json", "frontend/epub_dock.py")
 
 _INSTALL_STAMP = ".ankrimento-install"
 
@@ -48,6 +49,7 @@ def install_addon(source_dir: Path, addons_dir: Path, build_id: str) -> Path:
                 ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "AGENTS.md"),
             )
         elif source.exists():
+            target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, target)
     stamp.write_text(build_id, encoding="utf8")
     return addon_dir

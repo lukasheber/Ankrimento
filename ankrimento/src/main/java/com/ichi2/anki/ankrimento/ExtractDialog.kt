@@ -15,6 +15,12 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
+import com.ichi2.anki.CollectionManager.withCol
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * "New card from extract": the mobile counterpart of desktop's Add Card dock
@@ -22,6 +28,45 @@ import android.widget.TextView
  * is edited, in which case the edited text is used as plain text.
  */
 internal object ExtractDialog {
+    /**
+     * Shows the pending extract from [sourceCardId] and adds it on confirmation.
+     * [onAdded] receives JavaScript refreshing the reader (may be empty).
+     */
+    fun showFor(
+        activity: ComponentActivity,
+        sourceCardId: Long,
+        onAdded: (script: String) -> Unit,
+    ) {
+        activity.lifecycleScope.launch {
+            val draft = withCol { Ankrimento.extractDraft(sourceCardId) }
+            show(
+                activity,
+                draft,
+                onAdd = { result ->
+                    activity.lifecycleScope.launch {
+                        runCatching {
+                            withCol {
+                                Ankrimento.createExtract(sourceCardId, result.fields, result.noteType, result.isTopic, result.priority)
+                            }
+                        }.onSuccess { script ->
+                            onAdded(script)
+                            Toast.makeText(activity, R.string.ankrimento_extract_added, Toast.LENGTH_SHORT).show()
+                        }.onFailure { error ->
+                            Timber.w(error, "Adding an extract failed")
+                            val message =
+                                activity.getString(
+                                    R.string.ankrimento_extract_failed,
+                                    error.message ?: error.javaClass.simpleName,
+                                )
+                            Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                },
+                onDiscard = { activity.lifecycleScope.launch { withCol { Ankrimento.discardExtract(sourceCardId) } } },
+            )
+        }
+    }
+
     data class Result(
         val fields: List<String>,
         val noteType: String,

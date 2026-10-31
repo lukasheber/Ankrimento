@@ -350,12 +350,43 @@ def import_pdf(path: str, title: str, deck_name: str = "Topics", priority: float
     return int(card_id)
 
 
+def import_epub(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0) -> int:
+    """Add an EPUB as an Incremento EPUB topic card, as desktop's Add EPUB does."""
+    from incremento.backend.epub_manager import add_epub_card
+    from incremento.backend.priority_manager import set_priority
+
+    rt = runtime.current()
+    card_id = add_epub_card(str(rt.addon_dir), rt.col, path, title, deck_name=deck_name, profile=rt.profile)
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return int(card_id)
+
+
 def card_reader(card_id: int) -> str:
-    """Which Incremento reader opens this card ("pdf"), or "" for none."""
+    """Which Incremento reader opens this card ("pdf" or "epub"), or "" for none."""
     note = runtime.current().col.get_card(int(card_id)).note()
-    if note.note_type()["name"] == "Incremento PDF":
-        return "pdf"
-    return ""
+    return {"Incremento PDF": "pdf", "Incremento EPUB": "epub"}.get(note.note_type()["name"], "")
+
+
+def epub_open(card_id: int, section_index: int = -1) -> str:
+    """The chapter file to load (saved chapter when ``section_index`` < 0)."""
+    from ankrimento import epub_reader
+
+    return _dumps(epub_reader.open_section(int(card_id), None if int(section_index) < 0 else int(section_index)))
+
+
+def epub_script(card_id: int, section_index: int, nonce: str, scroll_ratio: float = -1.0) -> str:
+    """The page script for a loaded chapter (saved position when ``scroll_ratio`` < 0)."""
+    from ankrimento import epub_reader
+
+    ratio = None if float(scroll_ratio) < 0 else float(scroll_ratio)
+    return epub_reader.section_script(int(card_id), int(section_index), nonce, ratio)
+
+
+def epub_message(card_id: int, section_index: int, message: str) -> str:
+    """Apply a message from the EPUB page script; may ask to navigate."""
+    from ankrimento import epub_reader
+
+    return _dumps(epub_reader.handle(int(card_id), int(section_index), message))
 
 
 def pdf_path(card_id: int) -> str:

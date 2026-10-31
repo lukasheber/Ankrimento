@@ -63,7 +63,14 @@ AnkiDroid (Kotlin)
   tags, knowledge-tree lineage and PDF source row. Unlike desktop, mobile
   does not add Incremento's hidden metadata fields to note types: that is a
   schema change forcing a one-way full sync.
-- EPUB, web, video and writing readers: todo.
+- **EPUB** (`epub_reader.py`, `EpubReaderActivity`): each extracted chapter
+  in a WebView with desktop's EPUB page script. `frontend/epub_dock.py`
+  imports Qt, so its `_build_page_script` is compiled from upstream's source
+  on its own (the file ships as data, never imported); its `console.log`
+  bridge feeds the ported handlers (progress, read marker, highlights,
+  chapter navigation, extraction with an `epub_card_sources` row). The
+  toolbar calls the page script's own actions, as desktop's does.
+- Web, video and writing readers: todo.
 
 ### Syncing Incremento data
 

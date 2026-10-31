@@ -188,9 +188,14 @@ def create(source_card_id: int, fields: list[str], note_type: str, kind: str, pr
     )
 
     source_note = source_card.note()
-    if "PDF_Filename" in source_note:
-        plain = [re.sub(r"<[^>]+>", "", html.unescape(value)).strip()[:120] for value in note.fields[:2]]
-        excerpt = " / ".join(part for part in plain if part)[:200]
+    plain = [re.sub(r"<[^>]+>", "", html.unescape(value)).strip()[:120] for value in note.fields[:2]]
+    excerpt = " / ".join(part for part in plain if part)[:200]
+    if "EPUB_Filename" in source_note:
+        from incremento.backend.db import add_epub_card_source
+
+        # For EPUB drafts the "page" is the chapter (section) index.
+        add_epub_card_source(addon_dir, profile, int(source_card_id), current.page, int(note.id), excerpt)
+    elif "PDF_Filename" in source_note:
         add_pdf_card_source(
             addon_dir,
             profile,

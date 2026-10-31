@@ -23,7 +23,8 @@ def test_backend_errors_keep_their_type(rt):
 def test_addon_has_the_desktop_layout(rt):
     assert (rt.addon_dir / "backend" / "session.py").is_file()
     assert (rt.addon_dir / "user_files" / rt.profile / "incremento.db").is_file()
-    assert not (rt.addon_dir / "frontend").exists()
+    # Only the EPUB dock ships from frontend/, as data for its page script.
+    assert [p.name for p in (rt.addon_dir / "frontend").iterdir()] == ["epub_dock.py"]
     assert not (rt.addon_dir / "__init__.py").exists()
 
 
