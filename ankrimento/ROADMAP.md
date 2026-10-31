@@ -35,7 +35,8 @@ Mobile principles that guide every item:
 | ✅ | Next element opens straight away, without passing through the reviewer | |
 | ✅ | Back to the previous element (one undo, only while nothing changed since) | |
 | ✅ | Topic actions: Done, Postpone, Revisit 3/6/12 months | In the review bar's menu |
-| ⬜ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: tap to continue the session, or build one when it is empty | Next up |
+| ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
+| ⬜ | When a session finds nothing to study, say why (e.g. "Documents within topics: 0%") and offer the session settings | Today: upstream's short toast |
 | ⬜ | Plain-text topics in a simple reader (no "Show answer") | Today they open in the reviewer |
 | ⬜ | Items in the same learning screen as topics: question, Show answer, then Fail/Pass or Anki's grades | Removes the last hand-off to the legacy reviewer |
 | ⬜ | Swipe between elements (left = next with the default choice, right = Back) | |
@@ -186,8 +187,8 @@ Mobile principles that guide every item:
 
 ## Order of work
 
-1. Fixed Incremento entry on the main screen (the session deck).
-   Priority chip on every topic and item.
+1. ~~Fixed Incremento entry on the main screen~~ (done). Priority chip on
+   items. Explain empty sessions.
 2. Plain-text topics and items in the learning screen, so the loop never
    leaves it, plus swipe.
 3. Extract bottom sheet, Keep extracting, and video extract at timestamp.

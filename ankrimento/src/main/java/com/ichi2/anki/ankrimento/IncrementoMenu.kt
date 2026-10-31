@@ -9,15 +9,22 @@ import android.text.InputType
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.ichi2.anki.CollectionManager
+import com.ichi2.anki.ankrimento.ui.IncrementoTheme
+import com.ichi2.anki.ankrimento.ui.SessionEntryCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,11 +39,20 @@ import java.io.File
  *   "Incremento Session" deck (which becomes the current deck) and asks for
  *   the reviewer, which [openReviewer] opens.
  * - "Add PDF to Incremento", like desktop's Add PDF.
+ *
+ * And the fixed way in, at the top of the deck list ([attachSessionEntry]):
+ * the session deck as a card that continues the session, or starts one when
+ * it is empty. Tapping the session deck in the list does the same
+ * ([onDeckClick]).
  */
 class IncrementoMenu(
     private val activity: ComponentActivity,
     private val openReviewer: () -> Unit,
 ) : MenuProvider {
+    private val settings = AnkrimentoSettings(activity)
+    private var sessionDeckId by mutableStateOf<Long?>(null)
+    private var sessionRemaining by mutableStateOf<Int?>(null)
+
     private val pickPdf =
         activity.registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri != null) activity.lifecycleScope.launch { importDocument(uri, "document.pdf", Ankrimento::importPdf) }
@@ -104,6 +120,70 @@ class IncrementoMenu(
             else -> return false
         }
         return true
+    }
+
+    /** Puts the session card at the top of [container], kept current whenever the deck list shows. */
+    fun attachSessionEntry(container: ViewGroup) {
+        val card =
+            ComposeView(activity).apply {
+                setContent {
+                    IncrementoTheme {
+                        SessionEntryCard(
+                            remaining = sessionRemaining,
+                            onStudy = { activity.lifecycleScope.launch { continueOrStartSession() } },
+                            onSettings = { activity.lifecycleScope.launch { editSessionSettings() } },
+                        )
+                    }
+                }
+            }
+        container.addView(card, 0, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        activity.lifecycleScope.launch {
+            activity.repeatOnLifecycle(Lifecycle.State.RESUMED) { refreshSessionEntry() }
+        }
+    }
+
+    /** Whether [fullDeckName] is the session deck, which the deck list shows as the session card instead. */
+    fun isSessionDeck(fullDeckName: String): Boolean = fullDeckName == settings.sessionDeckName
+
+    /** The session deck tapped in the list: continue or start, as the session card does. */
+    fun onDeckClick(deckId: Long): Boolean {
+        if (deckId != sessionDeckId) return false
+        activity.lifecycleScope.launch { continueOrStartSession() }
+        return true
+    }
+
+    private suspend fun refreshSessionEntry() {
+        runCatching {
+            CollectionManager.withCol {
+                val deckId = decks.idForName(settings.sessionDeckName)
+                deckId to (deckId?.let { findCards("did:$it").size } ?: 0)
+            }
+        }.onSuccess { (deckId, remaining) ->
+            sessionDeckId = deckId
+            sessionRemaining = remaining
+        }.onFailure { Timber.w(it, "Reading the Incremento session deck failed") }
+    }
+
+    /** Continues the session while its deck has cards; otherwise starts a new one. */
+    private suspend fun continueOrStartSession() {
+        runCatching {
+            val continuing =
+                CollectionManager.withCol {
+                    Ankrimento.start(activity, this)
+                    settings.sessionDeckName = Ankrimento.sessionDeckName()
+                    val deckId = decks.idForName(settings.sessionDeckName)
+                    if (deckId != null && findCards("did:$deckId").isNotEmpty()) {
+                        decks.select(deckId)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            if (continuing) openReviewer() else startSession()
+        }.onFailure { error ->
+            Timber.w(error, "Incremento session failed")
+            toast(activity.getString(R.string.ankrimento_session_failed, error.message ?: error.javaClass.simpleName))
+        }
     }
 
     private suspend fun startSession() {

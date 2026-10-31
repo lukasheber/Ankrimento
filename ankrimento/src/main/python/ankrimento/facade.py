@@ -199,6 +199,13 @@ def select_session() -> str:
     return _dumps({"card_ids": [int(cid) for cid in result.selected_ids]})
 
 
+def session_deck_name() -> str:
+    """The filtered deck sessions fill, as upstream names it."""
+    from incremento.backend.session_selection import incremento_session_deck_name
+
+    return incremento_session_deck_name(None)
+
+
 def build_session_deck(card_ids_json: str, preserve_order: bool = False) -> str:
     """Fill the "Incremento Session" filtered deck with exactly these cards."""
     from aqt import mw

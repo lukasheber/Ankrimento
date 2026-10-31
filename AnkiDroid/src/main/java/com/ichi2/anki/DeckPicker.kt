@@ -462,11 +462,14 @@ open class DeckPicker :
     // ----------------------------------------------------------------------------
     // LISTENERS
     // ----------------------------------------------------------------------------
+    private lateinit var incrementoMenu: IncrementoMenu
+
     private fun onDeckClick(
         deckId: DeckId,
         selectionType: DeckSelectionType,
     ) {
         Timber.i("DeckPicker:: Selected deck with id %d", deckId)
+        if (incrementoMenu.onDeckClick(deckId)) return
         launchCatchingTask {
             handleDeckSelection(deckId, selectionType)
             if (fragmented) {
@@ -553,7 +556,8 @@ open class DeckPicker :
 
         registerReceiver()
 
-        addMenuProvider(IncrementoMenu(this) { openReviewer() }, this)
+        incrementoMenu = IncrementoMenu(this) { openReviewer() }.also { addMenuProvider(it, this) }
+        incrementoMenu.attachSessionEntry(findViewById(R.id.deckpicker_view))
 
         // create inherited navigation drawer layout here so that it can be used by parent class
         initNavigationDrawer()
@@ -922,7 +926,8 @@ open class DeckPicker :
         fun onDeckListChanged(deckList: FlattenedDeckList) {
             // Filtering must not recreate the study options fragment: its menu invalidation closes search.
             deckListAdapter.submit(
-                data = deckList.data,
+                // The session deck is the Incremento card above the list.
+                data = deckList.data.filterNot { it.filtered && incrementoMenu.isSessionDeck(it.fullDeckName) },
                 hasSubDecks = deckList.hasSubDecks,
             )
         }

@@ -43,18 +43,25 @@ class AnkrimentoSmokeTestActivity : Activity() {
         super.onCreate(savedInstanceState)
         output = TextView(this).apply { setTextIsSelectable(true) }
         setContentView(ScrollView(this).apply { addView(output) })
-        // `--el open <card id>` alone opens that card's reader, without the session check.
-        intent.getLongExtra(EXTRA_OPEN, 0L).takeIf { it > 0 && intent.extras?.size() == 1 }?.let { cardId ->
+        // `--el open <card id>` opens that card's reader; with `--ez only true`, imports and
+        // `open` run without the session check (which needs cards due).
+        if (intent.getBooleanExtra(EXTRA_ONLY, false)) {
             scope.launch {
-                val reader =
+                val opened =
                     withContext(Dispatchers.IO) {
                         CollectionManager.withCol {
                             Ankrimento.start(this@AnkrimentoSmokeTestActivity, this)
-                            Ankrimento.cardReader(cardId)
+                            val pdf = intent.getStringExtra(EXTRA_PDF)?.let { Ankrimento.importPdf(it, File(it).nameWithoutExtension) }
+                            val epub = intent.getStringExtra(EXTRA_EPUB)?.let { Ankrimento.importEpub(it, File(it).nameWithoutExtension) }
+                            pdf?.let { log("imported PDF card $it") }
+                            epub?.let { log("imported EPUB card $it") }
+                            val cardId = intent.getLongExtra(EXTRA_OPEN, 0L).takeIf { it > 0 } ?: epub ?: pdf
+                            cardId?.let { it to Ankrimento.cardReader(it) }
                         }
                     }
-                log("card $cardId opens in the '$reader' reader")
-                ReaderActivity.intent(this@AnkrimentoSmokeTestActivity, reader, cardId, session = false)?.let(::startActivity)
+                opened?.let { (cardId, reader) ->
+                    ReaderActivity.intent(this@AnkrimentoSmokeTestActivity, reader, cardId, session = false)?.let(::startActivity)
+                }
             }
             return
         }
@@ -191,5 +198,6 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_WEB = "web"
         const val EXTRA_VIDEO = "video"
         const val EXTRA_OPEN = "open"
+        const val EXTRA_ONLY = "only"
     }
 }

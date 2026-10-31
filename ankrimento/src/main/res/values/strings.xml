@@ -125,4 +125,13 @@
     <string name="ankrimento_previous_element">Previous element</string>
     <string name="ankrimento_back_unavailable">Can\'t go back: that would also undo what you changed here</string>
     <string name="ankrimento_priority_chip">P %d</string>
+    <!-- Session card on the deck list -->
+    <string name="ankrimento_name">Incremento</string>
+    <string name="ankrimento_session_none">No session in progress</string>
+    <plurals name="ankrimento_session_remaining">
+        <item quantity="one">%d element left in this session</item>
+        <item quantity="other">%d elements left in this session</item>
+    </plurals>
+    <string name="ankrimento_session_continue">Continue</string>
+    <string name="ankrimento_session_start">Start</string>
 </resources>

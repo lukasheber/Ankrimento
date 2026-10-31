@@ -202,6 +202,10 @@ object Ankrimento {
         requireFacade().callAttr("start_session")
     }
 
+    /** The filtered deck sessions fill, as upstream names it. */
+    @WorkerThread
+    fun sessionDeckName(): String = requireFacade().callAttr("session_deck_name").toString()
+
     /** Reviewer hook: a card's question is on screen. Records whether it is a topic, and whether it has a reader. */
     @WorkerThread
     fun questionShown(cardId: Long) {

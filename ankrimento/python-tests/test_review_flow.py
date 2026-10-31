@@ -230,3 +230,9 @@ def test_each_topic_action_is_one_undo_step(rt, action):
     rt.col.undo()
     restored = rt.col.get_card(card_id)
     assert (restored.queue, restored.due, restored.ivl) == (before.queue, before.due, before.ivl)
+
+
+def test_session_deck_name_is_upstreams(rt):
+    from incremento.backend.session_selection import incremento_session_deck_name
+
+    assert facade.session_deck_name() == incremento_session_deck_name(None) == "Incremento Session"
