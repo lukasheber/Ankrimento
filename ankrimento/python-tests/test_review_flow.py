@@ -44,8 +44,8 @@ def cards(rt):
 @pytest.fixture(scope="module")
 def session_deck(rt, cards):
     selected = json.loads(facade.select_session())["card_ids"]
-    assert selected
-    assert set(selected) <= set(cards["topics"]) | set(cards["items"])
+    # Other test modules may have added cards; ours must be among the selected.
+    assert set(cards["topics"]) & set(selected)
     deck_id = json.loads(facade.build_session_deck(json.dumps(selected)))["deck_id"]
     return deck_id, selected
 

@@ -42,23 +42,39 @@ AnkiDroid (Kotlin)
 
 | Desktop hook (in `__init__.py`) | Status |
 |---|---|
-| `_topic_reviewer_will_answer_card` → `prepare_topic_answer` | done (`before_answer`) |
-| topic postpone button, item fail/pass remap, custom-schedule prepare | todo |
-| `reviewer_did_answer_card` → `on_topic_card_answered` | done (`after_answer`) |
-| timer, review time, custom schedule, learning leech, diagnostics | todo |
-| `undo_state_did_change` → `reconcile_topic_state_after_anki_operation` | done (`undo_state_changed`, after every `ChangeManager` op) |
-| `undo_state_did_change` → custom-schedule reconciliation | todo |
+| "Start Incremental Learning" → `learnFunction` | done, with a headless dialog (`session.py`) reporting saved settings |
+| `reviewer_will_init_answer_buttons` / button times | done (`answer_buttons`): More/Same/Less, Fail/Pass |
+| `reviewer_will_answer_card`: topic prepare, custom-schedule prepare, fail/pass remap | done (`before_answer`) |
+| topic postpone button | todo |
+| `reviewer_did_answer_card`: topic A-factor, custom schedule | done (`after_answer`) |
+| `reviewer_did_answer_card`: focus timer, review time, learning leech, diagnostics | todo |
+| `reviewer_did_show_question/answer`, `reviewer_will_end` (session timing) | done |
+| `undo_state_did_change`: topic and custom-schedule reconciliation | done (`undo_state_changed`, after every `ChangeManager` op) |
 | profile open: postpone/skip runtimes, interrupted-import recovery | todo |
+
+### Readers and extraction
+
+- **PDF** (`pdf_reader.py`, `PdfReaderActivity`): upstream's pdf.js viewer
+  (`web/`), unchanged, with desktop's `pdf_dock` message handlers ported onto
+  the same backend calls. Not yet: annotation sync with the PDF file,
+  snapshots, search, linked references, reviewing a page's cards.
+- **Extraction** (`extract.py`, `ExtractDialog`): the viewer's Extract fills a
+  draft; the dialog adds a note with desktop's extract priority, topic/item
+  tags, knowledge-tree lineage and PDF source row. Unlike desktop, mobile
+  does not add Incremento's hidden metadata fields to note types: that is a
+  schema change forcing a one-way full sync.
+- EPUB, web, video and writing readers: todo.
 
 ### AnkiDroid hooks
 
 | Where | What |
 |---|---|
-| `DeckPicker.onCreate` | registers `IncrementoSessionMenu` ("Start Incremento session") |
-| `ReviewerViewModel.answerCardInternal` (new study screen) | `ratingToSubmit` before, `onCardAnswered` after the answer |
-| legacy `Reviewer` (AnkiDroid's default) | **not hooked yet**: topic answers there get normal Anki scheduling |
+| `DeckPicker.onCreate` | registers `IncrementoMenu` ("Start Incremento session", "Add PDF to Incremento") |
+| legacy `Reviewer` (AnkiDroid's default) | answer remap and post-answer scheduling, Incremento's answer buttons, question/answer shown, reviewer closed, opening a PDF topic's reader |
+| `ReviewerViewModel.answerCardInternal` (new study screen) | answer remap and post-answer scheduling; its buttons keep AnkiDroid's labels (todo) |
+| `EaseButton` | a `setup` overload taking a text label |
 
-The hooks do nothing until an Incremento session has started Ankrimento.
+The hooks do nothing until Ankrimento has started (an Incremento session or a PDF import).
 
 ## Desktop tests
 

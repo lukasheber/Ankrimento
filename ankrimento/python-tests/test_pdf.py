@@ -86,3 +86,50 @@ def test_bookmarks_are_pushed_back_to_the_viewer(rt, pdf_card):
 def test_finished_suspends_the_document(rt, pdf_card):
     facade.pdf_message(pdf_card, f"incremento_pdf_finished:{pdf_card}")
     assert rt.col.get_card(pdf_card).queue == -1
+
+
+@pytest.fixture(scope="module")
+def extract_source(rt, tmp_path_factory):
+    source = tmp_path_factory.mktemp("pdf-extract") / "Extract Source.pdf"
+    source.write_bytes(_MINIMAL_PDF)
+    return facade.import_pdf(str(source), "Extract Source", priority=50.0)
+
+
+def test_extract_creates_a_linked_card(rt, extract_source):
+    from incremento.backend.priority_manager import get_priority
+
+    card_id = extract_source
+    facade.pdf_message(card_id, f"incremento_pdf_nav:{card_id}:1")
+    highlight = {"id": "hx", "page": 1, "color": "yellow", "text": "Spaced repetition",
+                 "rects": [{"x": 0.1, "y": 0.2, "w": 0.3, "h": 0.05}]}
+    facade.pdf_message(card_id, "incremento_pdf_hl_add:" + json.dumps({"cardId": card_id, "highlight": highlight}))
+    facade.pdf_message(card_id, "incremento_fill_field:" + json.dumps(
+        {"idx": 0, "text": "Spaced repetition", "runs": [{"text": "Spaced ", "bold": False, "italic": False},
+                                                         {"text": "repetition", "bold": True, "italic": False}]}))
+    facade.pdf_message(card_id, "incremento_fill_field:" + json.dumps({"idx": 1, "text": "<b>not html</b>"}))
+
+    draft = json.loads(facade.extract_draft(card_id))
+    assert draft["fields"] == ["Spaced <strong>repetition</strong>", "&lt;b&gt;not html&lt;/b&gt;"]
+    assert draft["note_type"] == "Basic"
+    assert draft["kind"] == "item"
+    assert draft["priority"] == pytest.approx(49.0)  # source 50 x desktop's default 0.98
+
+    created = json.loads(facade.create_extract(card_id, json.dumps(draft["fields"]), "Basic", "item", 49.0))
+    note = rt.col.get_note(created["note_id"])
+    assert note.fields == draft["fields"]
+    new_card = note.cards()[0]
+    assert new_card.did == rt.col.get_card(card_id).did
+    assert get_priority(str(rt.addon_dir), rt.profile, new_card.id) == pytest.approx(49.0)
+
+    from incremento.backend.db import get_connection
+
+    conn = get_connection(str(rt.addon_dir), rt.profile)
+    assert conn.execute(
+        "SELECT page, highlight_id FROM pdf_card_sources WHERE pdf_card_id = ? AND note_id = ?",
+        (card_id, note.id),
+    ).fetchone() == (1, "hx")
+    assert conn.execute(
+        "SELECT parent_card_id FROM knowledge_tree_nodes WHERE card_id = ?", (new_card.id,)
+    ).fetchone() == (card_id,)
+    assert str(note.id) in created["script"]
+    assert json.loads(facade.extract_draft(card_id))["fields"] == ["", ""]  # draft consumed

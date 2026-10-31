@@ -58,10 +58,9 @@ object Ankrimento {
             val url: String,
         ) : Event
 
-        /** Text extracted from a document, for a new card. */
-        data class Extract(
+        /** Text was extracted from [sourceCardId]'s document; see [extractDraft]. */
+        data class ExtractDraft(
             val sourceCardId: Long,
-            val text: String,
         ) : Event
     }
 
@@ -190,6 +189,45 @@ object Ankrimento {
         message: String,
     ): String = requireFacade().callAttr("pdf_message", cardId, message).toString()
 
+    /** The pending extract from [sourceCardId]'s document, with Incremento's defaults. */
+    @WorkerThread
+    fun extractDraft(sourceCardId: Long): ExtractDraft {
+        val draft = JSONObject(requireFacade().callAttr("extract_draft", sourceCardId).toString())
+        val fields = draft.getJSONArray("fields")
+        val noteTypes = draft.getJSONArray("note_types")
+        return ExtractDraft(
+            fields = List(fields.length()) { fields.getString(it) },
+            noteTypes = List(noteTypes.length()) { noteTypes.getString(it) },
+            noteType = draft.getString("note_type"),
+            isTopic = draft.getString("kind") == "topic",
+            priority = draft.getDouble("priority"),
+        )
+    }
+
+    /**
+     * Add the extract as a note linked to its source document, as desktop does
+     * (priority, topic/item tags, knowledge tree, PDF source). Returns
+     * JavaScript refreshing the reader's cards for the page.
+     */
+    @WorkerThread
+    fun createExtract(
+        sourceCardId: Long,
+        fields: List<String>,
+        noteType: String,
+        isTopic: Boolean,
+        priority: Double,
+    ): String {
+        val kind = if (isTopic) "topic" else "item"
+        val result =
+            requireFacade().callAttr("create_extract", sourceCardId, JSONArray(fields).toString(), noteType, kind, priority)
+        return JSONObject(result.toString()).getString("script")
+    }
+
+    @WorkerThread
+    fun discardExtract(sourceCardId: Long) {
+        requireFacade().callAttr("discard_extract", sourceCardId)
+    }
+
     /** Pick session cards with the saved Incremento scheduler settings. */
     @WorkerThread
     fun selectSession(): List<Long> {
@@ -286,10 +324,19 @@ object Ankrimento {
             "move_to_state" -> if (fields.getString("state") == "review") mutableEvents.tryEmit(Event.EnterReview)
             "pdf_close" -> mutableEvents.tryEmit(Event.CloseReader(fields.getLong("card_id")))
             "open_url" -> mutableEvents.tryEmit(Event.OpenUrl(fields.getString("url")))
-            "pdf_extract" -> mutableEvents.tryEmit(Event.Extract(fields.getLong("card_id"), fields.getString("text")))
+            "extract_draft" -> mutableEvents.tryEmit(Event.ExtractDraft(fields.getLong("card_id")))
             else -> Timber.d("Ankrimento event %s %s", event, fieldsJson)
         }
     }
+
+    /** An extract waiting to become a card; [fields] are HTML. */
+    data class ExtractDraft(
+        val fields: List<String>,
+        val noteTypes: List<String>,
+        val noteType: String,
+        val isTopic: Boolean,
+        val priority: Double,
+    )
 
     /**
      * One of Incremento's answer buttons, placed on AnkiDroid's [rating] button.

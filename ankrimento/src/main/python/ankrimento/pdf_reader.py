@@ -35,6 +35,7 @@ MSG_LIMIT_OVERRIDE = "incremento_pdf_limit_override:"
 MSG_FINISHED = "incremento_pdf_finished:"
 MSG_FILL_FIELD = "incremento_fill_field:"
 MSG_OPEN_LINK = "incremento_pdf_open_link:"
+MSG_GET_PAGE_CARDS = "incremento_get_page_cards:"
 
 _ADDON_PKG = "incremento"
 
@@ -92,6 +93,39 @@ def _limit_status(card_id: int, *, current_page: int | None = None) -> dict:
         return get_pdf_daily_limit_status(addon_dir, profile, int(card_id), current_page=current_page)
     except Exception:
         return {"enabled": False}
+
+
+def page_cards_script(card_id: int, page: int) -> str:
+    """Mirrors ``_reconcile_pdf_page_sources`` and the page-cards push."""
+    from incremento.backend.db import (
+        delete_pdf_card_sources_for_note_ids,
+        get_pdf_card_sources,
+        get_pdf_page_card_counts,
+    )
+
+    addon_dir, profile = _context()
+    col = runtime.current().col
+
+    def note_exists(note_id: int) -> bool:
+        try:
+            col.get_note(note_id)
+            return True
+        except Exception:
+            return False
+
+    cards = get_pdf_card_sources(addon_dir, profile, int(card_id), int(page))
+    stale = {int(row.get("note_id", 0) or 0) for row in cards}
+    stale = {note_id for note_id in stale if note_id > 0 and not note_exists(note_id)}
+    if stale:
+        delete_pdf_card_sources_for_note_ids(addon_dir, profile, int(card_id), stale)
+        cards = get_pdf_card_sources(addon_dir, profile, int(card_id), int(page))
+    live = [row for row in cards if int(row.get("note_id", 0) or 0) > 0]
+    counts = get_pdf_page_card_counts(addon_dir, profile, int(card_id))
+    return _js_call("incrementoReceivePageCards", {"page": int(page), "cards": live, "pageCounts": counts})
+
+
+# The highlight the viewer created for the extraction that follows it.
+_last_highlight: dict[int, str] = {}
 
 
 def _appearance_mode(card_id: int) -> str:
@@ -253,6 +287,7 @@ def handle(card_id: int, msg: str) -> list[str]:
         data = payload(MSG_HL_ADD)
         if int(data["cardId"]) == card_id:
             pdf_highlights.add_highlight(addon_dir, profile, card_id, data["highlight"])
+            _last_highlight[card_id] = str(data["highlight"].get("id") or "")
         return []
     if msg.startswith(MSG_HL_UPDATE):
         data = payload(MSG_HL_UPDATE)
@@ -331,15 +366,24 @@ def handle(card_id: int, msg: str) -> list[str]:
             mw.notify_host("pdf_close", card_id=card_id)
         return []
     if msg.startswith(MSG_FILL_FIELD):
+        # Desktop fills its Add Card dock; here the draft feeds the host's dialog.
+        from ankrimento import extract
+
         data = payload(MSG_FILL_FIELD)
-        mw.notify_host(
-            "pdf_extract",
-            card_id=card_id,
-            field=int(data.get("idx", 0) or 0),
-            text=str(data.get("text") or ""),
-            page=int(data.get("page", 0) or 0),
+        extract.add_to_draft(
+            card_id,
+            int(data.get("idx", 0) or 0),
+            data,
+            page=pdf_manager.get_page(addon_dir, profile, card_id),
+            highlight_id=_last_highlight.pop(card_id, ""),
         )
+        mw.notify_host("extract_draft", card_id=card_id)
         return []
+    if msg.startswith(MSG_GET_PAGE_CARDS):
+        _, raw_card, raw_page = msg.split(":")
+        if int(raw_card) != card_id:
+            return []
+        return [page_cards_script(card_id, int(raw_page))]
     if msg.startswith(MSG_OPEN_LINK):
         data = payload(MSG_OPEN_LINK)
         if int(data.get("cardId", 0) or 0) == card_id:

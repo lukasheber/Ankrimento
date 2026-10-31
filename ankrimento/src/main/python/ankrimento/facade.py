@@ -272,6 +272,33 @@ def pdf_message(card_id: int, message: str) -> str:
     return "\n".join(pdf_reader.handle(int(card_id), message))
 
 
+def extract_draft(source_card_id: int) -> str:
+    """The pending extract from a document, with the dialog's defaults."""
+    from ankrimento import extract
+
+    return _dumps(extract.draft(int(source_card_id)))
+
+
+def create_extract(source_card_id: int, fields_json: str, note_type: str, kind: str, priority: float) -> str:
+    """Add the extract as a note linked to its source document.
+
+    Returns the new note id and JavaScript refreshing the reader's page cards.
+    """
+    from ankrimento import extract, pdf_reader
+
+    source_card_id = int(source_card_id)
+    page = extract.draft(source_card_id)["page"] or 1
+    note_id = extract.create(source_card_id, list(json.loads(fields_json)), note_type, kind, float(priority))
+    script = pdf_reader.page_cards_script(source_card_id, page) if card_reader(source_card_id) == "pdf" else ""
+    return _dumps({"note_id": note_id, "script": script})
+
+
+def discard_extract(source_card_id: int) -> None:
+    from ankrimento import extract
+
+    extract.discard(int(source_card_id))
+
+
 def get_priority(card_id: int) -> float:
     from incremento.backend.priority_manager import get_priority as _get_priority
 

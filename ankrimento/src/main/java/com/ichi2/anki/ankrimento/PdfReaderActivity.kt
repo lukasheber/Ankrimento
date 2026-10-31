@@ -123,22 +123,35 @@ class PdfReaderActivity : ComponentActivity() {
             is Ankrimento.Event.CloseReader -> if (event.cardId == cardId) finish()
             is Ankrimento.Event.OpenUrl -> openUrl(event.url)
             is Ankrimento.Event.Message -> Toast.makeText(this, event.text, Toast.LENGTH_LONG).show()
-            is Ankrimento.Event.Extract -> if (event.sourceCardId == cardId) extract(event.text)
+            is Ankrimento.Event.ExtractDraft -> if (event.sourceCardId == cardId) showExtractDialog()
             Ankrimento.Event.EnterReview -> Unit
         }
     }
 
-    /** Offers extracted text to AnkiDroid's note editor through its share target. */
-    private fun extract(text: String) {
-        val share =
-            Intent(Intent.ACTION_SEND)
-                .setType("text/plain")
-                .setPackage(packageName)
-                .putExtra(Intent.EXTRA_TEXT, text)
-        try {
-            startActivity(share)
-        } catch (e: ActivityNotFoundException) {
-            Timber.w(e, "No note editor for extracted text")
+    private fun showExtractDialog() {
+        lifecycleScope.launch {
+            val draft = withCol { Ankrimento.extractDraft(cardId) }
+            ExtractDialog.show(
+                this@PdfReaderActivity,
+                draft,
+                onAdd = { result -> addExtract(result) },
+                onDiscard = { lifecycleScope.launch { withCol { Ankrimento.discardExtract(cardId) } } },
+            )
+        }
+    }
+
+    private fun addExtract(result: ExtractDialog.Result) {
+        lifecycleScope.launch {
+            runCatching {
+                withCol { Ankrimento.createExtract(cardId, result.fields, result.noteType, result.isTopic, result.priority) }
+            }.onSuccess { script ->
+                if (script.isNotEmpty()) webView.evaluateJavascript(script, null)
+                Toast.makeText(this@PdfReaderActivity, R.string.ankrimento_extract_added, Toast.LENGTH_SHORT).show()
+            }.onFailure { error ->
+                Timber.w(error, "Adding an extract failed")
+                val message = getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName)
+                Toast.makeText(this@PdfReaderActivity, message, Toast.LENGTH_LONG).show()
+            }
         }
     }
 
