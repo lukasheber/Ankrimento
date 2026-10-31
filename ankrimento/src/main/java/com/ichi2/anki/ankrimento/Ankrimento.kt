@@ -80,6 +80,27 @@ object Ankrimento {
     private var syncStore: SafStore? = null
     private var deviceName = ""
 
+    /**
+     * Starts Python and imports the slow, collection-independent modules, off
+     * the collection queue, so a later [start] is quick. Only once Incremento
+     * has been used on this device.
+     */
+    @WorkerThread
+    fun warmUp(context: Context) {
+        if (!isSupported || facade != null || !AnkrimentoSettings(context).hasStarted) return
+        val startedAt = System.currentTimeMillis()
+        startPython(context)
+        Python.getInstance().getModule("ankrimento.android").callAttr("warm_up")
+        Timber.i("Ankrimento warmed up in %d ms", System.currentTimeMillis() - startedAt)
+    }
+
+    @Synchronized
+    private fun startPython(context: Context) {
+        if (!Python.isStarted()) {
+            Python.start(AndroidPlatform(context.applicationContext))
+        }
+    }
+
     @WorkerThread
     @Synchronized
     fun start(
@@ -91,9 +112,8 @@ object Ankrimento {
         val settings = AnkrimentoSettings(context)
         val profile = settings.profile
         deviceName = settings.deviceName
-        if (!Python.isStarted()) {
-            Python.start(AndroidPlatform(context.applicationContext))
-        }
+        settings.hasStarted = true
+        startPython(context)
         val python = Python.getInstance()
         val host = AnkrimentoHost(col.backend, ::onHostEvent)
         // Reinstall the shipped add-on whenever the app itself is updated.

@@ -75,6 +75,16 @@ def _encode(value: Any) -> Any:
     raise TypeError(f"cannot send {type(value).__name__} to the host")
 
 
+def warm_up() -> None:
+    """Import the slow, collection-independent modules ahead of :func:`start`.
+
+    Safe before the host bridge exists: none of these import ``anki._backend``.
+    """
+    import bs4  # noqa: F401
+    import markdown  # noqa: F401
+    from anki import backend_pb2, collection_pb2, decks_pb2, scheduler_pb2  # noqa: F401
+
+
 def start(
     kotlin_host: Any,
     collection_path: str,

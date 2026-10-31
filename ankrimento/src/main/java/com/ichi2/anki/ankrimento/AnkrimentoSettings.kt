@@ -29,6 +29,11 @@ class AnkrimentoSettings(
         get() = preferences.getString(KEY_SYNC_FOLDER, null)?.let(Uri::parse)
         set(value) = preferences.edit { putString(KEY_SYNC_FOLDER, value?.toString()) }
 
+    /** Incremento has been used on this device (worth warming up at launch). */
+    var hasStarted: Boolean
+        get() = preferences.getBoolean(KEY_HAS_STARTED, false)
+        set(value) = preferences.edit { putBoolean(KEY_HAS_STARTED, value) }
+
     /** Shown to other devices, e.g. "Incremento is open on Pixel 8". */
     val deviceName: String
         get() = preferences.getString(KEY_DEVICE_NAME, null) ?: Build.MODEL
@@ -37,5 +42,6 @@ class AnkrimentoSettings(
         const val KEY_PROFILE = "profile"
         const val KEY_SYNC_FOLDER = "sync_folder"
         const val KEY_DEVICE_NAME = "device_name"
+        const val KEY_HAS_STARTED = "has_started"
     }
 }

@@ -55,6 +55,9 @@ class IncrementoMenu(
         }
 
     init {
+        activity.lifecycleScope.launch(Dispatchers.IO) {
+            runCatching { Ankrimento.warmUp(activity) }.onFailure { Timber.w(it, "Ankrimento warm-up failed") }
+        }
         activity.lifecycleScope.launch {
             activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 Ankrimento.events.collect { event ->
