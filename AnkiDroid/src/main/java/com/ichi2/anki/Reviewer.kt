@@ -75,6 +75,7 @@ import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.Whiteboard.Companion.createInstance
 import com.ichi2.anki.Whiteboard.OnPaintColorChangeListener
 import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.IncrementoReviewerMenu
 import com.ichi2.anki.ankrimento.notifyIncrementoQuestionShown
 import com.ichi2.anki.ankrimento.showIncrementoAnswerButtons
 import com.ichi2.anki.cardviewer.Gesture
@@ -270,6 +271,8 @@ open class Reviewer :
         }
         startLoadingCollection()
         registerOnForgetHandler { listOf(currentCardId!!) }
+        // currentCardId throws before a card is shown; currentCard is null then.
+        addMenuProvider(IncrementoReviewerMenu(this) { currentCard?.id }, this)
         previousCardId = savedInstanceState?.getLongOrNull(STATE_PREVIOUS_CARD_ID)
     }
 

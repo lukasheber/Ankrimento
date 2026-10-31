@@ -148,3 +148,23 @@ def test_priority_round_trips_through_incremento_db(rt, cards):
     card_id = cards["items"][1]
     facade.set_priority(card_id, 12.0)
     assert facade.get_priority(card_id) == 12.0
+
+
+def test_topic_actions_done_revisit_and_postpone(rt):
+    import json as _json
+
+    done, revisit, postpone = _add_notes(rt.col, "Topics", 3, "action topic")
+    assert facade.is_topic(done)
+
+    facade.topic_done(done)
+    card = rt.col.get_card(done)
+    assert card.queue == -1  # suspended
+    assert "topic/done" in card.note().tags
+
+    facade.topic_revisit(revisit, 3)
+    card = rt.col.get_card(revisit)
+    assert card.due - rt.col.sched.today > 80
+    assert "incrv" in _json.loads(card.custom_data)
+
+    facade.topic_postpone(postpone)
+    assert rt.col.get_card(postpone).queue in (-2, -3)  # buried

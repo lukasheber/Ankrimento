@@ -22,6 +22,8 @@ internal fun AbstractFlashcardViewer.notifyIncrementoQuestionShown(cardId: CardI
                 Ankrimento.questionShown(cardId)
                 Ankrimento.cardReader(cardId)
             }
+        // Topic actions depend on the card just shown.
+        invalidateOptionsMenu()
         if (reader == "pdf") startActivity(PdfReaderActivity.intent(this@notifyIncrementoQuestionShown, cardId))
     }
 }

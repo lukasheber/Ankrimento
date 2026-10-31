@@ -220,6 +220,58 @@ def undo_state_changed() -> None:
     gui_hooks.undo_state_did_change(undo_info)
 
 
+def is_topic(card_id: int) -> bool:
+    """Whether Incremento treats the card as a topic (More/Same/Less)."""
+    from incremento.backend.reviewer_buttons import reviewer_button_mode
+
+    return reviewer_button_mode(runtime.current().col.get_card(int(card_id))) == "topic"
+
+
+def _publish(changes: Any) -> None:
+    from aqt import mw
+    from aqt.operations import on_op_finished
+
+    on_op_finished(mw, changes, None)
+
+
+def topic_done(card_id: int) -> str:
+    """Mark a topic done: suspend it and tag its note in one undo step.
+
+    Desktop wiring: the reviewer's Done action (``TopicReviewActions``).
+    """
+    from aqt import mw
+    from incremento.backend.config_service import configured_topic_done_tag, load_addon_config
+    from incremento.backend.topic_review_actions import complete_topic
+
+    done_tag = configured_topic_done_tag(load_addon_config(mw.addonManager, "incremento"))
+    result = complete_topic(runtime.current().col, int(card_id), done_tag=done_tag)
+    _publish(result.changes)
+    return result.message
+
+
+def topic_revisit(card_id: int, months: int) -> str:
+    """Show a topic again only after 3, 6 or 12 months (desktop's "Revisit in…")."""
+    from incremento.backend.topic_review_actions import revisit_topic
+
+    result = revisit_topic(runtime.current().col, int(card_id), months=int(months))
+    _publish(result.changes)
+    return result.message
+
+
+def topic_postpone(card_id: int) -> str:
+    """Postpone a topic for this session or for the configured minutes.
+
+    Desktop wiring: the reviewer's postpone button (``_perform_topic_postpone``).
+    """
+    from anki.collection import OpChanges
+    from incremento.backend.topic_postpone import postpone_topic_card, topic_postpone_due_label
+
+    mode = postpone_topic_card(runtime.current().col.get_card(int(card_id)))
+    # Upstream buries the card directly; tell the host its queue changed.
+    _publish(OpChanges(card=True, study_queues=True))
+    return f"Topic postponed ({topic_postpone_due_label()})" if mode == "timed" else "Topic postponed for this session"
+
+
 def topic_state(card_id: int) -> str:
     """The stored A-factor and interval of a topic card."""
     from incremento.backend.db import get_topic_schedule_state, topic_schedule_exists

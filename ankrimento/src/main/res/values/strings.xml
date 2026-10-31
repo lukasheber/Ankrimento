@@ -31,6 +31,14 @@
     <string name="ankrimento_sync_conflict_message">Incremento data changed on this device and on %s since they last synced. Which version should be kept? The other is saved in a sync-conflicts folder.</string>
     <string name="ankrimento_sync_keep_device">Keep this device\'s</string>
     <string name="ankrimento_sync_keep_folder">Keep the other device\'s</string>
+    <string name="ankrimento_topic_done">Topic done</string>
+    <string name="ankrimento_topic_postpone">Postpone topic</string>
+    <string name="ankrimento_topic_revisit">Revisit topic in…</string>
+    <string name="ankrimento_topic_revisit_3">3 months</string>
+    <string name="ankrimento_topic_revisit_6">6 months</string>
+    <string name="ankrimento_topic_revisit_12">12 months</string>
+    <string name="ankrimento_priority">Incremento priority…</string>
+    <string name="ankrimento_priority_message">0 to 100. With Incremento\'s default settings, lower numbers are more important.</string>
     <string name="ankrimento_profile">Incremento profile…</string>
     <string name="ankrimento_profile_message">The Anki profile name used on your computer (for syncing). Takes effect after restarting AnkiDroid.</string>
 </resources>

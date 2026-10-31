@@ -182,10 +182,43 @@ object Ankrimento {
         requireFacade().callAttr("start_session")
     }
 
-    /** Reviewer hook: a card's question is on screen. */
+    /** Reviewer hook: a card's question is on screen. Records whether it is a topic. */
     @WorkerThread
     fun questionShown(cardId: Long) {
-        if (isStarted) requireFacade().callAttr("question_shown", cardId)
+        if (!isStarted) return
+        requireFacade().callAttr("question_shown", cardId)
+        shownTopicCardId = if (requireFacade().callAttr("is_topic", cardId).toBoolean()) cardId else null
+    }
+
+    /** The card on screen in the reviewer, if Incremento treats it as a topic. */
+    @Volatile
+    var shownTopicCardId: Long? = null
+        private set
+
+    /** Mark the topic done: suspend it and tag its note (desktop's Done). Returns a message. */
+    @WorkerThread
+    fun topicDone(cardId: Long): String = requireFacade().callAttr("topic_done", cardId).toString()
+
+    /** Show the topic again only after [months] (3, 6 or 12). Returns a message. */
+    @WorkerThread
+    fun topicRevisit(
+        cardId: Long,
+        months: Int,
+    ): String = requireFacade().callAttr("topic_revisit", cardId, months).toString()
+
+    /** Postpone the topic for this session or the configured minutes. Returns a message. */
+    @WorkerThread
+    fun topicPostpone(cardId: Long): String = requireFacade().callAttr("topic_postpone", cardId).toString()
+
+    @WorkerThread
+    fun priority(cardId: Long): Double = requireFacade().callAttr("get_priority", cardId).toDouble()
+
+    @WorkerThread
+    fun setPriority(
+        cardId: Long,
+        priority: Double,
+    ) {
+        requireFacade().callAttr("set_priority", cardId, priority)
     }
 
     /** Reviewer hook: a card's answer is on screen. */
