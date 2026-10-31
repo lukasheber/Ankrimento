@@ -236,6 +236,16 @@ class PdfReaderActivity : ReaderActivity() {
             val script = withCol { Ankrimento.pdfStartScript(cardId, PDF_URL, WORKER_URL) }
             webView.evaluateJavascript(script, null)
             webView.evaluateJavascript(COMPACT_STYLE_JS, null)
+            webView.evaluateJavascript(
+                PageGestures.script(
+                    next = "window.incrementoPdfNav && window.incrementoPdfNav(1);",
+                    previous = "window.incrementoPdfNav && window.incrementoPdfNav(-1);",
+                    swipe = PageGestures.Swipe.TURN,
+                    nextHint = getString(R.string.ankrimento_release_next_page),
+                    previousHint = getString(R.string.ankrimento_release_previous_page),
+                ),
+                null,
+            )
             showViewerControls(viewerControlsShown)
             readViewerState()
         }

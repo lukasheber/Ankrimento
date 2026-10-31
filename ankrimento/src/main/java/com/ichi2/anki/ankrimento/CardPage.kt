@@ -71,7 +71,8 @@ object CardPage {
             " var css = 'html { font-size: ' + Math.round(o.scale * 100) + '% !important; }';" +
             // A topic reads like a page; flashcard templates usually centre their text.
             " if (o.start) css += ' body, .card { text-align: start !important; }';" +
-            " if (o.mode !== 'original') { var bg = o.mode === 'night' ? '#15120f' : '#1e1e1e'; var fg = o.mode === 'night' ? '#d9c7a4' : '#dedede';" +
+            " if (o.mode !== 'original') { var bg = o.mode === 'night' ? '#15120f' : '#1e1e1e';" +
+            " var fg = o.mode === 'night' ? '#d9c7a4' : '#dedede';" +
             " css += ' html, body, .card { background: ' + bg + ' !important; color: ' + fg + ' !important; }'" +
             " + ' a { color: #8ab4f8 !important; }'; }" +
             " style.textContent = css; })($options);"

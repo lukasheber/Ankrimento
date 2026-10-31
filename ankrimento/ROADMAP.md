@@ -84,9 +84,10 @@ Mobile principles that guide every item:
 | ⬜ | Cross-references and page links [6] | |
 | ⬜ | DjVu documents [6] | |
 | ⬜ | Searchable PDF text / OCR status [6, 13] | |
-| ⬜ | Pinch zoom | |
-| ⬜ | Swipe sideways to turn pages | |
-| ⬜ | Pull past the end of a page to go to the next ("Release for next page") | Through upstream's page turns, so its daily limit applies |
+| ⬜ | Pinch zoom | Two-finger zoom on the page, through upstream's zoom so it is saved per document |
+| ⬜ | **Reflow** for small screens: the page's text re-flowed to the screen width, EPUB-style | Only if extracts, highlights and annotations made in reflow map back to their exact places in the original PDF layout (and show there on desktop); otherwise not done |
+| ✅ | Swipe sideways to turn pages (while the page fits the width) | |
+| ✅ | Pull past the end of a page for the next one, past its top for the previous ("Release for the next page") | Through upstream's page turns, so its daily limit applies |
 
 ### EPUB
 
@@ -98,7 +99,8 @@ Mobile principles that guide every item:
 | ✅ | Long-press, then Extract / Highlight | |
 | ✅ | Progress strip (chapter, % of book); tap to hide the bars | |
 | ⬜ | Paged mode (horizontal page turns) as an option to scrolling, in the Aa sheet | |
-| ⬜ | Pull past the end of a chapter to go to the next; swipe sideways between chapters in scroll mode | |
+| ✅ | Pull past the end of a chapter for the next, past its start for the previous | |
+| ✅ | Swipe sideways to move one screen on or back (a couple of lines stay in view); it never changes chapter | |
 | ⬜ | Search in book | |
 | 🟡 | Links and footnotes inside the book | Opened externally or ignored |
 | ⬜ | Highlights list and highlight notes | |
@@ -197,7 +199,7 @@ Mobile principles that guide every item:
 
 1. ~~Fixed Incremento entry, priority chip, plain-text topics and items in
    the learning screen~~ (done).
-2. Page turning by swipe and pull-past-the-end in PDF and EPUB.
+2. ~~Page turning by swipe and pull-past-the-end in PDF and EPUB~~ (done).
 3. Extract bottom sheet, Keep extracting, and video extract at timestamp.
 4. Hub and Library (Continue reading, Add sheet). Web pages imported as
    clean HTML / plain text.

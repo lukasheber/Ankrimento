@@ -149,4 +149,9 @@
     <string name="ankrimento_grade_hard">Hard</string>
     <string name="ankrimento_grade_good">Good</string>
     <string name="ankrimento_grade_easy">Easy</string>
+    <!-- Page turning by pulling past the end -->
+    <string name="ankrimento_release_next_page">Release for the next page</string>
+    <string name="ankrimento_release_previous_page">Release for the previous page</string>
+    <string name="ankrimento_release_next_chapter">Release for the next chapter</string>
+    <string name="ankrimento_release_previous_chapter">Release for the previous chapter</string>
 </resources>

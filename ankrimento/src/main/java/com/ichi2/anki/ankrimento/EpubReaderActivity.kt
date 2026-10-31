@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.webkit.ConsoleMessage
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -75,6 +76,7 @@ class EpubReaderActivity : ReaderActivity() {
             )
         setReaderContent(webView)
         toggleBarsOnTap(webView)
+        webView.addJavascriptInterface(PageTurns(), "AnkrimentoPages")
         preferences = ReadingPreferences.load(this)
         tools =
             listOf(
@@ -111,6 +113,14 @@ class EpubReaderActivity : ReaderActivity() {
     }
 
     private fun runScript(script: String) = webView.evaluateJavascript(script, null)
+
+    /** Pulling past a chapter's end or start ([PageGestures]) turns to the next or previous chapter. */
+    private inner class PageTurns {
+        @JavascriptInterface
+        fun turn(delta: Int) {
+            runOnUiThread { turnChapter(delta.coerceIn(-1, 1)) }
+        }
+    }
 
     /** Upstream reports the reading position as `incremento_epub_progress:{"scrollRatio": …}`. */
     private fun showProgress(
@@ -236,6 +246,16 @@ class EpubReaderActivity : ReaderActivity() {
                         webView.evaluateJavascript(TOUCH_SELECTION_JS, null)
                         webView.evaluateJavascript(script, null)
                         webView.evaluateJavascript(preferences.script(), null)
+                        webView.evaluateJavascript(
+                            PageGestures.script(
+                                next = "AnkrimentoPages.turn(1);",
+                                previous = "AnkrimentoPages.turn(-1);",
+                                swipe = PageGestures.Swipe.SCREEN,
+                                nextHint = getString(R.string.ankrimento_release_next_chapter),
+                                previousHint = getString(R.string.ankrimento_release_previous_chapter),
+                            ),
+                            null,
+                        )
                     }
                 }
             }
@@ -264,7 +284,8 @@ class EpubReaderActivity : ReaderActivity() {
         private const val TOUCH_SELECTION_JS =
             "window.addEventListener('pointerdown', function (event) {" +
                 " var target = event.target; if (event.pointerType !== 'touch' || !target || !target.closest) return;" +
-                " if (target.closest('[class*=\"incremento-epub-\"]:not(.incremento-epub-highlight):not(.incremento-epub-scaled)')) return;" +
+                " if (target.closest('[class*=\"incremento-epub-\"]" +
+                ":not(.incremento-epub-highlight):not(.incremento-epub-scaled)')) return;" +
                 " event.stopPropagation(); }, true);"
 
         private const val EXTRACT_JS = "window.incrementoFillEpubField && window.incrementoFillEpubField(0);"
