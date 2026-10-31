@@ -69,6 +69,7 @@ class IncrementoHubActivity : ComponentActivity() {
     private var filter by mutableStateOf<String?>(null)
     private var adding by mutableStateOf(false)
     private var askLink by mutableStateOf(false)
+    private var askArticle by mutableStateOf(false)
     private var askWriting by mutableStateOf(false)
 
     private val pickPdf =
@@ -153,11 +154,17 @@ class IncrementoHubActivity : ComponentActivity() {
             }
     }
 
+    private fun addArticle(url: String) {
+        lifecycleScope.launch { importDocument { withCol { Ankrimento.importWebDocument(url) } } }
+    }
+
     private fun addLink(url: String) {
         lifecycleScope.launch {
             importDocument {
-                val cardId = withCol { Ankrimento.importLink(url, "") }
-                cardId to url
+                withCol {
+                    val cardId = Ankrimento.importLink(url, "")
+                    cardId to Ankrimento.cardTitle(cardId)
+                }
             }
         }
     }
@@ -226,6 +233,13 @@ class IncrementoHubActivity : ComponentActivity() {
         if (askLink) {
             TextPrompt(R.string.ankrimento_add_link, R.string.ankrimento_link_hint, onDismiss = { askLink = false }) { addLink(it) }
         }
+        if (askArticle) {
+            TextPrompt(
+                R.string.ankrimento_add_article,
+                R.string.ankrimento_link_hint,
+                onDismiss = { askArticle = false },
+            ) { addArticle(it) }
+        }
         if (askWriting) {
             TextPrompt(R.string.ankrimento_new_writing, R.string.ankrimento_new_writing_title, onDismiss = { askWriting = false }) {
                 addWriting(it)
@@ -290,6 +304,7 @@ class IncrementoHubActivity : ComponentActivity() {
             Column(Modifier.navigationBarsPadding().padding(bottom = 16.dp)) {
                 AddOption(IncrementoIcons.Document, R.string.ankrimento_add_pdf_file) { pickPdf.launch(arrayOf("application/pdf")) }
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_epub_file) { pickEpub.launch(arrayOf("application/epub+zip")) }
+                AddOption(IncrementoIcons.Book, R.string.ankrimento_add_article) { askArticle = true }
                 AddOption(IncrementoIcons.Web, R.string.ankrimento_add_link) { askLink = true }
                 AddOption(IncrementoIcons.Edit, R.string.ankrimento_new_writing) { askWriting = true }
             }

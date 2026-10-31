@@ -112,7 +112,8 @@ Mobile principles that guide every item:
 |---|---|---|
 | ✅ | Page with upstream bridge; scroll position saved; extract selection | |
 | ✅ | Back steps through page history first | |
-| ⬜ | **Import a web page as clean HTML or plain text**, read with the EPUB-style reader (Aa sheet, contents, progress) | Mobile's answer to Webpage to PDF: reflowing text reads better on a phone |
+| ✅ | **Import a web page as an article**: clean text read in the EPUB reader (Aa sheet, contents, progress, extracts), from the Library's Add or the share sheet | Upstream's page-to-Markdown fetch and Markdown document import, so desktop reads it too |
+| ⬜ | Images in imported articles | Upstream's converter turns images into text links ("[Image: …](url)"); download them or drop the links |
 | ⏸ | Webpage to PDF [5] | Deferred in favour of the HTML / plain text import above |
 | ⬜ | Web extract anchors (jump back to the extract's place) | |
 
@@ -125,7 +126,7 @@ Mobile principles that guide every item:
 | ⬜ | Vimeo | |
 | ✅ | Extract at the current timestamp: the front links back to that moment, as desktop's "Add Card at this point" | |
 | 🟡 | Native controls: Back 10 seconds | Play/pause, speed and seek still come from the player itself |
-| ⬜ | Titles for shared links (e.g. the YouTube title instead of the URL) | |
+| ✅ | Titles for shared links: YouTube's title, or the page's own title | Looked up when a link comes without one; the URL stays if that fails |
 | ⬜ | Open a video extract's link at its moment, on mobile | Desktop opens it; the link is upstream's pycmd |
 | ⬜ | Video bookmarks | |
 | ⬜ | Captions (target/reference) | |
@@ -204,8 +205,8 @@ Mobile principles that guide every item:
    the learning screen~~ (done).
 2. ~~Page turning by swipe and pull-past-the-end in PDF and EPUB~~ (done).
 3. ~~Extract bottom sheet and video extract at timestamp~~ (done).
-4. ~~Library with Continue reading and Add~~ (done). Web pages imported as
-   clean HTML / plain text; titles for links.
+4. ~~Library with Continue reading and Add; web pages as articles; link
+   titles~~ (done).
 5. Settings screen and session presets/advanced options.
 6. Native PDF tools: search, contents, bookmarks, highlights/notes.
 7. Knowledge tree screen, Search ALL, statistics screen, focus timer.

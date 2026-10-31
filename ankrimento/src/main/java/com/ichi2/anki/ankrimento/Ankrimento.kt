@@ -407,6 +407,21 @@ object Ankrimento {
         requireFacade().callAttr("video_extract", cardId, seconds)
     }
 
+    /**
+     * A web page as a document to read (clean text, read like an EPUB): upstream's
+     * page-to-Markdown fetch and Markdown document import. Returns the card and its title.
+     */
+    @WorkerThread
+    fun importWebDocument(url: String): Pair<Long, String> {
+        val added = JSONObject(requireFacade().callAttr("import_web_document", url).toString())
+        return added.getLong("card_id") to added.getString("title")
+    }
+
+    /** Whether [url] is a video Incremento plays (YouTube, Vimeo) rather than a page. */
+    fun isVideoLink(url: String): Boolean = VIDEO_LINK.containsMatchIn(url)
+
+    private val VIDEO_LINK = Regex("""(?:^|//)(?:www\.|m\.)?(?:youtube\.com|youtu\.be|vimeo\.com)/""", RegexOption.IGNORE_CASE)
+
     /** Add a shared link: a video link as a video topic, anything else as a web topic. */
     @WorkerThread
     fun importLink(

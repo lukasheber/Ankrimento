@@ -165,7 +165,7 @@
     <string name="ankrimento_add">Add</string>
     <string name="ankrimento_add_pdf_file">PDF document</string>
     <string name="ankrimento_add_epub_file">EPUB book</string>
-    <string name="ankrimento_add_link">Web page or video link</string>
+    <string name="ankrimento_add_link">Web page or video, as it is</string>
     <string name="ankrimento_link_hint">https://…</string>
     <string name="ankrimento_kind_all">All</string>
     <string name="ankrimento_kind_pdf">PDF</string>
@@ -173,4 +173,6 @@
     <string name="ankrimento_kind_web">Web</string>
     <string name="ankrimento_kind_video">Video</string>
     <string name="ankrimento_kind_writing">Writing</string>
+    <string name="ankrimento_add_article">Web article, read as text</string>
+    <string name="ankrimento_add_live_page">Web page, as it is</string>
 </resources>

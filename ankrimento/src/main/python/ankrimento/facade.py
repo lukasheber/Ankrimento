@@ -451,12 +451,39 @@ def import_web(url: str, title: str = "", deck_name: str = "Topics", priority: f
     return int(card_id)
 
 
+def import_web_document(url: str, deck_name: str = "Topics", priority: float = 50.0) -> str:
+    """A web page as a document to read: upstream's page-to-Markdown fetch, then its
+    Markdown document import, which makes an EPUB study document of it (read and
+    extracted like any EPUB, on desktop too)."""
+    import os
+    import re
+    import tempfile
+
+    from incremento.backend import webpage_markdown
+    from incremento.backend.markdown_manager import add_markdown_card
+    from incremento.backend.priority_manager import set_priority
+
+    rt = runtime.current()
+    page = webpage_markdown.fetch_webpage_markdown(str(url), content_scope="main")
+    title = str(page.get("title") or "").strip() or str(url)
+    with tempfile.TemporaryDirectory() as folder:
+        stem = re.sub(r"[^\w\- ]+", "", title)[:80].strip() or "Web page"
+        path = os.path.join(folder, f"{stem}.md")
+        with open(path, "w", encoding="utf8") as file:
+            file.write(page["markdown_document"])
+        card_id = add_markdown_card(str(rt.addon_dir), rt.profile, rt.col, path, title, deck_name=deck_name)
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return _dumps({"card_id": int(card_id), "title": title})
+
+
 def import_link(url: str, title: str = "", priority: float = 50.0) -> str:
     """Add a shared link: a video link as a video topic, anything else as a web topic."""
     from incremento.backend.priority_manager import set_priority
 
-    from ankrimento import video_reader
+    from ankrimento import links, video_reader
 
+    # Shared links usually come without a title: look it up (the URL stays the title if that fails).
+    title = title or links.title(url)
     if video_reader.is_video_url(url):
         card_id, kind = video_reader.import_video(url, title), "video"
     else:
