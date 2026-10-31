@@ -394,8 +394,32 @@ def card_reader(card_id: int) -> str:
         "Incremento EPUB": "epub",
         "Incremento Web": "web",
         "Incremento Video": "video",
+        "Incremento Writing": "writing",
     }
     return readers.get(note.note_type()["name"], "")
+
+
+def writing_open(card_id: int) -> str:
+    from ankrimento import writing
+
+    return _dumps(writing.open_text(int(card_id)))
+
+
+def writing_save(card_id: int, text: str) -> int:
+    from ankrimento import writing
+
+    return writing.save_text(int(card_id), text)
+
+
+def create_writing(title: str) -> int:
+    from incremento.backend.priority_manager import set_priority
+
+    from ankrimento import writing
+
+    rt = runtime.current()
+    card_id = writing.create(title)
+    set_priority(str(rt.addon_dir), rt.profile, card_id, 50.0)
+    return card_id
 
 
 def video_open(card_id: int) -> str:

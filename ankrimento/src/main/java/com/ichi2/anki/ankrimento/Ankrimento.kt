@@ -359,6 +359,21 @@ object Ankrimento {
         requireFacade().callAttr("video_progress", cardId, position, watchedSeconds)
     }
 
+    /** A writing topic's Markdown text. */
+    @WorkerThread
+    fun writingOpen(cardId: Long): String = JSONObject(requireFacade().callAttr("writing_open", cardId).toString()).getString("text")
+
+    /** Save a writing topic as desktop does (backups, word stats); returns the word count. */
+    @WorkerThread
+    fun writingSave(
+        cardId: Long,
+        text: String,
+    ): Int = requireFacade().callAttr("writing_save", cardId, text).toInt()
+
+    /** A new writing topic; returns its card id. */
+    @WorkerThread
+    fun createWriting(title: String): Long = requireFacade().callAttr("create_writing", title).toLong()
+
     /** Add a web page as an Incremento Web topic card; returns the card id. */
     @WorkerThread
     fun importWeb(

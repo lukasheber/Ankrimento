@@ -9,6 +9,12 @@
     <string name="ankrimento_add_epub">Add EPUB to Incremento</string>
     <string name="ankrimento_share_label">Add to Incremento</string>
     <string name="ankrimento_share_no_link">Share a web link to add it to Incremento</string>
+    <string name="ankrimento_new_writing">New Incremento writing…</string>
+    <string name="ankrimento_new_writing_title">Title</string>
+    <plurals name="ankrimento_writing_words">
+        <item quantity="one">%d word</item>
+        <item quantity="other">%d words</item>
+    </plurals>
     <string name="ankrimento_web_back">◀ Back</string>
     <string name="ankrimento_web_select_first">Select some text first</string>
     <string name="ankrimento_epub_missing">This card\'s EPUB file is not on this device</string>

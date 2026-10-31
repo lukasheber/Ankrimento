@@ -80,6 +80,7 @@ class IncrementoMenu(
         menu.add(Menu.NONE, R.id.ankrimento_session_settings, Menu.CATEGORY_SECONDARY, R.string.ankrimento_session_settings)
         menu.add(Menu.NONE, R.id.ankrimento_add_pdf, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_pdf)
         menu.add(Menu.NONE, R.id.ankrimento_add_epub, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_epub)
+        menu.add(Menu.NONE, R.id.ankrimento_new_writing, Menu.CATEGORY_SECONDARY, R.string.ankrimento_new_writing)
         menu.add(Menu.NONE, R.id.ankrimento_sync_now, Menu.CATEGORY_SECONDARY, R.string.ankrimento_sync_now)
         menu.add(Menu.NONE, R.id.ankrimento_sync_folder, Menu.CATEGORY_SECONDARY, R.string.ankrimento_sync_folder)
         menu.add(Menu.NONE, R.id.ankrimento_profile, Menu.CATEGORY_SECONDARY, R.string.ankrimento_profile)
@@ -91,6 +92,7 @@ class IncrementoMenu(
             R.id.ankrimento_session_settings -> activity.lifecycleScope.launch { editSessionSettings() }
             R.id.ankrimento_add_pdf -> pickPdf.launch(arrayOf("application/pdf"))
             R.id.ankrimento_add_epub -> pickEpub.launch(arrayOf("application/epub+zip"))
+            R.id.ankrimento_new_writing -> newWriting()
             R.id.ankrimento_sync_now -> activity.lifecycleScope.launch { syncNow() }
             R.id.ankrimento_sync_folder -> pickSyncFolder.launch(null)
             R.id.ankrimento_profile -> editProfile()
@@ -207,6 +209,31 @@ class IncrementoMenu(
             .setPositiveButton(R.string.ankrimento_sync_keep_device) { _, _ -> resolve("keep_device") }
             .setNegativeButton(R.string.ankrimento_sync_keep_folder) { _, _ -> resolve("keep_folder") }
             .setNeutralButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun newWriting() {
+        val input = EditText(activity).apply { setHint(R.string.ankrimento_new_writing_title) }
+        AlertDialog
+            .Builder(activity)
+            .setTitle(R.string.ankrimento_new_writing)
+            .setView(input)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                val title =
+                    input.text
+                        .toString()
+                        .trim()
+                        .ifEmpty { return@setPositiveButton }
+                activity.lifecycleScope.launch {
+                    runCatching {
+                        CollectionManager.withCol {
+                            Ankrimento.start(activity, this)
+                            Ankrimento.createWriting(title)
+                        }
+                    }.onSuccess { cardId -> activity.startActivity(WritingActivity.intent(activity, cardId)) }
+                        .onFailure { toast(activity.getString(R.string.ankrimento_pdf_add_failed, it.message ?: it.javaClass.simpleName)) }
+                }
+            }.setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 

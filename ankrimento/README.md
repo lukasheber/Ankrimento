@@ -82,7 +82,10 @@ AnkiDroid (Kotlin)
   player; the position (`set_video_position`) and observed watch time
   (`record_video_watch`) are saved as desktop's video dock saves them.
   Shared YouTube/Vimeo links become video topics.
-- Writing topics: todo.
+- **Writing** (`writing.py`, `WritingActivity`): Markdown edited in place and
+  autosaved with `write_writing_text` (backups per the settings) and daily
+  word counts (`set_writing_word_stats`), as desktop's writing dock saves.
+  "New Incremento writing…" creates one (`add_writing_card`).
 
 ### Syncing Incremento data
 
