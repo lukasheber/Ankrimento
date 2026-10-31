@@ -218,9 +218,15 @@ class PdfReaderActivity : ReaderActivity() {
                     showView()
                 },
                 onFitWidth = {
-                    // Upstream's zoom is relative to the page width; 100% fits it.
-                    val steps = ((1.0 - zoom) / ZOOM_STEP).let { kotlin.math.round(it).toInt() }
-                    if (steps != 0) webView.evaluateJavascript("window.incrementoPdfZoom && window.incrementoPdfZoom($steps);", null)
+                    // Upstream's zoom is relative to the page width; 100% fits it. Zoom steps are a tenth
+                    // from wherever zoom is (25% at the minimum is off that grid), so go to the 400%
+                    // maximum first: thirty steps down from there are exactly 100%.
+                    val stepsToMax = kotlin.math.ceil((ZOOM_MAX - ZOOM_MIN) / ZOOM_STEP).toInt()
+                    val stepsDown = kotlin.math.round((ZOOM_MAX - 1.0) / ZOOM_STEP).toInt()
+                    webView.evaluateJavascript(
+                        "if (window.incrementoPdfZoom) { window.incrementoPdfZoom($stepsToMax); window.incrementoPdfZoom(-$stepsDown); }",
+                        null,
+                    )
                     zoom = 1.0
                     showView()
                 },
@@ -274,6 +280,7 @@ class PdfReaderActivity : ReaderActivity() {
             val script = withCol { Ankrimento.pdfStartScript(cardId, PDF_URL, WORKER_URL) }
             webView.evaluateJavascript(script, null)
             webView.evaluateJavascript(COMPACT_STYLE_JS, null)
+            webView.evaluateJavascript(PINCH_ZOOM_JS, null)
             webView.evaluateJavascript(
                 PageGestures.script(
                     next = "window.incrementoPdfNav && window.incrementoPdfNav(1);",
@@ -321,6 +328,28 @@ class PdfReaderActivity : ReaderActivity() {
                 " window.addEventListener('pointerdown', function (event) {" +
                 " if (event.pointerType === 'touch' && event.target && event.target.closest &&" +
                 " event.target.closest('#pdf-text-layer')) event.stopPropagation(); }, true);"
+
+        /**
+         * Two-finger zoom: the page follows the fingers while they move, then
+         * upstream's zoom steps are applied (so the zoom is saved per document).
+         */
+        private const val PINCH_ZOOM_JS =
+            "(function () { if (window.__ankrimentoPinch) return; window.__ankrimentoPinch = true;" +
+                // The page handles pinches itself; the browser would take the gesture after the first move.
+                " document.documentElement.style.touchAction = 'pan-x pan-y'; document.body.style.touchAction = 'pan-x pan-y';" +
+                " var start = 0, scale = 1, page = null;" +
+                " function spread(t) { return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }" +
+                " window.addEventListener('touchstart', function (e) { if (e.touches.length !== 2) return;" +
+                " start = spread(e.touches); scale = 1; page = document.getElementById('pdf-canvas-wrapper'); }, { passive: true });" +
+                " window.addEventListener('touchmove', function (e) { if (!start || e.touches.length !== 2) return;" +
+                " scale = Math.max(0.25, Math.min(4, spread(e.touches) / start));" +
+                " if (page) { page.style.transformOrigin = 'center top';" +
+                " page.style.transform = 'scale(' + scale + ')'; } }, { passive: true });" +
+                " window.addEventListener('touchend', function (e) { if (!start || e.touches.length >= 2) return; start = 0;" +
+                " if (page) page.style.transform = '';" +
+                " var state = window.incrementoPdfWorkspaceState ? window.incrementoPdfWorkspaceState() : null;" +
+                " var zoom = state && state.zoom ? state.zoom : 1; var steps = Math.round((zoom * scale - zoom) / 0.1);" +
+                " if (steps && window.incrementoPdfZoom) window.incrementoPdfZoom(steps); }, { passive: true }); })();"
 
         /** The viewer's request to show its outline, as desktop's contents popup gets it. */
         private const val CONTENTS_PREFIX = "incremento_pdf_contents:"
