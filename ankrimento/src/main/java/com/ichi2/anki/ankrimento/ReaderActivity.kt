@@ -189,30 +189,30 @@ abstract class ReaderActivity : ComponentActivity() {
 
     private fun reviewBar(): ReviewBarState? {
         if (!inSession || answerButtons.isEmpty()) return null
+        val topic = Ankrimento.shownTopicCardId == cardId
         val topicActions =
-            if (Ankrimento.shownTopicCardId == cardId) {
+            if (topic) {
                 listOf(
-                    ReaderTool(
-                        getString(R.string.ankrimento_topic_done),
-                        IncrementoIcons.Check,
-                    ) { topicAction { Ankrimento.topicDone(cardId) } },
-                    ReaderTool(getString(R.string.ankrimento_topic_postpone)) { topicAction { Ankrimento.topicPostpone(cardId) } },
-                    ReaderTool(getString(R.string.ankrimento_revisit_in, getString(R.string.ankrimento_topic_revisit_3))) {
-                        topicAction { Ankrimento.topicRevisit(cardId, 3) }
-                    },
-                    ReaderTool(getString(R.string.ankrimento_revisit_in, getString(R.string.ankrimento_topic_revisit_6))) {
-                        topicAction { Ankrimento.topicRevisit(cardId, 6) }
-                    },
-                    ReaderTool(getString(R.string.ankrimento_revisit_in, getString(R.string.ankrimento_topic_revisit_12))) {
-                        topicAction { Ankrimento.topicRevisit(cardId, 12) }
-                    },
+                    ReaderTool(getString(R.string.ankrimento_done), IncrementoIcons.Check) { topicAction { Ankrimento.topicDone(cardId) } },
+                    ReaderTool(getString(R.string.ankrimento_postpone)) { topicAction { Ankrimento.topicPostpone(cardId) } },
                 )
+            } else {
+                emptyList()
+            }
+        val revisitOptions =
+            if (topic) {
+                listOf(3, 6, 12).map { months ->
+                    ReaderTool(resources.getQuantityString(R.plurals.ankrimento_months, months, months)) {
+                        topicAction { Ankrimento.topicRevisit(cardId, months) }
+                    }
+                }
             } else {
                 emptyList()
             }
         return ReviewBarState(
             answerButtons,
             topicActions,
+            revisitOptions,
             onBack = if (canGoBack) ::goBack else null,
         ) { rating -> continueAfter(rating = rating) { LearnLoop.answer(this, cardId, rating) } }
     }

@@ -10,6 +10,7 @@ Legend:
 - 🟡 partial: works, but missing parts or not yet mobile-shaped
 - ⬜ to do
 - ➖ not planned on mobile (reason given)
+- ⏸ deferred: decided to wait (reason given)
 
 Mobile principles that guide every item:
 
@@ -34,7 +35,9 @@ Mobile principles that guide every item:
 | ✅ | Topics answered in their reader: More / Same / Less with due intervals | |
 | ✅ | Next element opens straight away, without passing through the reviewer | |
 | ✅ | Back to the previous element (one undo, only while nothing changed since) | |
-| ✅ | Topic actions: Done, Postpone, Revisit 3/6/12 months | In the review bar's menu |
+| ✅ | Topic actions: Done, Postpone, Revisit 3/6/12 months | A row of chips above the answers (Revisit opens its choices) |
+| ⬜ | Revisit → Choose date… | Desktop has it in the same menu |
+| ⬜ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | |
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
 | ⬜ | When a session finds nothing to study, say why (e.g. "Documents within topics: 0%") and offer the session settings | Today: upstream's short toast |
 | ⬜ | Plain-text topics in a simple reader (no "Show answer") | Today they open in the reviewer |
@@ -101,8 +104,8 @@ Mobile principles that guide every item:
 |---|---|---|
 | ✅ | Page with upstream bridge; scroll position saved; extract selection | |
 | ✅ | Back steps through page history first | |
-| ⬜ | Reader mode (clean article text, Aa sheet like EPUB) | |
-| ⬜ | Webpage to PDF [5] | |
+| ⬜ | **Import a web page as clean HTML or plain text**, read with the EPUB-style reader (Aa sheet, contents, progress) | Mobile's answer to Webpage to PDF: reflowing text reads better on a phone |
+| ⏸ | Webpage to PDF [5] | Deferred in favour of the HTML / plain text import above |
 | ⬜ | Web extract anchors (jump back to the extract's place) | |
 
 ### Video and audio [7, 7A]
@@ -153,9 +156,9 @@ Mobile principles that guide every item:
 | Status | Feature | Mobile notes |
 |---|---|---|
 | ✅ | Cards and media via AnkiWeb (AnkiDroid's own sync) | |
-| ✅ | Incremento data via a shared folder (SAF: Drive, Dropbox, …), conflict-safe snapshots | |
-| 🟡 | Desktop "Ankrimento Sync" add-on | Built and API-checked; not yet run inside real desktop Anki |
-| ⬜ | Sync status on the hub (last sync, conflicts, Sync now) | |
+| ⏸ | Incremento data via a shared folder (SAF: Drive, Dropbox, …), conflict-safe snapshots | Works on the device; further sync work waits for an agreement with upstream's author on the sync format |
+| ⏸ | Desktop "Ankrimento Sync" add-on | Built and API-checked; deferred until there is an agreement with upstream's author |
+| ⏸ | Sync status on the hub (last sync, conflicts, Sync now) | With the sync work above |
 | ⬜ | Full backup and restore [12] | |
 | ⬜ | Support bundle [12] | |
 | ⬜ | Clean up unused data [13] | |
@@ -167,7 +170,7 @@ Mobile principles that guide every item:
 |---|---|---|
 | ✅ | PDF, EPUB from the device | |
 | ✅ | Web and video links (menu and share sheet) | |
-| ⬜ | SuperMemo collection import [5] | Backend is Python, so it can run as on desktop |
+| ⏸ | SuperMemo collection import [5] | Deferred |
 | ⬜ | Audio import | |
 | ➖ | Browser extension companion [5] | Desktop browser only; the share sheet covers mobile |
 
@@ -192,8 +195,12 @@ Mobile principles that guide every item:
 2. Plain-text topics and items in the learning screen, so the loop never
    leaves it, plus swipe.
 3. Extract bottom sheet, Keep extracting, and video extract at timestamp.
-4. Hub and Library (Continue reading, Add sheet, sync status).
+4. Hub and Library (Continue reading, Add sheet). Web pages imported as
+   clean HTML / plain text.
 5. Settings screen and session presets/advanced options.
 6. Native PDF tools: search, contents, bookmarks, highlights/notes.
 7. Knowledge tree screen, Search ALL, statistics screen, focus timer.
-8. Backup/restore, SuperMemo import, translations.
+8. Backup/restore, translations.
+
+Deferred: sync add-on and other sync work (until agreed with upstream's
+author), SuperMemo import, Webpage to PDF.

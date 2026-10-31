@@ -5,11 +5,11 @@ package com.ichi2.anki.ankrimento.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +18,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -71,7 +71,10 @@ class ReaderTool(
  */
 internal class ReviewBarState(
     val buttons: List<Ankrimento.AnswerButton>,
+    /** Done and Postpone: visible, as desktop shows them in the reviewer bar. */
     val topicActions: List<ReaderTool>,
+    /** "Revisit in…" choices, under one chip, as desktop keeps them in a menu. */
+    val revisitOptions: List<ReaderTool>,
     /** Returns to the previous element, as SuperMemo's Back; null when there is none to return to. */
     val onBack: (() -> Unit)?,
     val onAnswer: (Rating) -> Unit,
@@ -271,11 +274,59 @@ private fun OverflowMenu(entries: List<ReaderTool>) {
 @Composable
 private fun ReviewBar(state: ReviewBarState) {
     Surface(tonalElevation = 3.dp, shadowElevation = 3.dp) {
+        Column(Modifier.navigationBarsPadding()) {
+            if (state.topicActions.isNotEmpty() || state.revisitOptions.isNotEmpty()) TopicActionRow(state)
+            AnswerRow(state)
+        }
+    }
+}
+
+/** A topic's own actions, a thumb's reach above the answers: Done, Postpone, Revisit in…. */
+@Composable
+private fun TopicActionRow(state: ReviewBarState) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(start = 56.dp, end = 12.dp, top = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        state.topicActions.forEach { action ->
+            AssistChip(
+                onClick = action.onClick,
+                label = { Text(action.label) },
+                leadingIcon = action.icon?.let { icon -> { Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp)) } },
+            )
+        }
+        if (state.revisitOptions.isNotEmpty()) {
+            var expanded by remember { mutableStateOf(false) }
+            Box {
+                AssistChip(
+                    onClick = { expanded = true },
+                    label = { Text(stringResource(R.string.ankrimento_revisit)) },
+                    trailingIcon = { Icon(IncrementoIcons.ExpandMore, contentDescription = null, modifier = Modifier.size(18.dp)) },
+                )
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                    state.revisitOptions.forEach { option ->
+                        DropdownMenuItem(
+                            text = { Text(option.label) },
+                            onClick = {
+                                expanded = false
+                                option.onClick()
+                            },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AnswerRow(state: ReviewBarState) {
+    run {
         Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .navigationBarsPadding()
                     .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -308,10 +359,6 @@ private fun ReviewBar(state: ReviewBarState) {
                         contentPadding = padding,
                     ) { label() }
                 }
-            }
-            if (state.topicActions.isNotEmpty()) {
-                Spacer(Modifier.width(4.dp))
-                OverflowMenu(state.topicActions)
             }
         }
     }

@@ -134,4 +134,12 @@
     </plurals>
     <string name="ankrimento_session_continue">Continue</string>
     <string name="ankrimento_session_start">Start</string>
+    <!-- Topic actions in the review bar -->
+    <string name="ankrimento_done">Done</string>
+    <string name="ankrimento_postpone">Postpone</string>
+    <string name="ankrimento_revisit">Revisit</string>
+    <plurals name="ankrimento_months">
+        <item quantity="one">In %d month</item>
+        <item quantity="other">In %d months</item>
+    </plurals>
 </resources>

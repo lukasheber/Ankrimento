@@ -154,10 +154,7 @@ class IncrementoMenu(
 
     private suspend fun refreshSessionEntry() {
         runCatching {
-            CollectionManager.withCol {
-                val deckId = decks.idForName(settings.sessionDeckName)
-                deckId to (deckId?.let { findCards("did:$it").size } ?: 0)
-            }
+            CollectionManager.withCol { SessionDeck.remaining(this, settings.sessionDeckName) }
         }.onSuccess { (deckId, remaining) ->
             sessionDeckId = deckId
             sessionRemaining = remaining
@@ -171,8 +168,8 @@ class IncrementoMenu(
                 CollectionManager.withCol {
                     Ankrimento.start(activity, this)
                     settings.sessionDeckName = Ankrimento.sessionDeckName()
-                    val deckId = decks.idForName(settings.sessionDeckName)
-                    if (deckId != null && findCards("did:$deckId").isNotEmpty()) {
+                    val (deckId, remaining) = SessionDeck.remaining(this, settings.sessionDeckName)
+                    if (deckId != null && remaining > 0) {
                         decks.select(deckId)
                         true
                     } else {
