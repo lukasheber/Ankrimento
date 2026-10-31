@@ -28,6 +28,16 @@ class SessionDeckTest : RobolectricTest() {
         assertThat(SessionDeck.remaining(col, SESSION), equalTo(null to 0))
     }
 
+    @Test
+    fun `every preset's session deck is a session deck, other decks are not`() {
+        // Upstream's is_incremento_session_deck_name: one deck per session preset.
+        assertThat(SessionDeck.isSessionDeckName("Incremento Session"), equalTo(true))
+        assertThat(SessionDeck.isSessionDeckName("Incremento Session (Evening)"), equalTo(true))
+        assertThat(SessionDeck.isSessionDeckName("Incremento Session ()"), equalTo(false))
+        assertThat(SessionDeck.isSessionDeckName("Incremento Sessions"), equalTo(false))
+        assertThat(SessionDeck.isSessionDeckName("Topics"), equalTo(false))
+    }
+
     private companion object {
         const val SESSION = "Incremento Session"
     }

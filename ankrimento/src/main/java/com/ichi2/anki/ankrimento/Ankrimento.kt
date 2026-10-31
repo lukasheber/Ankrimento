@@ -272,6 +272,53 @@ object Ankrimento {
     @WorkerThread
     fun sessionDeckName(): String = requireFacade().callAttr("session_deck_name").toString()
 
+    /** Desktop's saved session presets, and the one the current settings came from. */
+    data class SessionPresets(
+        val selected: String?,
+        val names: List<String>,
+    )
+
+    @WorkerThread
+    fun sessionPresets(): SessionPresets {
+        val presets = JSONObject(requireFacade().callAttr("session_presets").toString())
+        val names = presets.getJSONArray("names")
+        return SessionPresets(
+            selected = presets.optString("selected").takeIf { !presets.isNull("selected") && it.isNotEmpty() },
+            names = List(names.length()) { names.getString(it) },
+        )
+    }
+
+    /** Applies a preset's settings; null keeps the current settings without a preset. */
+    @WorkerThread
+    fun loadSessionPreset(name: String?) {
+        requireFacade().callAttr("load_session_preset", name)
+    }
+
+    /** Saves the current settings as a new preset, which becomes the selected one. */
+    @WorkerThread
+    fun addSessionPreset(name: String) {
+        requireFacade().callAttr("add_session_preset", name)
+    }
+
+    /** Updates the selected preset with the current settings. */
+    @WorkerThread
+    fun saveSessionPreset() {
+        requireFacade().callAttr("save_session_preset")
+    }
+
+    @WorkerThread
+    fun renameSessionPreset(
+        oldName: String,
+        newName: String,
+    ) {
+        requireFacade().callAttr("rename_session_preset", oldName, newName)
+    }
+
+    @WorkerThread
+    fun deleteSessionPreset(name: String) {
+        requireFacade().callAttr("delete_session_preset", name)
+    }
+
     /** Reviewer hook: a card's question is on screen. Records whether it is a topic, and whether it has a reader. */
     @WorkerThread
     fun questionShown(cardId: Long) {

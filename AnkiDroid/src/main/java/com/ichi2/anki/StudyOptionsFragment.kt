@@ -42,7 +42,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import anki.collection.OpChanges
 import com.ichi2.anki.CollectionManager.TR
-import com.ichi2.anki.ankrimento.AnkrimentoSettings
+import com.ichi2.anki.ankrimento.SessionDeck
 import com.ichi2.anki.backend.stripHTMLScriptAndStyleTags
 import com.ichi2.anki.common.crashreporting.CrashReportService
 import com.ichi2.anki.dialogs.customstudy.CustomStudyDialog
@@ -343,8 +343,7 @@ class StudyOptionsFragment :
         }
     }
 
-    private fun isIncrementoSession(state: StudyOptionsState) =
-        state.deckNameOrNull() == AnkrimentoSettings(requireContext()).sessionDeckName
+    private fun isIncrementoSession(state: StudyOptionsState) = state.deckNameOrNull()?.let(SessionDeck::isSessionDeckName) == true
 
     private var onDeckOptionsActivityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->

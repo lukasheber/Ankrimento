@@ -33,7 +33,10 @@ class HeadlessSchedulerDialog:
         return None
 
     def selected_dialog_profile_name(self) -> str | None:
-        return None
+        # The selected preset names the session deck, as in the desktop dialog.
+        from ankrimento import presets
+
+        return presets.selected()
 
 
 def start(branch_scope: dict | None = None) -> None:

@@ -200,10 +200,51 @@ def select_session() -> str:
 
 
 def session_deck_name() -> str:
-    """The filtered deck sessions fill, as upstream names it."""
+    """The filtered deck sessions fill, as upstream names it (one per selected preset)."""
+    from ankrimento import presets
     from incremento.backend.session_selection import incremento_session_deck_name
 
-    return incremento_session_deck_name(None)
+    return incremento_session_deck_name(presets.selected())
+
+
+def session_presets() -> str:
+    """The saved session presets and the one the current settings came from (or null)."""
+    from ankrimento import presets
+
+    return _dumps(presets.listing())
+
+
+def load_session_preset(name: str | None) -> None:
+    """Applies a preset's settings; null keeps the current settings without a preset."""
+    from ankrimento import presets
+
+    presets.load(name)
+
+
+def add_session_preset(name: str) -> None:
+    """Saves the current settings as a new preset, which becomes the selected one."""
+    from ankrimento import presets
+
+    presets.add(name)
+
+
+def save_session_preset() -> None:
+    """Updates the selected preset with the current settings."""
+    from ankrimento import presets
+
+    presets.save()
+
+
+def rename_session_preset(old_name: str, new_name: str) -> None:
+    from ankrimento import presets
+
+    presets.rename(old_name, new_name)
+
+
+def delete_session_preset(name: str) -> None:
+    from ankrimento import presets
+
+    presets.delete(name)
 
 
 def build_session_deck(card_ids_json: str, preserve_order: bool = False) -> str:

@@ -46,7 +46,7 @@ Mobile principles that guide every item:
 | ⬜ | Leech notice when an item becomes a leech in the learning screen | The reviewer shows one |
 | ➖ | Swipe between elements | Sideways swipe turns pages in the readers; moving between elements stays on the footer buttons, where a stray swipe cannot answer a topic |
 | ✅ | Session settings: card count, topic/item and document mix, random/priority, card states, top-up | In the settings screen |
-| ⬜ | Session presets: save, load, rename, delete | |
+| ✅ | Session presets: save, load, rename, delete | Settings → Session → Preset, stored as desktop stores them; each preset keeps its own session deck (hidden from the deck list like the base one, renamed with its preset, emptied when its preset is deleted) |
 | ⬜ | Advanced scheduler options: quotas, tag quotas, filters, card states, priority order, scope | One settings screen with sections |
 | ⬜ | Session preview before starting | |
 | 🟡 | Branch study from the knowledge tree | Works on the emulator; did not start on the tablet; to investigate |

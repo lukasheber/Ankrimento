@@ -109,8 +109,12 @@ class IncrementoMenu(
             },
         )
 
-    /** Whether [fullDeckName] is the session deck, which the deck list shows as the session card instead. */
-    fun isSessionDeck(fullDeckName: String): Boolean = fullDeckName == settings.sessionDeckName
+    /**
+     * Whether [fullDeckName] is a session deck, which the deck list shows as the session card
+     * instead: any preset's, since each preset keeps its own session and the card follows the
+     * selected one.
+     */
+    fun isSessionDeck(fullDeckName: String): Boolean = SessionDeck.isSessionDeckName(fullDeckName)
 
     /** The session deck tapped in the list: continue or start, as the session card does. */
     fun onDeckClick(deckId: Long): Boolean {

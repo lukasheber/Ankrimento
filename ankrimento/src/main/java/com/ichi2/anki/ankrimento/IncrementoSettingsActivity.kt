@@ -29,7 +29,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -69,6 +71,12 @@ import kotlin.math.roundToInt
  */
 class IncrementoSettingsActivity : ComponentActivity() {
     private var session by mutableStateOf<Ankrimento.SessionSettings?>(null)
+    private var presets by mutableStateOf<Ankrimento.SessionPresets?>(null)
+    private var choosingPreset by mutableStateOf(false)
+
+    /** The preset being renamed, or "" for a new one. */
+    private var namingPreset by mutableStateOf<String?>(null)
+    private var deletingPreset by mutableStateOf<String?>(null)
     private var values by mutableStateOf<JSONObject?>(null)
     private val device by lazy { AnkrimentoSettings(this) }
     private var profile by mutableStateOf("")
@@ -111,6 +119,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
             runCatching {
                 withCol {
                     Ankrimento.start(this@IncrementoSettingsActivity, this)
+                    presets = Ankrimento.sessionPresets()
                     Ankrimento.sessionSettings() to Ankrimento.settingsValues()
                 }
             }.onSuccess { (sessionSettings, settings) ->
@@ -119,6 +128,29 @@ class IncrementoSettingsActivity : ComponentActivity() {
             }.onFailure { error ->
                 Timber.w(error, "Loading Incremento settings failed")
                 toast(error.message ?: error.javaClass.simpleName)
+            }
+        }
+    }
+
+    /**
+     * Runs a preset change, then shows the settings it left. The selected preset names the
+     * session deck, so the deck list's Incremento card follows it.
+     */
+    private fun changePresets(change: () -> Unit) {
+        lifecycleScope.launch {
+            runCatching {
+                withCol {
+                    change()
+                    device.sessionDeckName = Ankrimento.sessionDeckName()
+                    Ankrimento.sessionSettings() to Ankrimento.sessionPresets()
+                }
+            }.onSuccess { (sessionSettings, sessionPresets) ->
+                session = sessionSettings
+                presets = sessionPresets
+            }.onFailure { error ->
+                Timber.w(error, "Changing session presets failed")
+                // Upstream's message without Python's exception name.
+                toast((error.message ?: error.javaClass.simpleName).substringAfter("Error: "))
             }
         }
     }
@@ -259,6 +291,123 @@ class IncrementoSettingsActivity : ComponentActivity() {
         if (backingUp) Working(R.string.ankrimento_backup_export, R.string.ankrimento_backup_working)
         restoring?.let { Working(R.string.ankrimento_backup_restore, it) }
         restoreCheck?.let { ConfirmRestore(it) }
+        if (choosingPreset) presets?.let { PresetSheet(it) }
+        namingPreset?.let { PresetNameDialog(it) }
+        deletingPreset?.let { DeletePresetDialog(it) }
+    }
+
+    /** Desktop's preset row: choose one to load it; save, update, rename or delete. */
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    private fun PresetSheet(current: Ankrimento.SessionPresets) {
+        ModalBottomSheet(onDismissRequest = { choosingPreset = false }) {
+            Column(Modifier.navigationBarsPadding().padding(bottom = 16.dp)) {
+                Text(
+                    stringResource(R.string.ankrimento_preset_sheet_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                )
+                (listOf<String?>(null) + current.names).forEach { name ->
+                    ListItem(
+                        headlineContent = { Text(name ?: stringResource(R.string.ankrimento_preset_current)) },
+                        leadingContent = { RadioButton(selected = current.selected == name, onClick = null) },
+                        modifier =
+                            Modifier.clickable {
+                                choosingPreset = false
+                                if (current.selected != name) changePresets { Ankrimento.loadSessionPreset(name) }
+                            },
+                    )
+                }
+                HorizontalDivider(Modifier.padding(vertical = 8.dp))
+                PresetAction(IncrementoIcons.Add, stringResource(R.string.ankrimento_preset_new)) { namingPreset = "" }
+                current.selected?.let { selected ->
+                    PresetAction(IncrementoIcons.Check, stringResource(R.string.ankrimento_preset_update, selected)) {
+                        changePresets { Ankrimento.saveSessionPreset() }
+                        toast(getString(R.string.ankrimento_preset_updated, selected))
+                    }
+                    PresetAction(IncrementoIcons.Edit, stringResource(R.string.ankrimento_preset_rename)) { namingPreset = selected }
+                    PresetAction(IncrementoIcons.Delete, stringResource(R.string.ankrimento_preset_delete)) { deletingPreset = selected }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun PresetAction(
+        icon: androidx.compose.ui.graphics.vector.ImageVector,
+        label: String,
+        onClick: () -> Unit,
+    ) {
+        ListItem(
+            headlineContent = { Text(label) },
+            leadingContent = { Icon(icon, contentDescription = null) },
+            modifier =
+                Modifier.clickable {
+                    choosingPreset = false
+                    onClick()
+                },
+        )
+    }
+
+    /** Names a new preset (from the current settings) or renames [renaming]. */
+    @Composable
+    private fun PresetNameDialog(renaming: String) {
+        var name by remember(renaming) { mutableStateOf(renaming) }
+        AlertDialog(
+            onDismissRequest = { namingPreset = null },
+            title = {
+                Text(
+                    stringResource(
+                        if (renaming.isEmpty()) R.string.ankrimento_preset_new_title else R.string.ankrimento_preset_rename_title,
+                    ),
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text(stringResource(R.string.ankrimento_preset_name)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = name.isNotBlank(),
+                    onClick = {
+                        namingPreset = null
+                        val chosen = name.trim()
+                        changePresets {
+                            if (renaming.isEmpty()) {
+                                Ankrimento.addSessionPreset(
+                                    chosen,
+                                )
+                            } else {
+                                Ankrimento.renameSessionPreset(renaming, chosen)
+                            }
+                        }
+                    },
+                ) { Text(stringResource(android.R.string.ok)) }
+            },
+            dismissButton = { TextButton(onClick = { namingPreset = null }) { Text(stringResource(android.R.string.cancel)) } },
+        )
+    }
+
+    @Composable
+    private fun DeletePresetDialog(name: String) {
+        AlertDialog(
+            onDismissRequest = { deletingPreset = null },
+            title = { Text(stringResource(R.string.ankrimento_preset_delete_title, name)) },
+            text = { Text(stringResource(R.string.ankrimento_preset_delete_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    deletingPreset = null
+                    changePresets { Ankrimento.deleteSessionPreset(name) }
+                }) { Text(stringResource(R.string.ankrimento_preset_delete)) }
+            },
+            dismissButton = { TextButton(onClick = { deletingPreset = null }) { Text(stringResource(android.R.string.cancel)) } },
+        )
     }
 
     @Composable
@@ -326,6 +475,14 @@ class IncrementoSettingsActivity : ComponentActivity() {
     @Composable
     private fun SessionSection(s: Ankrimento.SessionSettings) {
         Header(R.string.ankrimento_settings_session)
+        presets?.let { current ->
+            ListItem(
+                headlineContent = { Text(stringResource(R.string.ankrimento_preset)) },
+                supportingContent = { Text(current.selected ?: stringResource(R.string.ankrimento_preset_current)) },
+                trailingContent = { Icon(IncrementoIcons.ExpandMore, contentDescription = null) },
+                modifier = Modifier.clickable { choosingPreset = true },
+            )
+        }
         PercentSlider(R.string.ankrimento_settings_cards, s.cardCount, 10..300, suffix = "") { saveSession(s.copy(cardCount = it)) }
         PercentSlider(R.string.ankrimento_settings_topics, s.topicsPercent, 0..100) { saveSession(s.copy(topicsPercent = it)) }
         PercentSlider(R.string.ankrimento_settings_documents, s.documentsPercent, 0..100) { saveSession(s.copy(documentsPercent = it)) }

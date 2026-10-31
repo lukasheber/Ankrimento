@@ -218,6 +218,20 @@
     <string name="ankrimento_marked_read">Marked as read up to here</string>
     <string name="ankrimento_add_to_incremento">Add to Incremento…</string>
     <string name="ankrimento_statistics_menu">Statistics</string>
+    <!-- Session presets -->
+    <string name="ankrimento_preset">Preset</string>
+    <string name="ankrimento_preset_current">Current settings</string>
+    <string name="ankrimento_preset_sheet_hint">Choose a preset to use its settings. Each preset keeps its own session.</string>
+    <string name="ankrimento_preset_new">Save as new preset…</string>
+    <string name="ankrimento_preset_update">Update “%s” with these settings</string>
+    <string name="ankrimento_preset_updated">Preset “%s” updated</string>
+    <string name="ankrimento_preset_rename">Rename…</string>
+    <string name="ankrimento_preset_delete">Delete</string>
+    <string name="ankrimento_preset_new_title">New preset</string>
+    <string name="ankrimento_preset_rename_title">Rename preset</string>
+    <string name="ankrimento_preset_name">Name</string>
+    <string name="ankrimento_preset_delete_title">Delete “%s”?</string>
+    <string name="ankrimento_preset_delete_message">The preset is removed; the current settings stay as they are.</string>
     <!-- Full backup -->
     <string name="ankrimento_settings_backup">Backup</string>
     <string name="ankrimento_backup_export">Export full backup</string>
