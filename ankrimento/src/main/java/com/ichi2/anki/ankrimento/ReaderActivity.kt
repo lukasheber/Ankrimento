@@ -45,10 +45,10 @@ import timber.log.Timber
  * with the reader's tools and, in a session, the review bar.
  *
  * In a session the reader *is* the review of a topic, as in SuperMemo: the
- * reviewer opens it for the card, and it ends with the answer, which it
- * returns ([EXTRA_RATING]) for the reviewer to record before it moves on.
- * A topic action (Done, Postpone, Revisit) reschedules the card and returns
- * without a rating; the reviewer then shows the next card. Back leaves the
+ * answer (or a topic action: Done, Postpone, Revisit) is recorded here and
+ * the next element follows at once, a topic in its reader and anything else
+ * in the reviewer, which receives no rating then ([LearnLoop]). The review
+ * bar's Back returns to the previous element. The system Back leaves the
  * session ([RESULT_LEAVE_SESSION]); "Show card" returns to the card in the
  * reviewer. A reader that closes by itself (a missing file) returns to the card.
  *
@@ -57,6 +57,10 @@ import timber.log.Timber
 abstract class ReaderActivity : ComponentActivity() {
     protected val cardId by lazy { intent.getLongExtra(EXTRA_CARD_ID, 0L) }
     private val inSession by lazy { intent.getBooleanExtra(EXTRA_SESSION, false) }
+    private var canGoBack by mutableStateOf(false)
+
+    /** True while an answer or Back is on its way, so a second tap does not answer the next card too. */
+    private var moving = false
 
     /** Where in the document the reader is, under the title ("Page 4"). */
     protected var subtitle by mutableStateOf<String?>(null)
@@ -117,11 +121,16 @@ abstract class ReaderActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this) { leave() }
         lifecycleScope.launch {
             runCatching {
-                withCol { Ankrimento.cardTitle(cardId) to if (inSession) Ankrimento.answerButtons(cardId) else null }
+                withCol {
+                    // The reviewer tells Incremento about the cards it shows; the loop's are shown here.
+                    if (inSession && !intent.getBooleanExtra(EXTRA_QUESTION_SHOWN, false)) Ankrimento.questionShown(cardId)
+                    Ankrimento.cardTitle(cardId) to if (inSession) Ankrimento.answerButtons(cardId) else null
+                }
             }.onSuccess { (cardTitle, buttons) ->
                 title = cardTitle
                 answerButtons = buttons.orEmpty()
             }.onFailure { Timber.w(it, "Loading the reader's card failed") }
+            if (inSession) canGoBack = runCatching { LearnLoop.canGoBack() }.getOrDefault(false)
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -195,24 +204,72 @@ abstract class ReaderActivity : ComponentActivity() {
             } else {
                 emptyList()
             }
-        return ReviewBarState(answerButtons, topicActions) { rating -> finishWith(RESULT_OK, rating) }
+        return ReviewBarState(
+            answerButtons,
+            topicActions,
+            onBack = if (canGoBack) ::goBack else null,
+        ) { rating -> continueAfter(rating = rating) { LearnLoop.answer(this, cardId, rating) } }
     }
 
     private fun editPriority() {
         lifecycleScope.launch { editedPriority = withCol { Ankrimento.priority(cardId) } }
     }
 
-    /** Runs a topic action and, once it rescheduled the card, returns to the reviewer for the next one. */
+    /** Runs a topic action and, once it rescheduled the card, moves on to the next element. */
     private fun topicAction(action: () -> String) {
+        continueAfter {
+            LearnLoop.afterAction { toast(withCol { action() }) }
+        }
+    }
+
+    private fun goBack() {
+        continueAfter(back = true) {
+            LearnLoop.back(this) ?: run {
+                toast(getString(R.string.ankrimento_back_unavailable))
+                null
+            }
+        }
+    }
+
+    /**
+     * Runs [move] (an answer, a topic action, Back) and shows the element it
+     * leads to: a topic in its reader, here, without passing through the
+     * reviewer; anything else, or the end of the session, in the reviewer.
+     */
+    private fun continueAfter(
+        back: Boolean = false,
+        rating: Rating? = null,
+        move: suspend () -> LearnLoop.Step?,
+    ) {
+        if (moving) return
+        moving = true
         lifecycleScope.launch {
-            runCatching { withCol { action() } }
-                .onSuccess { message ->
-                    toast(message)
-                    finishWith(RESULT_OK, null)
-                }.onFailure { error ->
-                    Timber.w(error, "Incremento topic action failed")
+            val next =
+                runCatching { move() }.getOrElse { error ->
+                    Timber.w(error, "Incremento session step failed")
                     toast(error.message ?: error.javaClass.simpleName)
+                    moving = false
+                    return@launch
                 }
+            if (next == null) {
+                moving = false
+                return@launch
+            }
+            if (next == LearnLoop.NotCurrent) {
+                finishWith(RESULT_OK, rating)
+                return@launch
+            }
+            val following = (next as? LearnLoop.Next)?.let { intent(this@ReaderActivity, it.reader, it.cardId, session = true) }
+            if (following != null) {
+                // The reviewer waits for a result from this chain of readers.
+                startActivity(following.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT))
+                finish()
+                @Suppress("DEPRECATION")
+                overridePendingTransition(if (back) android.R.anim.slide_in_left else android.R.anim.fade_in, android.R.anim.fade_out)
+            } else {
+                // Answered here: the reviewer redraws from the scheduler and shows what comes next.
+                finishWith(RESULT_OK, null)
+            }
         }
     }
 
@@ -248,6 +305,9 @@ abstract class ReaderActivity : ComponentActivity() {
     companion object {
         const val EXTRA_CARD_ID = "card_id"
         private const val EXTRA_SESSION = "session"
+
+        /** The reviewer already told Incremento this card's question is on screen. */
+        const val EXTRA_QUESTION_SHOWN = "question_shown"
 
         /** The [Rating] number of the answer chosen in a session. */
         const val EXTRA_RATING = "rating"

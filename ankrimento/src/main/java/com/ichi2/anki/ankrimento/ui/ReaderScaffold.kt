@@ -71,6 +71,8 @@ class ReaderTool(
 internal class ReviewBarState(
     val buttons: List<Ankrimento.AnswerButton>,
     val topicActions: List<ReaderTool>,
+    /** Returns to the previous element, as SuperMemo's Back; null when there is none to return to. */
+    val onBack: (() -> Unit)?,
     val onAnswer: (Rating) -> Unit,
 )
 
@@ -273,6 +275,9 @@ private fun ReviewBar(state: ReviewBarState) {
                     .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
+            IconButton(onClick = { state.onBack?.invoke() }, enabled = state.onBack != null) {
+                Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_previous_element))
+            }
             val buttons = state.buttons.sortedBy { it.rating.number }
             buttons.forEachIndexed { index, button ->
                 val emphasized = buttons.size == 3 && index == 1

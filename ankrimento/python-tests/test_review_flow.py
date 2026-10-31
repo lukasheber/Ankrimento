@@ -201,3 +201,32 @@ def test_statistics_summarize_upstream_stats(rt):
     assert len(stats["history"]) == 7
     assert sum(stats["lifetime"]["seconds"].values()) >= 0
     assert "pages" in stats["media"]
+
+
+def test_undo_counts_as_a_step_so_back_must_undo_once(rt, cards):
+    """The reader's Back undoes one step; Anki's step counter rises on undo too.
+
+    A loop that undoes "until the counter is back below where the move began"
+    therefore never stops before the undo history is empty.
+    """
+    (card_id,) = _add_notes(rt.col, "Default", 1, "back item")
+    _answer_good(rt.col, card_id)
+    after_answer = rt.col.undo_status().last_step
+    assert rt.col.undo_status().undo == rt.col.tr.actions_answer_card()
+    rt.col.undo()
+    assert rt.col.undo_status().last_step > after_answer
+
+
+@pytest.mark.parametrize("action", ["done", "revisit", "postpone"])
+def test_each_topic_action_is_one_undo_step(rt, action):
+    """Back after a topic action undoes it with a single undo, which restores the card."""
+    (card_id,) = _add_notes(rt.col, "Topics", 1, f"undo {action} topic")
+    before = rt.col.get_card(card_id)
+    step = rt.col.undo_status().last_step
+    {"done": lambda: facade.topic_done(card_id),
+     "revisit": lambda: facade.topic_revisit(card_id, 3),
+     "postpone": lambda: facade.topic_postpone(card_id)}[action]()
+    assert rt.col.undo_status().last_step == step + 1
+    rt.col.undo()
+    restored = rt.col.get_card(card_id)
+    assert (restored.queue, restored.due, restored.ivl) == (before.queue, before.due, before.ivl)

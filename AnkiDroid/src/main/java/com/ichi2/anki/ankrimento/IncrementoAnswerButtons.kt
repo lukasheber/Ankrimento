@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.AbstractFlashcardViewer
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.CommonString
 import com.ichi2.anki.launchCatchingTask
 import com.ichi2.anki.libanki.CardId
 import com.ichi2.anki.reviewer.AnswerButtons.Companion.getBackgroundColors
@@ -60,7 +61,8 @@ internal class IncrementoReaders(
         cardId: CardId,
         reader: String,
     ) {
-        val intent = ReaderActivity.intent(viewer, reader, cardId, session = true) ?: return
+        val intent =
+            ReaderActivity.intent(viewer, reader, cardId, session = true)?.putExtra(ReaderActivity.EXTRA_QUESTION_SHOWN, true) ?: return
         openedCardId = cardId
         launcher.launch(intent)
     }
@@ -102,9 +104,15 @@ internal suspend fun AbstractFlashcardViewer.showIncrementoAnswerButtons(
         withCol {
             Ankrimento.answerShown(cardId)
             Ankrimento.answerButtons(cardId)
-        } ?: return
+        }
     val background = getBackgroundColors(this)
     val textColors = getTextColors(this)
+    if (buttons == null) {
+        // The reviewer relabels Hard and Good itself; Again and Easy keep whatever a topic gave them.
+        easeButton1!!.setup(background[0], textColors[0], CommonString.ease_button_again)
+        easeButton4!!.setup(background[3], textColors[3], CommonString.ease_button_easy)
+        return
+    }
     val easeButtons = listOf(easeButton1!!, easeButton2!!, easeButton3!!, easeButton4!!)
     easeButtons.forEachIndexed { index, easeButton ->
         val button = buttons.firstOrNull { it.rating.number == index }
