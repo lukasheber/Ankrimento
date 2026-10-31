@@ -57,9 +57,10 @@ Mobile principles that guide every item:
 
 | Status | Feature | Mobile notes |
 |---|---|---|
-| ⬜ | Incremento hub: session card with Continue/Start, Continue reading, Library | Replaces about 10 overflow menu items |
-| ⬜ | Library: all documents with type filters, progress and priority; tap to read | Covers desktop's Quick Open and Bookshelf |
-| ⬜ | Add sheet: PDF, EPUB, web link, video link, writing, audio | FAB on the hub |
+| ✅ | Library screen (from the Incremento card): Continue reading on this device, documents by kind with position and priority, Add | |
+| ⬜ | Move the remaining deck-list menu items (knowledge tree, statistics, sync, profile) into the hub and a settings screen | |
+| ⬜ | Library search, sort (title, priority, recent) and covers | |
+| ✅ | Add sheet: PDF, EPUB, web or video link, writing | Audio still to add |
 | ✅ | Share a link from any app to Incremento (web or video topic) | |
 | ⬜ | Search ALL: highlights, sources, document text, cards [9] | |
 | 🟡 | Knowledge tree [9]: browse, study branch, priority | Dialog list today; needs a full screen with expand/collapse, reveal current card, go to parent |
@@ -203,8 +204,8 @@ Mobile principles that guide every item:
    the learning screen~~ (done).
 2. ~~Page turning by swipe and pull-past-the-end in PDF and EPUB~~ (done).
 3. ~~Extract bottom sheet and video extract at timestamp~~ (done).
-4. Hub and Library (Continue reading, Add sheet). Web pages imported as
-   clean HTML / plain text.
+4. ~~Library with Continue reading and Add~~ (done). Web pages imported as
+   clean HTML / plain text; titles for links.
 5. Settings screen and session presets/advanced options.
 6. Native PDF tools: search, contents, bookmarks, highlights/notes.
 7. Knowledge tree screen, Search ALL, statistics screen, focus timer.

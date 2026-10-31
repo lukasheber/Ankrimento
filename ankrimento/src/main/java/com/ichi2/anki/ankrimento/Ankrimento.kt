@@ -272,6 +272,33 @@ object Ankrimento {
     @WorkerThread
     fun cardReader(cardId: Long): String = if (isStarted) requireFacade().callAttr("card_reader", cardId).toString() else ""
 
+    /** A document in the library: [position] is where reading stopped ("p. 12", "ch. 3", "2:05"), [done] a finished topic. */
+    data class LibraryEntry(
+        val cardId: Long,
+        val kind: String,
+        val title: String,
+        val priority: Double,
+        val position: String,
+        val done: Boolean,
+    )
+
+    /** Every Incremento document, as desktop's bookshelf lists them. */
+    @WorkerThread
+    fun library(): List<LibraryEntry> {
+        val entries = JSONArray(requireFacade().callAttr("library").toString())
+        return List(entries.length()) { index ->
+            val entry = entries.getJSONObject(index)
+            LibraryEntry(
+                cardId = entry.getLong("card_id"),
+                kind = entry.getString("kind"),
+                title = entry.getString("title"),
+                priority = entry.getDouble("priority"),
+                position = entry.getString("position"),
+                done = entry.getBoolean("done"),
+            )
+        }
+    }
+
     /** The title the knowledge tree shows for [cardId]. */
     @WorkerThread
     fun cardTitle(cardId: Long): String = requireFacade().callAttr("card_title", cardId).toString()

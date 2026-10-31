@@ -4,7 +4,6 @@ package com.ichi2.anki.ankrimento
 
 import android.app.AlertDialog
 import android.net.Uri
-import android.provider.OpenableColumns
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuInflater
@@ -29,7 +28,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.io.File
 
 /**
  * Incremento's entries in the deck list menu.
@@ -138,6 +136,7 @@ class IncrementoMenu(
                             remaining = sessionRemaining,
                             onStudy = { activity.lifecycleScope.launch { continueOrStartSession() } },
                             onSettings = { activity.lifecycleScope.launch { editSessionSettings() } },
+                            onLibrary = { activity.startActivity(IncrementoHubActivity.intent(activity)) },
                         )
                     }
                 }
@@ -232,32 +231,12 @@ class IncrementoMenu(
         fallbackName: String,
         import: (path: String, title: String) -> Long,
     ) {
-        Timber.i("Adding a document to Incremento")
-        runCatching {
-            val name = displayName(uri) ?: fallbackName
-            // Stage the picked file where Incremento's importer can read it.
-            val staged = File(activity.cacheDir, "ankrimento-import").apply { mkdirs() }.resolve(File(name).name)
-            withContext(Dispatchers.IO) {
-                activity.contentResolver.openInputStream(uri).use { input ->
-                    checkNotNull(input) { "cannot read $uri" }
-                    staged.outputStream().use { input.copyTo(it) }
-                }
+        runCatching { DocumentImport.import(activity, uri, fallbackName, import) }
+            .onSuccess { (_, title) -> toast(activity.getString(R.string.ankrimento_pdf_added, title)) }
+            .onFailure { error ->
+                Timber.w(error, "Adding a document failed")
+                toast(activity.getString(R.string.ankrimento_pdf_add_failed, error.message ?: error.javaClass.simpleName))
             }
-            try {
-                CollectionManager.withCol {
-                    Ankrimento.start(activity, this)
-                    import(staged.absolutePath, staged.nameWithoutExtension)
-                }
-            } finally {
-                staged.delete()
-            }
-            staged.nameWithoutExtension
-        }.onSuccess { title ->
-            toast(activity.getString(R.string.ankrimento_pdf_added, title))
-        }.onFailure { error ->
-            Timber.w(error, "Adding a document failed")
-            toast(activity.getString(R.string.ankrimento_pdf_add_failed, error.message ?: error.javaClass.simpleName))
-        }
     }
 
     private suspend fun syncNow() {
@@ -425,11 +404,6 @@ class IncrementoMenu(
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
-
-    private fun displayName(uri: Uri): String? =
-        activity.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
-            if (cursor.moveToFirst()) cursor.getString(0) else null
-        }
 
     private fun toast(text: String) {
         Toast.makeText(activity, text, Toast.LENGTH_LONG).show()

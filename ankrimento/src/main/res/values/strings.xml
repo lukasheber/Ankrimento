@@ -157,4 +157,20 @@
     <string name="ankrimento_release_previous_chapter">Release for the previous chapter</string>
     <string name="ankrimento_video_extract">Extract at this moment</string>
     <string name="ankrimento_video_back_10">Back 10 seconds</string>
+    <!-- Library -->
+    <string name="ankrimento_library">Library</string>
+    <string name="ankrimento_continue_reading">Continue reading</string>
+    <string name="ankrimento_all_documents">Documents</string>
+    <string name="ankrimento_library_empty">No documents yet. Add a PDF, an EPUB, a web page or a video with Add.</string>
+    <string name="ankrimento_add">Add</string>
+    <string name="ankrimento_add_pdf_file">PDF document</string>
+    <string name="ankrimento_add_epub_file">EPUB book</string>
+    <string name="ankrimento_add_link">Web page or video link</string>
+    <string name="ankrimento_link_hint">https://…</string>
+    <string name="ankrimento_kind_all">All</string>
+    <string name="ankrimento_kind_pdf">PDF</string>
+    <string name="ankrimento_kind_epub">EPUB</string>
+    <string name="ankrimento_kind_web">Web</string>
+    <string name="ankrimento_kind_video">Video</string>
+    <string name="ankrimento_kind_writing">Writing</string>
 </resources>

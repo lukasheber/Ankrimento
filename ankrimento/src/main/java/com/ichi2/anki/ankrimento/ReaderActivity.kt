@@ -135,6 +135,7 @@ abstract class ReaderActivity : ComponentActivity() {
                 }
             }
         }
+        RecentDocuments.record(this, cardId)
         // Readers add their own callbacks after this one, which run first.
         onBackPressedDispatcher.addCallback(this) { leave() }
         lifecycleScope.launch {

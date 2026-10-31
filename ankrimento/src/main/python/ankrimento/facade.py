@@ -481,6 +481,13 @@ def card_reader(card_id: int) -> str:
     return reader or ("text" if is_topic(card_id) else "")
 
 
+def library() -> str:
+    """Every Incremento document, with kind, title, priority and reading position."""
+    from ankrimento import library as documents
+
+    return _dumps(documents.entries())
+
+
 def card_title(card_id: int) -> str:
     """The title the knowledge tree shows for this card (its first field, as text)."""
     from incremento.backend.knowledge_tree import _card_title

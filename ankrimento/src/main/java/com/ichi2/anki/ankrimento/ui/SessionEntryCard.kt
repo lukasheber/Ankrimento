@@ -31,6 +31,7 @@ internal fun SessionEntryCard(
     remaining: Int?,
     onStudy: () -> Unit,
     onSettings: () -> Unit,
+    onLibrary: () -> Unit,
 ) {
     val inProgress = remaining != null && remaining > 0
     ElevatedCard(
@@ -55,6 +56,9 @@ internal fun SessionEntryCard(
             }
             Button(onClick = onStudy) {
                 Text(stringResource(if (inProgress) R.string.ankrimento_session_continue else R.string.ankrimento_session_start))
+            }
+            IconButton(onClick = onLibrary) {
+                Icon(IncrementoIcons.Book, contentDescription = stringResource(R.string.ankrimento_library))
             }
             IconButton(onClick = onSettings) {
                 Icon(IncrementoIcons.Settings, contentDescription = stringResource(R.string.ankrimento_session_settings))

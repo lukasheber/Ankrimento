@@ -32,6 +32,10 @@
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity
+            android:name="com.ichi2.anki.ankrimento.IncrementoHubActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+        <activity
             android:name="com.ichi2.anki.ankrimento.WritingActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"
