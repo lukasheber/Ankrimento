@@ -14,7 +14,8 @@ import timber.log.Timber
 
 /**
  * "Add to Incremento" in Android's share sheet: a shared link becomes an
- * Incremento Web topic, as desktop's Web Page does.
+ * Incremento Video topic (YouTube, Vimeo) or Web topic, as desktop's Add Video
+ * and Web Page do.
  */
 class ShareToIncrementoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +32,7 @@ class ShareToIncrementoActivity : ComponentActivity() {
             runCatching {
                 withCol {
                     Ankrimento.start(this@ShareToIncrementoActivity, this)
-                    Ankrimento.importWeb(url, title)
+                    Ankrimento.importLink(url, title)
                 }
             }.onSuccess {
                 Toast

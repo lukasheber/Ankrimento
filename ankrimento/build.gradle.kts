@@ -119,7 +119,7 @@ abstract class IncrementoWebAssets : DefaultTask() {
     fun copy() {
         files.sync {
             from(webDir) {
-                include("pdf_dock.html", "dist/**", "pdfjs/**")
+                include("pdf_dock.html", "video_player.html", "dist/**", "pdfjs/**")
                 into("ankrimento/web")
             }
             into(outputDir)

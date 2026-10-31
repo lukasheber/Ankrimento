@@ -77,7 +77,12 @@ AnkiDroid (Kotlin)
   the selection. "Add to Incremento" in Android's share sheet
   (`ShareToIncrementoActivity`) adds a shared link through `add_web_card`.
   Not yet: desktop's extraction anchors and snapshots.
-- Video and writing readers: todo.
+- **Video** (`video_reader.py`, `VideoReaderActivity`): YouTube through
+  upstream's `web/video_player.html`, downloaded videos with Android's
+  player; the position (`set_video_position`) and observed watch time
+  (`record_video_watch`) are saved as desktop's video dock saves them.
+  Shared YouTube/Vimeo links become video topics.
+- Writing topics: todo.
 
 ### Syncing Incremento data
 

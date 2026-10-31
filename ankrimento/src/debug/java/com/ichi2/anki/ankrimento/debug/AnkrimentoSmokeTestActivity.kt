@@ -13,6 +13,7 @@ import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.EpubReaderActivity
 import com.ichi2.anki.ankrimento.PdfReaderActivity
+import com.ichi2.anki.ankrimento.VideoReaderActivity
 import com.ichi2.anki.ankrimento.WebReaderActivity
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.CoroutineScope
@@ -60,9 +61,12 @@ class AnkrimentoSmokeTestActivity : Activity() {
                         log("imported PDF card $cardId")
                         startActivity(PdfReaderActivity.intent(this@AnkrimentoSmokeTestActivity, cardId))
                     }
-                    // Optional: `--el web <card id>` opens a web topic's reader.
+                    // Optional: `--el web <card id>` / `--el video <card id>` opens that reader.
                     intent.getLongExtra(EXTRA_WEB, 0L).takeIf { it > 0 }?.let { cardId ->
                         startActivity(WebReaderActivity.intent(this@AnkrimentoSmokeTestActivity, cardId))
+                    }
+                    intent.getLongExtra(EXTRA_VIDEO, 0L).takeIf { it > 0 }?.let { cardId ->
+                        startActivity(VideoReaderActivity.intent(this@AnkrimentoSmokeTestActivity, cardId))
                     }
                     // Optional: `--es epub <path>` likewise for the EPUB reader.
                     intent.getStringExtra(EXTRA_EPUB)?.let { path ->
@@ -163,5 +167,6 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_PDF = "pdf"
         const val EXTRA_EPUB = "epub"
         const val EXTRA_WEB = "web"
+        const val EXTRA_VIDEO = "video"
     }
 }

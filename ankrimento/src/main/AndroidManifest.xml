@@ -17,6 +17,11 @@
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity
+            android:name="com.ichi2.anki.ankrimento.VideoReaderActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.NoActionBar" />
+        <activity
             android:name="com.ichi2.anki.ankrimento.ShareToIncrementoActivity"
             android:exported="true"
             android:label="@string/ankrimento_share_label"

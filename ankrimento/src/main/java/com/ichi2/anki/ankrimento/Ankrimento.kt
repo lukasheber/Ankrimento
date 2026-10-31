@@ -321,6 +321,44 @@ object Ankrimento {
         return navigate.getInt("section_index") to navigate.getDouble("scroll_ratio")
     }
 
+    /** Add a shared link: a video link as a video topic, anything else as a web topic. */
+    @WorkerThread
+    fun importLink(
+        url: String,
+        title: String,
+    ): Long = JSONObject(requireFacade().callAttr("import_link", url, title).toString()).getLong("card_id")
+
+    /** What a video topic plays: [kind] "local" ([path]), "youtube" ([videoId]) or "none" ([url]). */
+    data class Video(
+        val kind: String,
+        val path: String,
+        val videoId: String,
+        val url: String,
+        val position: Double,
+    )
+
+    @WorkerThread
+    fun videoOpen(cardId: Long): Video {
+        val json = JSONObject(requireFacade().callAttr("video_open", cardId).toString())
+        return Video(
+            kind = json.getString("kind"),
+            path = json.optString("path"),
+            videoId = json.optString("video_id"),
+            url = json.optString("url"),
+            position = json.getDouble("position"),
+        )
+    }
+
+    /** Save the playback position and add [watchedSeconds] of observed playback. */
+    @WorkerThread
+    fun videoProgress(
+        cardId: Long,
+        position: Double,
+        watchedSeconds: Double,
+    ) {
+        requireFacade().callAttr("video_progress", cardId, position, watchedSeconds)
+    }
+
     /** Add a web page as an Incremento Web topic card; returns the card id. */
     @WorkerThread
     fun importWeb(

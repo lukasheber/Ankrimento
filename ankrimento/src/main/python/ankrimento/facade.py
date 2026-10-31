@@ -371,11 +371,43 @@ def import_web(url: str, title: str = "", deck_name: str = "Topics", priority: f
     return int(card_id)
 
 
+def import_link(url: str, title: str = "", priority: float = 50.0) -> str:
+    """Add a shared link: a video link as a video topic, anything else as a web topic."""
+    from incremento.backend.priority_manager import set_priority
+
+    from ankrimento import video_reader
+
+    if video_reader.is_video_url(url):
+        card_id, kind = video_reader.import_video(url, title), "video"
+    else:
+        card_id, kind = import_web(url, title, priority=priority), "web"
+    rt = runtime.current()
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return _dumps({"card_id": card_id, "kind": kind})
+
+
 def card_reader(card_id: int) -> str:
-    """Which Incremento reader opens this card ("pdf", "epub" or "web"), or "" for none."""
+    """Which Incremento reader opens this card ("pdf", "epub", "web", "video"), or ""."""
     note = runtime.current().col.get_card(int(card_id)).note()
-    readers = {"Incremento PDF": "pdf", "Incremento EPUB": "epub", "Incremento Web": "web"}
+    readers = {
+        "Incremento PDF": "pdf",
+        "Incremento EPUB": "epub",
+        "Incremento Web": "web",
+        "Incremento Video": "video",
+    }
     return readers.get(note.note_type()["name"], "")
+
+
+def video_open(card_id: int) -> str:
+    from ankrimento import video_reader
+
+    return _dumps(video_reader.open_video(int(card_id)))
+
+
+def video_progress(card_id: int, position: float, watched_seconds: float) -> None:
+    from ankrimento import video_reader
+
+    video_reader.save_position(int(card_id), float(position), float(watched_seconds))
 
 
 def web_open(card_id: int) -> str:
