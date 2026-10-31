@@ -53,3 +53,22 @@ def test_learn_function_session_reaches_review_and_counts_answers(rt, host_event
 
     facade.reviewer_closed()
     assert mw.state == "overview"
+
+
+def test_session_settings_round_trip_through_upstream_config(rt):
+    from incremento.backend.scheduler_config import load_scheduler_config
+
+    original = json.loads(facade.session_settings())
+    assert original["topics_percent"] == 90  # upstream default: 90% topics
+    try:
+        changed = dict(original, card_count=25, topics_percent=60, documents_percent=30,
+                       random_percent=40, include_new=False, auto_refill=True)
+        facade.save_session_settings(json.dumps(changed))
+        assert json.loads(facade.session_settings()) == changed
+        cfg = load_scheduler_config()
+        assert cfg.session_card_count == 25
+        assert cfg.topics_rate == pytest.approx(0.6)
+        assert cfg.random_rate == pytest.approx(0.4)
+        assert cfg.include_new is False
+    finally:
+        facade.save_session_settings(json.dumps(original))

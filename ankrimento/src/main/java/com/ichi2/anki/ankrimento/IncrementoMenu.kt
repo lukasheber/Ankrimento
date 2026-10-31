@@ -69,6 +69,7 @@ class IncrementoMenu(
     ) {
         if (!Ankrimento.isSupported) return
         menu.add(Menu.NONE, R.id.ankrimento_start_session, Menu.CATEGORY_SECONDARY, R.string.ankrimento_start_session)
+        menu.add(Menu.NONE, R.id.ankrimento_session_settings, Menu.CATEGORY_SECONDARY, R.string.ankrimento_session_settings)
         menu.add(Menu.NONE, R.id.ankrimento_add_pdf, Menu.CATEGORY_SECONDARY, R.string.ankrimento_add_pdf)
         menu.add(Menu.NONE, R.id.ankrimento_sync_now, Menu.CATEGORY_SECONDARY, R.string.ankrimento_sync_now)
         menu.add(Menu.NONE, R.id.ankrimento_sync_folder, Menu.CATEGORY_SECONDARY, R.string.ankrimento_sync_folder)
@@ -78,6 +79,7 @@ class IncrementoMenu(
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
             R.id.ankrimento_start_session -> activity.lifecycleScope.launch { startSession() }
+            R.id.ankrimento_session_settings -> activity.lifecycleScope.launch { editSessionSettings() }
             R.id.ankrimento_add_pdf -> pickPdf.launch(arrayOf("application/pdf"))
             R.id.ankrimento_sync_now -> activity.lifecycleScope.launch { syncNow() }
             R.id.ankrimento_sync_folder -> pickSyncFolder.launch(null)
@@ -97,6 +99,17 @@ class IncrementoMenu(
         }.onFailure { error ->
             Timber.w(error, "Incremento session failed")
             toast(activity.getString(R.string.ankrimento_session_failed, error.message ?: error.javaClass.simpleName))
+        }
+    }
+
+    private suspend fun editSessionSettings() {
+        val settings =
+            CollectionManager.withCol {
+                Ankrimento.start(activity, this)
+                Ankrimento.sessionSettings()
+            }
+        SessionSettingsDialog.show(activity, settings) { changed ->
+            activity.lifecycleScope.launch { CollectionManager.withCol { Ankrimento.saveSessionSettings(changed) } }
         }
     }
 

@@ -307,6 +307,48 @@ object Ankrimento {
         requireFacade().callAttr("discard_extract", sourceCardId)
     }
 
+    /** Session settings (desktop's Basic view), as percentages. */
+    data class SessionSettings(
+        val cardCount: Int,
+        val topicsPercent: Int,
+        val documentsPercent: Int,
+        val randomPercent: Int,
+        val includeNew: Boolean,
+        val includeLearning: Boolean,
+        val includeDue: Boolean,
+        val autoRefill: Boolean,
+    )
+
+    @WorkerThread
+    fun sessionSettings(): SessionSettings {
+        val json = JSONObject(requireFacade().callAttr("session_settings").toString())
+        return SessionSettings(
+            cardCount = json.getInt("card_count"),
+            topicsPercent = json.getInt("topics_percent"),
+            documentsPercent = json.getInt("documents_percent"),
+            randomPercent = json.getInt("random_percent"),
+            includeNew = json.getBoolean("include_new"),
+            includeLearning = json.getBoolean("include_learning"),
+            includeDue = json.getBoolean("include_due"),
+            autoRefill = json.getBoolean("auto_refill"),
+        )
+    }
+
+    @WorkerThread
+    fun saveSessionSettings(settings: SessionSettings) {
+        val json =
+            JSONObject()
+                .put("card_count", settings.cardCount)
+                .put("topics_percent", settings.topicsPercent)
+                .put("documents_percent", settings.documentsPercent)
+                .put("random_percent", settings.randomPercent)
+                .put("include_new", settings.includeNew)
+                .put("include_learning", settings.includeLearning)
+                .put("include_due", settings.includeDue)
+                .put("auto_refill", settings.autoRefill)
+        requireFacade().callAttr("save_session_settings", json.toString())
+    }
+
     /** Pick session cards with the saved Incremento scheduler settings. */
     @WorkerThread
     fun selectSession(): List<Long> {

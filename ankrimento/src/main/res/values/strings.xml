@@ -31,6 +31,15 @@
     <string name="ankrimento_sync_conflict_message">Incremento data changed on this device and on %s since they last synced. Which version should be kept? The other is saved in a sync-conflicts folder.</string>
     <string name="ankrimento_sync_keep_device">Keep this device\'s</string>
     <string name="ankrimento_sync_keep_folder">Keep the other device\'s</string>
+    <string name="ankrimento_session_settings">Incremento session settings…</string>
+    <string name="ankrimento_settings_card_count">Cards per session</string>
+    <string name="ankrimento_settings_topics">Topics: %d%% (the rest are items)</string>
+    <string name="ankrimento_settings_documents">Documents within topics: %d%%</string>
+    <string name="ankrimento_settings_random">Random: %d%% (the rest by priority)</string>
+    <string name="ankrimento_settings_new">Include new cards</string>
+    <string name="ankrimento_settings_learning">Include learning cards</string>
+    <string name="ankrimento_settings_due">Include due cards</string>
+    <string name="ankrimento_settings_auto_refill">Keep the session deck topped up</string>
     <string name="ankrimento_topic_done">Topic done</string>
     <string name="ankrimento_topic_postpone">Postpone topic</string>
     <string name="ankrimento_topic_revisit">Revisit topic in…</string>

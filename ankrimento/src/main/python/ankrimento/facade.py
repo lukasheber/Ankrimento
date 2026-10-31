@@ -37,6 +37,54 @@ def start_session() -> None:
     session.start()
 
 
+def session_settings() -> str:
+    """The session settings of desktop's Basic view, as plain percentages.
+
+    Upstream stores the sliders as complements: ``topics_slider`` is the item
+    share, ``pdf_slider`` the non-document share of topics.
+    """
+    from aqt import mw
+    from incremento.backend.config_service import load_addon_config, normalize_document_mix
+
+    dialog = normalize_document_mix(load_addon_config(mw.addonManager, "incremento").get("dialog", {}))
+    return _dumps(
+        {
+            "card_count": int(dialog.get("session_card_count", 50)),
+            "topics_percent": round(100 - float(dialog.get("topics_slider", 10))),
+            "documents_percent": round(100 - float(dialog.get("pdf_slider", 100))),
+            "random_percent": round(float(dialog.get("random_slider", 99))),
+            "include_new": bool(dialog.get("include_new", True)),
+            "include_learning": bool(dialog.get("include_learning", True)),
+            "include_due": bool(dialog.get("include_due", True)),
+            "auto_refill": bool(dialog.get("auto_refill_session", False)),
+        }
+    )
+
+
+def save_session_settings(settings_json: str) -> None:
+    """Save session settings into Incremento's config, as desktop's dialog does."""
+    from aqt import mw
+    from incremento.backend.config_service import load_addon_config, save_addon_config
+
+    settings = json.loads(settings_json)
+    config = load_addon_config(mw.addonManager, "incremento")
+    dialog = dict(config.get("dialog") or {})
+    dialog.update(
+        {
+            "session_card_count": int(settings["card_count"]),
+            "topics_slider": 100 - int(settings["topics_percent"]),
+            "pdf_slider": 100 - int(settings["documents_percent"]),
+            "random_slider": int(settings["random_percent"]),
+            "include_new": bool(settings["include_new"]),
+            "include_learning": bool(settings["include_learning"]),
+            "include_due": bool(settings["include_due"]),
+            "auto_refill_session": bool(settings["auto_refill"]),
+        }
+    )
+    config["dialog"] = dialog
+    save_addon_config(mw.addonManager, "incremento", config)
+
+
 def question_shown(card_id: int) -> None:
     """Desktop wiring: ``reviewer_did_show_question``."""
     gui_hooks.reviewer_did_show_question(runtime.current().col.get_card(int(card_id)))
