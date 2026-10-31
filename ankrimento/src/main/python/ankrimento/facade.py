@@ -385,6 +385,17 @@ def topic_revisit(card_id: int, months: int) -> str:
     return result.message
 
 
+def topic_revisit_on(card_id: int, iso_date: str) -> str:
+    """Desktop's "Revisit in… → Choose date…": show the topic again on that date."""
+    import datetime
+
+    from incremento.backend.topic_review_actions import revisit_topic
+
+    result = revisit_topic(runtime.current().col, int(card_id), on_date=datetime.date.fromisoformat(str(iso_date)))
+    _publish(result.changes)
+    return result.message
+
+
 def topic_postpone(card_id: int) -> str:
     """Postpone a topic for this session or for the configured minutes.
 

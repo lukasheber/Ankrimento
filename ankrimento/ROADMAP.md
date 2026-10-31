@@ -36,7 +36,7 @@ Mobile principles that guide every item:
 | ✅ | Next element opens straight away, without passing through the reviewer | |
 | ✅ | Back to the previous element (one undo, only while nothing changed since) | |
 | ✅ | Topic actions: Read to here (PDF, EPUB), Done, Postpone, Revisit 3/6/12 months | A row of chips above the answers |
-| ⬜ | Revisit → Choose date… | Desktop has it in the same menu |
+| ✅ | Revisit → Choose date… (date picker, tomorrow onwards) | Upstream's revisit with a date, so desktop keeps it out of reading sessions until then |
 | ⬜ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | |
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
 | 🟡 | When a session finds nothing to study, say why and offer the session settings | Dialog with upstream's message and a Session settings button; not yet seen on a device (document topics always qualify, as upstream intends) |

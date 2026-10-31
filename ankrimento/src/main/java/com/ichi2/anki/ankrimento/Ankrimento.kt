@@ -236,6 +236,13 @@ object Ankrimento {
         months: Int,
     ): String = requireFacade().callAttr("topic_revisit", cardId, months).toString()
 
+    /** Show the topic again on [isoDate] (yyyy-mm-dd), desktop's "Revisit in… → Choose date…". Returns a message. */
+    @WorkerThread
+    fun topicRevisitOn(
+        cardId: Long,
+        isoDate: String,
+    ): String = requireFacade().callAttr("topic_revisit_on", cardId, isoDate).toString()
+
     /** Postpone the topic for this session or the configured minutes. Returns a message. */
     @WorkerThread
     fun topicPostpone(cardId: Long): String = requireFacade().callAttr("topic_postpone", cardId).toString()

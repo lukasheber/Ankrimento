@@ -242,3 +242,15 @@ def test_plain_topics_open_in_the_text_reader_and_items_do_not(rt, cards):
     """Topics without a document still open in a reader (no "Show answer"); items stay cards."""
     assert facade.card_reader(cards["topics"][0]) == "text"
     assert facade.card_reader(cards["items"][0]) == ""
+
+
+def test_revisit_on_a_chosen_date(rt):
+    import datetime
+
+    (card_id,) = _add_notes(rt.col, "Topics", 1, "dated revisit topic")
+    target = datetime.date.today() + datetime.timedelta(days=40)
+    message = facade.topic_revisit_on(card_id, target.isoformat())
+    assert target.isoformat() in message
+    assert 38 <= rt.col.get_card(card_id).due - rt.col.sched.today <= 41
+    with pytest.raises(ValueError):
+        facade.topic_revisit_on(card_id, (datetime.date.today() - datetime.timedelta(days=1)).isoformat())

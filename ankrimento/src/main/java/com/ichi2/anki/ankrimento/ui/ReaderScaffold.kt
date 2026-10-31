@@ -26,6 +26,8 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,11 +38,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -394,6 +398,57 @@ private fun PriorityChip(
         label = { Text(stringResource(R.string.ankrimento_priority_chip, priority.roundToInt())) },
         modifier = Modifier.padding(end = 4.dp),
     )
+}
+
+/** A future date for "Revisit in…", as yyyy-mm-dd; days before tomorrow cannot be chosen. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun RevisitDateDialog(
+    onDismiss: () -> Unit,
+    onDate: (String) -> Unit,
+) {
+    val tomorrow =
+        java.time.LocalDate
+            .now()
+            .plusDays(1)
+    val state =
+        rememberDatePickerState(
+            initialSelectedDateMillis =
+                tomorrow
+                    .plusMonths(1)
+                    .atStartOfDay(java.time.ZoneOffset.UTC)
+                    .toInstant()
+                    .toEpochMilli(),
+            selectableDates =
+                object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean =
+                        !java.time.Instant
+                            .ofEpochMilli(utcTimeMillis)
+                            .atZone(java.time.ZoneOffset.UTC)
+                            .toLocalDate()
+                            .isBefore(tomorrow)
+                },
+        )
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    state.selectedDateMillis?.let { millis ->
+                        onDate(
+                            java.time.Instant
+                                .ofEpochMilli(millis)
+                                .atZone(java.time.ZoneOffset.UTC)
+                                .toLocalDate()
+                                .toString(),
+                        )
+                    }
+                },
+                enabled = state.selectedDateMillis != null,
+            ) { Text(stringResource(android.R.string.ok)) }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) } },
+    ) { DatePicker(state = state) }
 }
 
 /** Shown while a reader opens its document. */

@@ -39,6 +39,7 @@ import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderScaffold
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReviewBarState
+import com.ichi2.anki.ankrimento.ui.RevisitDateDialog
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -99,6 +100,7 @@ abstract class ReaderActivity : ComponentActivity() {
     private var title by mutableStateOf("")
     private var answerButtons by mutableStateOf<List<Ankrimento.AnswerButton>>(emptyList())
     private var editedPriority by mutableStateOf<Double?>(null)
+    private var choosingRevisitDate by mutableStateOf(false)
     private var priority by mutableStateOf<Double?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,6 +129,12 @@ abstract class ReaderActivity : ComponentActivity() {
                     }
                 }
                 sheet?.invoke()
+                if (choosingRevisitDate) {
+                    RevisitDateDialog(onDismiss = { choosingRevisitDate = false }) { date ->
+                        choosingRevisitDate = false
+                        topicAction { Ankrimento.topicRevisitOn(cardId, date) }
+                    }
+                }
                 editedPriority?.let { current ->
                     PriorityDialog(current, onDismiss = { editedPriority = null }) { chosen ->
                         editedPriority = null
@@ -261,7 +269,7 @@ abstract class ReaderActivity : ComponentActivity() {
                     ReaderTool(resources.getQuantityString(R.plurals.ankrimento_months, months, months)) {
                         topicAction { Ankrimento.topicRevisit(cardId, months) }
                     }
-                }
+                } + ReaderTool(getString(R.string.ankrimento_choose_date)) { choosingRevisitDate = true }
             } else {
                 emptyList()
             }
