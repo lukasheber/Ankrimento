@@ -143,4 +143,10 @@
         <item quantity="other">In %d months</item>
     </plurals>
     <string name="ankrimento_session_empty_title">Nothing to study now</string>
+    <!-- Items in a session -->
+    <string name="ankrimento_show_answer">Show answer</string>
+    <string name="ankrimento_grade_again">Again</string>
+    <string name="ankrimento_grade_hard">Hard</string>
+    <string name="ankrimento_grade_good">Good</string>
+    <string name="ankrimento_grade_easy">Easy</string>
 </resources>

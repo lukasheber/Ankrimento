@@ -41,7 +41,9 @@ Mobile principles that guide every item:
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for session settings | The deck's own row is hidden from the list |
 | 🟡 | When a session finds nothing to study, say why and offer the session settings | Dialog with upstream's message and a Session settings button; not yet seen on a device (document topics always qualify, as upstream intends) |
 | ✅ | Plain-text topics in a reader (no "Show answer"): the note as its template renders it, Aa settings, Extract on selection, review bar | |
-| ⬜ | Items in the same learning screen as topics: question, Show answer, then Fail/Pass or Anki's grades | Removes the last hand-off to the legacy reviewer |
+| ✅ | Items in the same learning screen as topics: question, Show answer, then Anki's grades (or Fail/Pass when enabled), with intervals, Back and the priority chip | Session deck only; cards with sound, typed answers, math or image occlusion still use the reviewer |
+| ⬜ | Items with sound, typed answers, math (MathJax) and image occlusion in the learning screen | |
+| ⬜ | Leech notice when an item becomes a leech in the learning screen | The reviewer shows one |
 | ➖ | Swipe between elements | Sideways swipe turns pages in the readers; moving between elements stays on the footer buttons, where a stray swipe cannot answer a topic |
 | 🟡 | Session settings: card count, topic/item mix | Basic dialog only |
 | ⬜ | Session presets: save, load, rename, delete | |
@@ -140,7 +142,7 @@ Mobile principles that guide every item:
 |---|---|---|
 | 🟡 | Extract to a new card: front/back, note type, topic/item, priority | Works; AlertDialog to become a Material bottom sheet |
 | ✅ | Priority editor (slider, 0 to 100) | |
-| 🟡 | **Priority always in reach on topics and items**: a "P 50" chip on screen, one tap to change it | Topic readers: done (chip in the top bar). Items: needs the learning screen (today it is in the reviewer's menu) |
+| ✅ | **Priority always in reach on topics and items**: a "P 50" chip on screen, one tap to change it | Done for topics and items (chip in the top bar) |
 | ⬜ | "Keep extracting" queue (several extracts, then one review) | Button exists; needs mobile flow |
 | ⬜ | Extract card from the current reviewer card [11] | |
 | ⬜ | Add Card dock / card from scratch with priority [11] | |
@@ -193,10 +195,9 @@ Mobile principles that guide every item:
 
 ## Order of work
 
-1. ~~Fixed Incremento entry on the main screen~~ (done). Priority chip on
-   items. Explain empty sessions.
-2. Plain-text topics and items in the learning screen, so the loop never
-   leaves it. Page turning by swipe and pull-past-the-end in PDF and EPUB.
+1. ~~Fixed Incremento entry, priority chip, plain-text topics and items in
+   the learning screen~~ (done).
+2. Page turning by swipe and pull-past-the-end in PDF and EPUB.
 3. Extract bottom sheet, Keep extracting, and video extract at timestamp.
 4. Hub and Library (Continue reading, Add sheet). Web pages imported as
    clean HTML / plain text.

@@ -44,7 +44,7 @@ internal class IncrementoReaders(
             val reader =
                 withCol {
                     Ankrimento.questionShown(cardId)
-                    Ankrimento.cardReader(cardId)
+                    CardPage.readerFor(this, cardId)
                 }
             // Topic actions depend on the card just shown.
             viewer.invalidateOptionsMenu()
@@ -54,7 +54,7 @@ internal class IncrementoReaders(
 
     /** Opens [cardId]'s reader to review it, from the menu after "Show card". */
     fun reopen(cardId: CardId) {
-        viewer.launchCatchingTask { open(cardId, withCol { Ankrimento.cardReader(cardId) }) }
+        viewer.launchCatchingTask { open(cardId, withCol { CardPage.readerFor(this, cardId) }) }
     }
 
     private fun open(

@@ -37,6 +37,7 @@ import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderScaffold
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReviewBarState
+import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -76,6 +77,15 @@ abstract class ReaderActivity : ComponentActivity() {
 
     /** A sheet the reader shows over the document (reading settings, contents), or null. */
     protected var sheet by mutableStateOf<(@Composable () -> Unit)?>(null)
+
+    /** While set, the review bar offers Show answer, which runs it, instead of the answers (items). */
+    protected var revealAction by mutableStateOf<(() -> Unit)?>(null)
+
+    /** The answer was shown before the answer buttons (items); topics count it when answered. */
+    protected open val answerAlreadyShown = false
+
+    /** The answer buttons for this card, read on the collection's thread. */
+    protected open fun answerButtonsFor(col: Collection): List<Ankrimento.AnswerButton>? = Ankrimento.answerButtons(cardId)
 
     /** False while only the document shows (immersive reading). */
     private var chromeVisible by mutableStateOf(true)
@@ -131,7 +141,7 @@ abstract class ReaderActivity : ComponentActivity() {
                     // The reviewer tells Incremento about the cards it shows; the loop's are shown here.
                     if (inSession && !intent.getBooleanExtra(EXTRA_QUESTION_SHOWN, false)) Ankrimento.questionShown(cardId)
                     priority = Ankrimento.priority(cardId)
-                    Ankrimento.cardTitle(cardId) to if (inSession) Ankrimento.answerButtons(cardId) else null
+                    Ankrimento.cardTitle(cardId) to if (inSession) answerButtonsFor(this) else null
                 }
             }.onSuccess { (cardTitle, buttons) ->
                 title = cardTitle
@@ -188,7 +198,7 @@ abstract class ReaderActivity : ComponentActivity() {
         }
 
     private fun reviewBar(): ReviewBarState? {
-        if (!inSession || answerButtons.isEmpty()) return null
+        if (!inSession || (answerButtons.isEmpty() && revealAction == null)) return null
         val topic = Ankrimento.shownTopicCardId == cardId
         val topicActions =
             if (topic) {
@@ -214,7 +224,8 @@ abstract class ReaderActivity : ComponentActivity() {
             topicActions,
             revisitOptions,
             onBack = if (canGoBack) ::goBack else null,
-        ) { rating -> continueAfter(rating = rating) { LearnLoop.answer(this, cardId, rating) } }
+            reveal = revealAction,
+        ) { rating -> continueAfter(rating = rating) { LearnLoop.answer(this, cardId, rating, answerAlreadyShown) } }
     }
 
     private fun editPriority() {
@@ -342,6 +353,7 @@ abstract class ReaderActivity : ComponentActivity() {
                     "video" -> VideoReaderActivity::class.java
                     "writing" -> WritingActivity::class.java
                     "text" -> TextReaderActivity::class.java
+                    "item" -> ItemReaderActivity::class.java
                     else -> return null
                 }
             return Intent(context, activity).putExtra(EXTRA_CARD_ID, cardId).putExtra(EXTRA_SESSION, session)

@@ -27,6 +27,11 @@
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity
+            android:name="com.ichi2.anki.ankrimento.ItemReaderActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+        <activity
             android:name="com.ichi2.anki.ankrimento.WritingActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar"

@@ -77,6 +77,8 @@ internal class ReviewBarState(
     val revisitOptions: List<ReaderTool>,
     /** Returns to the previous element, as SuperMemo's Back; null when there is none to return to. */
     val onBack: (() -> Unit)?,
+    /** An item's Show answer, offered instead of the answers until it is used. */
+    val reveal: (() -> Unit)? = null,
     val onAnswer: (Rating) -> Unit,
 )
 
@@ -333,9 +335,17 @@ private fun AnswerRow(state: ReviewBarState) {
             IconButton(onClick = { state.onBack?.invoke() }, enabled = state.onBack != null) {
                 Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_previous_element))
             }
+            state.reveal?.let { reveal ->
+                Button(
+                    onClick = reveal,
+                    modifier = Modifier.weight(1f).heightIn(min = 56.dp).padding(horizontal = 4.dp),
+                ) { Text(stringResource(R.string.ankrimento_show_answer), fontWeight = FontWeight.Medium) }
+                return@Row
+            }
             val buttons = state.buttons.sortedBy { it.rating.number }
             buttons.forEachIndexed { index, button ->
-                val emphasized = buttons.size == 3 && index == 1
+                // The usual answer stands out: Same among topics' choices, Good or Pass on items.
+                val emphasized = if (buttons.size == 3) index == 1 else button.ease == 3
                 val modifier =
                     Modifier
                         .weight(1f)

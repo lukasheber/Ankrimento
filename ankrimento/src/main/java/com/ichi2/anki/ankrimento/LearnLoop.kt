@@ -49,11 +49,12 @@ internal object LearnLoop {
         handler: Any,
         cardId: Long,
         rating: Rating,
+        answerAlreadyShown: Boolean = false,
     ): Step {
         val state = withCol { sched.currentQueueState() }
         if (state == null || state.topCard.id != cardId) return NotCurrent
         // Desktop times a review from the question to the answer.
-        withCol { Ankrimento.answerShown(cardId) }
+        if (!answerAlreadyShown) withCol { Ankrimento.answerShown(cardId) }
         val submitted = withCol { Ankrimento.ratingToSubmit(cardId, rating) }
         move(handler) { sched.answerCard(state, submitted) }
         withCol { Ankrimento.onCardAnswered(cardId, submitted) }
@@ -95,6 +96,6 @@ internal object LearnLoop {
     private suspend fun next(): Step =
         withCol {
             val card = sched.currentQueueState()?.topCard ?: return@withCol End
-            Next(card.id, Ankrimento.cardReader(card.id))
+            Next(card.id, CardPage.readerFor(this, card.id))
         }
 }

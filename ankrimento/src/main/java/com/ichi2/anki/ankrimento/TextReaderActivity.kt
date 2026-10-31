@@ -19,11 +19,7 @@ import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReadingSettingsSheet
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import org.json.JSONObject
 import timber.log.Timber
-import java.io.File
-import java.io.FileInputStream
-import java.net.URLConnection
 
 /**
  * A topic without a document: its note, as its card template renders it,
@@ -77,7 +73,7 @@ class TextReaderActivity : ReaderActivity() {
             runCatching {
                 withCol {
                     val output = getCard(cardId).renderOutput(this, reload = true)
-                    page(output.css, output.answerText) to media.dir
+                    CardPage.html(output.css, output.answerText) to media.dir
                 }
             }.getOrElse { error ->
                 Timber.w(error, "Rendering a topic failed")
@@ -89,7 +85,7 @@ class TextReaderActivity : ReaderActivity() {
         val assetLoader =
             WebViewAssetLoader
                 .Builder()
-                .addPathHandler("/media/") { path -> mediaFile(media, path) }
+                .addPathHandler("/media/") { path -> CardPage.mediaFile(media, path) }
                 .build()
         webView.webViewClient =
             object : WebViewClientCompat() {
@@ -112,22 +108,12 @@ class TextReaderActivity : ReaderActivity() {
                     url: String,
                 ) = applyReading()
             }
-        webView.loadDataWithBaseURL(BASE_URL, html, "text/html", "utf-8", null)
-    }
-
-    /** A file of the collection's media, never outside its folder. */
-    private fun mediaFile(
-        media: File,
-        path: String,
-    ): WebResourceResponse? {
-        val file = File(media, path).canonicalFile
-        if (!file.path.startsWith(media.path + File.separator) || !file.isFile) return null
-        return WebResourceResponse(URLConnection.guessContentTypeFromName(file.name), null, FileInputStream(file))
+        webView.loadDataWithBaseURL(CardPage.BASE_URL, html, "text/html", "utf-8", null)
     }
 
     private fun applyReading() {
         webView.evaluateJavascript(preferences.script(), null)
-        webView.evaluateJavascript(pageScript(textScale, appearance), null)
+        webView.evaluateJavascript(CardPage.pageScript(textScale, appearance, alignStart = true), null)
     }
 
     private fun showReadingSettings() {
@@ -177,42 +163,16 @@ class TextReaderActivity : ReaderActivity() {
     private fun decodeJsString(result: String): String = runCatching { JSONArray("[$result]").getString(0) }.getOrDefault("")
 
     companion object {
-        private const val BASE_URL = "https://appassets.androidplatform.net/media/"
         private const val SELECTION_JS = "String(window.getSelection ? window.getSelection() : '')"
-        private const val PREFERENCES = "ankrimento_text_reader"
-        private const val KEY_SCALE = "text_scale"
-        private const val KEY_APPEARANCE = "appearance"
+
+        /** Shared with the item reader, which shows cards in the same text size and page colour. */
+        internal const val PREFERENCES = "ankrimento_text_reader"
+        internal const val KEY_SCALE = "text_scale"
+        internal const val KEY_APPEARANCE = "appearance"
 
         /** The EPUB reader's limits (upstream's). */
         private const val MIN_SCALE = 0.7
         private const val MAX_SCALE = 2.2
-
-        /** Audio and video play in the reviewer; a topic shows their text only. */
-        private val AV_TAG = Regex("""\[anki:play:[^\]]*]""")
-
-        private fun page(
-            css: String,
-            body: String,
-        ): String =
-            "<!doctype html><html><head><meta charset=\"utf-8\">" +
-                "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
-                "<style>$css</style></head><body class=\"card\"><div id=\"qa\">${body.replace(AV_TAG, "")}</div></body></html>"
-
-        /** Text size and page colour; the colours are upstream's EPUB appearance modes. */
-        private fun pageScript(
-            scale: Double,
-            appearance: String,
-        ): String {
-            val options = JSONObject().put("scale", scale).put("mode", appearance)
-            return "(function (o) {" +
-                " var style = document.getElementById('ankrimento-page');" +
-                " if (!style) { style = document.createElement('style'); style.id = 'ankrimento-page'; document.head.appendChild(style); }" +
-                " var css = 'html { font-size: ' + Math.round(o.scale * 100) + '% !important; } body, .card { text-align: start !important; }';" +
-                " if (o.mode !== 'original') { var bg = o.mode === 'night' ? '#15120f' : '#1e1e1e'; var fg = o.mode === 'night' ? '#d9c7a4' : '#dedede';" +
-                " css += ' html, body, .card { background: ' + bg + ' !important; color: ' + fg + ' !important; }'" +
-                " + ' a { color: #8ab4f8 !important; }'; }" +
-                " style.textContent = css; })($options);"
-        }
 
         fun intent(
             context: Context,
