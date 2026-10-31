@@ -20,6 +20,44 @@ def _dumps(value: Any) -> str:
     return json.dumps(value, separators=(",", ":"))
 
 
+def start_session() -> None:
+    """Start an Incremento session with upstream's ``learnFunction``.
+
+    Runs in the background; when the deck is ready the host receives a
+    ``move_to_state`` event with ``state == "review"``, or a message if no
+    cards were found.
+    """
+    from ankrimento import session
+
+    session.start()
+
+
+def question_shown(card_id: int) -> None:
+    """Desktop wiring: ``reviewer_did_show_question``."""
+    gui_hooks.reviewer_did_show_question(runtime.current().col.get_card(int(card_id)))
+
+
+def answer_shown(card_id: int) -> None:
+    """Desktop wiring: ``reviewer_did_show_answer``."""
+    gui_hooks.reviewer_did_show_answer(runtime.current().col.get_card(int(card_id)))
+
+
+def reviewer_closed() -> None:
+    """Desktop wiring: ``reviewer_will_end``, then leaving the review state."""
+    from aqt import mw
+
+    gui_hooks.reviewer_will_end()
+    if mw.state == "review":
+        mw.moveToState("overview")
+
+
+def session_counts() -> str:
+    """Cards answered in the current session, by kind, as upstream counts them."""
+    from incremento.backend.session import get_session_counts
+
+    return _dumps(get_session_counts())
+
+
 def select_session() -> str:
     """Pick session cards with the saved scheduler settings."""
     from incremento.backend.scheduler_config import load_scheduler_config

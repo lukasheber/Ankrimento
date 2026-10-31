@@ -75,6 +75,7 @@ import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.Whiteboard.Companion.createInstance
 import com.ichi2.anki.Whiteboard.OnPaintColorChangeListener
 import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.notifyIncrementoQuestionShown
 import com.ichi2.anki.ankrimento.showIncrementoAnswerButtons
 import com.ichi2.anki.cardviewer.Gesture
 import com.ichi2.anki.cardviewer.ViewerCommand
@@ -1052,6 +1053,7 @@ open class Reviewer :
                 tempAudioPathToDelete.delete()
             }
         }
+        Ankrimento.reviewerClosed()
         super.closeReviewer(result)
     }
 
@@ -1645,6 +1647,7 @@ open class Reviewer :
         answerTimer.setupForCard(getColUnsafe, currentCard!!)
         delayedHide(100)
         super.displayCardQuestion()
+        notifyIncrementoQuestionShown(currentCard!!.id)
     }
 
     @VisibleForTesting

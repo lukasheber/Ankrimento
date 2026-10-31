@@ -5,12 +5,19 @@ package com.ichi2.anki.ankrimento
 import android.view.View
 import com.ichi2.anki.AbstractFlashcardViewer
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.launchCatchingTask
 import com.ichi2.anki.libanki.CardId
 import com.ichi2.anki.reviewer.AnswerButtons.Companion.getBackgroundColors
 import com.ichi2.anki.reviewer.AnswerButtons.Companion.getTextColors
 
+/** Tells Incremento a card's question is on screen; it times reviews from here. */
+internal fun AbstractFlashcardViewer.notifyIncrementoQuestionShown(cardId: CardId) {
+    if (!Ankrimento.isStarted) return
+    launchCatchingTask { withCol { Ankrimento.questionShown(cardId) } }
+}
+
 /**
- * Shows Incremento's answer buttons in the legacy reviewer: More/Same/Less on
+ * Tells Incremento the answer is on screen, then shows its answer buttons in the legacy reviewer: More/Same/Less on
  * topics, and Fail/Pass on items when enabled. Ordinary cards keep
  * AnkiDroid's buttons.
  *
@@ -22,7 +29,11 @@ internal suspend fun AbstractFlashcardViewer.showIncrementoAnswerButtons(
     cardId: CardId,
     ankiNextTimes: List<String>?,
 ) {
-    val buttons = withCol { Ankrimento.answerButtons(cardId) } ?: return
+    val buttons =
+        withCol {
+            Ankrimento.answerShown(cardId)
+            Ankrimento.answerButtons(cardId)
+        } ?: return
     val background = getBackgroundColors(this)
     val textColors = getTextColors(this)
     val easeButtons = listOf(easeButton1!!, easeButton2!!, easeButton3!!, easeButton4!!)

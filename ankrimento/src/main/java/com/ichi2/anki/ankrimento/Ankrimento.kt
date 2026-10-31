@@ -17,6 +17,8 @@ import com.ichi2.anki.observability.ChangeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -35,8 +37,20 @@ object Ankrimento {
 
     private val SUPPORTED_ABIS = setOf("arm64-v8a", "x86_64")
 
-    /** Messages from Incremento (`showInfo`, `tooltip`). */
-    var onMessage: ((kind: String, text: String) -> Unit)? = null
+    /** What Incremento asks of the UI. Collect while a screen can act on it. */
+    sealed interface Event {
+        /** A session deck is ready: open the reviewer on the current deck. */
+        data object EnterReview : Event
+
+        /** `showInfo`, `showWarning` or `tooltip` from Incremento. */
+        data class Message(
+            val kind: String,
+            val text: String,
+        ) : Event
+    }
+
+    private val mutableEvents = MutableSharedFlow<Event>(extraBufferCapacity = 16)
+    val events: SharedFlow<Event> = mutableEvents
 
     private var facade: PyObject? = null
 
@@ -99,6 +113,36 @@ object Ankrimento {
         }
 
     private val operationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    /**
+     * Start a session with Incremento's saved scheduler settings, as desktop's
+     * "Start Incremental Learning" does. Returns at once; [Event.EnterReview]
+     * follows when the session deck is ready, or an [Event.Message].
+     */
+    fun startSession() {
+        requireFacade().callAttr("start_session")
+    }
+
+    /** Reviewer hook: a card's question is on screen. */
+    @WorkerThread
+    fun questionShown(cardId: Long) {
+        if (isStarted) requireFacade().callAttr("question_shown", cardId)
+    }
+
+    /** Reviewer hook: a card's answer is on screen. */
+    @WorkerThread
+    fun answerShown(cardId: Long) {
+        if (isStarted) requireFacade().callAttr("answer_shown", cardId)
+    }
+
+    /** Reviewer hook: the reviewer is closing. */
+    fun reviewerClosed() {
+        if (!isStarted) return
+        operationScope.launch {
+            runCatching { CollectionManager.withCol { requireFacade().callAttr("reviewer_closed") } }
+                .onFailure { Timber.w(it, "Incremento reviewer_closed failed") }
+        }
+    }
 
     /** Pick session cards with the saved Incremento scheduler settings. */
     @WorkerThread
@@ -192,7 +236,8 @@ object Ankrimento {
                 val bytes = Base64.decode(fields.getString("changes"), Base64.DEFAULT)
                 ChangeManager.publish(OpChanges.parseFrom(bytes))
             }
-            "message" -> onMessage?.invoke(fields.getString("kind"), fields.getString("text"))
+            "message" -> mutableEvents.tryEmit(Event.Message(fields.getString("kind"), fields.getString("text")))
+            "move_to_state" -> if (fields.getString("state") == "review") mutableEvents.tryEmit(Event.EnterReview)
             else -> Timber.d("Ankrimento event %s %s", event, fieldsJson)
         }
     }

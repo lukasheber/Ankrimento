@@ -16,8 +16,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 /**
  * Debug builds only: runs Ankrimento's review flow on the device's real
@@ -41,6 +43,11 @@ class AnkrimentoSmokeTestActivity : Activity() {
                     withContext(Dispatchers.IO) {
                         CollectionManager.withCol { runSmokeTest(this) }
                     }
+                    // Upstream's learnFunction, as the deck list menu starts it.
+                    Ankrimento.startSession()
+                    val event = withTimeout(60_000) { Ankrimento.events.first() }
+                    log("learnFunction session: $event")
+                    check(event == Ankrimento.Event.EnterReview) { "session did not reach review" }
                 }
             result
                 .onSuccess { log("PASSED") }

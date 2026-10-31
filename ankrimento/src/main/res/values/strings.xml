@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ankrimento_start_session">Start Incremento session</string>
-    <string name="ankrimento_no_cards">Incremento found no cards for a session</string>
     <string name="ankrimento_session_failed">Incremento session failed: %s</string>
 </resources>
