@@ -62,6 +62,10 @@ def start(
     paths.set_active_profile(profile)
     profile_startup.prepare_storage(str(addon_dir), paths.get_active_profile())
 
+    from ankrimento import wiring
+
+    wiring.install()
+
     _runtime = Runtime(col=col, addon_dir=addon_dir, profile=paths.get_active_profile())
     return _runtime
 

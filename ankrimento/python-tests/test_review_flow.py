@@ -168,3 +168,25 @@ def test_topic_actions_done_revisit_and_postpone(rt):
 
     facade.topic_postpone(postpone)
     assert rt.col.get_card(postpone).queue in (-2, -3)  # buried
+
+
+def test_review_time_is_recorded_like_desktop(rt):
+    import time as _time
+
+    stats_path = rt.addon_dir / "user_files" / rt.profile / "custom_learn_stats.json"
+
+    def total_seconds() -> float:
+        if not stats_path.exists():
+            return 0.0
+        seconds = json.loads(stats_path.read_text(encoding="utf8"))["time"]["lifetime"]["type"]
+        return float(sum(seconds.values()))
+
+    (card_id,) = _add_notes(rt.col, "Default", 1, "timed item")
+    before = total_seconds()
+    facade.question_shown(card_id)
+    _time.sleep(1.2)
+    facade.answer_shown(card_id)
+    ease = json.loads(facade.before_answer(card_id, 3))["ease"]
+    _answer_good(rt.col, card_id)
+    facade.after_answer(card_id, ease)
+    assert total_seconds() >= before + 1.0

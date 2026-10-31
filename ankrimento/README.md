@@ -46,9 +46,10 @@ AnkiDroid (Kotlin)
 | `reviewer_will_init_answer_buttons` / button times | done (`answer_buttons`): More/Same/Less, Fail/Pass |
 | `reviewer_will_answer_card`: topic prepare, custom-schedule prepare, fail/pass remap | done (`before_answer`) |
 | topic postpone button | todo |
-| `reviewer_did_answer_card`: topic A-factor, custom schedule | done (`after_answer`) |
-| `reviewer_did_answer_card`: focus timer, review time, learning leech, diagnostics | todo |
-| `reviewer_did_show_question/answer`, `reviewer_will_end` (session timing) | done |
+| `reviewer_did_answer_card`: review time, topic A-factor, custom schedule, learning leech | done (`wiring.py`, desktop's order) |
+| learning-leech prepare (`reviewer_will_answer_card`) | done (`before_answer`) |
+| `reviewer_did_show_question/answer`, `state_did_change`: review time, session timing | done (`wiring.py`, session) |
+| focus-timer widget, diagnostics | not ported (desktop Qt UI / support bundle) |
 | `undo_state_did_change`: topic and custom-schedule reconciliation | done (`undo_state_changed`, after every `ChangeManager` op) |
 | profile open: postpone/skip runtimes, interrupted-import recovery | todo |
 

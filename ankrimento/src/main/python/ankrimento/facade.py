@@ -228,22 +228,21 @@ def before_answer(card_id: int, slot: int) -> str:
             ease = remap_item_fail_pass_ease(card, _ITEM_BUTTON_FOR_SLOT[slot])
         else:
             ease = slot
+    # Desktop's next will-answer handler sees the remapped ease.
+    from ankrimento import wiring
+
+    wiring.prepare_learning_leech(card, int(ease))
     return _dumps({"mode": mode, "ease": int(ease)})
 
 
 def after_answer(card_id: int, ease: int) -> None:
-    """Run Incremento's post-answer scheduling for a card AnkiDroid just answered.
+    """Run Incremento's post-answer handlers for a card AnkiDroid just answered.
 
-    Desktop wiring: ``reviewer_did_answer_card`` handlers, in desktop's
-    order. Connected: topic A-factor, custom schedule. Not yet: focus timer,
-    review time, learning leech, diagnostics.
+    Fires ``reviewer_did_answer_card``; ``wiring.py`` connects desktop's
+    Qt-free handlers in desktop's order (review time, topic A-factor, custom
+    schedule, learning leech), plus an active session's own handler.
     """
-    from incremento.backend.custom_schedule import apply_custom_schedule_after_answer
-    from incremento.backend.topic_scheduler import on_topic_card_answered
-
     card = runtime.current().col.get_card(int(card_id))
-    on_topic_card_answered(None, card, int(ease))
-    apply_custom_schedule_after_answer(None, card, int(ease))
     gui_hooks.reviewer_did_answer_card(None, card, int(ease))
 
 
