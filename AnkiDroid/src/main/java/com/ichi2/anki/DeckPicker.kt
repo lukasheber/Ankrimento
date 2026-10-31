@@ -1407,11 +1407,20 @@ open class DeckPicker :
      * Shows/hides deck related menu items using the ViewModel's action eligibility.
      */
     private fun updateDeckRelatedMenuItems(menu: Menu) {
+        // Incremento fills and ends its session deck; its card on the deck list is the way in.
+        val sessionDeckShown =
+            ::incrementoMenu.isInitialized &&
+                fragment
+                    ?.viewModel
+                    ?.state
+                    ?.deckNameOrNull()
+                    ?.let(incrementoMenu::isSessionDeck) == true
         viewModel.optionsMenuState?.run {
-            menu.findItem(R.id.action_deck_rename)?.isVisible = showDeckActions
-            menu.findItem(R.id.action_deck_delete)?.isVisible = showDeckActions
+            val deckActions = showDeckActions && !sessionDeckShown
+            menu.findItem(R.id.action_deck_rename)?.isVisible = deckActions
+            menu.findItem(R.id.action_deck_delete)?.isVisible = deckActions
             // added to the menu by StudyOptionsFragment
-            menu.findItem(R.id.action_deck_or_study_options)?.isVisible = showDeckActions
+            menu.findItem(R.id.action_deck_or_study_options)?.isVisible = deckActions
         }
     }
 

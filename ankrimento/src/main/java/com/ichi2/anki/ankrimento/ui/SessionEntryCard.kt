@@ -2,6 +2,7 @@
 
 package com.ichi2.anki.ankrimento.ui
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,7 +39,7 @@ internal class SessionCardAction(
 
 /**
  * The deck list's fixed way into incremental learning: the session deck
- * itself. With cards left it continues the session; empty, it starts one.
+ * itself. With cards left its button continues the session; empty, it starts one.
  * Settings and a menu of Incremento's other places sit beside it.
  *
  * @param remaining cards left in the session deck, or null before it is known
@@ -50,12 +52,13 @@ internal fun SessionEntryCard(
     actions: List<SessionCardAction>,
 ) {
     val inProgress = remaining != null && remaining > 0
+    // Only the button studies. The card still takes taps, so none reach the deck list behind it.
     ElevatedCard(
-        onClick = onStudy,
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .pointerInput(Unit) { detectTapGestures { } },
     ) {
         Row(Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {

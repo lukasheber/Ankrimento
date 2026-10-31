@@ -327,7 +327,24 @@ class StudyOptionsFragment :
         }
         menu.findItem(R.id.action_schedule_reminders)?.isVisible = Prefs.newReviewRemindersEnabled
         menu.findItem(R.id.action_unbury)?.isVisible = viewModel.haveBuried
+        if (isIncrementoSession(state)) {
+            // Incremento fills and ends this deck: rebuilding, emptying or unburying it (postponed
+            // topics are buried) would change the session behind Incremento's back.
+            for (id in listOf(
+                R.id.action_rebuild,
+                R.id.action_empty,
+                R.id.action_unbury,
+                R.id.action_custom_study,
+                R.id.action_schedule_reminders,
+                R.id.action_deck_or_study_options,
+            )) {
+                menu.findItem(id)?.isVisible = false
+            }
+        }
     }
+
+    private fun isIncrementoSession(state: StudyOptionsState) =
+        state.deckNameOrNull() == AnkrimentoSettings(requireContext()).sessionDeckName
 
     private var onDeckOptionsActivityResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -399,7 +416,7 @@ class StudyOptionsFragment :
             is StudyOptionsState.Loading -> return
         }
         // Incremento's session deck is studied from its card on the deck list.
-        if (state.deckNameOrNull() == AnkrimentoSettings(requireContext()).sessionDeckName) {
+        if (isIncrementoSession(state)) {
             buttonStart.visibility = View.GONE
         }
 

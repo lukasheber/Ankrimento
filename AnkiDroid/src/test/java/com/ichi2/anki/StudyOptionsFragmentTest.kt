@@ -3,6 +3,7 @@
 package com.ichi2.anki
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.GradientDrawable
 import android.view.View
@@ -451,6 +452,38 @@ class StudyOptionsFragmentTest : RobolectricTest() {
                 assertEquals(View.GONE, binding.studyoptionsStart.visibility)
             }
         }
+
+    @Test
+    @Config(qualifiers = "xlarge")
+    fun `tablet offers no deck actions for the Incremento session deck`() {
+        addBasicNote()
+        val session = addDynamicDeck("Incremento Session", search = "deck:Default")
+        col.decks.select(session)
+        setIntroductionSlidesShown(true)
+
+        // Not deckPicker {}: it expects every deck in the list, and the session deck is not listed.
+        with(startActivityNormallyOpenCollectionWithIntent(DeckPicker::class.java, Intent())) {
+            advanceRobolectricLooperUntil {
+                fragment?.viewModel?.selectedDeckId == session && fragment?.viewModel?.state is StudyOptionsState.StudyOptions
+            }
+            advanceRobolectricLooper()
+            val menu = menu()
+            fragment!!.onPrepareMenu(menu)
+            updateMenuFromState(menu)
+
+            // Incremento fills and ends this deck; renaming, rebuilding or emptying it would break the session.
+            for (id in listOf(
+                R.id.action_deck_rename,
+                R.id.action_deck_delete,
+                R.id.action_deck_or_study_options,
+                R.id.action_rebuild,
+                R.id.action_empty,
+                R.id.action_unbury,
+            )) {
+                assertFalse(menu.findItem(id)?.isVisible == true, resources.getResourceEntryName(id))
+            }
+        }
+    }
 
     private val StudyOptionsFragment.binding
         get() = FragmentStudyOptionsBinding.bind(requireView())
