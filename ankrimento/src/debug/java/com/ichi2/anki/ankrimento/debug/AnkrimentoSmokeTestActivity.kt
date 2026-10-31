@@ -44,7 +44,8 @@ class AnkrimentoSmokeTestActivity : Activity() {
         output = TextView(this).apply { setTextIsSelectable(true) }
         setContentView(ScrollView(this).apply { addView(output) })
         // `--el open <card id>` opens that card's reader; with `--ez only true`, imports and
-        // `open` run without the session check (which needs cards due).
+        // `open` run without the session check (which needs cards due). `--es backup <path>`
+        // writes a full backup there.
         if (intent.getBooleanExtra(EXTRA_ONLY, false)) {
             scope.launch {
                 val opened =
@@ -53,6 +54,7 @@ class AnkrimentoSmokeTestActivity : Activity() {
                             Ankrimento.start(this@AnkrimentoSmokeTestActivity, this)
                             val pdf = intent.getStringExtra(EXTRA_PDF)?.let { Ankrimento.importPdf(it, File(it).nameWithoutExtension) }
                             val epub = intent.getStringExtra(EXTRA_EPUB)?.let { Ankrimento.importEpub(it, File(it).nameWithoutExtension) }
+                            intent.getStringExtra(EXTRA_BACKUP)?.let { log("full backup: ${Ankrimento.exportFullBackup(File(it))}") }
                             pdf?.let { log("imported PDF card $it") }
                             epub?.let { log("imported EPUB card $it") }
                             val cardId = intent.getLongExtra(EXTRA_OPEN, 0L).takeIf { it > 0 } ?: epub ?: pdf
@@ -199,5 +201,6 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_VIDEO = "video"
         const val EXTRA_OPEN = "open"
         const val EXTRA_ONLY = "only"
+        const val EXTRA_BACKUP = "backup"
     }
 }

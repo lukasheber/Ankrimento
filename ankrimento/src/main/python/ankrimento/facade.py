@@ -703,6 +703,13 @@ def discard_extract(source_card_id: int) -> None:
     extract.discard(int(source_card_id))
 
 
+def export_full_backup(out_path: str) -> str:
+    """Writes desktop's full backup ZIP of this profile to ``out_path``: cards, files and counts."""
+    from ankrimento import backup
+
+    return _dumps(backup.export(out_path))
+
+
 def sync(store: Any, device_name: str, action: str = "sync") -> str:
     """Sync Incremento's data with the sync folder ``store`` (its profile folder).
 

@@ -218,4 +218,14 @@
     <string name="ankrimento_marked_read">Marked as read up to here</string>
     <string name="ankrimento_add_to_incremento">Add to Incremento…</string>
     <string name="ankrimento_statistics_menu">Statistics</string>
+    <!-- Full backup -->
+    <string name="ankrimento_settings_backup">Backup</string>
+    <string name="ankrimento_backup_export">Export full backup</string>
+    <string name="ankrimento_backup_export_summary">Cards with scheduling and media, plus Incremento\'s documents and data, in the same ZIP as desktop\'s Export Full Backup. Save it to a cloud folder to keep a copy off this device</string>
+    <string name="ankrimento_backup_working">Making the backup…</string>
+    <string name="ankrimento_backup_failed">Backup failed: %s</string>
+    <plurals name="ankrimento_backup_saved">
+        <item quantity="one">Backup saved: %1$d card, %2$d Incremento files</item>
+        <item quantity="other">Backup saved: %1$d cards, %2$d Incremento files</item>
+    </plurals>
 </resources>

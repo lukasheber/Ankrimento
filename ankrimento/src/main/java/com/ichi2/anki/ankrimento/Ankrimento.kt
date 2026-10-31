@@ -26,6 +26,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import java.io.File
+import java.time.LocalDate
 
 /**
  * Incremento's backend, running in embedded Python on AnkiDroid's collection.
@@ -138,6 +139,24 @@ object Ankrimento {
 
     /** The profile's folder name in user_files/ and in the sync folder. */
     private fun profileStorageName(): String = requireFacade().callAttr("profile_name").toString()
+
+    /** What a full backup holds: cards (with scheduling and media), Incremento files, and the archive's size. */
+    data class FullBackup(
+        val cards: Int,
+        val files: Int,
+        val bytes: Long,
+    )
+
+    /** Desktop's name for a full backup made today: `incremento_<profile>_full_backup_<date>.zip`. */
+    @WorkerThread
+    fun fullBackupName(): String = "incremento_${profileStorageName()}_full_backup_${LocalDate.now()}.zip"
+
+    /** Writes desktop's full backup ZIP of this profile (cards, media, Incremento's folder) to [file]. */
+    @WorkerThread
+    fun exportFullBackup(file: File): FullBackup {
+        val result = JSONObject(requireFacade().callAttr("export_full_backup", file.absolutePath).toString())
+        return FullBackup(result.getInt("cards"), result.getInt("files"), result.getLong("bytes"))
+    }
 
     /** What a sync did, or would do: see `ankrimento.syncfolder.Status`. */
     data class SyncResult(
