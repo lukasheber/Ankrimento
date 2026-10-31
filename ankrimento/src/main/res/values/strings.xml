@@ -201,4 +201,9 @@
     <string name="ankrimento_choose_date">Choose date…</string>
     <string name="ankrimento_contents_empty">This document has no contents list.</string>
     <string name="ankrimento_page_short">p. %d</string>
+    <!-- Knowledge tree screen -->
+    <string name="ankrimento_knowledge_tree_title">Knowledge tree</string>
+    <string name="ankrimento_open">Open</string>
+    <string name="ankrimento_expand">Unfold</string>
+    <string name="ankrimento_collapse">Fold</string>
 </resources>

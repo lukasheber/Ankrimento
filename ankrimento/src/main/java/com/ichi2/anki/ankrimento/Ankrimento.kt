@@ -318,7 +318,7 @@ object Ankrimento {
             LibraryEntry(
                 cardId = entry.getLong("card_id"),
                 kind = entry.getString("kind"),
-                title = entry.getString("title"),
+                title = displayTitle(entry.getString("title")),
                 priority = entry.getDouble("priority"),
                 position = entry.getString("position"),
                 done = entry.getBoolean("done"),
@@ -328,7 +328,17 @@ object Ankrimento {
 
     /** The title the knowledge tree shows for [cardId]. */
     @WorkerThread
-    fun cardTitle(cardId: Long): String = requireFacade().callAttr("card_title", cardId).toString()
+    fun cardTitle(cardId: Long): String = displayTitle(requireFacade().callAttr("card_title", cardId).toString())
+
+    /**
+     * A title as text: upstream's titles are fields with their tags removed but
+     * entities kept ("&#9654; 0:19 – …" for a video extract).
+     */
+    private fun displayTitle(title: String): String =
+        android.text.Html
+            .fromHtml(title, android.text.Html.FROM_HTML_MODE_COMPACT)
+            .toString()
+            .trim()
 
     /** Add a PDF file as an Incremento PDF topic card; returns the card id. */
     @WorkerThread
@@ -618,7 +628,7 @@ object Ankrimento {
             TreeNode(
                 cardId = row.getLong("card_id"),
                 depth = row.getInt("depth"),
-                title = row.optString("title"),
+                title = displayTitle(row.optString("title")),
                 kind = row.optString("node_kind"),
                 priority = if (row.isNull("priority")) null else row.getDouble("priority"),
             )

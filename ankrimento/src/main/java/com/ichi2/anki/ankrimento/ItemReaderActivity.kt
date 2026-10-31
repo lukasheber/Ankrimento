@@ -63,6 +63,11 @@ class ItemReaderActivity : ReaderActivity() {
                 return
             }.canonicalFile
         webView.webViewClient = client(media)
+        if (!inSession) {
+            // Opened to look at it (from the knowledge tree): the whole card, nothing to reveal.
+            webView.loadDataWithBaseURL(CardPage.BASE_URL, answer, "text/html", "utf-8", null)
+            return
+        }
         webView.loadDataWithBaseURL(CardPage.BASE_URL, question, "text/html", "utf-8", null)
         revealAction = ::reveal
     }

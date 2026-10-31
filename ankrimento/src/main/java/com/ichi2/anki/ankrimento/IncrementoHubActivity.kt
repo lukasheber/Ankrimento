@@ -191,6 +191,11 @@ class IncrementoHubActivity : ComponentActivity() {
                             Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_navigate_up))
                         }
                     },
+                    actions = {
+                        IconButton(onClick = { startActivity(KnowledgeTreeActivity.intent(this@IncrementoHubActivity)) }) {
+                            Icon(IncrementoIcons.Tree, contentDescription = stringResource(R.string.ankrimento_knowledge_tree_title))
+                        }
+                    },
                 )
             },
             floatingActionButton = {

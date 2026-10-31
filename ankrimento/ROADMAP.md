@@ -63,7 +63,8 @@ Mobile principles that guide every item:
 | ✅ | Add sheet: PDF, EPUB, web or video link, writing | Audio still to add |
 | ✅ | Share a link from any app to Incremento (web or video topic) | |
 | ⬜ | Search ALL: highlights, sources, document text, cards [9] | |
-| 🟡 | Knowledge tree [9]: browse, study branch, priority | Dialog list today; needs a full screen with expand/collapse, reveal current card, go to parent |
+| ✅ | Knowledge tree screen [9]: fold/unfold branches, kind and priority per node; Open, Study this branch, Priority | From the Library's top bar and the menu |
+| ⬜ | Knowledge tree: reveal the current card, go to parent, search, postpone a subtree | |
 | ➖ | Command palette, keyboard shortcuts [14] | Replaced by visible tools and gestures; hardware keyboard shortcuts maybe later |
 
 ## 3. Readers [6, 7, 8]

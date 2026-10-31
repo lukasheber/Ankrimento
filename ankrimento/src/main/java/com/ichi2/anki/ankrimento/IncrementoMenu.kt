@@ -4,7 +4,6 @@ package com.ichi2.anki.ankrimento
 
 import android.app.AlertDialog
 import android.net.Uri
-import android.text.InputType
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -113,7 +112,7 @@ class IncrementoMenu(
         when (menuItem.itemId) {
             R.id.ankrimento_start_session -> activity.lifecycleScope.launch { startSession() }
             R.id.ankrimento_session_settings -> editSessionSettings()
-            R.id.ankrimento_knowledge_tree -> activity.lifecycleScope.launch { showKnowledgeTree() }
+            R.id.ankrimento_knowledge_tree -> activity.startActivity(KnowledgeTreeActivity.intent(activity))
             R.id.ankrimento_statistics -> activity.lifecycleScope.launch { showStatistics() }
             R.id.ankrimento_add_pdf -> pickPdf.launch(arrayOf("application/pdf"))
             R.id.ankrimento_add_epub -> pickEpub.launch(arrayOf("application/epub+zip"))
@@ -293,72 +292,6 @@ class IncrementoMenu(
                 Ankrimento.statistics()
             }
         StatisticsDialog.show(activity, stats)
-    }
-
-    /** The knowledge tree, indented; an entry offers studying its branch or its priority. */
-    private suspend fun showKnowledgeTree() {
-        val nodes =
-            CollectionManager.withCol {
-                Ankrimento.start(activity, this)
-                Ankrimento.knowledgeTree()
-            }
-        if (nodes.isEmpty()) {
-            toast(activity.getString(R.string.ankrimento_knowledge_tree_empty))
-            return
-        }
-        val labels =
-            nodes.map { node ->
-                val priority = node.priority?.let { " · P ${"%.0f".format(it)}" }.orEmpty()
-                " ".repeat(node.depth) + node.title.ifEmpty { "#${node.cardId}" } + "  (${node.kind}$priority)"
-            }
-        AlertDialog
-            .Builder(activity)
-            .setTitle(R.string.ankrimento_knowledge_tree)
-            .setItems(labels.toTypedArray()) { _, index -> showTreeNodeActions(nodes[index]) }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
-    }
-
-    private fun showTreeNodeActions(node: Ankrimento.TreeNode) {
-        val actions = arrayOf(activity.getString(R.string.ankrimento_study_branch), activity.getString(R.string.ankrimento_priority))
-        AlertDialog
-            .Builder(activity)
-            .setTitle(node.title)
-            .setItems(actions) { _, which ->
-                activity.lifecycleScope.launch {
-                    runCatching {
-                        when (which) {
-                            0 -> {
-                                val started = CollectionManager.withCol { Ankrimento.startBranchSession(node.cardId) }
-                                if (!started) toast(activity.getString(R.string.ankrimento_knowledge_tree_empty))
-                            }
-                            else -> editPriority(node)
-                        }
-                    }.onFailure { toast(it.message ?: it.javaClass.simpleName) }
-                }
-            }.show()
-    }
-
-    private fun editPriority(node: Ankrimento.TreeNode) {
-        val input =
-            EditText(activity).apply {
-                inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-                setText((node.priority ?: 50.0).toString())
-            }
-        AlertDialog
-            .Builder(activity)
-            .setTitle(R.string.ankrimento_priority)
-            .setMessage(R.string.ankrimento_priority_message)
-            .setView(input)
-            .setPositiveButton(android.R.string.ok) { _, _ ->
-                val priority =
-                    input.text
-                        .toString()
-                        .toDoubleOrNull()
-                        ?.coerceIn(0.0, 100.0) ?: return@setPositiveButton
-                activity.lifecycleScope.launch { CollectionManager.withCol { Ankrimento.setPriority(node.cardId, priority) } }
-            }.setNegativeButton(android.R.string.cancel, null)
-            .show()
     }
 
     private fun newWriting() {

@@ -60,7 +60,7 @@ import timber.log.Timber
  */
 abstract class ReaderActivity : ComponentActivity() {
     protected val cardId by lazy { intent.getLongExtra(EXTRA_CARD_ID, 0L) }
-    private val inSession by lazy { intent.getBooleanExtra(EXTRA_SESSION, false) }
+    protected val inSession by lazy { intent.getBooleanExtra(EXTRA_SESSION, false) }
     private var canGoBack by mutableStateOf(false)
 
     /** True while an answer or Back is on its way, so a second tap does not answer the next card too. */
