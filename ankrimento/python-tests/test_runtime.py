@@ -40,6 +40,16 @@ def test_config_reads_upstream_defaults_and_writes_meta_json(rt):
     assert meta["config"]["ankrimento_test_key"] == 1
 
 
+def test_a_second_collection_cannot_take_over_the_host_backend(rt, tmp_path):
+    """Upstream opens throwaway collections (e.g. to validate a backup's APKG);
+    through the bridge that would open/close the host's own collection."""
+    from anki.collection import Collection
+
+    with pytest.raises(Exception):
+        Collection(str(tmp_path / "other.anki2"))
+    assert rt.col.db.scalar("select count() from col") == 1  # host collection still open
+
+
 def test_upstream_modules_import_under_their_desktop_names(rt):
     from incremento.backend import session, topic_scheduler
 

@@ -27,6 +27,10 @@ class Host(Protocol):
     def db_command(self, data: bytes) -> Any: ...
 
 
+# CollectionService.OpenCollection and CloseCollection (anki._backend_generated).
+_COLLECTION_LIFECYCLE = {(3, 0), (3, 1)}
+
+
 class HostBackend:
     """The ``_rsbridge.Backend`` interface on top of a :class:`Host`."""
 
@@ -34,6 +38,17 @@ class HostBackend:
         self._host = host
 
     def command(self, service: int, method: int, data: bytes) -> bytes:
+        if (int(service), int(method)) in _COLLECTION_LIFECYCLE:
+            # The host owns its one open collection. A second Collection
+            # (upstream opens throwaway ones, e.g. to validate a backup) would
+            # otherwise open over it or close it.
+            from anki import backend_pb2
+
+            error = backend_pb2.BackendError(
+                kind=backend_pb2.BackendError.INVALID_INPUT,
+                message="Opening or closing collections is not available inside the host app.",
+            )
+            raise Exception(error.SerializeToString())
         return _unpack(self._host.command(int(service), int(method), bytes(data)))
 
     def db_command(self, data: bytes) -> bytes:
@@ -72,4 +87,9 @@ def install(host: Host) -> HostBackend:
 
     module.syncserver = syncserver  # type: ignore[attr-defined]
     sys.modules["anki._rsbridge"] = module
+    # `from anki import _rsbridge` prefers the package attribute, which a native
+    # bridge imported earlier (desktop tests) would otherwise still provide.
+    import anki
+
+    anki._rsbridge = module  # type: ignore[attr-defined]
     return backend
