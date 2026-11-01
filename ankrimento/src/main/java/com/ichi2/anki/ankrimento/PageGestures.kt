@@ -10,6 +10,11 @@ import org.json.JSONObject
  * previous) page or chapter. A sideways swipe, while the page fits the
  * width (a zoomed page pans instead), does what [Swipe] says.
  *
+ * In an EPUB's paged mode (`window.__ankrimentoPaged`, set by [ReadingPreferences]),
+ * a swipe or a tap on the outer quarter of the page turns a whole screen, starting
+ * the next one on the line the screen's edge cut; past the chapter's end or start
+ * it turns the chapter.
+ *
  * Long presses (text selection) and touches with text selected never turn.
  * The script runs [next] or [previous], JavaScript the reader supplies.
  */
@@ -58,6 +63,31 @@ object PageGestures {
             " function atTop() { return scrolled() <= 1; }" +
             " function fitsWidth() {" +
             " return (document.scrollingElement || document.documentElement).scrollWidth <= window.innerWidth + 1; }" +
+            // Paged mode: the line cut by the edge at [edgeY], if any (its top, in the viewport).
+            " function cutLine(edgeY) { var cut = null; if (!document.caretRangeFromPoint) return null;" +
+            " [0.25, 0.5, 0.75].forEach(function (f) {" +
+            " var r = document.caretRangeFromPoint(window.innerWidth * f, edgeY); if (!r || r.startContainer.nodeType !== 3) return;" +
+            " var n = r.startContainer, i = Math.min(r.startOffset, Math.max(0, n.length - 1)); if (!n.length) return;" +
+            " var c = document.createRange(); c.setStart(n, i); c.setEnd(n, i + 1); var b = c.getBoundingClientRect();" +
+            " if (b.height > 0 && b.top < edgeY && b.bottom > edgeY && (cut === null || b.top < cut)) cut = b.top; });" +
+            " return cut; }" +
+            " function scrollToY(y) { window.scrollTo(0, y);" +
+            " if (Math.abs(scrolled() - y) > 2 && document.body) document.body.scrollTop = y; }" +
+            " function turnPage(forward) {" +
+            " if (forward) { if (atBottom()) { next(); return; }" +
+            " var cut = cutLine(window.innerHeight - 1);" +
+            " scrollToY(scrolled() + (cut !== null && cut > window.innerHeight / 4 ? cut : window.innerHeight)); }" +
+            " else { if (atTop()) { previous(); return; }" +
+            " scrollToY(Math.max(0, scrolled() - window.innerHeight)); var top = cutLine(1);" +
+            " if (top !== null && top < 0) scrollToY(Math.max(0, scrolled() + top)); }" +
+            " window.dispatchEvent(new Event('scroll')); }" +
+            " window.addEventListener('click', function (e) {" +
+            " if (!window.__ankrimentoPaged || selected() || !e.isTrusted) return;" +
+            " var t = e.target; if (t && t.closest && t.closest('a[href],button,input,textarea,select," +
+            "[class*=\"incremento-epub-\"]:not(.incremento-epub-scaled)')) return;" +
+            " var f = e.clientX / window.innerWidth; if (f > 0.25 && f < 0.75) return;" +
+            // Turned here: the reader's tap does not also show or hide its bars.
+            " window.__ankrimentoPlainTap = false; turnPage(f >= 0.75); }, true);" +
             " function show(text, bottom) { hint.textContent = text; hint.style.top = bottom ? '' : '16px';" +
             " hint.style.bottom = bottom ? '24px' : ''; hint.style.opacity = '1'; }" +
             " function hide() { hint.style.opacity = '0'; }" +
@@ -81,6 +111,7 @@ object PageGestures {
             " if (o.swipe === 'NONE' || Date.now() - s.t < 60) return;" +
             " var t = e.changedTouches[0], dx = t.clientX - s.x, dy = t.clientY - s.y;" +
             " if (Date.now() - s.t > LONG_PRESS * 2 || Math.abs(dx) < SWIPE || Math.abs(dx) < 2 * Math.abs(dy) || !fitsWidth()) return;" +
+            " if (o.swipe === 'SCREEN' && window.__ankrimentoPaged) { turnPage(dx < 0); return; }" +
             " if (o.swipe === 'SCREEN') { var step = Math.max(window.innerHeight - 48, window.innerHeight * 0.8);" +
             " window.scrollBy({ top: dx < 0 ? step : -step, behavior: 'smooth' }); return; }" +
             " if (dx < 0) next(); else previous(); }, { passive: true });" +

@@ -114,6 +114,9 @@
     <string name="ankrimento_margins_narrow">Narrow</string>
     <string name="ankrimento_margins_normal">Normal</string>
     <string name="ankrimento_margins_wide">Wide</string>
+    <string name="ankrimento_page_turning">Page turning</string>
+    <string name="ankrimento_turning_scroll">Scroll</string>
+    <string name="ankrimento_turning_pages">Pages</string>
     <string name="ankrimento_contents">Contents</string>
     <string name="ankrimento_chapter_number">Chapter %d</string>
     <string name="ankrimento_reading_now">Reading now</string>

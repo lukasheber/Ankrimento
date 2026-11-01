@@ -117,6 +117,9 @@
     <string name="ankrimento_margins_narrow">Uske</string>
     <string name="ankrimento_margins_normal">Uobičajene</string>
     <string name="ankrimento_margins_wide">Široke</string>
+    <string name="ankrimento_page_turning">Okretanje stranica</string>
+    <string name="ankrimento_turning_scroll">Pomicanje</string>
+    <string name="ankrimento_turning_pages">Stranice</string>
     <string name="ankrimento_contents">Sadržaj</string>
     <string name="ankrimento_chapter_number">Poglavlje %d</string>
     <string name="ankrimento_reading_now">Trenutačno čitate</string>

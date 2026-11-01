@@ -20,4 +20,15 @@ class PageGesturesTest {
         assertThat(script, containsString("window.scrollY"))
         assertThat(script, not(containsString("d.scrollTop + window.innerHeight")))
     }
+
+    @Test
+    fun `in paged mode a swipe or an edge tap turns a page that starts on a whole line`() {
+        val script = PageGestures.script("next()", "previous()", PageGestures.Swipe.SCREEN, "next", "previous")
+
+        assertThat(script, containsString("window.__ankrimentoPaged"))
+        // The line cut by the screen's edge starts the next page.
+        assertThat(script, containsString("caretRangeFromPoint"))
+        // An edge tap turns the page instead of showing or hiding the bars.
+        assertThat(script, containsString("window.__ankrimentoPlainTap = false"))
+    }
 }

@@ -33,4 +33,11 @@ class ReadingPreferencesTest {
                 .orEmpty()
         assertThat(inheriting, containsString("body div"))
     }
+
+    @Test
+    fun `paged mode turns whole screens instead of scrolling freely`() {
+        val paged = ReadingPreferences(turning = ReadingPreferences.Turning.PAGES).script()
+        assertThat(paged, containsString("window.__ankrimentoPaged = o.paged"))
+        assertThat(paged, containsString("overflow: hidden !important"))
+    }
 }

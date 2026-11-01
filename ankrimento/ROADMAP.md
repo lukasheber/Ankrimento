@@ -100,7 +100,7 @@ Mobile principles that guide every item:
 | ✅ | Contents sheet with chapter titles | |
 | ✅ | Long-press, then Extract / Highlight | |
 | ✅ | Progress strip (chapter, % of book); tap to hide the bars | |
-| ⬜ | Paged mode (horizontal page turns) as an option to scrolling, in the Aa sheet | |
+| ✅ | Paged mode as an option to scrolling, in the Aa sheet | Aa → Page turning: Scroll or Pages (this device). In Pages a swipe or a tap on the outer quarter turns a whole screen, the next page starting on the line the edge cut; past the end or start it turns the chapter. The chapter stays one vertical page underneath, so upstream's saved positions, highlights, read mark and extracts work unchanged (sideways pages would break them) |
 | ✅ | Pull past the end of a chapter for the next, past its start for the previous | |
 | ✅ | Swipe sideways to move one screen on or back (a couple of lines stay in view); it never changes chapter | |
 | ✅ | Search in book | Find in book: chapters matching (upstream's text index) with excerpts; a result opens its chapter with the words found and selected by the page script, as desktop does, then previous/next. Search ALL's EPUB results open the same way |
@@ -223,7 +223,7 @@ Mobile principles that guide every item:
 13. ~~Extract queue (several extracts, then one review)~~ (done).
 14. ~~Session preview before starting~~ (done).
 15. ~~New AnkiDroid study screen (ReviewerFragment) opens readers~~ (done).
-16. EPUB paged mode.
+16. ~~EPUB paged mode~~ (done).
 17. ~~Images in imported web articles~~ (done).
 18. ~~Automatic backups~~ (built; the folder picker step still to try on a device).
 19. ~~PDF annotation styles and bookmark comments~~ (done; EPUB styles too).

@@ -111,6 +111,9 @@
     <string name="ankrimento_margins_narrow">窄</string>
     <string name="ankrimento_margins_normal">标准</string>
     <string name="ankrimento_margins_wide">宽</string>
+    <string name="ankrimento_page_turning">翻页方式</string>
+    <string name="ankrimento_turning_scroll">滚动</string>
+    <string name="ankrimento_turning_pages">分页</string>
     <string name="ankrimento_contents">目录</string>
     <string name="ankrimento_chapter_number">第 %d 章</string>
     <string name="ankrimento_reading_now">正在阅读</string>

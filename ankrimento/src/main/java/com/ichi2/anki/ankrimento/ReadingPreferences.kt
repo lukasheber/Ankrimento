@@ -7,15 +7,26 @@ import androidx.core.content.edit
 import org.json.JSONObject
 
 /**
- * How this device lays out text in the EPUB reader: typeface, line spacing
- * and margins suit the screen in hand, so they are kept per device. Text size
- * and page colour are the book's own settings, shared with desktop.
+ * How this device lays out text in the EPUB reader: typeface, line spacing,
+ * margins and page turning suit the screen in hand, so they are kept per
+ * device. Text size and page colour are the book's own settings, shared with
+ * desktop.
  */
 data class ReadingPreferences(
     val typeface: Typeface = Typeface.ORIGINAL,
     val spacing: Spacing = Spacing.NORMAL,
     val margins: Margins = Margins.NORMAL,
+    val turning: Turning = Turning.SCROLL,
 ) {
+    /**
+     * Scrolling, or whole pages: the chapter stays one scrolling page (upstream's positions,
+     * highlights and read mark depend on it), turned a screen at a time by [PageGestures].
+     */
+    enum class Turning {
+        SCROLL,
+        PAGES,
+    }
+
     enum class Typeface(
         val css: String?,
     ) {
@@ -48,6 +59,7 @@ data class ReadingPreferences(
                 .put("font", typeface.css ?: JSONObject.NULL)
                 .put("lineHeight", spacing.lineHeight)
                 .put("margin", margins.em)
+                .put("paged", turning == Turning.PAGES)
         return "(function (o) {" +
             " var style = document.getElementById('ankrimento-reading');" +
             " if (!style) { style = document.createElement('style'); style.id = 'ankrimento-reading';" +
@@ -63,6 +75,9 @@ data class ReadingPreferences(
             " + ' body img, body svg, body video { max-width: 100% !important; height: auto !important; }';" +
             " if (o.font) css += ' body, body p, body li, body span, body div, body blockquote'" +
             " + ' { font-family: ' + o.font + ' !important; }';" +
+            // Paged: no free scrolling; PageGestures turns whole screens while this flag is set.
+            " if (o.paged) css += ' html, body { overflow: hidden !important; }';" +
+            " window.__ankrimentoPaged = o.paged;" +
             " style.textContent = css; window.dispatchEvent(new Event('resize'));" +
             " })($options);"
     }
@@ -72,6 +87,7 @@ data class ReadingPreferences(
             putString(KEY_TYPEFACE, typeface.name)
             putString(KEY_SPACING, spacing.name)
             putString(KEY_MARGINS, margins.name)
+            putString(KEY_TURNING, turning.name)
         }
     }
 
@@ -80,6 +96,7 @@ data class ReadingPreferences(
         private const val KEY_TYPEFACE = "typeface"
         private const val KEY_SPACING = "spacing"
         private const val KEY_MARGINS = "margins"
+        private const val KEY_TURNING = "turning"
 
         fun load(context: Context): ReadingPreferences {
             val preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
@@ -93,6 +110,7 @@ data class ReadingPreferences(
                 typeface = read(KEY_TYPEFACE, Typeface.entries.toTypedArray(), Typeface.ORIGINAL),
                 spacing = read(KEY_SPACING, Spacing.entries.toTypedArray(), Spacing.NORMAL),
                 margins = read(KEY_MARGINS, Margins.entries.toTypedArray(), Margins.NORMAL),
+                turning = read(KEY_TURNING, Turning.entries.toTypedArray(), Turning.SCROLL),
             )
         }
     }

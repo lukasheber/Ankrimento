@@ -142,6 +142,17 @@ internal fun ReadingSettingsSheet(
                     }
                 },
             ) { onPreferences(preferences.copy(margins = it)) }
+            Choice(
+                label = R.string.ankrimento_page_turning,
+                options = ReadingPreferences.Turning.entries,
+                selected = preferences.turning,
+                optionLabel = {
+                    when (it) {
+                        ReadingPreferences.Turning.SCROLL -> R.string.ankrimento_turning_scroll
+                        ReadingPreferences.Turning.PAGES -> R.string.ankrimento_turning_pages
+                    }
+                },
+            ) { onPreferences(preferences.copy(turning = it)) }
         }
     }
 }
