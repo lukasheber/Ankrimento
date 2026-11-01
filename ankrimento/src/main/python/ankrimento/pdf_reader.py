@@ -376,13 +376,10 @@ def handle(card_id: int, msg: str) -> list[str]:
         from ankrimento import extract
 
         data = payload(MSG_FILL_FIELD)
-        extract.add_to_draft(
-            card_id,
-            int(data.get("idx", 0) or 0),
-            data,
-            page=pdf_manager.get_page(addon_dir, profile, card_id),
-            highlight_id=_last_highlight.pop(card_id, ""),
-        )
+        page = int(pdf_manager.get_page(addon_dir, profile, card_id) or 1)
+        highlight_id = _last_highlight.pop(card_id, "")
+        citation = _citation(card_id, page, str(data.get("text") or ""), highlight_id) if extract.source_link_on("pdf") else ""
+        extract.add_with_citation(card_id, int(data.get("idx", 0) or 0), data, citation, page=page, highlight_id=highlight_id)
         mw.notify_host("extract_draft", card_id=card_id)
         return []
     if msg.startswith(MSG_GET_PAGE_CARDS):
@@ -589,6 +586,35 @@ def bookmark_comment(card_id: int, bookmark_id: str, comment: str) -> str:
     addon_dir, profile = _context()
     update_reader_bookmark_comment(addon_dir, profile, int(card_id), "pdf", str(bookmark_id), str(comment or ""))
     return _js_call("incrementoReceivePdfBookmarks", _bookmarks_payload(card_id))
+
+
+def _citation(card_id: int, page: int, excerpt: str, highlight_id: str) -> str:
+    """Mirrors ``pdf_citation`` in frontend/pdf_dock.py: a link reopening the page (and finding the
+    excerpt), named by the page and the document's title. The page's printed label is not known on
+    the phone, so the PDF's page number names it."""
+    import re
+    from html import unescape
+
+    from incremento.backend.i18n import t
+    from incremento.backend.pdf_manager import pdf_display_label_from_filename
+    from incremento.frontend.reader_links import make_reader_anchor_html
+
+    note = runtime.current().col.get_card(int(card_id)).note()
+    filename = str(note["PDF_Filename"] or "").strip() if "PDF_Filename" in note else ""
+    if not filename:
+        return ""
+    title = str(note["Title"] or "").strip() if "Title" in note else ""
+    payload: dict[str, Any] = {"card_id": int(card_id), "filename": filename, "page": int(page)}
+    # _normalize_pdf_reference_excerpt (320 characters, desktop's _PDF_REF_EXCERPT_MAX_CHARS).
+    text = re.sub(r"</?(?:br|p|div|li)\b[^>]*>", " ", excerpt, flags=re.I)
+    text = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", "", text))).strip()[:320].strip()
+    if text:
+        payload["excerpt"] = text
+    if highlight_id:
+        payload["highlight_id"] = str(highlight_id)
+    command = "incremento_open_pdf_ref:" + json.dumps(payload, ensure_ascii=False)
+    label = t("reader_pdf_citation_label", page=str(page), title=title or pdf_display_label_from_filename(filename))
+    return make_reader_anchor_html(command, label)
 
 
 def _highlights_script(card_id: int) -> str:

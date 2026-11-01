@@ -35,6 +35,8 @@ class SourceLinksTest {
         val epub = SourceLinks.intentFor(context, "incremento_open_epub:3:4:120:0.5")!!
         assertEquals(EpubReaderActivity::class.java.name, epub.component?.className)
         assertEquals(4, epub.getIntExtra(ReaderActivity.EXTRA_START, -1))
+        // The place in the chapter too, as desktop restores it.
+        assertEquals(0.5, epub.getDoubleExtra(EpubReaderActivity.EXTRA_SCROLL, -1.0), 0.0)
     }
 
     @Test

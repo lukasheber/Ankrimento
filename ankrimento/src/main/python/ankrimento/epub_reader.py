@@ -285,8 +285,9 @@ def handle(card_id: int, section_index: int, msg: str) -> dict[str, Any]:
 
         data = payload(MSG_FILL_FIELD)
         if for_this_card(data):
-            extract.add_to_draft(card_id, int(data.get("idx", 0) or 0), {"text": str(data.get("text") or "")},
-                                 page=section_index, highlight_id="")
+            text = {"text": str(data.get("text") or "")}
+            citation = _citation(card_id, section_index, int(data.get("startOffset", -1) or -1)) if extract.source_link_on("epub") else ""
+            extract.add_with_citation(card_id, int(data.get("idx", 0) or 0), text, citation, page=section_index)
             mw.notify_host("extract_draft", card_id=card_id)
     elif msg.startswith(MSG_OPEN_LINK):
         data = payload(MSG_OPEN_LINK)
@@ -406,6 +407,25 @@ def _note_text(path: str, fragment: str) -> str:
         return ""
     text = re.sub(r"\s+", " ", element.text()).strip()
     return text if 0 < len(text) <= _MAX_NOTE_CHARS else ""
+
+
+def _citation(card_id: int, section_index: int, start_offset: int) -> str:
+    """Mirrors ``epub_citation`` and ``epub_anchor_link_html`` in frontend/epub_dock.py: a link to the
+    chapter and the selection's place, named by the chapter."""
+    from incremento.backend.epub_manager import get_epub_progress
+    from incremento.backend.i18n import t
+    from incremento.frontend.reader_links import make_reader_anchor_html
+
+    addon_dir, profile = _context()
+    _, metadata = _metadata(card_id)
+    sections = metadata.get("sections") or []
+    section = sections[section_index] if 0 <= section_index < len(sections) else {}
+    title = str((section or {}).get("title") or "").strip() or t("reader_section_number", number=section_index + 1)
+    saved_section, saved_ratio, _ = get_epub_progress(addon_dir, profile, int(card_id))
+    ratio = max(0.0, min(float(saved_ratio or 0.0), 1.0)) if saved_section == section_index else 0.0
+    ratio_text = f"{ratio:.6f}".rstrip("0").rstrip(".") or "0"
+    command = f"incremento_open_epub:{int(card_id)}:{int(section_index)}:{max(-1, int(start_offset))}:{ratio_text}"
+    return make_reader_anchor_html(command, title)
 
 
 def search(card_id: int, query: str, limit: int = 120) -> list[dict[str, Any]]:

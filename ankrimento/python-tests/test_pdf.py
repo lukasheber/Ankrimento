@@ -110,7 +110,16 @@ def test_extract_creates_a_linked_card(rt, extract_source):
     facade.pdf_message(card_id, "incremento_fill_field:" + json.dumps({"idx": 1, "text": "<b>not html</b>"}))
 
     draft = json.loads(facade.extract_draft(card_id))
-    assert draft["fields"] == ["Spaced <strong>repetition</strong>", "&lt;b&gt;not html&lt;/b&gt;"]
+    # Each filled field ends with desktop's link back to the page (pdf_citation), as desktop's fill adds it.
+    front, back = draft["fields"]
+    assert front.startswith("Spaced <strong>repetition</strong><br><a ")
+    assert back.startswith("&lt;b&gt;not html&lt;/b&gt;<br><a ")
+    from incremento.frontend.reader_links import reader_anchor_command_from_html
+
+    command = reader_anchor_command_from_html(front[front.index("<a "):])
+    assert command.startswith("incremento_open_pdf_ref:")
+    link = json.loads(command[len("incremento_open_pdf_ref:"):])
+    assert (link["card_id"], link["page"], link["highlight_id"], link["excerpt"]) == (card_id, 1, "hx", "Spaced repetition")
     assert draft["note_type"] == "Basic"
     assert draft["kind"] == "item"
     assert draft["priority"] == pytest.approx(49.0)  # source 50 x desktop's default 0.98
@@ -134,3 +143,18 @@ def test_extract_creates_a_linked_card(rt, extract_source):
     ).fetchone() == (card_id,)
     assert str(note.id) in created["script"]
     assert json.loads(facade.extract_draft(card_id))["fields"] == ["", ""]  # draft consumed
+
+
+def test_extract_links_follow_desktops_setting(rt, extract_source):
+    import copy
+
+    from aqt import mw
+
+    saved = copy.deepcopy(mw.addonManager.getConfig("incremento"))
+    mw.addonManager.writeConfig("incremento", {**copy.deepcopy(saved), "extract_source_links": {"pdf": False}})
+    try:
+        facade.pdf_message(extract_source, "incremento_fill_field:" + json.dumps({"idx": 0, "text": "No link"}))
+        assert json.loads(facade.extract_draft(extract_source))["fields"][0] == "No link"
+    finally:
+        mw.addonManager.writeConfig("incremento", saved)
+        facade.discard_extract(extract_source)

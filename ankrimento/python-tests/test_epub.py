@@ -76,9 +76,12 @@ def test_progress_read_marker_and_chapter_navigation(rt, epub_card):
 
 def test_extract_from_an_epub_records_the_chapter(rt, epub_card):
     facade.epub_message(epub_card, 1, "incremento_epub_fill_field:" + json.dumps(
-        {"cardId": epub_card, "idx": 0, "text": "Incremental reading scales."}))
+        {"cardId": epub_card, "idx": 0, "text": "Incremental reading scales.", "startOffset": 7}))
     draft = json.loads(facade.extract_draft(epub_card))
-    assert draft["fields"][0] == "Incremental reading scales."
+    # Desktop's link back to the chapter and the selection's place (epub_citation), named by the chapter.
+    assert draft["fields"][0].startswith("Incremental reading scales.<br><a ")
+    assert f"incremento_open_epub:{epub_card}:1:7:" in draft["fields"][0]
+    assert ">Chapter Two</a>" in draft["fields"][0]
     created = json.loads(facade.create_extract(epub_card, json.dumps(draft["fields"]), "Basic", "item", 29.4))
 
     from incremento.backend.db import get_connection

@@ -40,7 +40,8 @@ object SourceLinks {
             message.startsWith("incremento_open_epub:") && parts.size in 4..5 -> {
                 val cardId = parts[1].toLongOrNull()?.takeIf { it > 0 } ?: return null
                 val section = parts[2].toIntOrNull()?.takeIf { it >= 0 } ?: return null
-                ReaderActivity.intentAt(context, "epub", cardId, section, "")
+                val scroll = parts.getOrNull(4)?.toDoubleOrNull()?.coerceIn(0.0, 1.0) ?: 0.0
+                ReaderActivity.intentAt(context, "epub", cardId, section, "")?.putExtra(EpubReaderActivity.EXTRA_SCROLL, scroll)
             }
             message.startsWith("incremento_open_video:") && parts.size == 3 -> {
                 val cardId = parts[1].toLongOrNull() ?: return null

@@ -100,11 +100,31 @@ def add_to_draft(source_card_id: int, index: int, payload: dict, *, page: int, h
         draft.highlight_id = highlight_id
 
 
-def add_html_to_draft(source_card_id: int, index: int, html: str, *, page: int) -> None:
+def add_html_to_draft(source_card_id: int, index: int, html: str, *, page: int, highlight_id: str = "") -> None:
     """A field the reader composed itself (e.g. a video link), stored as given."""
     draft = _drafts.setdefault(int(source_card_id), Draft())
     draft.fields[int(index)] = str(html)
     draft.page = int(page)
+    if highlight_id:
+        draft.highlight_id = highlight_id
+
+
+def source_link_on(kind: str) -> bool:
+    """Mirrors ``should_add_extract_source_link`` in frontend/add_card_dock.py: the extract source
+    links setting, per kind ("pdf", "epub", "web"), on unless turned off."""
+    raw = _config().get("extract_source_links", True)
+    if isinstance(raw, bool):
+        return raw
+    return bool(raw.get(kind, True)) if isinstance(raw, dict) else True
+
+
+def add_with_citation(source_card_id: int, index: int, payload: dict, citation: str, *, page: int, highlight_id: str = "") -> None:
+    """A filled field with desktop's link back to its source after it (``fill_dock_field``: text, then
+    ``<br>`` and the citation), or the text alone when there is no link."""
+    if citation:
+        add_html_to_draft(source_card_id, index, field_html(payload) + "<br>" + citation, page=page, highlight_id=highlight_id)
+    else:
+        add_to_draft(source_card_id, index, payload, page=page, highlight_id=highlight_id)
 
 
 def discard(source_card_id: int) -> None:

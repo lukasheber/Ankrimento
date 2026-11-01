@@ -134,7 +134,9 @@ class EpubReaderActivity : ReaderActivity() {
             // A section asked for (Search ALL) from its start; otherwise where reading stopped.
             val start = intent.getIntExtra(EXTRA_START, -1).takeIf { it >= 0 }
             if (start != null) pendingSearch = intent.getStringExtra(EXTRA_FIND).orEmpty()
-            load(start, start?.let { 0.0 })
+            // An extract's link back: its place in the chapter too.
+            val scroll = intent.getDoubleExtra(EXTRA_SCROLL, 0.0).coerceIn(0.0, 1.0)
+            load(start, start?.let { scroll })
         }
         Ankrimento.readerScope.launch {
             for (message in messages) {
@@ -498,6 +500,9 @@ class EpubReaderActivity : ReaderActivity() {
     }
 
     companion object {
+        /** Where in the chapter given by [EXTRA_START] to open (0 to 1), as an extract's link back gives it. */
+        const val EXTRA_SCROLL = "scroll"
+
         /** Enough of a highlight's text for the page script to find it. */
         private const val HIGHLIGHT_SEARCH_CHARS = 120
 
