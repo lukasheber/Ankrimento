@@ -183,7 +183,7 @@ class PdfReaderActivity : ReaderActivity() {
         sheet = {
             FindSheet(
                 query = findQuery,
-                hits = findHits.map { FindHit(it.page, it.snippet) },
+                hits = findHits.map { FindHit(getString(R.string.ankrimento_page_short, it.page), it.snippet) },
                 status = findStatus,
                 onSearch = ::search,
                 onHit = { index ->

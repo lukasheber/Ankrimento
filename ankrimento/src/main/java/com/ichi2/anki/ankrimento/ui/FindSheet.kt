@@ -44,9 +44,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ichi2.anki.ankrimento.R
 
-/** A page that matches a search, with a short excerpt around the match. */
+/** A place that matches a search (a page, a chapter), with a short excerpt around the match. */
 class FindHit(
-    val page: Int,
+    val label: String,
     val snippet: String,
 )
 
@@ -97,7 +97,7 @@ internal fun FindSheet(
             LazyColumn(Modifier.heightIn(max = 480.dp)) {
                 itemsIndexed(hits) { index, hit ->
                     ListItem(
-                        overlineContent = { Text(stringResource(R.string.ankrimento_page_short, hit.page)) },
+                        overlineContent = { Text(hit.label) },
                         headlineContent = {
                             Text(highlighted(hit.snippet, query), maxLines = 3, overflow = TextOverflow.Ellipsis)
                         },

@@ -122,8 +122,14 @@ def open_section(card_id: int, section_index: int | None = None) -> dict[str, An
     }
 
 
-def section_script(card_id: int, section_index: int, nonce: str, scroll_ratio: float | None = None) -> str:
-    """The page script for a loaded chapter; mirrors desktop's ``_on_load_finished``."""
+def section_script(
+    card_id: int, section_index: int, nonce: str, scroll_ratio: float | None = None, search_query: str = ""
+) -> str:
+    """The page script for a loaded chapter; mirrors desktop's ``_on_load_finished``.
+
+    With ``search_query``, the script finds and selects its first match once loaded, as
+    desktop opens a search result.
+    """
     from incremento.backend.config_service import configured_reader_default_highlight_color
     from incremento.backend.epub_appearance import get_appearance
     from incremento.backend.epub_highlights import load_highlights
@@ -143,7 +149,7 @@ def section_script(card_id: int, section_index: int, nonce: str, scroll_ratio: f
         text_scale=get_epub_font_scale(addon_dir, profile, card_id),
         read_anchor=get_read_anchor(addon_dir, profile, card_id),
         focus_offset=-1,
-        search_query="",
+        search_query=str(search_query or ""),
         highlights=load_highlights(addon_dir, profile, card_id, section_index=section_index),
         bridge_nonce=nonce,
         highlight_color=default_color,
@@ -240,3 +246,23 @@ def handle(card_id: int, section_index: int, msg: str) -> dict[str, Any]:
         if for_this_card(data) and href.startswith(("http://", "https://")):
             mw.notify_host("open_url", url=href)
     return {}
+
+
+def search(card_id: int, query: str, limit: int = 120) -> list[dict[str, Any]]:
+    """The sections matching ``query`` in section order, with their titles and an excerpt.
+
+    Upstream's search of its per-section text index, which its import fills.
+    """
+    from incremento.backend.db import search_epub_text_index_for_card
+
+    from ankrimento.pdf_reader import _search_snippet
+
+    normalized = str(query or "").strip()
+    if not normalized:
+        return []
+    addon_dir, profile = _context()
+    rows = search_epub_text_index_for_card(addon_dir, profile, int(card_id), normalized, limit=limit)
+    return sorted(
+        ({"section": int(section), "title": str(title or ""), "snippet": _search_snippet(text or "", normalized)} for section, title, text in rows),
+        key=lambda hit: hit["section"],
+    )

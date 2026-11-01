@@ -14,11 +14,16 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.Toast
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.ContentsSheet
+import com.ichi2.anki.ankrimento.ui.FindBar
+import com.ichi2.anki.ankrimento.ui.FindHit
+import com.ichi2.anki.ankrimento.ui.FindSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderTool
@@ -44,6 +49,13 @@ class EpubReaderActivity : ReaderActivity() {
     private lateinit var webView: ReaderWebView
     private var section: Ankrimento.EpubSection? = null
     private var pendingScrollRatio: Double? = null
+
+    /** Words for the next chapter's page script to find once loaded (a find or Search ALL result). */
+    private var pendingSearch = ""
+    private var findQuery = ""
+    private var findHits = emptyList<Ankrimento.EpubSearchHit>()
+    private var findIndex = -1
+    private var findStatus: String? = null
     private var reading: Ankrimento.EpubReading? = null
     private lateinit var preferences: ReadingPreferences
 
@@ -82,6 +94,7 @@ class EpubReaderActivity : ReaderActivity() {
             listOf(
                 ReaderTool(getString(R.string.ankrimento_reading_settings), IncrementoIcons.TextFormat, ::showReadingSettings),
                 ReaderTool(getString(R.string.ankrimento_contents), IncrementoIcons.Contents, ::showContents),
+                ReaderTool(getString(R.string.ankrimento_epub_find), IncrementoIcons.Search, onClick = ::showFind),
                 ReaderTool(getString(R.string.ankrimento_epub_read_here)) {
                     webView.evaluateJavascript(READ_MARKER_JS) { placed ->
                         if (placed == "true") toast(getString(R.string.ankrimento_marked_read))
@@ -99,6 +112,7 @@ class EpubReaderActivity : ReaderActivity() {
                     .getOrNull()
             // A section asked for (Search ALL) from its start; otherwise where reading stopped.
             val start = intent.getIntExtra(EXTRA_START, -1).takeIf { it >= 0 }
+            if (start != null) pendingSearch = intent.getStringExtra(EXTRA_FIND).orEmpty()
             load(start, start?.let { 0.0 })
         }
         Ankrimento.readerScope.launch {
@@ -149,6 +163,70 @@ class EpubReaderActivity : ReaderActivity() {
     ) {
         val fraction = (current.index + chapterRatio.coerceIn(0.0, 1.0)) / current.count.coerceAtLeast(1)
         progress = ReaderProgress(fraction.toFloat(), getString(R.string.ankrimento_epub_chapter, current.index + 1, current.count))
+    }
+
+    private fun showFind() {
+        sheet = {
+            FindSheet(
+                query = findQuery,
+                hits =
+                    findHits.map { hit ->
+                        FindHit(hit.title.ifBlank { getString(R.string.ankrimento_epub_chapter_short, hit.section + 1) }, hit.snippet)
+                    },
+                status = findStatus,
+                onSearch = ::search,
+                onHit = { index ->
+                    sheet = null
+                    openHit(index)
+                },
+                onDismiss = { sheet = null },
+            )
+        }
+    }
+
+    private fun search(query: String) {
+        closeFind()
+        findQuery = query
+        findHits = emptyList()
+        findStatus = if (query.isEmpty()) null else getString(R.string.ankrimento_find_searching)
+        showFind()
+        if (query.isEmpty()) return
+        lifecycleScope.launch {
+            val hits =
+                runCatching { withCol { Ankrimento.epubSearch(cardId, query) } }
+                    .onFailure { Timber.w(it, "EPUB search failed") }
+                    .getOrDefault(emptyList())
+            if (query != findQuery) return@launch
+            findHits = hits
+            findStatus = null
+            if (sheet != null) showFind()
+        }
+    }
+
+    /** Opens the chapter of match [index]; its page script finds and selects the words, as desktop's result does. */
+    private fun openHit(index: Int) {
+        val hit = findHits.getOrNull(index) ?: return
+        findIndex = index
+        pendingSearch = findQuery
+        lifecycleScope.launch { load(hit.section, 0.0) }
+        overlay = {
+            FindBar(
+                position = findIndex,
+                total = findHits.size,
+                onPrevious = { openHit(findIndex - 1) },
+                onNext = { openHit(findIndex + 1) },
+                onShowAll = ::showFind,
+                onClose = ::closeFind,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
+        }
+    }
+
+    private fun closeFind() {
+        if (overlay == null) return
+        overlay = null
+        findIndex = -1
+        runScript("window.getSelection && window.getSelection().removeAllRanges();")
     }
 
     private fun showReadingSettings() {
@@ -252,7 +330,8 @@ class EpubReaderActivity : ReaderActivity() {
                 ) {
                     val current = section ?: return
                     lifecycleScope.launch {
-                        val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio) }
+                        val search = pendingSearch.also { pendingSearch = "" }
+                        val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio, search) }
                         webView.evaluateJavascript(TOUCH_SELECTION_JS, null)
                         webView.evaluateJavascript(HIDE_READ_MARKER_JS, null)
                         webView.evaluateJavascript(script, null)

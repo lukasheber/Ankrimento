@@ -622,7 +622,28 @@ object Ankrimento {
         cardId: Long,
         section: EpubSection,
         scrollRatio: Double?,
-    ): String = requireFacade().callAttr("epub_script", cardId, section.index, section.nonce, scrollRatio ?: -1.0).toString()
+        searchQuery: String = "",
+    ): String = requireFacade().callAttr("epub_script", cardId, section.index, section.nonce, scrollRatio ?: -1.0, searchQuery).toString()
+
+    /** A chapter matching a search: its index, title and an excerpt. */
+    data class EpubSearchHit(
+        val section: Int,
+        val title: String,
+        val snippet: String,
+    )
+
+    /** The chapters of the book matching [query], in book order (upstream's search of its text index). */
+    @WorkerThread
+    fun epubSearch(
+        cardId: Long,
+        query: String,
+    ): List<EpubSearchHit> {
+        val hits = JSONArray(requireFacade().callAttr("epub_search", cardId, query).toString())
+        return List(hits.length()) { index ->
+            val hit = hits.getJSONObject(index)
+            EpubSearchHit(hit.getInt("section"), hit.optString("title"), hit.optString("snippet"))
+        }
+    }
 
     /** Apply a page-script message; returns the chapter to load next and its scroll ratio, if any. */
     @WorkerThread

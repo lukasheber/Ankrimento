@@ -103,7 +103,7 @@ Mobile principles that guide every item:
 | ⬜ | Paged mode (horizontal page turns) as an option to scrolling, in the Aa sheet | |
 | ✅ | Pull past the end of a chapter for the next, past its start for the previous | |
 | ✅ | Swipe sideways to move one screen on or back (a couple of lines stay in view); it never changes chapter | |
-| ⬜ | Search in book | |
+| ✅ | Search in book | Find in book: chapters matching (upstream's text index) with excerpts; a result opens its chapter with the words found and selected by the page script, as desktop does, then previous/next. Search ALL's EPUB results open the same way |
 | 🟡 | Links and footnotes inside the book | Opened externally or ignored |
 | ⬜ | Highlights list and highlight notes | |
 
