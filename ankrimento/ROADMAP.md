@@ -230,5 +230,38 @@ Mobile principles that guide every item:
 20. ~~Advanced options: phase order, Order values~~ (done; locks and groups only link desktop's sliders).
 21. ~~Math in the learning screen~~ (done; sound, typed answers and image occlusion stay in AnkiDroid's reviewer).
 
+### Next, by priority
+
+Daily reading and extracting:
+
+22. Faster first launch (Python cold start about 20 s).
+23. Extract from the card shown in AnkiDroid's reviewer; add a card from scratch with a priority.
+24. Web extract anchors (jump from an extract back to its place in the page).
+25. Open a video extract's link at its moment, on the phone.
+26. Review all cards made from a document.
+27. Items with sound, typed answers or image occlusion in the learning screen.
+
+Things desktop has:
+
+28. Longer statistics: 30 days, a year, tag charts, the focus timer's numbers.
+29. Tablet two-pane layout (library beside the reader).
+30. PDF cross-references and page links; OCR status.
+31. Markdown documents (import) and the writing formatting toolbar.
+32. Audio import; check audio cards.
+33. Video bookmarks, captions, Vimeo, fuller playback controls.
+34. More of upstream's settings (writing, PDF details).
+35. Getting Started guide.
+
+Upkeep and rarely used:
+
+36. Support bundle, clean-up of unused data, card-format update notice.
+37. Batch Q/A cards, PDF snapshot previews.
+38. DjVu documents.
+39. PDF reflow, only if extracts and highlights map back to the PDF exactly.
+
+To check rather than build: the empty-session dialog, the leech notice and the
+automatic backup folder picker on a device; native review of each translation;
+UI tests for the learning loop.
+
 Deferred: sync add-on and other sync work (until agreed with upstream's
 author), SuperMemo import, Webpage to PDF.
