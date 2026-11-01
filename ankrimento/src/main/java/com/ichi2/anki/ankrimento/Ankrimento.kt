@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.util.Base64
 import androidx.annotation.WorkerThread
+import androidx.core.os.ConfigurationCompat
 import anki.collection.OpChanges
 import anki.scheduler.CardAnswer.Rating
 import com.chaquo.python.PyObject
@@ -132,6 +133,8 @@ object Ankrimento {
             File(context.filesDir, "ankrimento/addons21").absolutePath,
             profile,
             buildId,
+            // The app's language (AnkiDroid's own setting applies it to resources), as Anki's on desktop.
+            ConfigurationCompat.getLocales(context.resources.configuration)[0]?.toLanguageTag() ?: "en",
         )
         facade = python.getModule("ankrimento.facade")
         ChangeManager.subscribe(operationListener)

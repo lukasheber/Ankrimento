@@ -91,6 +91,7 @@ def start(
     addons_dir: str,
     profile: str,
     build_id: str,
+    host_language: str = "en",
 ) -> None:
     import ankrimento_addon_source
 
@@ -109,4 +110,5 @@ def start(
         build_id=build_id,
         main_dispatcher=dispatch,
         host_events=host_events,
+        host_language=host_language,
     )
