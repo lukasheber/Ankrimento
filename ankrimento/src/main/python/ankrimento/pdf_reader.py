@@ -18,7 +18,7 @@ from typing import Any
 
 from aqt import mw
 
-from ankrimento import runtime
+from ankrimento import reading_pages, runtime
 
 MSG_NAV = "incremento_pdf_nav:"
 MSG_ZOOM = "incremento_pdf_zoom:"
@@ -270,6 +270,7 @@ def handle(card_id: int, msg: str) -> list[str]:
         ):
             return [_js_call("incrementoReceivePdfLimitStatus", status)]
         pdf_manager.set_page(addon_dir, profile, card_id, page)
+        reading_pages.record("pdf", card_id, page)
         return [_js_call("incrementoReceivePdfLimitStatus", _limit_status(card_id, current_page=page))]
     if msg.startswith(MSG_ZOOM):
         _, raw_card, raw_zoom = msg.split(":")

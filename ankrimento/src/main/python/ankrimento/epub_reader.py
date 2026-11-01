@@ -19,7 +19,7 @@ from typing import Any
 
 from aqt import mw
 
-from ankrimento import runtime
+from ankrimento import reading_pages, runtime
 
 MSG_PREFIX = "__incremento_epub__:"  # upstream's _PYCMD_BRIDGE
 MSG_FILL_FIELD = "incremento_epub_fill_field:"
@@ -195,6 +195,8 @@ def handle(card_id: int, section_index: int, msg: str) -> dict[str, Any]:
                 section_index=int(data.get("sectionIndex", section_index) or 0),
                 scroll_ratio=float(data.get("scrollRatio", 0.0) or 0.0),
             )
+            if "pageIndex" in data:
+                reading_pages.record("epub", card_id, int(data.get("pageIndex") or 0) + 1)
     elif msg.startswith(MSG_MARK_READ):
         data = payload(MSG_MARK_READ)
         if for_this_card(data):
