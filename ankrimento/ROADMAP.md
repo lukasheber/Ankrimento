@@ -210,11 +210,15 @@ Mobile principles that guide every item:
 3. ~~Extract bottom sheet and video extract at timestamp~~ (done).
 4. ~~Library with Continue reading and Add; web pages as articles; link
    titles~~ (done).
-5. ~~Settings screen~~ (done); session presets and advanced options.
+5. ~~Settings screen, session presets, advanced options~~ (done; the phase
+   order, tag groups and locks remain).
 6. ~~Full backup / restore (same ZIP as desktop)~~ (done; automatic backups later).
-7. Native PDF tools: search, contents, bookmarks, highlights/notes.
-8. Knowledge tree screen, Search ALL, statistics screen, focus timer.
-9. Translations.
+7. ~~Native PDF tools: search, contents, bookmarks, highlights/notes~~ (done;
+   annotation styles remain).
+8. ~~Knowledge tree screen, Search ALL, statistics screen, focus timer~~ (done).
+9. EPUB tools to match the PDF's: search in the book, highlights list and notes.
+10. Library search, sort and covers.
+11. Translations.
 
 Deferred: sync add-on and other sync work (until agreed with upstream's
 author), SuperMemo import, Webpage to PDF.
