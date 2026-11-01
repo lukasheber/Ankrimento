@@ -35,6 +35,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.ExtractChoice
+import com.ichi2.anki.ankrimento.ui.ExtractQueueChip
+import com.ichi2.anki.ankrimento.ui.ExtractQueueSheet
 import com.ichi2.anki.ankrimento.ui.ExtractSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
@@ -114,6 +116,9 @@ abstract class ReaderActivity : ComponentActivity() {
     private var priority by mutableStateOf<Double?>(null)
     private var timerSheet by mutableStateOf(false)
 
+    /** Extracts set aside with Add later, added together (or on leaving this document). */
+    private var queuedExtracts by mutableStateOf(0)
+
     /** Desktop's review buttons shown: Done, Postpone (topic actions) and Extract (the extract tool). */
     private var reviewButtons by mutableStateOf(setOf("done", "postpone", "extract"))
 
@@ -147,7 +152,15 @@ abstract class ReaderActivity : ComponentActivity() {
                     onPriority = ::editPriority,
                     progress = progress,
                     pager = pager,
-                    timer = if (timer.active) ({ TimerChip(timer) { timerSheet = true } }) else null,
+                    timer =
+                        if (timer.active || queuedExtracts > 0) {
+                            {
+                                if (queuedExtracts > 0) ExtractQueueChip(queuedExtracts, ::showExtractQueue)
+                                if (timer.active) TimerChip(timer) { timerSheet = true }
+                            }
+                        } else {
+                            null
+                        },
                 ) { modifier ->
                     val view = content
                     if (view == null) {
@@ -283,6 +296,10 @@ abstract class ReaderActivity : ComponentActivity() {
                         sheet = null
                         addExtract(choice)
                     },
+                    onLater = { choice ->
+                        sheet = null
+                        queueExtract(choice)
+                    },
                     onKeep = { sheet = null },
                     onDiscard = {
                         sheet = null
@@ -291,6 +308,56 @@ abstract class ReaderActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    private fun queueExtract(choice: ExtractChoice) {
+        lifecycleScope.launch {
+            runCatching {
+                withCol { Ankrimento.queueExtract(cardId, choice.fields, choice.noteType, choice.isTopic, choice.priority) }
+            }.onSuccess { queuedExtracts = it }
+                .onFailure { error ->
+                    Timber.w(error, "Queueing an extract failed")
+                    toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
+                }
+        }
+    }
+
+    private fun showExtractQueue() {
+        lifecycleScope.launch {
+            val queued = runCatching { withCol { Ankrimento.extractQueue(cardId) } }.getOrDefault(emptyList())
+            queuedExtracts = queued.size
+            sheet = {
+                ExtractQueueSheet(
+                    queued = queued,
+                    onRemove = { index ->
+                        lifecycleScope.launch {
+                            withCol { Ankrimento.dropQueuedExtract(cardId, index) }
+                            showExtractQueue()
+                        }
+                    },
+                    onAddAll = {
+                        sheet = null
+                        lifecycleScope.launch { addQueuedExtracts() }
+                    },
+                    onDismiss = { sheet = null },
+                )
+            }
+        }
+    }
+
+    /** Adds the waiting extracts, marking them on the page while it is still shown. */
+    private suspend fun addQueuedExtracts(onPage: Boolean = true) {
+        if (queuedExtracts == 0) return
+        runCatching { withCol { Ankrimento.addQueuedExtracts(cardId) } }
+            .onSuccess { (added, script) ->
+                queuedExtracts = 0
+                if (onPage) onExtractCreated(script)
+                toast(resources.getQuantityString(R.plurals.ankrimento_extract_queue_added, added, added))
+            }.onFailure { error ->
+                Timber.w(error, "Adding queued extracts failed")
+                queuedExtracts = runCatching { withCol { Ankrimento.extractQueue(cardId) }.size }.getOrDefault(0)
+                toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
+            }
     }
 
     private fun addExtract(choice: ExtractChoice) {
@@ -415,6 +482,7 @@ abstract class ReaderActivity : ComponentActivity() {
                 return@launch
             }
             keepPosition()
+            addQueuedExtracts(onPage = false)
             if (next == LearnLoop.NotCurrent) {
                 finishWith(RESULT_OK, rating)
                 return@launch
@@ -437,6 +505,7 @@ abstract class ReaderActivity : ComponentActivity() {
     private fun leave() {
         lifecycleScope.launch {
             keepPosition()
+            addQueuedExtracts(onPage = false)
             if (inSession) finishWith(RESULT_LEAVE_SESSION, null) else finish()
         }
     }

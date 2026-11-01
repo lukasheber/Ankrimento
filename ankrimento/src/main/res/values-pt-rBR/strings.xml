@@ -30,6 +30,21 @@
     <string name="ankrimento_extract_priority_value">Prioridade %d</string>
     <string name="ankrimento_extract_add">Adicionar</string>
     <string name="ankrimento_extract_keep">Continuar extraindo</string>
+    <string name="ankrimento_extract_later">Adicionar depois</string>
+    <string name="ankrimento_extract_queue_title">Extratos a adicionar</string>
+    <string name="ankrimento_extract_queue_hint">Eles são adicionados juntos aqui, ou quando você sai deste documento.</string>
+    <string name="ankrimento_extract_queue_add_all">Adicionar todos</string>
+    <string name="ankrimento_extract_queue_remove">Remover</string>
+    <plurals name="ankrimento_extract_queued">
+        <item quantity="one">%d a adicionar</item>
+        <item quantity="many">%d a adicionar</item>
+        <item quantity="other">%d a adicionar</item>
+    </plurals>
+    <plurals name="ankrimento_extract_queue_added">
+        <item quantity="one">%d extrato adicionado</item>
+        <item quantity="many">%d extratos adicionados</item>
+        <item quantity="other">%d extratos adicionados</item>
+    </plurals>
     <string name="ankrimento_extract_discard">Descartar</string>
     <string name="ankrimento_extract_added">Cartão adicionado</string>
     <string name="ankrimento_extract_failed">Não foi possível adicionar o cartão: %s</string>

@@ -28,6 +28,17 @@
     <string name="ankrimento_extract_priority_value">优先级 %d</string>
     <string name="ankrimento_extract_add">添加</string>
     <string name="ankrimento_extract_keep">继续摘录</string>
+    <string name="ankrimento_extract_later">稍后添加</string>
+    <string name="ankrimento_extract_queue_title">待添加的摘录</string>
+    <string name="ankrimento_extract_queue_hint">在这里一起添加，或在离开此文档时添加。</string>
+    <string name="ankrimento_extract_queue_add_all">全部添加</string>
+    <string name="ankrimento_extract_queue_remove">移除</string>
+    <plurals name="ankrimento_extract_queued">
+        <item quantity="other">%d 条待添加</item>
+    </plurals>
+    <plurals name="ankrimento_extract_queue_added">
+        <item quantity="other">已添加 %d 条摘录</item>
+    </plurals>
     <string name="ankrimento_extract_discard">放弃</string>
     <string name="ankrimento_extract_added">卡片已添加</string>
     <string name="ankrimento_extract_failed">添加卡片失败：%s</string>

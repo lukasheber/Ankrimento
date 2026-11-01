@@ -966,6 +966,58 @@ object Ankrimento {
         requireFacade().callAttr("discard_extract", sourceCardId)
     }
 
+    /** An extract set aside with "Add later": its front and the choices made for it. */
+    data class QueuedExtract(
+        val front: String,
+        val isTopic: Boolean,
+        val priority: Double,
+    )
+
+    /** Sets the extract aside, as chosen, and frees the draft; returns how many are waiting. */
+    @WorkerThread
+    fun queueExtract(
+        sourceCardId: Long,
+        fields: List<String>,
+        noteType: String,
+        isTopic: Boolean,
+        priority: Double,
+    ): Int =
+        requireFacade()
+            .callAttr("queue_extract", sourceCardId, JSONArray(fields).toString(), noteType, if (isTopic) "topic" else "item", priority)
+            .toInt()
+
+    @WorkerThread
+    fun extractQueue(sourceCardId: Long): List<QueuedExtract> {
+        val queued = JSONArray(requireFacade().callAttr("extract_queue", sourceCardId).toString())
+        return List(queued.length()) { index ->
+            val q = queued.getJSONObject(index)
+            val front = q.getJSONArray("fields").optString(0)
+            QueuedExtract(
+                android.text.Html
+                    .fromHtml(front, android.text.Html.FROM_HTML_MODE_COMPACT)
+                    .toString()
+                    .trim(),
+                q.optString("kind") == "topic",
+                q.optDouble("priority"),
+            )
+        }
+    }
+
+    @WorkerThread
+    fun dropQueuedExtract(
+        sourceCardId: Long,
+        index: Int,
+    ) {
+        requireFacade().callAttr("drop_queued_extract", sourceCardId, index)
+    }
+
+    /** Adds the waiting extracts: how many, and the script that marks them on the page. */
+    @WorkerThread
+    fun addQueuedExtracts(sourceCardId: Long): Pair<Int, String> {
+        val result = JSONObject(requireFacade().callAttr("add_queued_extracts", sourceCardId).toString())
+        return result.getInt("added") to result.optString("script")
+    }
+
     /** Incremento's statistics over the last [days] (see `facade.statistics`), as JSON. */
     @WorkerThread
     fun statistics(days: Int = 7): JSONObject = JSONObject(requireFacade().callAttr("statistics", days).toString())

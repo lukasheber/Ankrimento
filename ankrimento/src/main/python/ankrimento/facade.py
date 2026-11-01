@@ -908,6 +908,43 @@ def discard_extract(source_card_id: int) -> None:
     extract.discard(int(source_card_id))
 
 
+def queue_extract(source_card_id: int, fields_json: str, note_type: str, kind: str, priority: float) -> int:
+    """Sets the extract aside to add later ("Add later"); returns how many are waiting."""
+    from ankrimento import extract
+
+    return extract.queue(int(source_card_id), list(json.loads(fields_json)), note_type, kind, float(priority))
+
+
+def extract_queue(source_card_id: int) -> str:
+    """The extracts waiting to be added from a document."""
+    from ankrimento import extract
+
+    return _dumps(extract.queued(int(source_card_id)))
+
+
+def drop_queued_extract(source_card_id: int, index: int) -> None:
+    from ankrimento import extract
+
+    extract.drop_queued(int(source_card_id), int(index))
+
+
+def discard_extract_queue(source_card_id: int) -> None:
+    from ankrimento import extract
+
+    extract.discard_queue(int(source_card_id))
+
+
+def add_queued_extracts(source_card_id: int) -> str:
+    """Adds the waiting extracts; how many, and JavaScript refreshing the PDF page's cards."""
+    from ankrimento import extract, pdf_reader
+
+    source_card_id = int(source_card_id)
+    pages = extract.add_queued(source_card_id)
+    is_pdf = card_reader(source_card_id) == "pdf"
+    script = "".join(pdf_reader.page_cards_script(source_card_id, page or 1) for page in sorted(set(pages))) if is_pdf else ""
+    return _dumps({"added": len(pages), "script": script})
+
+
 def export_full_backup(out_path: str) -> str:
     """Writes desktop's full backup ZIP of this profile to ``out_path``: cards, files and counts."""
     from ankrimento import backup

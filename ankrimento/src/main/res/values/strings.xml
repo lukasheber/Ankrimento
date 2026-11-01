@@ -29,6 +29,19 @@
     <string name="ankrimento_extract_priority_value">Priority %d</string>
     <string name="ankrimento_extract_add">Add</string>
     <string name="ankrimento_extract_keep">Keep extracting</string>
+    <string name="ankrimento_extract_later">Add later</string>
+    <string name="ankrimento_extract_queue_title">Extracts to add</string>
+    <string name="ankrimento_extract_queue_hint">They are added together here, or when you leave this document.</string>
+    <string name="ankrimento_extract_queue_add_all">Add all</string>
+    <string name="ankrimento_extract_queue_remove">Remove</string>
+    <plurals name="ankrimento_extract_queued">
+        <item quantity="one">%d to add</item>
+        <item quantity="other">%d to add</item>
+    </plurals>
+    <plurals name="ankrimento_extract_queue_added">
+        <item quantity="one">%d extract added</item>
+        <item quantity="other">%d extracts added</item>
+    </plurals>
     <string name="ankrimento_extract_discard">Discard</string>
     <string name="ankrimento_extract_added">Card added</string>
     <string name="ankrimento_extract_failed">Adding the card failed: %s</string>

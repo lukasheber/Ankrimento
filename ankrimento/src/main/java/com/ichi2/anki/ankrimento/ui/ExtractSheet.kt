@@ -22,6 +22,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -55,7 +56,9 @@ internal class ExtractChoice(
 /**
  * A new card from an extract, the mobile counterpart of desktop's Add Card
  * dock: Item or Topic first (what the card is for decides the rest), the
- * fields, the priority within thumb reach, then Add. Keep extracting closes
+ * fields, the priority within thumb reach, then Add. Add later sets it aside
+ * as chosen, so the next selection starts afresh; the waiting extracts are
+ * added together. Keep extracting closes
  * the sheet and keeps the draft, so more can be selected into it; Discard
  * drops it. Formatting from the document is kept unless the text is edited.
  */
@@ -64,6 +67,7 @@ internal class ExtractChoice(
 internal fun ExtractSheet(
     draft: Ankrimento.ExtractDraft,
     onAdd: (ExtractChoice) -> Unit,
+    onLater: (ExtractChoice) -> Unit,
     onKeep: () -> Unit,
     onDiscard: () -> Unit,
 ) {
@@ -132,17 +136,20 @@ internal fun ExtractSheet(
                 Slider(value = priority, onValueChange = { priority = it }, valueRange = 0f..100f)
             }
 
+            fun choice(): ExtractChoice {
+                val fields = draft.fields.mapIndexed { index, html -> fieldHtml(html, originals[index], texts[index]) }
+                return ExtractChoice(fields, noteType, isTopic, priority.roundToInt().toDouble())
+            }
+            val ready = texts.firstOrNull()?.isNotBlank() == true
             Row(verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onDiscard) { Text(stringResource(R.string.ankrimento_extract_discard)) }
                 Spacer(Modifier.weight(1f))
                 TextButton(onClick = onKeep) { Text(stringResource(R.string.ankrimento_extract_keep)) }
-                Button(
-                    onClick = {
-                        val fields = draft.fields.mapIndexed { index, html -> fieldHtml(html, originals[index], texts[index]) }
-                        onAdd(ExtractChoice(fields, noteType, isTopic, priority.roundToInt().toDouble()))
-                    },
-                    enabled = texts.firstOrNull()?.isNotBlank() == true,
-                ) { Text(stringResource(R.string.ankrimento_extract_add)) }
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Spacer(Modifier.weight(1f))
+                OutlinedButton(onClick = { onLater(choice()) }, enabled = ready) { Text(stringResource(R.string.ankrimento_extract_later)) }
+                Button(onClick = { onAdd(choice()) }, enabled = ready) { Text(stringResource(R.string.ankrimento_extract_add)) }
             }
         }
     }

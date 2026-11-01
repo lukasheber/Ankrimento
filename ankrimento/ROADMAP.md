@@ -150,7 +150,7 @@ Mobile principles that guide every item:
 | ✅ | Extract to a new card in a bottom sheet: Item/Topic, front/back, note type, priority slider; Keep extracting keeps the draft | |
 | ✅ | Priority editor (slider, 0 to 100) | |
 | ✅ | **Priority always in reach on topics and items**: a "P 50" chip on screen, one tap to change it | Done for topics and items (chip in the top bar) |
-| ⬜ | "Keep extracting" queue (several extracts, then one review) | Button exists; needs mobile flow |
+| ✅ | Extract queue: several extracts, then one review | The extract sheet's Add later sets the extract aside as chosen (type, priority, its source place) and frees the draft for the next selection; a "2 to add" chip in the top bar opens them to remove any and Add all; whatever is still waiting is added when the document is left or the session moves on. Keep extracting still keeps one draft open for more text |
 | ⬜ | Extract card from the current reviewer card [11] | |
 | ⬜ | Add Card dock / card from scratch with priority [11] | |
 | ⬜ | Batch Q/A cards [11] | |
@@ -220,7 +220,7 @@ Mobile principles that guide every item:
 10. ~~Library search, sort and covers~~ (done).
 11. ~~Translations~~ (pt-BR, hr, zh-Hans done; native review needed).
 12. ~~Knowledge tree: reveal the current card, go to parent, search, postpone a subtree~~ (done).
-13. "Keep extracting" queue (several extracts, then one review).
+13. ~~Extract queue (several extracts, then one review)~~ (done).
 14. Session preview before starting.
 15. New AnkiDroid study screen (ReviewerFragment) opens readers.
 16. EPUB paged mode.

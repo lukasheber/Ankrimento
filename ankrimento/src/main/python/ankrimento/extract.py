@@ -39,7 +39,20 @@ class Draft:
     highlight_id: str = ""
 
 
+@dataclass
+class Queued:
+    """An extract set aside while reading, added later with the place it came from."""
+
+    fields: list[str]
+    note_type: str
+    kind: str
+    priority: float
+    page: int = 0
+    highlight_id: str = ""
+
+
 _drafts: dict[int, Draft] = {}
+_queues: dict[int, list[Queued]] = {}
 
 
 def _config() -> dict[str, Any]:
@@ -157,6 +170,63 @@ def _apply_classification(note, kind: str) -> None:
 
 def create(source_card_id: int, fields: list[str], note_type: str, kind: str, priority: float) -> int:
     """Add the extract as a note linked to its source; returns the note id."""
+    current = _drafts.get(int(source_card_id), Draft())
+    note_id = _create(source_card_id, fields, note_type, kind, priority, current.page, current.highlight_id)
+    discard(source_card_id)
+    return note_id
+
+
+# ── The queue ────────────────────────────────────────────────────────────────
+#
+# The phone's "Add later": each extract keeps its fields, choices and source
+# place, and the draft is free for the next selection. Adding the queue makes
+# each note exactly as ``create`` would have when it was queued.
+
+
+def queue(source_card_id: int, fields: list[str], note_type: str, kind: str, priority: float) -> int:
+    """Sets the draft aside as chosen; returns how many are waiting."""
+    current = _drafts.get(int(source_card_id), Draft())
+    waiting = _queues.setdefault(int(source_card_id), [])
+    waiting.append(Queued(list(fields), str(note_type), str(kind), float(priority), current.page, current.highlight_id))
+    discard(source_card_id)
+    return len(waiting)
+
+
+def queued(source_card_id: int) -> list[dict[str, Any]]:
+    return [
+        {"fields": q.fields, "note_type": q.note_type, "kind": q.kind, "priority": q.priority, "page": q.page}
+        for q in _queues.get(int(source_card_id), [])
+    ]
+
+
+def drop_queued(source_card_id: int, index: int) -> None:
+    waiting = _queues.get(int(source_card_id), [])
+    if 0 <= int(index) < len(waiting):
+        del waiting[int(index)]
+
+
+def discard_queue(source_card_id: int) -> None:
+    _queues.pop(int(source_card_id), None)
+
+
+def add_queued(source_card_id: int) -> list[int]:
+    """Adds every queued extract in order; returns the PDF pages they came from (for the page's marks)."""
+    waiting = _queues.pop(int(source_card_id), [])
+    pages = []
+    for index, q in enumerate(waiting):
+        try:
+            _create(source_card_id, q.fields, q.note_type, q.kind, q.priority, q.page, q.highlight_id)
+        except Exception:
+            # Keep what was not added, to be tried again.
+            _queues[int(source_card_id)] = waiting[index:]
+            raise
+        pages.append(q.page)
+    return pages
+
+
+def _create(
+    source_card_id: int, fields: list[str], note_type: str, kind: str, priority: float, page: int, highlight_id: str
+) -> int:
     from incremento.backend.db import add_pdf_card_source
     from incremento.backend.knowledge_tree import (
         NODE_KIND_ITEM,
@@ -169,7 +239,6 @@ def create(source_card_id: int, fields: list[str], note_type: str, kind: str, pr
     col = rt.col
     addon_dir, profile = str(rt.addon_dir), rt.profile
     source_card = col.get_card(int(source_card_id))
-    current = _drafts.get(int(source_card_id), Draft())
     model = col.models.by_name(note_type)
     if model is None:
         raise ValueError(f"note type not found: {note_type}")
@@ -201,21 +270,20 @@ def create(source_card_id: int, fields: list[str], note_type: str, kind: str, pr
         from incremento.backend.db import add_epub_card_source
 
         # For EPUB drafts the "page" is the chapter (section) index.
-        add_epub_card_source(addon_dir, profile, int(source_card_id), current.page, int(note.id), excerpt)
+        add_epub_card_source(addon_dir, profile, int(source_card_id), page, int(note.id), excerpt)
     elif "PDF_Filename" in source_note:
         add_pdf_card_source(
             addon_dir,
             profile,
             int(source_card_id),
-            current.page or 1,
+            page or 1,
             int(note.id),
             excerpt,
             str(source_note["PDF_Filename"]),
-            highlight_id=current.highlight_id,
+            highlight_id=highlight_id,
         )
 
     from aqt.operations import on_op_finished
 
     on_op_finished(mw, changes, None)
-    discard(source_card_id)
     return int(note.id)
