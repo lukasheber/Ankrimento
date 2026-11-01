@@ -293,6 +293,11 @@
         <item quantity="one">%d result</item>
         <item quantity="other">%d results</item>
     </plurals>
+    <!-- Desktop's review buttons -->
+    <string name="ankrimento_settings_review_buttons">Review buttons</string>
+    <string name="ankrimento_settings_button_done">Done in the review bar</string>
+    <string name="ankrimento_settings_button_postpone">Postpone in the review bar</string>
+    <string name="ankrimento_settings_button_extract">Extract among the reader\'s tools</string>
     <!-- Session presets -->
     <string name="ankrimento_preset">Preset</string>
     <string name="ankrimento_preset_current">Current settings</string>

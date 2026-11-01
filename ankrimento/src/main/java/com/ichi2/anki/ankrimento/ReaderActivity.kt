@@ -114,6 +114,9 @@ abstract class ReaderActivity : ComponentActivity() {
     private var priority by mutableStateOf<Double?>(null)
     private var timerSheet by mutableStateOf(false)
 
+    /** Desktop's review buttons shown: Done, Postpone (topic actions) and Extract (the extract tool). */
+    private var reviewButtons by mutableStateOf(setOf("done", "postpone", "extract"))
+
     /** Today's pages read and cards reviewed, for the focus timer's summary. */
     private var today by mutableStateOf<Pair<Int, Int>?>(null)
 
@@ -127,7 +130,15 @@ abstract class ReaderActivity : ComponentActivity() {
                 ReaderScaffold(
                     title = title,
                     subtitle = subtitle,
-                    tools = tools,
+                    // Desktop's Extract review button hidden: so is the extract tool (the selection menu keeps it).
+                    tools =
+                        if ("extract" in
+                            reviewButtons
+                        ) {
+                            tools
+                        } else {
+                            tools.filterNot { it.label == getString(R.string.ankrimento_extract_selection) }
+                        },
                     menu = menu(),
                     review = reviewBar(),
                     onBack = ::leave,
@@ -192,6 +203,13 @@ abstract class ReaderActivity : ComponentActivity() {
                     // The reviewer tells Incremento about the cards it shows; the loop's are shown here.
                     if (inSession && !intent.getBooleanExtra(EXTRA_QUESTION_SHOWN, false)) Ankrimento.questionShown(cardId)
                     priority = Ankrimento.priority(cardId)
+                    val buttons = Ankrimento.reviewButtons()
+                    reviewButtons =
+                        if (buttons.optBoolean("group", true)) {
+                            setOf("done", "postpone", "extract").filterTo(mutableSetOf()) { buttons.optBoolean(it, true) }
+                        } else {
+                            emptySet()
+                        }
                     Ankrimento.cardTitle(cardId) to if (inSession) answerButtonsFor(this) else null
                 }
             }.onSuccess { (cardTitle, buttons) ->
@@ -313,8 +331,10 @@ abstract class ReaderActivity : ComponentActivity() {
         val topicActions =
             if (topic) {
                 listOfNotNull(
-                    ReaderTool(getString(R.string.ankrimento_done), IncrementoIcons.Check) { topicAction { Ankrimento.topicDone(cardId) } },
-                    ReaderTool(getString(R.string.ankrimento_postpone)) { topicAction { Ankrimento.topicPostpone(cardId) } },
+                    ReaderTool(getString(R.string.ankrimento_done), IncrementoIcons.Check) { topicAction { Ankrimento.topicDone(cardId) } }
+                        .takeIf { "done" in reviewButtons },
+                    ReaderTool(getString(R.string.ankrimento_postpone)) { topicAction { Ankrimento.topicPostpone(cardId) } }
+                        .takeIf { "postpone" in reviewButtons },
                 )
             } else {
                 emptyList()

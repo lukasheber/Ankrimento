@@ -607,6 +607,19 @@ def set_setting(key: str, value_json: str) -> str:
     return _dumps(settings.set_value(str(key), json.loads(value_json)))
 
 
+def review_buttons() -> str:
+    """Desktop's review buttons (group, done, postpone, extract) and whether each is shown."""
+    from ankrimento import settings
+
+    return _dumps(settings.review_buttons())
+
+
+def set_review_button(name: str, visible: bool) -> None:
+    from ankrimento import settings
+
+    settings.set_review_button(name, visible)
+
+
 def library() -> str:
     """Every Incremento document, with kind, title, priority and reading position."""
     from ankrimento import library as documents

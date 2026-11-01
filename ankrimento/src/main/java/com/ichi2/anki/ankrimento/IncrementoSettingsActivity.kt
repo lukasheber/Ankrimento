@@ -72,6 +72,7 @@ import kotlin.math.roundToInt
 class IncrementoSettingsActivity : ComponentActivity() {
     private var session by mutableStateOf<Ankrimento.SessionSettings?>(null)
     private var presets by mutableStateOf<Ankrimento.SessionPresets?>(null)
+    private var reviewButtons by mutableStateOf<JSONObject?>(null)
     private var choosingPreset by mutableStateOf(false)
 
     /** The preset being renamed, or "" for a new one. */
@@ -120,6 +121,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 withCol {
                     Ankrimento.start(this@IncrementoSettingsActivity, this)
                     presets = Ankrimento.sessionPresets()
+                    reviewButtons = Ankrimento.reviewButtons()
                     Ankrimento.sessionSettings() to Ankrimento.settingsValues()
                 }
             }.onSuccess { (sessionSettings, settings) ->
@@ -176,6 +178,21 @@ class IncrementoSettingsActivity : ComponentActivity() {
     }
 
     private fun toast(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+
+    private fun setReviewButton(
+        name: String,
+        visible: Boolean,
+    ) {
+        lifecycleScope.launch {
+            runCatching {
+                withCol {
+                    Ankrimento.setReviewButton(name, visible)
+                    Ankrimento.reviewButtons()
+                }
+            }.onSuccess { reviewButtons = it }
+                .onFailure { toast(it.message ?: it.javaClass.simpleName) }
+        }
+    }
 
     private fun chooseBackupFile() {
         lifecycleScope.launch {
@@ -501,6 +518,17 @@ class IncrementoSettingsActivity : ComponentActivity() {
     @Composable
     private fun ReviewSection(v: JSONObject) {
         Header(R.string.ankrimento_settings_review)
+        reviewButtons?.let { buttons ->
+            Toggle(R.string.ankrimento_settings_review_buttons, buttons.optBoolean("group", true)) { setReviewButton("group", it) }
+            if (buttons.optBoolean("group", true)) {
+                Toggle(R.string.ankrimento_settings_button_done, buttons.optBoolean("done", true)) { setReviewButton("done", it) }
+                Toggle(
+                    R.string.ankrimento_settings_button_postpone,
+                    buttons.optBoolean("postpone", true),
+                ) { setReviewButton("postpone", it) }
+                Toggle(R.string.ankrimento_settings_button_extract, buttons.optBoolean("extract", true)) { setReviewButton("extract", it) }
+            }
+        }
         Toggle(R.string.ankrimento_settings_fail_pass, v.optBoolean("use_fail_pass_on_items")) { set("use_fail_pass_on_items", it) }
         PercentSlider(R.string.ankrimento_settings_more, v.optDouble("topic_more_adjustment_percent", 10.0).roundToInt(), 0..100) {
             set("topic_more_adjustment_percent", it.toDouble())

@@ -74,3 +74,29 @@ def set_value(key: str, value: Any) -> Any:
     config[key] = _checked(key, value)
     saved = save_addon_config(mw.addonManager, _ADDON, config)
     return saved.get(key)
+
+
+def review_buttons() -> dict[str, bool]:
+    """Desktop's review buttons: the whole group, then Done, Postpone and Extract, shown or hidden."""
+    from incremento.backend.config_service import (
+        configured_reviewer_button_group_visible,
+        configured_reviewer_button_visibility,
+    )
+
+    config = _config()
+    return {"group": configured_reviewer_button_group_visible(config), **configured_reviewer_button_visibility(config)}
+
+
+def set_review_button(name: str, visible: bool) -> None:
+    """Shows or hides one review button ("done", "postpone", "extract") or the whole group ("group")."""
+    from aqt import mw
+    from incremento.backend.config_service import save_addon_config
+
+    config = _config()
+    if name == "group":
+        config["reviewer_button_group_visible"] = bool(visible)
+    elif name in ("done", "postpone", "extract"):
+        config["reviewer_button_visibility"] = {**(config.get("reviewer_button_visibility") or {}), name: bool(visible)}
+    else:
+        raise ValueError(f"Unknown review button {name}")
+    save_addon_config(mw.addonManager, "incremento", config)

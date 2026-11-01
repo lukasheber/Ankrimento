@@ -37,19 +37,19 @@ Mobile principles that guide every item:
 | ✅ | Back to the previous element (one undo, only while nothing changed since) | |
 | ✅ | Topic actions: Done, Postpone, Revisit 3/6/12 months or a chosen date | A row of chips above the answers. Mark read to here is in the reader's ⋮ menu |
 | ✅ | Revisit → Choose date… (date picker, tomorrow onwards) | Upstream's revisit with a date, so desktop keeps it out of reading sessions until then |
-| ⬜ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | |
+| ✅ | Settings to show or hide Done, Postpone and Extract in the bar, as desktop's Review buttons | Settings → Review: desktop's review buttons group, Done, Postpone, Extract (the extract tool; the selection menu keeps Extract) |
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for settings, ⋮ for Library, Add, Knowledge tree, Statistics (and Sync now when a folder is set) | The deck's own row is hidden from the list; on a tablet its side panel has no Study button |
 | 🟡 | When a session finds nothing to study, say why and offer the session settings | Dialog with upstream's message and a Session settings button; not yet seen on a device (document topics always qualify, as upstream intends) |
 | ✅ | Plain-text topics in a reader (no "Show answer"): the note as its template renders it, Aa settings, Extract on selection, review bar | |
 | ✅ | Items in the same learning screen as topics: question, Show answer, then Anki's grades (or Fail/Pass when enabled), with intervals, Back and the priority chip | Session deck only; cards with sound, typed answers, math or image occlusion still use the reviewer |
 | ⬜ | Items with sound, typed answers, math (MathJax) and image occlusion in the learning screen | |
-| ⬜ | Leech notice when an item becomes a leech in the learning screen | The reviewer shows one |
+| 🟡 | Leech notice when an item becomes a leech in the learning screen | A notice after the answer (and whether it was suspended); not yet seen on a device |
 | ➖ | Swipe between elements | Sideways swipe turns pages in the readers; moving between elements stays on the footer buttons, where a stray swipe cannot answer a topic |
 | ✅ | Session settings: card count, topic/item and document mix, random/priority, card states, top-up | In the settings screen |
 | ✅ | Session presets: save, load, rename, delete | Settings → Session → Preset, stored as desktop stores them; each preset keeps its own session deck (hidden from the deck list like the base one, renamed with its preset, emptied when its preset is deleted) |
 | 🟡 | Advanced scheduler options: quotas, tag quotas, filters, card states, priority order, scope | Settings → Session → Advanced options: topics/items filters (checked by Anki before saving), tag quotas with Other cards, content types scheduled first, documents outside tag quotas, strict enforcement, scope (card states are in Session). Not yet: the phase (funnel) order and Order values, tag groups and locks |
 | ⬜ | Session preview before starting | |
-| 🟡 | Branch study from the knowledge tree | Works on the emulator; did not start on the tablet; to investigate |
+| ✅ | Branch study from the knowledge tree | Checked on the tablet; an empty branch explains why with upstream's message |
 | ✅ | Desktop review hooks: review time, topic A-factor, custom schedule, learning leech tags | |
 | ⬜ | New AnkiDroid study screen (ReviewerFragment) opens readers like the legacy one | Buttons done; readers not yet |
 

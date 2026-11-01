@@ -30,3 +30,23 @@ def test_only_known_settings_with_their_types_are_accepted(rt):
         facade.set_setting("use_fail_pass_on_items", '"yes"')
     with pytest.raises(ValueError):
         facade.set_setting("extract_default_type", '"cloze"')
+
+
+def test_review_buttons_are_shown_or_hidden_as_desktop_stores_it(rt):
+    import copy
+
+    from aqt import mw
+
+    saved = copy.deepcopy(mw.addonManager.getConfig("incremento"))
+    try:
+        assert json.loads(facade.review_buttons()) == {"group": True, "done": True, "postpone": True, "extract": True}
+
+        facade.set_review_button("postpone", False)
+        facade.set_review_button("group", False)
+
+        assert json.loads(facade.review_buttons()) == {"group": False, "done": True, "postpone": False, "extract": True}
+        config = mw.addonManager.getConfig("incremento")
+        assert config["reviewer_button_visibility"]["postpone"] is False
+        assert config["reviewer_button_group_visible"] is False
+    finally:
+        mw.addonManager.writeConfig("incremento", saved)

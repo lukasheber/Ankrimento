@@ -528,6 +528,18 @@ object Ankrimento {
         val cover: String = "",
     )
 
+    /** Desktop's review buttons (`group`, `done`, `postpone`, `extract`) and whether each is shown. */
+    @WorkerThread
+    fun reviewButtons(): JSONObject = JSONObject(requireFacade().callAttr("review_buttons").toString())
+
+    @WorkerThread
+    fun setReviewButton(
+        name: String,
+        visible: Boolean,
+    ) {
+        requireFacade().callAttr("set_review_button", name, visible)
+    }
+
     /** The Incremento settings shown on mobile (upstream's config keys), as JSON. */
     @WorkerThread
     fun settingsValues(): JSONObject = JSONObject(requireFacade().callAttr("settings_values").toString())
