@@ -230,6 +230,14 @@
     <string name="ankrimento_page_short">p. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Árvore do conhecimento</string>
+    <string name="ankrimento_document_review">Revisar os cartões deste documento</string>
+    <plurals name="ankrimento_document_review_count">
+        <item quantity="one">%1$d cartão (%2$d tópicos, %3$d itens)</item>
+        <item quantity="many">%1$d cartões (%2$d tópicos, %3$d itens)</item>
+        <item quantity="other">%1$d cartões (%2$d tópicos, %3$d itens)</item>
+    </plurals>
+    <string name="ankrimento_document_review_none">Nenhum cartão corresponde a estas escolhas.</string>
+    <string name="ankrimento_document_review_start">Revisar</string>
     <string name="ankrimento_tree_show">Mostrar na árvore do conhecimento</string>
     <string name="ankrimento_tree_search_hint">Pesquisar na árvore</string>
     <string name="ankrimento_tree_go_to_parent">Ir para o pai</string>

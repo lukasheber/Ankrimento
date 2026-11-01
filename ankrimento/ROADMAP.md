@@ -82,7 +82,7 @@ Mobile principles that guide every item:
 | ✅ | Find in document | A search sheet with the matching pages and excerpts; a match opens with its words highlighted, then a previous/next bar. Upstream's text index is filled by the viewer's pdf.js on the device (desktop uses PyMuPDF), through upstream's indexer, so Search ALL finds it too |
 | ✅ | Contents (outline) sheet: nested entries with page numbers, the current part marked | Through the viewer's own contents jump |
 | ✅ | Bookmarks, annotations, highlight notes, colours | Bookmarks and highlights sheet (⋮): bookmark the page, open or delete bookmarks; highlights by page with their colour (upstream's eight) and note, each opened, recoloured, noted or deleted; Highlight on the selection menu; upstream's six annotation styles (highlight, underline, squiggly, dashed, dotted, strikethrough) in each highlight's dialog, drawn by the viewer; a comment on each bookmark |
-| ⬜ | Review all cards attached to the document [6] | |
+| ✅ | Review all cards attached to the document [6] | PDF and EPUB readers' ⋮ → Review cards from this document: desktop's choices (all or due, topics/items, whole document or up to here, order) with a live count, selected by upstream's media review; Review builds desktop's PDF/EPUB review deck and opens AnkiDroid's reviewer. Checked on the tablet |
 | ⬜ | Cross-references and page links [6] | |
 | ⬜ | DjVu documents [6] | |
 | ⬜ | Searchable PDF text / OCR status [6, 13] | |
@@ -128,7 +128,7 @@ Mobile principles that guide every item:
 | ✅ | Extract at the current timestamp: the front links back to that moment, as desktop's "Add Card at this point" | |
 | 🟡 | Native controls: Back 10 seconds | Play/pause, speed and seek still come from the player itself |
 | ✅ | Titles for shared links: YouTube's title, or the page's own title | Looked up when a link comes without one; the URL stays if that fails |
-| ✅ | Open a video extract's link at its moment, on mobile | Every extract's link back (web page, PDF page with its excerpt found, EPUB chapter, video moment) opens its source, from cards in the readers and in AnkiDroid's reviewer, which gets desktop's pycmd for them |
+| 🟡 | Open an extract's link back to its source, on mobile | Desktop's links (web page, PDF page with its excerpt, EPUB chapter, video moment) open their reader from cards in the readers and in AnkiDroid's reviewer. Web and video extracts made on the phone carry their link; PDF and EPUB extracts made on the phone do not yet |
 | ⬜ | Video bookmarks | |
 | ⬜ | Captions (target/reference) | |
 | ➖ | Create Mobile Clip, Download Local Copy | Need FFmpeg/yt-dlp; desktop makes clips that sync as media |
@@ -237,8 +237,11 @@ Daily reading and extracting:
 22. Faster first launch (Python cold start about 20 s).
 23. ~~Extract from the card shown in AnkiDroid's reviewer; add a card from scratch with a priority~~ (done; the new study screen's Extract remains).
 24. ~~Web extract anchors~~ (done).
-25. ~~Open an extract's link back to its source (video, web, PDF, EPUB), in the readers and the reviewer~~ (done).
-26. Review all cards made from a document.
+25. Links back to the source: opening them works for every kind; PDF and EPUB extracts made on the phone still need their link (next).
+26. ~~Review all cards made from a document~~ (done).
+26a. The extract sheet made clear: what Add, Add later and Keep extracting each do, shown on the sheet and confirmed after
+     (where the card went, e.g. under its source in the knowledge tree); check that each works as it says.
+26b. The extract sheet's note type follows the document open (as desktop's extract options choose it per source).
 27. Items with sound, typed answers or image occlusion in the learning screen.
 
 Things desktop has:

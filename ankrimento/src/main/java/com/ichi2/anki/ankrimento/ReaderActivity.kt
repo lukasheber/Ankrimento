@@ -34,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.DocumentReviewSheet
 import com.ichi2.anki.ankrimento.ui.ExtractChoice
 import com.ichi2.anki.ankrimento.ui.ExtractQueueChip
 import com.ichi2.anki.ankrimento.ui.ExtractQueueSheet
@@ -51,6 +52,9 @@ import com.ichi2.anki.ankrimento.ui.RevisitDateDialog
 import com.ichi2.anki.ankrimento.ui.TimerChip
 import com.ichi2.anki.ankrimento.ui.TimerSheet
 import com.ichi2.anki.ankrimento.ui.TimerSummaryDialog
+import com.ichi2.anki.common.destinations.DeferredNavigation
+import com.ichi2.anki.common.destinations.ReviewDeckDestination
+import com.ichi2.anki.common.destinations.toIntent
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -115,6 +119,10 @@ abstract class ReaderActivity : ComponentActivity() {
     private var choosingRevisitDate by mutableStateOf(false)
     private var priority by mutableStateOf<Double?>(null)
     private var timerSheet by mutableStateOf(false)
+
+    /** A review of this document's cards was asked for: its deck's review opens when ready. */
+    private var documentReviewStarting = false
+    private var reviewChoices = emptyMap<String, String>()
 
     /** Extracts set aside with Add later, added together (or on leaving this document). */
     private var queuedExtracts by mutableStateOf(0)
@@ -277,7 +285,11 @@ abstract class ReaderActivity : ComponentActivity() {
             is Ankrimento.Event.CloseReader -> if (event.cardId == cardId) finish()
             is Ankrimento.Event.OpenUrl -> openUrl(event.url)
             is Ankrimento.Event.Message -> toast(event.text)
-            Ankrimento.Event.EnterReview -> Unit
+            Ankrimento.Event.EnterReview ->
+                if (documentReviewStarting) {
+                    documentReviewStarting = false
+                    startActivity(with(DeferredNavigation) { ReviewDeckDestination.CurrentDeck.toIntent() })
+                }
         }
     }
 
@@ -374,12 +386,53 @@ abstract class ReaderActivity : ComponentActivity() {
         }
     }
 
+    /** "pdf" or "epub" for readers whose cards desktop reviews together (Review All), with where reading is. */
+    protected open val reviewKind: String? = null
+
+    protected open fun reviewPosition(): Double = 0.0
+
+    private fun showDocumentReview() {
+        val kind = reviewKind ?: return
+        val position = reviewPosition()
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.documentReviewPreview(cardId, kind, position, reviewChoices) } }
+                .onSuccess { preview ->
+                    sheet = {
+                        DocumentReviewSheet(
+                            preview = preview,
+                            choices = reviewChoices,
+                            onChoose = { group, value ->
+                                reviewChoices = reviewChoices + (group to value)
+                                showDocumentReview()
+                            },
+                            onReview = {
+                                sheet = null
+                                documentReviewStarting = true
+                                lifecycleScope.launch {
+                                    runCatching { withCol { Ankrimento.documentReviewStart(cardId, kind, position, reviewChoices) } }
+                                        .onFailure { error ->
+                                            documentReviewStarting = false
+                                            toast(error.message ?: error.javaClass.simpleName)
+                                        }
+                                }
+                            },
+                            onDismiss = { sheet = null },
+                        )
+                    }
+                }.onFailure { error ->
+                    Timber.w(error, "Previewing the document's review failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
+        }
+    }
+
     private fun menu(): List<ReaderTool> =
         buildList {
             if (inSession) {
                 add(ReaderTool(getString(R.string.ankrimento_show_card)) { finishWith(RESULT_SHOW_CARD, null) })
             }
             add(ReaderTool(getString(R.string.ankrimento_timer_title)) { timerSheet = true })
+            reviewKind?.let { add(ReaderTool(getString(R.string.ankrimento_document_review)) { showDocumentReview() }) }
             add(
                 ReaderTool(
                     getString(R.string.ankrimento_tree_show),

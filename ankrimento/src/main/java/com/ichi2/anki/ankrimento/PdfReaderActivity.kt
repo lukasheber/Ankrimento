@@ -60,6 +60,11 @@ class PdfReaderActivity : ReaderActivity() {
     private lateinit var webView: ReaderWebView
     private var viewerControlsShown = false
     private var page = 0
+
+    override val reviewKind = "pdf"
+
+    override fun reviewPosition() = page.coerceAtLeast(1).toDouble()
+
     private var pages = 0
     private var zoom = 1.0
     private var appearance = "original"

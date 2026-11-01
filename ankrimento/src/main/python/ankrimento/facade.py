@@ -172,6 +172,20 @@ def tree_postpone_branch(root_card_id: int) -> str:
     return _dumps(tree.postpone_branch(root_card_id))
 
 
+def document_review_preview(card_id: int, kind: str, position: float, options_json: str) -> str:
+    """How many of a document's cards a review would take with these choices (desktop's Review All)."""
+    from ankrimento import document_review
+
+    return _dumps(document_review.preview(int(card_id), str(kind), float(position), json.loads(options_json or "{}")))
+
+
+def document_review_start(card_id: int, kind: str, position: float, options_json: str) -> bool:
+    """Starts reviewing a document's cards; the host enters review when the deck is ready."""
+    from ankrimento import document_review
+
+    return document_review.start(int(card_id), str(kind), float(position), json.loads(options_json or "{}"))
+
+
 def start_branch_session(root_card_id: int) -> bool:
     """A session limited to one branch of the tree, as desktop's "Study branch" starts it."""
     from incremento.backend.knowledge_tree import build_branch_study_scope

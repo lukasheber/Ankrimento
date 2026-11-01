@@ -55,6 +55,10 @@ class EpubReaderActivity : ReaderActivity() {
     private var section: Ankrimento.EpubSection? = null
     private var pendingScrollRatio: Double? = null
 
+    override val reviewKind = "epub"
+
+    override fun reviewPosition() = (section?.index ?: 0).toDouble()
+
     /** Words for the next chapter's page script to find once loaded (a find or Search ALL result). */
     private var pendingSearch = ""
     private var findQuery = ""

@@ -220,6 +220,12 @@
     <string name="ankrimento_page_short">第 %d 页</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">知识树</string>
+    <string name="ankrimento_document_review">复习此文档的卡片</string>
+    <plurals name="ankrimento_document_review_count">
+        <item quantity="other">%1$d 张卡片（%2$d 个主题，%3$d 个条目）</item>
+    </plurals>
+    <string name="ankrimento_document_review_none">没有符合这些选择的卡片。</string>
+    <string name="ankrimento_document_review_start">复习</string>
     <string name="ankrimento_tree_show">在知识树中显示</string>
     <string name="ankrimento_tree_search_hint">搜索知识树</string>
     <string name="ankrimento_tree_go_to_parent">转到上级</string>

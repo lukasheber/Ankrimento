@@ -1195,6 +1195,46 @@ object Ankrimento {
         )
     }
 
+    /** How many of a document's cards a review takes, and desktop's names for each choice (group to value, label). */
+    data class DocumentReviewPreview(
+        val selected: Int,
+        val topics: Int,
+        val items: Int,
+        val labels: Map<String, List<Pair<String, String>>>,
+    )
+
+    @WorkerThread
+    fun documentReviewPreview(
+        cardId: Long,
+        kind: String,
+        position: Double,
+        choices: Map<String, String>,
+    ): DocumentReviewPreview {
+        val preview =
+            JSONObject(
+                requireFacade().callAttr("document_review_preview", cardId, kind, position, JSONObject(choices).toString()).toString(),
+            )
+        val labels = preview.getJSONObject("labels")
+        return DocumentReviewPreview(
+            preview.getInt("selected"),
+            preview.getInt("topics"),
+            preview.getInt("items"),
+            labels.keys().asSequence().associateWith { group ->
+                val options = labels.getJSONArray(group)
+                List(options.length()) { options.getJSONArray(it).let { pair -> pair.getString(0) to pair.getString(1) } }
+            },
+        )
+    }
+
+    /** Starts reviewing a document's cards; [Event.EnterReview] follows, or a message when none match. */
+    @WorkerThread
+    fun documentReviewStart(
+        cardId: Long,
+        kind: String,
+        position: Double,
+        choices: Map<String, String>,
+    ): Boolean = requireFacade().callAttr("document_review_start", cardId, kind, position, JSONObject(choices).toString()).toBoolean()
+
     /** Start a session limited to [rootCardId]'s branch; [Event.EnterReview] follows. */
     @WorkerThread
     fun startBranchSession(rootCardId: Long): Boolean = requireFacade().callAttr("start_branch_session", rootCardId).toBoolean()

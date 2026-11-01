@@ -225,6 +225,13 @@
     <string name="ankrimento_page_short">p. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Knowledge tree</string>
+    <string name="ankrimento_document_review">Review cards from this document</string>
+    <plurals name="ankrimento_document_review_count">
+        <item quantity="one">%1$d card (%2$d topics, %3$d items)</item>
+        <item quantity="other">%1$d cards (%2$d topics, %3$d items)</item>
+    </plurals>
+    <string name="ankrimento_document_review_none">No cards match these choices.</string>
+    <string name="ankrimento_document_review_start">Review</string>
     <string name="ankrimento_tree_show">Show in knowledge tree</string>
     <string name="ankrimento_tree_search_hint">Search the tree</string>
     <string name="ankrimento_tree_go_to_parent">Go to parent</string>

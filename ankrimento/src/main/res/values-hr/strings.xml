@@ -230,6 +230,14 @@
     <string name="ankrimento_page_short">str. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Stablo znanja</string>
+    <string name="ankrimento_document_review">Pregledaj karte iz ovog dokumenta</string>
+    <plurals name="ankrimento_document_review_count">
+        <item quantity="one">%1$d karta (teme: %2$d, stavke: %3$d)</item>
+        <item quantity="few">%1$d karte (teme: %2$d, stavke: %3$d)</item>
+        <item quantity="other">%1$d karata (teme: %2$d, stavke: %3$d)</item>
+    </plurals>
+    <string name="ankrimento_document_review_none">Nijedna karta ne odgovara ovim izborima.</string>
+    <string name="ankrimento_document_review_start">Pregledaj</string>
     <string name="ankrimento_tree_show">Prikaži u stablu znanja</string>
     <string name="ankrimento_tree_search_hint">Pretraži stablo</string>
     <string name="ankrimento_tree_go_to_parent">Idi na nadređeni</string>
