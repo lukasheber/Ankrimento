@@ -14,6 +14,7 @@ import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.Flag
 import com.ichi2.anki.Reviewer
 import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.CardPage
 import com.ichi2.anki.asyncIO
 import com.ichi2.anki.cardviewer.SingleCardSide
 import com.ichi2.anki.cardviewer.appendNoSuggestAttributes
@@ -142,6 +143,21 @@ class ReviewerViewModel(
 
     /** Incremento's answer buttons for the current card, or null for AnkiDroid's own. */
     val incrementoButtonsFlow: MutableStateFlow<List<Ankrimento.AnswerButton>?> = MutableStateFlow(null)
+
+    /**
+     * A card to review in its Incremento reader (a document topic; a plain topic or an item in
+     * the session), with the reader's kind: as the legacy reviewer's IncrementoReaders opens them.
+     */
+    val incrementoReaderFlow = MutableSharedFlow<Pair<CardId, String>>()
+
+    /** The card whose reader is open, or that its reader handed back to be shown here: not reopened. */
+    private var incrementoReaderCardId: CardId? = null
+
+    /**
+     * A reader opened from here has not returned yet. Readers move on to the next element
+     * themselves, so the cards they answer meanwhile must not open more readers from here.
+     */
+    private var incrementoReaderOpen = false
     private val shouldShowNextTimes = asyncIO { repository.getShouldShowNextTimes() }
 
     init {
@@ -191,6 +207,34 @@ class ReviewerViewModel(
 
     fun onShowAnswer() {
         executeAction(ViewerAction.SHOW_ANSWER)
+    }
+
+    /**
+     * The reader of [cardId] closed after an answer or a topic action, as the legacy
+     * reviewer's IncrementoReaders handles it: with a [rating] the card is answered here;
+     * without one the reader already rescheduled it, and the next card is shown.
+     */
+    fun onIncrementoReaderDone(
+        cardId: CardId?,
+        rating: Int,
+    ) {
+        launchCatchingIO {
+            // The card is done with; if it comes back, its reader opens again.
+            incrementoReaderCardId = null
+            incrementoReaderOpen = false
+            if (rating < 0 || cardId == null || currentCard.await().id != cardId) {
+                updateCurrentCard()
+                return@launchCatchingIO
+            }
+            // Desktop's answer timing starts when the answer is shown.
+            withCol { Ankrimento.answerShown(cardId) }
+            answerCard(Rating.forNumber(rating))
+        }
+    }
+
+    /** The reader closed otherwise ("Show card"): its card stays here, shown, without reopening it. */
+    fun onIncrementoReaderClosed() {
+        incrementoReaderOpen = false
     }
 
     fun answerCard(rating: Rating) {
@@ -619,6 +663,14 @@ class ReviewerViewModel(
                 Ankrimento.answerButtons(card.id)
             },
         )
+        if (Ankrimento.isStarted && !incrementoReaderOpen && card.id != incrementoReaderCardId) {
+            val reader = withCol { CardPage.readerFor(this, card.id) }
+            if (reader.isNotEmpty()) {
+                incrementoReaderCardId = card.id
+                incrementoReaderOpen = true
+                incrementoReaderFlow.emit(card.id to reader)
+            }
+        }
         loadAndPlayMedia(CardSide.QUESTION)
         canBuryNoteFlow.emit(isBuryNoteAvailable(card))
         canSuspendNoteFlow.emit(isSuspendNoteAvailable(card))

@@ -2,6 +2,7 @@
 
 package com.ichi2.anki.ui.windows.reviewer
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.ActionMenuView
@@ -42,6 +44,7 @@ import com.ichi2.anki.DispatchKeyEventListener
 import com.ichi2.anki.Flag
 import com.ichi2.anki.R
 import com.ichi2.anki.android.AnkiShakeDetector
+import com.ichi2.anki.ankrimento.ReaderActivity
 import com.ichi2.anki.cardviewer.Gesture
 import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.common.destinations.DeckOptionsDestination
@@ -130,6 +133,22 @@ class ReviewerFragment :
 
     private lateinit var tagsDialogFactory: TagsDialogFactory
 
+    /** An Incremento reader opened over the study screen to review its card; its result comes back here. */
+    private val incrementoReader =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val data = result.data
+            when (result.resultCode) {
+                Activity.RESULT_OK ->
+                    viewModel.onIncrementoReaderDone(
+                        data?.getLongExtra(ReaderActivity.EXTRA_CARD_ID, 0L)?.takeIf { it != 0L },
+                        data?.getIntExtra(ReaderActivity.EXTRA_RATING, -1) ?: -1,
+                    )
+                // The reader's Back ends the session; so does the study screen.
+                ReaderActivity.RESULT_LEAVE_SESSION -> requireActivity().finish()
+                else -> viewModel.onIncrementoReaderClosed()
+            }
+        }
+
     override fun onLoadInitialHtml(): String =
         stdHtml(
             context = requireContext(),
@@ -179,6 +198,13 @@ class ReviewerFragment :
         setupActions()
         setupWhiteboard()
         setupTimebox()
+
+        viewModel.incrementoReaderFlow.collectIn(lifecycleScope) { (cardId, reader) ->
+            ReaderActivity
+                .intent(requireContext(), reader, cardId, session = true)
+                ?.putExtra(ReaderActivity.EXTRA_QUESTION_SHOWN, true)
+                ?.let(incrementoReader::launch)
+        }
 
         viewModel.finishResultFlow.collectIn(lifecycleScope) { result ->
             requireActivity().run {

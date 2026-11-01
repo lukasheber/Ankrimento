@@ -51,7 +51,7 @@ Mobile principles that guide every item:
 | ✅ | Session preview before starting | The Incremento card's ⋮ → Preview session: the cards upstream's scheduler picks with the current settings (as desktop's session dialog previews them), each with its type, pick mode and tag; Start this session starts with exactly those cards while the settings stay the same, as desktop's preview override does |
 | ✅ | Branch study from the knowledge tree | Checked on the tablet; an empty branch explains why with upstream's message |
 | ✅ | Desktop review hooks: review time, topic A-factor, custom schedule, learning leech tags | |
-| ⬜ | New AnkiDroid study screen (ReviewerFragment) opens readers like the legacy one | Buttons done; readers not yet |
+| ✅ | New AnkiDroid study screen (ReviewerFragment) opens readers like the legacy one | Checked on the tablet: a topic opens in its reader over the new screen; answers move on from reader to reader (the screen opens nothing more while one of its readers is open); a rating handed back is answered there; the reader's Back ends the session and closes the screen |
 
 ## 2. Main screen and navigation [2, 9]
 
@@ -222,7 +222,7 @@ Mobile principles that guide every item:
 12. ~~Knowledge tree: reveal the current card, go to parent, search, postpone a subtree~~ (done).
 13. ~~Extract queue (several extracts, then one review)~~ (done).
 14. ~~Session preview before starting~~ (done).
-15. New AnkiDroid study screen (ReviewerFragment) opens readers.
+15. ~~New AnkiDroid study screen (ReviewerFragment) opens readers~~ (done).
 16. EPUB paged mode.
 17. Images in imported web articles.
 18. Automatic backups.
