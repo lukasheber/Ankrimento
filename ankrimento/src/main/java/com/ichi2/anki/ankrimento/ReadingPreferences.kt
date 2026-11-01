@@ -57,7 +57,9 @@ data class ReadingPreferences(
             " var css = 'body, html.incremento-epub-scaled body { box-sizing: border-box !important;" +
             " max-width: 40em !important; margin: 0 auto !important;" +
             " padding: 1em ' + o.margin + 'em 3em !important; line-height: ' + o.lineHeight + ' !important; }'" +
-            " + ' body p, body li, body blockquote, body dd { line-height: inherit !important; }'" +
+            // Books wrap their text in blocks with their own line-height: those inherit the body's too.
+            " + ' body div, body section, body article, body p, body li, body blockquote, body dd, body span" +
+            " { line-height: inherit !important; }'" +
             " + ' body img, body svg, body video { max-width: 100% !important; height: auto !important; }';" +
             " if (o.font) css += ' body, body p, body li, body span, body div, body blockquote'" +
             " + ' { font-family: ' + o.font + ' !important; }';" +

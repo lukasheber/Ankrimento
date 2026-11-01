@@ -18,4 +18,19 @@ class ReadingPreferencesTest {
         // `body` rule loses to it whatever the margins chosen. The same selector, added later, wins.
         assertThat(script, containsString("html.incremento-epub-scaled body {"))
     }
+
+    @Test
+    fun `line spacing reaches text wrapped in the book's own blocks`() {
+        val script = ReadingPreferences(spacing = ReadingPreferences.Spacing.RELAXED).script()
+
+        // Books wrap paragraphs in a `div` with its own line-height (`.quadro-de-texto-b-sico
+        // { line-height: 1.2 }`): paragraphs inheriting would take the div's, not the body's.
+        val inheriting =
+            Regex("([^}']*)\\{ line-height: inherit")
+                .find(script)
+                ?.groupValues
+                ?.get(1)
+                .orEmpty()
+        assertThat(inheriting, containsString("body div"))
+    }
 }
