@@ -19,6 +19,9 @@
     <string name="ankrimento_epub_extract">摘录</string>
     <string name="ankrimento_epub_highlight">高亮</string>
     <string name="ankrimento_epub_read_here">标记已读到此处</string>
+    <string name="ankrimento_new_card">新卡片</string>
+    <string name="ankrimento_new_card_title">新卡片</string>
+    <string name="ankrimento_new_card_deck">牌组</string>
     <string name="ankrimento_extract_title">从摘录新建卡片</string>
     <string name="ankrimento_extract_front">正面</string>
     <string name="ankrimento_extract_back">背面</string>

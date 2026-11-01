@@ -45,6 +45,18 @@ class ItemReaderActivity : ReaderActivity() {
             }
         setReaderContent(webView)
         webView.addJavascriptInterface(CardPage.Links(this), "AnkrimentoCard")
+        // Desktop's extract from the reviewer card: the item is the extract's source.
+        webView.selectionActions =
+            listOf(
+                ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), SELECTION_JS) { result ->
+                    val text = runCatching { org.json.JSONArray("[$result]").getString(0) }.getOrDefault("")
+                    lifecycleScope.launch {
+                        if (!withCol { Ankrimento.webExtract(cardId, text) }) {
+                            Toast.makeText(this@ItemReaderActivity, R.string.ankrimento_web_select_first, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
+            )
         lifecycleScope.launch { load() }
     }
 
@@ -131,5 +143,9 @@ class ItemReaderActivity : ReaderActivity() {
         return names.mapIndexed { index, name ->
             Ankrimento.AnswerButton(Rating.forNumber(index), getString(name), ease = index + 1, due = intervals?.getOrNull(index))
         }
+    }
+
+    private companion object {
+        const val SELECTION_JS = "String(window.getSelection ? window.getSelection() : '')"
     }
 }

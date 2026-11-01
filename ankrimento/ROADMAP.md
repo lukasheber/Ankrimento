@@ -151,8 +151,8 @@ Mobile principles that guide every item:
 | ✅ | Priority editor (slider, 0 to 100) | |
 | ✅ | **Priority always in reach on topics and items**: a "P 50" chip on screen, one tap to change it | Done for topics and items (chip in the top bar) |
 | ✅ | Extract queue: several extracts, then one review | The extract sheet's Add later sets the extract aside as chosen (type, priority, its source place) and frees the draft for the next selection; a "2 to add" chip in the top bar opens them to remove any and Add all; whatever is still waiting is added when the document is left or the session moves on. Keep extracting still keeps one draft open for more text |
-| ⬜ | Extract card from the current reviewer card [11] | |
-| ⬜ | Add Card dock / card from scratch with priority [11] | |
+| 🟡 | Extract card from the current reviewer card [11] | AnkiDroid's reviewer: Extract on the selected text's toolbar opens the extract sheet with the card as its source (priority from it, a child of it in the knowledge tree); checked on the tablet. Items in the learning screen have the same Extract on their selection (not yet tried on a device). Not yet in AnkiDroid's new study screen |
+| ✅ | Add Card dock / card from scratch with priority [11] | Library → Add → New card: Item/Topic, front/back, note type, deck (upstream's defaults) and priority (50, desktop's scratch priority); no source and no place in the tree, as on desktop. Made without Incremento's metadata fields, which would change the note type and force a full sync |
 | ⬜ | Batch Q/A cards [11] | |
 | ⬜ | PDF snapshot previews on cards [13] | Mobile already shows snapshots created on desktop |
 
@@ -197,7 +197,7 @@ Mobile principles that guide every item:
 | 🟡 | Translations | Android screens in Brazilian Portuguese, Croatian and Simplified Chinese (Croatian and Chinese with desktop's own terms from upstream's catalogs, AnkiDroid's for cards and grades); upstream's messages follow the app's language at startup as desktop's do (Incremento's language setting, or the app's when auto). Upstream has no Portuguese, so its messages stay English in pt-BR. Machine-made: a native speaker should review each language |
 | ⬜ | Getting Started guide (first run) | |
 | ➖ | Dependency installer [13] | Desktop tools (FFmpeg, OCR) |
-| ✅ | Startup time | Measured on the tablet (Galaxy Tab S6 Lite), cold process, including right after an app update: Python warms up in 1.6 to 2.3 s while the deck list opens, then Incremento finishes starting in the background (about 1.8 s), so the first Incremento screen no longer waits for it. A first launch on fresh app data (Chaquopy unpacking) is not measured |
+| 🟡 | Startup time: Python cold start about 20 s on the first launch, about 3 s after warm-up | Warm-up runs on app start |
 | 🟡 | Tests: Python tests against the real backend, reviewer Robolectric tests, on-device smoke test | Add UI tests for the learning loop |
 | 🟡 | Tablet layout: works full screen | Two-pane library plus reader to consider |
 
@@ -234,8 +234,8 @@ Mobile principles that guide every item:
 
 Daily reading and extracting:
 
-22. ~~Faster first launch~~ (done: Incremento starts in the background after warm-up; the 20 s figure was out of date).
-23. Extract from the card shown in AnkiDroid's reviewer; add a card from scratch with a priority.
+22. Faster first launch (Python cold start about 20 s).
+23. ~~Extract from the card shown in AnkiDroid's reviewer; add a card from scratch with a priority~~ (done; the new study screen's Extract remains).
 24. Web extract anchors (jump from an extract back to its place in the page).
 25. Open a video extract's link at its moment, on the phone.
 26. Review all cards made from a document.
@@ -248,7 +248,7 @@ Things desktop has:
 30. PDF cross-references and page links; OCR status.
 31. Markdown documents (import) and the writing formatting toolbar.
 32. Audio import; check audio cards.
-33. Video bookmarks, captions, Vimeo, fuller playback controls.
+33. Video bookmarks, captions, Vimeo, fuller playback controls. Check if extract video sessio/snip is implemented 
 34. More of upstream's settings (writing, PDF details).
 35. Getting Started guide.
 
@@ -256,12 +256,14 @@ Upkeep and rarely used:
 
 36. Support bundle, clean-up of unused data, card-format update notice.
 37. Batch Q/A cards, PDF snapshot previews.
-38. DjVu documents.
+38. DjVu documents. Implement only if there is a readly available library to read DjVu files.
 39. PDF reflow, only if extracts and highlights map back to the PDF exactly.
 
 To check rather than build: the empty-session dialog, the leech notice and the
 automatic backup folder picker on a device; native review of each translation;
 UI tests for the learning loop.
+
+Create procedure to implement upstream changes to guard compatibility with desktop Incremento. tracking parity check, parity feature check, tests, etc.
 
 Deferred: sync add-on and other sync work (until agreed with upstream's
 author), SuperMemo import, Webpage to PDF.

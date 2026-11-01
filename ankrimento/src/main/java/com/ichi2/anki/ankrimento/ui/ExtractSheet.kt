@@ -51,6 +51,7 @@ internal class ExtractChoice(
     val noteType: String,
     val isTopic: Boolean,
     val priority: Double,
+    val deck: String = "",
 )
 
 /**
@@ -67,7 +68,7 @@ internal class ExtractChoice(
 internal fun ExtractSheet(
     draft: Ankrimento.ExtractDraft,
     onAdd: (ExtractChoice) -> Unit,
-    onLater: (ExtractChoice) -> Unit,
+    onLater: ((ExtractChoice) -> Unit)?,
     onKeep: () -> Unit,
     onDiscard: () -> Unit,
 ) {
@@ -76,6 +77,8 @@ internal fun ExtractSheet(
     var isTopic by remember(draft) { mutableStateOf(draft.isTopic) }
     var noteType by remember(draft) { mutableStateOf(draft.noteType) }
     var priority by remember(draft) { mutableFloatStateOf(draft.priority.toFloat().coerceIn(0f, 100f)) }
+    var deck by remember(draft) { mutableStateOf(draft.deck) }
+    val fromScratch = draft.decks.isNotEmpty()
 
     ModalBottomSheet(onDismissRequest = onKeep, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(
@@ -89,7 +92,10 @@ internal fun ExtractSheet(
                     .imePadding(),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Text(stringResource(R.string.ankrimento_extract_title), style = MaterialTheme.typography.titleLarge)
+            Text(
+                stringResource(if (fromScratch) R.string.ankrimento_new_card_title else R.string.ankrimento_extract_title),
+                style = MaterialTheme.typography.titleLarge,
+            )
 
             SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                 listOf(false to R.string.ankrimento_extract_item, true to R.string.ankrimento_extract_as_topic).forEachIndexed {
@@ -127,6 +133,7 @@ internal fun ExtractSheet(
             }
 
             NoteTypeChooser(draft.noteTypes, noteType) { noteType = it }
+            if (fromScratch) Chooser(R.string.ankrimento_new_card_deck, draft.decks, deck) { deck = it }
 
             Column {
                 Text(
@@ -138,7 +145,7 @@ internal fun ExtractSheet(
 
             fun choice(): ExtractChoice {
                 val fields = draft.fields.mapIndexed { index, html -> fieldHtml(html, originals[index], texts[index]) }
-                return ExtractChoice(fields, noteType, isTopic, priority.roundToInt().toDouble())
+                return ExtractChoice(fields, noteType, isTopic, priority.roundToInt().toDouble(), deck)
             }
             val ready = texts.firstOrNull()?.isNotBlank() == true
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -148,7 +155,12 @@ internal fun ExtractSheet(
             }
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Spacer(Modifier.weight(1f))
-                OutlinedButton(onClick = { onLater(choice()) }, enabled = ready) { Text(stringResource(R.string.ankrimento_extract_later)) }
+                onLater?.let { later ->
+                    OutlinedButton(
+                        onClick = { later(choice()) },
+                        enabled = ready,
+                    ) { Text(stringResource(R.string.ankrimento_extract_later)) }
+                }
                 Button(onClick = { onAdd(choice()) }, enabled = ready) { Text(stringResource(R.string.ankrimento_extract_add)) }
             }
         }
@@ -181,6 +193,15 @@ private fun NoteTypeChooser(
     noteTypes: List<String>,
     selected: String,
     onSelect: (String) -> Unit,
+) = Chooser(R.string.ankrimento_extract_note_type, noteTypes, selected, onSelect)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun Chooser(
+    label: Int,
+    noteTypes: List<String>,
+    selected: String,
+    onSelect: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
@@ -188,7 +209,7 @@ private fun NoteTypeChooser(
             value = selected,
             onValueChange = {},
             readOnly = true,
-            label = { Text(stringResource(R.string.ankrimento_extract_note_type)) },
+            label = { Text(stringResource(label)) },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
             modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
         )

@@ -986,6 +986,37 @@ object Ankrimento {
         )
     }
 
+    /** A card from scratch: upstream's note type and deck, the item/topic choice, priority 50. */
+    @WorkerThread
+    fun newCardDefaults(): ExtractDraft {
+        val draft = JSONObject(requireFacade().callAttr("new_card_defaults").toString())
+        val fields = draft.getJSONArray("fields")
+        val noteTypes = draft.getJSONArray("note_types")
+        val decks = draft.getJSONArray("decks")
+        return ExtractDraft(
+            fields = List(fields.length()) { fields.getString(it) },
+            noteTypes = List(noteTypes.length()) { noteTypes.getString(it) },
+            noteType = draft.getString("note_type"),
+            isTopic = draft.getString("kind") == "topic",
+            priority = draft.getDouble("priority"),
+            decks = List(decks.length()) { decks.getString(it) },
+            deck = draft.getString("deck"),
+        )
+    }
+
+    /** Adds a card from scratch with [priority] in [deck]; returns the note id. */
+    @WorkerThread
+    fun createCard(
+        fields: List<String>,
+        noteType: String,
+        isTopic: Boolean,
+        priority: Double,
+        deck: String,
+    ): Long =
+        requireFacade()
+            .callAttr("create_card", JSONArray(fields).toString(), noteType, if (isTopic) "topic" else "item", priority, deck)
+            .toLong()
+
     /**
      * Add the extract as a note linked to its source document, as desktop does
      * (priority, topic/item tags, knowledge tree, PDF source). Returns
@@ -1317,6 +1348,9 @@ object Ankrimento {
         val noteType: String,
         val isTopic: Boolean,
         val priority: Double,
+        /** For a card from scratch: the decks to choose from, and the one chosen first. */
+        val decks: List<String> = emptyList(),
+        val deck: String = "",
     )
 
     /**

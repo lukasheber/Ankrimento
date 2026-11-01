@@ -20,6 +20,9 @@
     <string name="ankrimento_epub_extract">Extract</string>
     <string name="ankrimento_epub_highlight">Highlight</string>
     <string name="ankrimento_epub_read_here">Mark read to here</string>
+    <string name="ankrimento_new_card">New card</string>
+    <string name="ankrimento_new_card_title">New card</string>
+    <string name="ankrimento_new_card_deck">Deck</string>
     <string name="ankrimento_extract_title">New card from extract</string>
     <string name="ankrimento_extract_front">Front</string>
     <string name="ankrimento_extract_back">Back</string>

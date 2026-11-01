@@ -176,6 +176,61 @@ def create(source_card_id: int, fields: list[str], note_type: str, kind: str, pr
     return note_id
 
 
+# ── Cards from scratch ───────────────────────────────────────────────────────
+#
+# Desktop's Add Card dock outside an extract: the card takes the dock's
+# priority (50 unless changed) and its item/topic tags, in the chosen deck,
+# with no source and no place in the knowledge tree. Upstream's
+# ``create_card_for_node`` is not used: it adds Incremento's metadata fields
+# to the note type, a schema change that forces a one-way full sync.
+
+_SCRATCH_PRIORITY = 50.0  # add_card_dock._DEFAULT_SCRATCH_PRIORITY
+
+
+def scratch_defaults() -> dict[str, Any]:
+    from incremento.backend.config_service import configured_extract_default_type
+    from incremento.backend.knowledge_tree import (
+        available_deck_names,
+        available_note_type_names,
+        default_deck_name,
+        default_note_type_name,
+    )
+
+    return {
+        "fields": ["", ""],
+        "note_types": sorted(available_note_type_names()),
+        "note_type": default_note_type_name(None),
+        "decks": sorted(available_deck_names()),
+        "deck": default_deck_name(None),
+        "kind": configured_extract_default_type(_config()),
+        "priority": _SCRATCH_PRIORITY,
+    }
+
+
+def create_card(fields: list[str], note_type: str, kind: str, priority: float, deck_name: str) -> int:
+    """Adds a card from scratch; returns the note id."""
+    from incremento.backend.priority_manager import set_priorities
+
+    rt = runtime.current()
+    col = rt.col
+    model = col.models.by_name(note_type)
+    if model is None:
+        raise ValueError(f"note type not found: {note_type}")
+    note = col.new_note(model)
+    for index, value in enumerate(fields[: len(note.fields)]):
+        note.fields[index] = value
+    if kind in {"topic", "item"}:
+        _apply_classification(note, kind)
+    deck_id = col.decks.id(str(deck_name or "").strip() or "Default")
+    changes = col.add_note(note, deck_id)
+    set_priorities(str(rt.addon_dir), rt.profile, [(int(cid), float(priority)) for cid in note.card_ids()])
+
+    from aqt.operations import on_op_finished
+
+    on_op_finished(mw, changes, None)
+    return int(note.id)
+
+
 # ── The queue ────────────────────────────────────────────────────────────────
 #
 # The phone's "Add later": each extract keeps its fields, choices and source

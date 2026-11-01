@@ -23,6 +23,7 @@ import android.os.Message
 import android.os.Parcelable
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
+import android.view.ActionMode
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -75,6 +76,7 @@ import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.Whiteboard.Companion.createInstance
 import com.ichi2.anki.Whiteboard.OnPaintColorChangeListener
 import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.ExtractActivity
 import com.ichi2.anki.ankrimento.IncrementoReaders
 import com.ichi2.anki.ankrimento.IncrementoReviewerMenu
 import com.ichi2.anki.ankrimento.showIncrementoAnswerButtons
@@ -1180,6 +1182,73 @@ open class Reviewer :
         startActivityWithAnimation(intent, animation)
     }
 
+    /**
+     * Desktop's extract from the reviewer card: Extract on the text selection's toolbar, the card
+     * as the source.
+     */
+    override fun selectionActionModeCallback(
+        callback: ActionMode.Callback,
+        type: Int,
+    ): ActionMode.Callback {
+        val cardId = currentCard?.id
+        if (type != ActionMode.TYPE_FLOATING || cardId == null || !Ankrimento.isStarted) return callback
+        return object : ActionMode.Callback2() {
+            override fun onCreateActionMode(
+                mode: ActionMode,
+                menu: Menu,
+            ): Boolean {
+                val created = callback.onCreateActionMode(mode, menu)
+                menu.add(Menu.NONE, EXTRACT_SELECTION_ID, 0, com.ichi2.anki.ankrimento.R.string.ankrimento_epub_extract)
+                return created
+            }
+
+            override fun onPrepareActionMode(
+                mode: ActionMode,
+                menu: Menu,
+            ) = callback.onPrepareActionMode(mode, menu)
+
+            override fun onActionItemClicked(
+                mode: ActionMode,
+                item: MenuItem,
+            ): Boolean {
+                if (item.itemId != EXTRACT_SELECTION_ID) return callback.onActionItemClicked(mode, item)
+                extractSelection(cardId)
+                mode.finish()
+                return true
+            }
+
+            override fun onDestroyActionMode(mode: ActionMode) = callback.onDestroyActionMode(mode)
+
+            override fun onGetContentRect(
+                mode: ActionMode,
+                view: View,
+                outRect: android.graphics.Rect,
+            ) {
+                if (callback is ActionMode.Callback2) {
+                    callback.onGetContentRect(
+                        mode,
+                        view,
+                        outRect,
+                    )
+                } else {
+                    super.onGetContentRect(mode, view, outRect)
+                }
+            }
+        }
+    }
+
+    /** The selected text becomes the extract's front, then the extract sheet opens. */
+    private fun extractSelection(cardId: CardId) {
+        webView?.evaluateJavascript("String(window.getSelection ? window.getSelection() : '')") { result ->
+            val text = kotlin.runCatching { org.json.JSONArray("[$result]").getString(0) }.getOrDefault("")
+            launchCatchingTask {
+                if (withCol { Ankrimento.webExtract(cardId, text) }) {
+                    startActivity(ExtractActivity.intent(this@Reviewer, cardId))
+                }
+            }
+        }
+    }
+
     // Related to https://github.com/ankidroid/Anki-Android/pull/11061#issuecomment-1107868455
     @NeedsTest("Order of operations needs Testing around Menu (Overflow) Icons and their colors.")
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -2154,6 +2223,8 @@ open class Reviewer :
     }
 
     companion object {
+        private const val EXTRACT_SELECTION_ID = 0x416b72 // "Akr": an id no other selection item uses
+
         /**
          * Bundle key for the deck id to review.
          */

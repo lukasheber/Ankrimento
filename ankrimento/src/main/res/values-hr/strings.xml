@@ -21,6 +21,9 @@
     <string name="ankrimento_epub_extract">Izdvoji</string>
     <string name="ankrimento_epub_highlight">Označi</string>
     <string name="ankrimento_epub_read_here">Označi pročitano do ovdje</string>
+    <string name="ankrimento_new_card">Nova karta</string>
+    <string name="ankrimento_new_card_title">Nova karta</string>
+    <string name="ankrimento_new_card_deck">Špil</string>
     <string name="ankrimento_extract_title">Nova karta iz izdvojenog</string>
     <string name="ankrimento_extract_front">Prednja strana</string>
     <string name="ankrimento_extract_back">Stražnja strana</string>

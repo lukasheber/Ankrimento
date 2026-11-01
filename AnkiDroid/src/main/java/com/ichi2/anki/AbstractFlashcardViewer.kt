@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.view.ActionMode
 import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.KeyEvent
@@ -1049,6 +1050,12 @@ abstract class AbstractFlashcardViewer :
         touchLayer!!.layoutParams = touchLayerContainerParams
     }
 
+    /** The card's text selection toolbar: [callback] as the WebView made it; a viewer may add its own actions. */
+    protected open fun selectionActionModeCallback(
+        callback: ActionMode.Callback,
+        type: Int,
+    ): ActionMode.Callback = callback
+
     protected open fun createWebView(): WebView {
         val resourceHandler = ViewerResourceHandler(this)
         val webView: WebView =
@@ -2018,6 +2025,11 @@ abstract class AbstractFlashcardViewer :
     internal inner class MyWebView(
         context: Context?,
     ) : TypeAnswerWebView(context!!) {
+        override fun startActionMode(
+            callback: ActionMode.Callback,
+            type: Int,
+        ): ActionMode? = super.startActionMode(selectionActionModeCallback(callback, type), type)
+
         override fun loadDataWithBaseURL(
             baseUrl: String?,
             data: String,

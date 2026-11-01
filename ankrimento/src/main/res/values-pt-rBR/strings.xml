@@ -21,6 +21,9 @@
     <string name="ankrimento_epub_extract">Extrair</string>
     <string name="ankrimento_epub_highlight">Destacar</string>
     <string name="ankrimento_epub_read_here">Marcar como lido até aqui</string>
+    <string name="ankrimento_new_card">Novo cartão</string>
+    <string name="ankrimento_new_card_title">Novo cartão</string>
+    <string name="ankrimento_new_card_deck">Baralho</string>
     <string name="ankrimento_extract_title">Novo cartão a partir do extrato</string>
     <string name="ankrimento_extract_front">Frente</string>
     <string name="ankrimento_extract_back">Verso</string>

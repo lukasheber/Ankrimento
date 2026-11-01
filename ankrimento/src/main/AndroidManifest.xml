@@ -57,6 +57,10 @@
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity
+            android:name="com.ichi2.anki.ankrimento.ExtractActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
             android:name="com.ichi2.anki.ankrimento.StatisticsActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />

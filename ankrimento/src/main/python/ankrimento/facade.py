@@ -940,6 +940,20 @@ def discard_extract(source_card_id: int) -> None:
     extract.discard(int(source_card_id))
 
 
+def new_card_defaults() -> str:
+    """What a card from scratch starts with: upstream's note type and deck, the item/topic choice, priority 50."""
+    from ankrimento import extract
+
+    return _dumps(extract.scratch_defaults())
+
+
+def create_card(fields_json: str, note_type: str, kind: str, priority: float, deck_name: str) -> int:
+    """Adds a card from scratch with a priority, as desktop's Add Card dock does outside an extract."""
+    from ankrimento import extract
+
+    return extract.create_card(list(json.loads(fields_json)), note_type, kind, float(priority), deck_name)
+
+
 def queue_extract(source_card_id: int, fields_json: str, note_type: str, kind: str, priority: float) -> int:
     """Sets the extract aside to add later ("Add later"); returns how many are waiting."""
     from ankrimento import extract

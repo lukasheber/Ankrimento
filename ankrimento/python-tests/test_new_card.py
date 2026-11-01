@@ -1,0 +1,33 @@
+"""A card made from scratch with a priority, as desktop's Add Card dock makes one outside an extract."""
+
+from __future__ import annotations
+
+import json
+
+from ankrimento import facade
+
+
+def test_defaults_are_upstreams(rt):
+    from incremento.backend.knowledge_tree import default_deck_name, default_note_type_name
+
+    defaults = json.loads(facade.new_card_defaults())
+    assert defaults["note_type"] == default_note_type_name(None)
+    assert defaults["deck"] == default_deck_name(None)
+    assert defaults["deck"] in defaults["decks"] and defaults["note_type"] in defaults["note_types"]
+    assert defaults["priority"] == 50.0  # desktop's scratch priority
+    assert defaults["fields"] == ["", ""]
+
+
+def test_a_card_from_scratch_gets_its_priority_kind_and_deck_but_no_tree_place(rt):
+    from incremento.backend.knowledge_tree import configured_item_tags
+    from incremento.backend.priority_manager import get_priority
+
+    note_id = facade.create_card(json.dumps(["Scratch question", "Scratch answer"]), "Basic", "item", 30.0, "Default")
+
+    note = rt.col.get_note(note_id)
+    card_id = note.card_ids()[0]
+    assert rt.col.decks.name(rt.col.get_card(card_id).did) == "Default"
+    assert get_priority(str(rt.addon_dir), rt.profile, card_id) == 30.0
+    assert set(configured_item_tags()) <= {tag.casefold() for tag in note.tags}
+    assert card_id not in {row["card_id"] for row in json.loads(facade.knowledge_tree())}
+    rt.col.remove_notes([note_id])

@@ -424,6 +424,10 @@ class IncrementoHubActivity : ComponentActivity() {
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_article) { askArticle = true }
                 AddOption(IncrementoIcons.Web, R.string.ankrimento_add_link) { askLink = true }
                 AddOption(IncrementoIcons.Edit, R.string.ankrimento_new_writing) { askWriting = true }
+                AddOption(IncrementoIcons.Add, R.string.ankrimento_new_card) {
+                    adding = false
+                    startActivity(ExtractActivity.intent(this@IncrementoHubActivity))
+                }
             }
         }
     }
