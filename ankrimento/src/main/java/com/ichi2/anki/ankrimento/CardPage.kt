@@ -2,6 +2,7 @@
 
 package com.ichi2.anki.ankrimento
 
+import android.content.Context
 import android.webkit.WebResourceResponse
 import androidx.annotation.WorkerThread
 import com.ichi2.anki.libanki.Card
@@ -22,8 +23,21 @@ object CardPage {
     /** Audio and video placeholders; readers show text only (see [canShow]). */
     private val AV_TAG = Regex("""\[anki:play:[^\]]*]""")
 
-    /** What only AnkiDroid's reviewer shows properly: typed answers, math, image occlusion. */
-    private val NEEDS_REVIEWER = listOf("[[type:", "\\(", "\\[", "image-occlusion", "<canvas")
+    /** What only AnkiDroid's reviewer shows properly: typed answers, image occlusion. */
+    private val NEEDS_REVIEWER = listOf("[[type:", "image-occlusion", "<canvas")
+
+    /** Anki's math delimiters. */
+    private val MATH = listOf("\\(", "\\[")
+
+    /**
+     * AnkiDroid's MathJax, as its card pages load it (`AndroidCardRenderContext`), served by
+     * [ankiAssets]. Its config leaves typesetting to the page, so the page typesets once loaded.
+     */
+    private const val MATHJAX =
+        "<link rel=\"stylesheet\" href=\"/_anki/mathjax.css\">" +
+            "<script src=\"/_anki/js/mathjax.js\"></script>" +
+            "<script src=\"/_anki/js/vendor/mathjax/tex-chtml-full.js\"></script>" +
+            "<script>MathJax.startup.promise.then(function () { return MathJax.typesetPromise(); });</script>"
 
     /** Desktop's `pycmd` for links in cards (a video extract's "▶ 0:19"), answered by [Links]. */
     private const val PYCMD =
@@ -55,7 +69,9 @@ object CardPage {
     ): String =
         "<!doctype html><html><head><meta charset=\"utf-8\">" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
-            "<style>$css</style><script>$PYCMD</script></head>" +
+            "<style>$css</style><script>$PYCMD</script>" +
+            (if (MATH.any { it in body }) MATHJAX else "") +
+            "</head>" +
             "<body class=\"card\"><div id=\"qa\">${body.replace(AV_TAG, "")}</div></body></html>"
 
     /**
@@ -72,6 +88,40 @@ object CardPage {
         val text = output.questionText + output.answerText
         return NEEDS_REVIEWER.none { it in text }
     }
+
+    /**
+     * AnkiDroid's own web assets under `/_anki/` (as its `ViewerResourceHandler` serves them):
+     * MathJax and its parts at `js/…`, its stylesheet at `mathjax.css`.
+     */
+    fun ankiAssets(context: Context): (String) -> WebResourceResponse? {
+        val assets = context.applicationContext.assets
+        return { path ->
+            val asset =
+                when {
+                    path == "mathjax.css" -> "mathjax/mathjax.css"
+                    path.startsWith("js/") && ".." !in path -> "backend/$path"
+                    else -> null
+                }
+            asset?.let {
+                runCatching {
+                    WebResourceResponse(
+                        URLConnection.guessContentTypeFromName(it) ?: mimeFor(it),
+                        null,
+                        assets.open(it),
+                    )
+                }.getOrNull()
+            }
+        }
+    }
+
+    private fun mimeFor(path: String): String =
+        when (path.substringAfterLast('.')) {
+            "js" -> "text/javascript"
+            "css" -> "text/css"
+            "woff" -> "font/woff"
+            "woff2" -> "font/woff2"
+            else -> "application/octet-stream"
+        }
 
     /** A file of the collection's media, never outside its folder. */
     fun mediaFile(

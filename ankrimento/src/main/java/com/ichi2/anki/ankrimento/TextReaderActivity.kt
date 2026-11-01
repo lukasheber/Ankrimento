@@ -87,6 +87,7 @@ class TextReaderActivity : ReaderActivity() {
             WebViewAssetLoader
                 .Builder()
                 .addPathHandler("/media/") { path -> CardPage.mediaFile(media, path) }
+                .addPathHandler("/_anki/", CardPage.ankiAssets(this))
                 .build()
         webView.webViewClient =
             object : WebViewClientCompat() {

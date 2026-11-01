@@ -78,6 +78,7 @@ class ItemReaderActivity : ReaderActivity() {
             WebViewAssetLoader
                 .Builder()
                 .addPathHandler("/media/") { path -> CardPage.mediaFile(media, path) }
+                .addPathHandler("/_anki/", CardPage.ankiAssets(this))
                 .build()
         return object : WebViewClientCompat() {
             override fun shouldInterceptRequest(
