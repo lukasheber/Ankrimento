@@ -48,3 +48,23 @@ def test_a_highlight_is_recoloured_noted_and_deleted_and_the_page_follows(rt, bo
     script = facade.epub_delete_highlight(book, "e3", 0)
     assert "incrementoReplaceEpubHighlights" in script
     assert _highlights(book) == []
+
+
+def test_a_highlight_takes_another_style_here_or_on_the_page(rt, book):
+    _highlight(book, "e4", 0, "Spaced repetition")
+    assert _highlights(book)[0]["style"] == "highlight"
+
+    assert "incrementoUpdateEpubHighlightStyle" in facade.epub_highlight_style(book, "e4", "strikeout")
+    assert _highlights(book)[0]["style"] == "strikeout"
+
+    # The page's own style menu reports the change, as desktop's dock receives it.
+    facade.epub_message(book, 0, "incremento_epub_hl_style:" + json.dumps({"cardId": book, "id": "e4", "style": "squiggly"}))
+    assert _highlights(book)[0]["style"] == "squiggly"
+
+
+def test_a_colour_chosen_on_the_page_is_kept(rt, book):
+    """The page's own colour menu reports the change; desktop's dock saves it, and so must the phone."""
+    _highlight(book, "e5", 0, "Spaced repetition")
+
+    facade.epub_message(book, 0, "incremento_epub_hl_color:" + json.dumps({"cardId": book, "id": "e5", "color": "blue"}))
+    assert _highlights(book)[0]["color"] == "blue"

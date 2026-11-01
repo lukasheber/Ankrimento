@@ -300,6 +300,13 @@
     <string name="ankrimento_marks_no_highlights">还没有高亮。选择文本后点“高亮”，或将其摘录。</string>
     <string name="ankrimento_marks_delete_bookmark">删除书签</string>
     <string name="ankrimento_marks_edit_highlight">颜色、笔记或删除</string>
+    <string name="ankrimento_style_highlight">高亮</string>
+    <string name="ankrimento_style_underline">下划线</string>
+    <string name="ankrimento_style_squiggly">波浪线</string>
+    <string name="ankrimento_style_dashed">虚线</string>
+    <string name="ankrimento_style_dotted">点线</string>
+    <string name="ankrimento_style_strikeout">删除线</string>
+    <string name="ankrimento_marks_comment">评论</string>
     <string name="ankrimento_marks_note">笔记</string>
     <string name="ankrimento_marks_delete_highlight">删除高亮</string>
     <!-- Find in a PDF -->

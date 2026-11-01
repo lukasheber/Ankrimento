@@ -527,6 +527,7 @@ def marks(card_id: int) -> dict:
             "text": str(h.get("text") or ""),
             "color": str(h.get("color") or "yellow"),
             "note": str(h.get("note") or ""),
+            "style": _annotation_style(h) or "highlight",
         }
         for h in _highlights_payload(card_id)
         if h.get("color") != "snapshot"
@@ -545,6 +546,49 @@ def add_bookmark(card_id: int, page: int) -> str:
 def delete_bookmark(card_id: int, bookmark_id: str) -> str:
     """Mirrors the _MSG_BOOKMARK_DELETE branch."""
     return "".join(handle(card_id, MSG_BOOKMARK_DELETE + json.dumps({"cardId": int(card_id), "id": str(bookmark_id)})))
+
+
+_STYLE_KINDS = {
+    "highlight": "Highlight", "underline": "Underline", "squiggly": "Squiggly",
+    "dashed": "Underline", "dotted": "Underline", "strikeout": "StrikeOut",
+}
+
+
+def _annotation_style(mark: dict) -> str | None:
+    """Mirrors the viewer's ``annotationStyle``: None for marks that take no style (snapshots, other native kinds)."""
+    if mark.get("color") == "snapshot":
+        return None
+    native = mark.get("pdf_annotation") or {}
+    kind = native.get("kind")
+    if kind and kind not in _STYLE_KINDS.values():
+        return None
+    style = native.get("incremento_style")
+    if style in _STYLE_KINDS and _STYLE_KINDS[style] == kind:
+        return style
+    if kind:
+        return next(key for key, value in _STYLE_KINDS.items() if value == kind)
+    return mark.get("style") if mark.get("style") in _STYLE_KINDS else "highlight"
+
+
+def highlight_style(card_id: int, highlight_id: str, style: str) -> str:
+    """Mirrors the viewer's ``restyleHighlight``: upstream stores the style with its native annotation kind."""
+    from incremento.backend import pdf_highlights
+
+    addon_dir, profile = _context()
+    original = next((h for h in pdf_highlights.load_highlights(addon_dir, profile, int(card_id)) if h["id"] == highlight_id), None)
+    if original is None or style not in _STYLE_KINDS or _annotation_style(original) is None:
+        return ""
+    pdf_highlights.update_highlight(addon_dir, profile, int(card_id), {**original, "style": style})
+    return _highlights_script(card_id)
+
+
+def bookmark_comment(card_id: int, bookmark_id: str, comment: str) -> str:
+    """A bookmark's comment, kept with upstream's reader bookmarks (desktop edits them on videos)."""
+    from incremento.backend.reader_bookmarks import update_reader_bookmark_comment
+
+    addon_dir, profile = _context()
+    update_reader_bookmark_comment(addon_dir, profile, int(card_id), "pdf", str(bookmark_id), str(comment or ""))
+    return _js_call("incrementoReceivePdfBookmarks", _bookmarks_payload(card_id))
 
 
 def _highlights_script(card_id: int) -> str:

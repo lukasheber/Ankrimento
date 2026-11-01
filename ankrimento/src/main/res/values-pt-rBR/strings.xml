@@ -318,6 +318,13 @@
     <string name="ankrimento_marks_no_highlights">Ainda não há destaques. Selecione um texto e escolha Destacar, ou extraia-o.</string>
     <string name="ankrimento_marks_delete_bookmark">Excluir marcador</string>
     <string name="ankrimento_marks_edit_highlight">Cor, nota ou excluir</string>
+    <string name="ankrimento_style_highlight">Destaque</string>
+    <string name="ankrimento_style_underline">Sublinhado</string>
+    <string name="ankrimento_style_squiggly">Ondulado</string>
+    <string name="ankrimento_style_dashed">Tracejado</string>
+    <string name="ankrimento_style_dotted">Pontilhado</string>
+    <string name="ankrimento_style_strikeout">Tachado</string>
+    <string name="ankrimento_marks_comment">Comentário</string>
     <string name="ankrimento_marks_note">Nota</string>
     <string name="ankrimento_marks_delete_highlight">Excluir destaque</string>
     <!-- Find in a PDF -->

@@ -759,6 +759,27 @@ def epub_highlight_color(card_id: int, highlight_id: str, color: str) -> str:
     return epub_reader.highlight_color(card_id, highlight_id, color)
 
 
+def epub_highlight_style(card_id: int, highlight_id: str, style: str) -> str:
+    """Restyles a highlight (underline, strike-out…); returns the script that updates the page."""
+    from ankrimento import epub_reader
+
+    return epub_reader.highlight_style(card_id, highlight_id, style)
+
+
+def pdf_highlight_style(card_id: int, highlight_id: str, style: str) -> str:
+    """Restyles a PDF highlight as the viewer does; returns the script that redraws them."""
+    from ankrimento import pdf_reader
+
+    return pdf_reader.highlight_style(card_id, highlight_id, style)
+
+
+def pdf_bookmark_comment(card_id: int, bookmark_id: str, comment: str) -> str:
+    """Saves a PDF bookmark's comment; returns the script that updates the viewer's bookmarks."""
+    from ankrimento import pdf_reader
+
+    return pdf_reader.bookmark_comment(card_id, bookmark_id, comment)
+
+
 def epub_highlight_note(card_id: int, highlight_id: str, note: str) -> str:
     from ankrimento import epub_reader
 

@@ -81,3 +81,23 @@ def test_a_recoloured_highlight_still_shows_in_the_viewer(rt, pdf):
     shown = next(h for h in payload if h["id"] == "h4")
     assert shown["color"] == "blue"
     assert "kind" in shown.get("pdf_annotation", {"kind": "none"})
+
+
+def test_a_highlight_takes_another_style_and_the_viewer_draws_it(rt, pdf):
+    _highlight(pdf, "s1", 1, "underlined words")
+    assert _marks(pdf)["highlights"][0]["style"] == "highlight"
+
+    script = facade.pdf_highlight_style(pdf, "s1", "underline")
+    assert "incrementoReceivePdfHighlights" in script
+    assert _marks(pdf)["highlights"][0]["style"] == "underline"
+    # The viewer draws the style from the native annotation kind upstream stores with it.
+    drawn = next(h for h in pdf_reader._highlights_payload(pdf) if h["id"] == "s1")
+    assert drawn["pdf_annotation"]["kind"] == "Underline"
+
+
+def test_a_bookmark_keeps_a_comment(rt, pdf):
+    facade.pdf_add_bookmark(pdf, 2)
+    bookmark = _marks(pdf)["bookmarks"][0]
+
+    assert "incrementoReceivePdfBookmarks" in facade.pdf_bookmark_comment(pdf, bookmark["id"], "Come back for the proof")
+    assert _marks(pdf)["bookmarks"][0]["comment"] == "Come back for the proof"

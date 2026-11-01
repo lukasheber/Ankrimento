@@ -35,6 +35,8 @@ MSG_MARK_READ = "incremento_epub_mark_read:"
 MSG_SECTION_NAV = "incremento_epub_section_nav:"
 MSG_PAGE_JUMP = "incremento_epub_page_jump:"
 MSG_OPEN_LINK = "incremento_epub_open_link:"
+MSG_HL_COLOR = "incremento_epub_hl_color:"
+MSG_HL_STYLE = "incremento_epub_hl_style:"
 
 _ADDON_PKG = "incremento"
 _SCRIPT_CONSTANTS = ("_EPUB_HIGHLIGHT_COLORS", "_MAX_EPUB_SELECTION_CHARS", "_PYCMD_BRIDGE")
@@ -254,6 +256,15 @@ def handle(card_id: int, section_index: int, msg: str) -> dict[str, Any]:
         data = payload(MSG_HL_UPDATE)
         if for_this_card(data):
             epub_highlights.update_highlight(addon_dir, profile, card_id, data["highlight"])
+    elif msg.startswith((MSG_HL_COLOR, MSG_HL_STYLE)):
+        # Mirrors _set_current_epub_mark_appearance: a colour or style chosen on the page's own menu.
+        is_color = msg.startswith(MSG_HL_COLOR)
+        data = payload(MSG_HL_COLOR if is_color else MSG_HL_STYLE)
+        highlight_id = str(data.get("id") or "")
+        on_page = {row["id"] for row in epub_highlights.load_highlights(addon_dir, profile, card_id, section_index=section_index)}
+        if for_this_card(data) and highlight_id in on_page:
+            update = epub_highlights.update_highlight_color if is_color else epub_highlights.update_highlight_style
+            update(addon_dir, profile, card_id, highlight_id, data.get("color" if is_color else "style"))
     elif msg.startswith(MSG_HL_DEL):
         data = payload(MSG_HL_DEL)
         if for_this_card(data):
@@ -445,6 +456,7 @@ def marks(card_id: int) -> dict[str, Any]:
                 "text": str(h.get("text") or ""),
                 "color": str(h.get("color") or "yellow"),
                 "note": str(h.get("note") or ""),
+                "style": str(h.get("style") or "highlight"),
             }
             for h in load_highlights(addon_dir, profile, int(card_id))
         ]
@@ -458,6 +470,15 @@ def highlight_color(card_id: int, highlight_id: str, color: str) -> str:
     if not update_highlight_color(addon_dir, profile, int(card_id), str(highlight_id), str(color)):
         return ""
     return _js_call("incrementoUpdateEpubHighlightColor", str(highlight_id), str(color))
+
+
+def highlight_style(card_id: int, highlight_id: str, style: str) -> str:
+    from incremento.backend.epub_highlights import update_highlight_style
+
+    addon_dir, profile = _context()
+    if not update_highlight_style(addon_dir, profile, int(card_id), str(highlight_id), str(style)):
+        return ""
+    return _js_call("incrementoUpdateEpubHighlightStyle", str(highlight_id), str(style))
 
 
 def highlight_note(card_id: int, highlight_id: str, note: str) -> str:

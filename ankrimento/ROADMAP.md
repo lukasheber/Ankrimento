@@ -81,7 +81,7 @@ Mobile principles that guide every item:
 | ✅ | Tap to hide the bars | |
 | ✅ | Find in document | A search sheet with the matching pages and excerpts; a match opens with its words highlighted, then a previous/next bar. Upstream's text index is filled by the viewer's pdf.js on the device (desktop uses PyMuPDF), through upstream's indexer, so Search ALL finds it too |
 | ✅ | Contents (outline) sheet: nested entries with page numbers, the current part marked | Through the viewer's own contents jump |
-| 🟡 | Bookmarks, annotations, highlight notes, colours | Bookmarks and highlights sheet (⋮): bookmark the page, open or delete bookmarks; highlights by page with their colour (upstream's eight) and note, each opened, recoloured, noted or deleted; Highlight on the selection menu. Not yet: annotation styles (underline, strike-through) and bookmark comments |
+| ✅ | Bookmarks, annotations, highlight notes, colours | Bookmarks and highlights sheet (⋮): bookmark the page, open or delete bookmarks; highlights by page with their colour (upstream's eight) and note, each opened, recoloured, noted or deleted; Highlight on the selection menu; upstream's six annotation styles (highlight, underline, squiggly, dashed, dotted, strikethrough) in each highlight's dialog, drawn by the viewer; a comment on each bookmark |
 | ⬜ | Review all cards attached to the document [6] | |
 | ⬜ | Cross-references and page links [6] | |
 | ⬜ | DjVu documents [6] | |
@@ -105,7 +105,7 @@ Mobile principles that guide every item:
 | ✅ | Swipe sideways to move one screen on or back (a couple of lines stay in view); it never changes chapter | |
 | ✅ | Search in book | Find in book: chapters matching (upstream's text index) with excerpts; a result opens its chapter with the words found and selected by the page script, as desktop does, then previous/next. Search ALL's EPUB results open the same way |
 | ✅ | Links and footnotes inside the book | Links follow on a tap (desktop's links toggle, always on), resolved by upstream's own resolver: a footnote or other short passage shows in a sheet over the page with Go to note; other links open their chapter at the anchor; Back to where you were (chip or Back) returns to the exact place. Web links open in the browser; unsafe ones are refused with upstream's message |
-| ✅ | Highlights list and highlight notes | Highlights (⋮): the book's highlights by chapter with colour and note; one opens its chapter with its words found, or is recoloured, noted or deleted, the page following through its own hooks |
+| ✅ | Highlights list and highlight notes | Highlights (⋮): the book's highlights by chapter with colour, style and note; one opens its chapter with its words found, or is recoloured, restyled, noted or deleted, the page following through its own hooks. A colour or style chosen on the page's own menu is kept, as desktop keeps it |
 
 ### Web
 
@@ -227,7 +227,7 @@ Mobile principles that guide every item:
 16. EPUB paged mode.
 17. Images in imported web articles.
 18. ~~Automatic backups~~ (built; the folder picker step still to try on a device).
-19. PDF annotation styles and bookmark comments.
+19. ~~PDF annotation styles and bookmark comments~~ (done; EPUB styles too).
 20. Advanced options: phase order, tag groups and locks.
 21. Items with sound, typed answers, math and image occlusion in the learning screen.
 

@@ -318,6 +318,13 @@
     <string name="ankrimento_marks_no_highlights">Još nema istaknutih dijelova. Odaberite tekst i odaberite Označi ili ga izdvojite.</string>
     <string name="ankrimento_marks_delete_bookmark">Izbriši oznaku mjesta</string>
     <string name="ankrimento_marks_edit_highlight">Boja, bilješka ili brisanje</string>
+    <string name="ankrimento_style_highlight">Isticanje</string>
+    <string name="ankrimento_style_underline">Podcrtano</string>
+    <string name="ankrimento_style_squiggly">Valovito</string>
+    <string name="ankrimento_style_dashed">Isprekidano</string>
+    <string name="ankrimento_style_dotted">Točkasto</string>
+    <string name="ankrimento_style_strikeout">Precrtano</string>
+    <string name="ankrimento_marks_comment">Komentar</string>
     <string name="ankrimento_marks_note">Bilješka</string>
     <string name="ankrimento_marks_delete_highlight">Izbriši istaknuti dio</string>
     <!-- Find in a PDF -->

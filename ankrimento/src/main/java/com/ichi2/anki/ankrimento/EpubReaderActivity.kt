@@ -261,6 +261,7 @@ class EpubReaderActivity : ReaderActivity() {
                             h.color,
                             h.note,
                             h.place.ifBlank { getString(R.string.ankrimento_epub_chapter_short, h.page + 1) },
+                            h.style,
                         )
                     }
                 sheet = {
@@ -279,6 +280,7 @@ class EpubReaderActivity : ReaderActivity() {
                         onDeleteBookmark = {},
                         onHighlightColor = { id, color -> changeHighlights { Ankrimento.epubHighlightColor(cardId, id, color) } },
                         onHighlightNote = { id, note -> changeHighlights { Ankrimento.epubHighlightNote(cardId, id, note) } },
+                        onHighlightStyle = { id, style -> changeHighlights { Ankrimento.epubHighlightStyle(cardId, id, style) } },
                         onDeleteHighlight = { id ->
                             val shown = section?.index ?: 0
                             changeHighlights { Ankrimento.epubDeleteHighlight(cardId, id, shown) }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -19,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -62,7 +64,20 @@ class MarkHighlight(
     val color: String,
     val note: String,
     val place: String = "",
+    /** Upstream's annotation style: highlight, underline, squiggly, dashed, dotted or strikeout. */
+    val style: String = "highlight",
 )
+
+/** Upstream's annotation styles, with their names. */
+internal val HIGHLIGHT_STYLES =
+    listOf(
+        "highlight" to R.string.ankrimento_style_highlight,
+        "underline" to R.string.ankrimento_style_underline,
+        "squiggly" to R.string.ankrimento_style_squiggly,
+        "dashed" to R.string.ankrimento_style_dashed,
+        "dotted" to R.string.ankrimento_style_dotted,
+        "strikeout" to R.string.ankrimento_style_strikeout,
+    )
 
 /** Upstream's highlight colours, in its order. */
 internal val HIGHLIGHT_COLORS =
@@ -96,9 +111,12 @@ internal fun MarksSheet(
     onHighlightNote: (String, String) -> Unit,
     onDeleteHighlight: (String) -> Unit,
     onDismiss: () -> Unit,
+    onHighlightStyle: (String, String) -> Unit = { _, _ -> },
+    onBookmarkComment: (String, String) -> Unit = { _, _ -> },
 ) {
     var tab by rememberSaveable { mutableIntStateOf(if (bookmarks == null) 1 else 0) }
     var chosen by remember { mutableStateOf<String?>(null) }
+    var commenting by remember { mutableStateOf<MarkBookmark?>(null) }
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(Modifier.navigationBarsPadding().padding(bottom = 8.dp)) {
             if (bookmarks != null) {
@@ -137,11 +155,16 @@ internal fun MarksSheet(
                                 )
                             },
                             trailingContent = {
-                                IconButton(onClick = { onDeleteBookmark(bookmark.id) }) {
-                                    Icon(
-                                        IncrementoIcons.Delete,
-                                        contentDescription = stringResource(R.string.ankrimento_marks_delete_bookmark),
-                                    )
+                                Row {
+                                    IconButton(onClick = { commenting = bookmark }) {
+                                        Icon(IncrementoIcons.Edit, contentDescription = stringResource(R.string.ankrimento_marks_comment))
+                                    }
+                                    IconButton(onClick = { onDeleteBookmark(bookmark.id) }) {
+                                        Icon(
+                                            IncrementoIcons.Delete,
+                                            contentDescription = stringResource(R.string.ankrimento_marks_delete_bookmark),
+                                        )
+                                    }
                                 }
                             },
                             modifier = Modifier.clickable { onOpenPage(bookmark.page) },
@@ -183,12 +206,35 @@ internal fun MarksSheet(
         HighlightDialog(
             highlight,
             onColor = { onHighlightColor(highlight.id, it) },
+            onStyle = { onHighlightStyle(highlight.id, it) },
             onNote = { onHighlightNote(highlight.id, it) },
             onDelete = {
                 chosen = null
                 onDeleteHighlight(highlight.id)
             },
             onDismiss = { chosen = null },
+        )
+    }
+    commenting?.let { bookmark ->
+        var comment by remember(bookmark.id) { mutableStateOf(bookmark.comment) }
+        AlertDialog(
+            onDismissRequest = { commenting = null },
+            title = { Text(stringResource(R.string.ankrimento_page_short, bookmark.page)) },
+            text = {
+                OutlinedTextField(
+                    value = comment,
+                    onValueChange = { comment = it },
+                    label = { Text(stringResource(R.string.ankrimento_marks_comment)) },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    commenting = null
+                    if (comment != bookmark.comment) onBookmarkComment(bookmark.id, comment)
+                }) { Text(stringResource(android.R.string.ok)) }
+            },
+            dismissButton = { TextButton(onClick = { commenting = null }) { Text(stringResource(android.R.string.cancel)) } },
         )
     }
 }
@@ -219,10 +265,12 @@ private fun Swatch(
 }
 
 /** A highlight's colour, note and deletion, as desktop's highlight menu offers them. */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 private fun HighlightDialog(
     highlight: MarkHighlight,
     onColor: (String) -> Unit,
+    onStyle: (String) -> Unit,
     onNote: (String) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit,
@@ -237,6 +285,11 @@ private fun HighlightDialog(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     HIGHLIGHT_COLORS.forEach { (name, color) ->
                         Swatch(color, selected = highlight.color == name, size = 28, modifier = Modifier.clickable { onColor(name) })
+                    }
+                }
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    HIGHLIGHT_STYLES.forEach { (name, label) ->
+                        FilterChip(selected = highlight.style == name, onClick = { onStyle(name) }, label = { Text(stringResource(label)) })
                     }
                 }
                 OutlinedTextField(

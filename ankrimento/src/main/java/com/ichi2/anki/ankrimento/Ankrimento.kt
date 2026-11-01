@@ -376,7 +376,14 @@ object Ankrimento {
             },
             List(highlights.length()) { index ->
                 val h = highlights.getJSONObject(index)
-                MarkHighlight(h.getString("id"), h.getInt("page"), h.optString("text"), h.optString("color"), h.optString("note"))
+                MarkHighlight(
+                    h.getString("id"),
+                    h.getInt("page"),
+                    h.optString("text"),
+                    h.optString("color"),
+                    h.optString("note"),
+                    style = h.optString("style", "highlight"),
+                )
             },
         )
     }
@@ -680,6 +687,7 @@ object Ankrimento {
                 h.optString("color"),
                 h.optString("note"),
                 h.optString("title"),
+                h.optString("style", "highlight"),
             )
         }
     }
@@ -691,6 +699,27 @@ object Ankrimento {
         highlightId: String,
         color: String,
     ): String = requireFacade().callAttr("epub_highlight_color", cardId, highlightId, color).toString()
+
+    @WorkerThread
+    fun epubHighlightStyle(
+        cardId: Long,
+        highlightId: String,
+        style: String,
+    ): String = requireFacade().callAttr("epub_highlight_style", cardId, highlightId, style).toString()
+
+    @WorkerThread
+    fun pdfHighlightStyle(
+        cardId: Long,
+        highlightId: String,
+        style: String,
+    ): String = requireFacade().callAttr("pdf_highlight_style", cardId, highlightId, style).toString()
+
+    @WorkerThread
+    fun pdfBookmarkComment(
+        cardId: Long,
+        bookmarkId: String,
+        comment: String,
+    ): String = requireFacade().callAttr("pdf_bookmark_comment", cardId, bookmarkId, comment).toString()
 
     @WorkerThread
     fun epubHighlightNote(

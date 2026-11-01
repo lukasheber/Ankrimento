@@ -168,6 +168,8 @@ class PdfReaderActivity : ReaderActivity() {
                         onDeleteBookmark = { id -> changeMarks { Ankrimento.pdfDeleteBookmark(cardId, id) } },
                         onHighlightColor = { id, color -> changeMarks { Ankrimento.pdfHighlightColor(cardId, id, color) } },
                         onHighlightNote = { id, note -> changeMarks { Ankrimento.pdfHighlightNote(cardId, id, note) } },
+                        onHighlightStyle = { id, style -> changeMarks { Ankrimento.pdfHighlightStyle(cardId, id, style) } },
+                        onBookmarkComment = { id, comment -> changeMarks { Ankrimento.pdfBookmarkComment(cardId, id, comment) } },
                         onDeleteHighlight = { id -> changeMarks { Ankrimento.pdfDeleteHighlight(cardId, id) } },
                         onDismiss = { sheet = null },
                     )
