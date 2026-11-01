@@ -116,7 +116,7 @@ Mobile principles that guide every item:
 | ✅ | **Import a web page as an article**: clean text read in the EPUB reader (Aa sheet, contents, progress, extracts), from the Library's Add or the share sheet | Upstream's page-to-Markdown fetch and Markdown document import, so desktop reads it too |
 | ✅ | Images in imported articles | Upstream's converter turns images into links; the phone downloads each one beside the article first (through upstream's public-network fetch, within its import limits), so upstream's Markdown import stores the pictures with the document, for desktop too. One that can't be fetched stays upstream's link. Checked on the tablet with a Wikipedia article |
 | ⏸ | Webpage to PDF [5] | Deferred in favour of the HTML / plain text import above |
-| ⬜ | Web extract anchors (jump back to the extract's place) | |
+| ✅ | Web extract anchors (jump back to the extract's place) | A web extract carries desktop's link back to the page it came from (its URL, unless the extract source links setting turns web links off); tapping it opens the web topic at that page. Checked on the tablet |
 
 ### Video and audio [7, 7A]
 
@@ -128,7 +128,7 @@ Mobile principles that guide every item:
 | ✅ | Extract at the current timestamp: the front links back to that moment, as desktop's "Add Card at this point" | |
 | 🟡 | Native controls: Back 10 seconds | Play/pause, speed and seek still come from the player itself |
 | ✅ | Titles for shared links: YouTube's title, or the page's own title | Looked up when a link comes without one; the URL stays if that fails |
-| ⬜ | Open a video extract's link at its moment, on mobile | Desktop opens it; the link is upstream's pycmd |
+| ✅ | Open a video extract's link at its moment, on mobile | Every extract's link back (web page, PDF page with its excerpt found, EPUB chapter, video moment) opens its source, from cards in the readers and in AnkiDroid's reviewer, which gets desktop's pycmd for them |
 | ⬜ | Video bookmarks | |
 | ⬜ | Captions (target/reference) | |
 | ➖ | Create Mobile Clip, Download Local Copy | Need FFmpeg/yt-dlp; desktop makes clips that sync as media |
@@ -236,8 +236,8 @@ Daily reading and extracting:
 
 22. Faster first launch (Python cold start about 20 s).
 23. ~~Extract from the card shown in AnkiDroid's reviewer; add a card from scratch with a priority~~ (done; the new study screen's Extract remains).
-24. Web extract anchors (jump from an extract back to its place in the page).
-25. Open a video extract's link at its moment, on the phone.
+24. ~~Web extract anchors~~ (done).
+25. ~~Open an extract's link back to its source (video, web, PDF, EPUB), in the readers and the reviewer~~ (done).
 26. Review all cards made from a document.
 27. Items with sound, typed answers or image occlusion in the learning screen.
 

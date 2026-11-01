@@ -725,10 +725,11 @@ def web_message(card_id: int, message: str) -> None:
     web_reader.handle(int(card_id), message)
 
 
-def web_extract(card_id: int, text: str) -> bool:
+def web_extract(card_id: int, text: str, url: str = "") -> bool:
+    """Starts an extract from selected text; with the page's ``url`` it links back to it, as desktop's does."""
     from ankrimento import web_reader
 
-    return web_reader.extract(int(card_id), text)
+    return web_reader.extract(int(card_id), text, url)
 
 
 def epub_open(card_id: int, section_index: int = -1) -> str:

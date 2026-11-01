@@ -89,13 +89,54 @@ def handle(card_id: int, msg: str) -> None:
         set_web_scroll_position(addon_dir, profile, int(card_id), url, ratio)
 
 
-def extract(card_id: int, text: str) -> bool:
-    """Start an extract from selected page text; False when nothing is selected."""
+def extract(card_id: int, text: str, url: str = "") -> bool:
+    """Start an extract from selected page text; False when nothing is selected.
+
+    With the page's ``url``, the extract links back to it as desktop's does (``WebController.citation``,
+    added by ``fill_dock_field`` unless the extract source links setting turns web links off).
+    """
     from ankrimento import extract as extracts
 
     text = str(text or "").strip()
     if not text:
         return False
-    extracts.add_to_draft(int(card_id), 0, {"text": text}, page=0, highlight_id="")
+    citation = _citation(int(card_id), str(url or "").strip()) if _source_links_on() else ""
+    if citation:
+        html = extracts.field_html({"text": text})
+        extracts.add_html_to_draft(int(card_id), 0, html + "<br>" + citation, page=0)
+    else:
+        extracts.add_to_draft(int(card_id), 0, {"text": text}, page=0, highlight_id="")
     mw.notify_host("extract_draft", card_id=int(card_id))
     return True
+
+
+def _source_links_on() -> bool:
+    """Mirrors ``should_add_extract_source_link("web")`` in frontend/add_card_dock.py."""
+    from incremento.backend.config_service import load_addon_config
+
+    raw = load_addon_config(mw.addonManager, "incremento").get("extract_source_links", True)
+    if isinstance(raw, bool):
+        return raw
+    return bool(raw.get("web", True)) if isinstance(raw, dict) else True
+
+
+def _citation(card_id: int, url: str) -> str:
+    """Mirrors ``WebController.citation`` and ``_source_url_label`` in frontend/web_dock.py."""
+    from html import escape
+    from urllib.parse import quote, urlparse
+
+    if not url or not card_id:
+        return ""
+    try:
+        parsed = urlparse(url)
+        label = f"{parsed.netloc}{parsed.path or ''}" + (f"#{parsed.fragment}" if parsed.fragment else "")
+    except ValueError:
+        label = url
+    label = label.strip() or url
+    label = label if len(label) <= 72 else label[:69] + "..."
+    command = f"incremento_open_web:{card_id}:{quote(url, safe='')}"
+    return (
+        f"<a onclick=\"pycmd('{command}'); return false;\" "
+        f"style=\"cursor:pointer; color:#4a90d9; text-decoration:none;\">"
+        f"{escape(label, quote=False)}</a>"
+    )

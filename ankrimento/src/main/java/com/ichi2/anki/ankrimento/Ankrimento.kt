@@ -950,7 +950,8 @@ object Ankrimento {
     fun webExtract(
         cardId: Long,
         text: String,
-    ): Boolean = requireFacade().callAttr("web_extract", cardId, text).toBoolean()
+        url: String = "",
+    ): Boolean = requireFacade().callAttr("web_extract", cardId, text, url).toBoolean()
 
     /** The managed PDF file of [cardId], or "" when the file is missing. */
     @WorkerThread

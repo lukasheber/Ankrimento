@@ -45,21 +45,15 @@ object CardPage {
 
     /**
      * What a card's links ask through `pycmd`, as desktop's reviewer answers it:
-     * a video extract's link opens the video at its moment.
+     * an extract's link opens its source there ([SourceLinks]).
      */
     class Links(
         private val activity: android.app.Activity,
     ) {
         @android.webkit.JavascriptInterface
         fun pycmd(message: String) {
-            val match = OPEN_VIDEO.matchEntire(message) ?: return
-            val cardId = match.groupValues[1].toLong()
-            val seconds = match.groupValues[2].toDouble()
-            activity.runOnUiThread { activity.startActivity(VideoReaderActivity.intentAt(activity, cardId, seconds)) }
-        }
-
-        private companion object {
-            val OPEN_VIDEO = Regex("""incremento_open_video:(\d+):(\d+(?:\.\d+)?)""")
+            val intent = SourceLinks.intentFor(activity, message) ?: return
+            activity.runOnUiThread { activity.startActivity(intent) }
         }
     }
 

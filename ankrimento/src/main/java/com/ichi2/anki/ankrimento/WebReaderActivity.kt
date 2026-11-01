@@ -97,7 +97,9 @@ class WebReaderActivity : ReaderActivity() {
         lifecycleScope.launch {
             val (url, bridgeNonce) = withCol { Ankrimento.webOpen(cardId) }
             nonce = bridgeNonce
-            webView.loadUrl(url)
+            // A web extract's link opens the page it came from, as desktop's open_web_location.
+            val asked = intent.getStringExtra(EXTRA_URL)?.takeIf { it.startsWith("https://") || it.startsWith("http://") }
+            webView.loadUrl(asked ?: url)
         }
         Ankrimento.readerScope.launch {
             for (message in messages) {
@@ -115,8 +117,10 @@ class WebReaderActivity : ReaderActivity() {
     }
 
     private fun extract(text: String) {
+        // The page's URL (read here: WebView only answers on the main thread): the extract links back to it, as desktop's do.
+        val url = webView.url.orEmpty()
         lifecycleScope.launch {
-            val started = withCol { Ankrimento.webExtract(cardId, text) }
+            val started = withCol { Ankrimento.webExtract(cardId, text, url) }
             if (!started) Toast.makeText(this@WebReaderActivity, R.string.ankrimento_web_select_first, Toast.LENGTH_SHORT).show()
         }
     }
@@ -136,9 +140,18 @@ class WebReaderActivity : ReaderActivity() {
         /** Upstream's web dock _PYCMD_BRIDGE; each message is prefix + nonce + ":" + message. */
         private const val MESSAGE_PREFIX = "__incremento_webdock_pycmd__:"
 
+        const val EXTRA_URL = "url"
+
         fun intent(
             context: Context,
             cardId: Long,
         ): Intent = ReaderActivity.intent(context, "web", cardId, session = false)!!
+
+        /** The web topic opened at [url] (a page it led to), instead of where reading stopped. */
+        fun intentAt(
+            context: Context,
+            cardId: Long,
+            url: String,
+        ): Intent = intent(context, cardId).putExtra(EXTRA_URL, url)
     }
 }

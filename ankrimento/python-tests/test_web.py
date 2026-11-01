@@ -40,3 +40,16 @@ def test_selection_starts_an_extract(rt, web_card):
     assert json.loads(facade.extract_draft(web_card))["fields"][0] == "Key sentence."
     assert not facade.web_extract(web_card, "   ")
     facade.discard_extract(web_card)
+
+
+def test_an_extract_links_back_to_the_page_it_came_from(rt, web_card):
+    """Desktop's web citation: a link that opens the web topic at that page (incremento_open_web)."""
+    from urllib.parse import quote
+
+    url = "https://example.org/article?part=2"
+    assert facade.web_extract(web_card, "Key sentence.", url)
+    front = json.loads(facade.extract_draft(web_card))["fields"][0]
+    assert front.startswith("Key sentence.<br>")
+    assert f"incremento_open_web:{web_card}:{quote(url, safe='')}" in front
+    assert ">example.org/article<" in front
+    facade.discard_extract(web_card)

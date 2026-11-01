@@ -15,6 +15,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.Region
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -79,6 +80,7 @@ import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.ExtractActivity
 import com.ichi2.anki.ankrimento.IncrementoReaders
 import com.ichi2.anki.ankrimento.IncrementoReviewerMenu
+import com.ichi2.anki.ankrimento.SourceLinks
 import com.ichi2.anki.ankrimento.showIncrementoAnswerButtons
 import com.ichi2.anki.cardviewer.Gesture
 import com.ichi2.anki.cardviewer.ViewerCommand
@@ -1237,6 +1239,13 @@ open class Reviewer :
         }
     }
 
+    /** An Incremento link in the card ([INCREMENTO_PYCMD_JS]) opens its source in a reader. */
+    override fun filterExtensionUrl(url: String): Boolean {
+        if (!url.startsWith(INCREMENTO_PYCMD_SCHEME)) return false
+        SourceLinks.intentFor(this, Uri.decode(url.removePrefix(INCREMENTO_PYCMD_SCHEME)))?.let(::startActivity)
+        return true
+    }
+
     /** The selected text becomes the extract's front, then the extract sheet opens. */
     private fun extractSelection(cardId: CardId) {
         webView?.evaluateJavascript("String(window.getSelection ? window.getSelection() : '')") { result ->
@@ -1634,6 +1643,8 @@ open class Reviewer :
 
     override fun onPageFinished(view: WebView) {
         super.onPageFinished(view)
+        // Desktop's pycmd, for Incremento's links in cards (an extract's link back to its source).
+        if (Ankrimento.isStarted) view.evaluateJavascript(INCREMENTO_PYCMD_JS, null)
         onFlagChanged()
         onMarkChanged()
         if (!displayAnswer) {
@@ -2223,6 +2234,10 @@ open class Reviewer :
     }
 
     companion object {
+        private const val INCREMENTO_PYCMD_SCHEME = "ankrimento-pycmd:"
+        private const val INCREMENTO_PYCMD_JS =
+            "window.pycmd = function (message) { window.location.href = '$INCREMENTO_PYCMD_SCHEME'" +
+                " + encodeURIComponent(String(message)); return false; };"
         private const val EXTRACT_SELECTION_ID = 0x416b72 // "Akr": an id no other selection item uses
 
         /**

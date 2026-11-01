@@ -1050,6 +1050,9 @@ abstract class AbstractFlashcardViewer :
         touchLayer!!.layoutParams = touchLayerContainerParams
     }
 
+    /** Whether a viewer handles [url] itself (a link in the card); AnkiDroid's own handling follows otherwise. */
+    protected open fun filterExtensionUrl(url: String): Boolean = false
+
     /** The card's text selection toolbar: [callback] as the WebView made it; a viewer may add its own actions. */
     protected open fun selectionActionModeCallback(
         callback: ActionMode.Callback,
@@ -2481,6 +2484,7 @@ abstract class AbstractFlashcardViewer :
         // We play sounds through these links when a user taps the sound icon.
         @NeedsTest("integration test with typechangetext")
         fun filterUrl(url: String): Boolean {
+            if (filterExtensionUrl(url)) return true
             if (url.startsWith("playsound:")) {
                 launchCatchingTask {
                     controlMedia(url)
