@@ -984,6 +984,7 @@ object Ankrimento {
             noteType = draft.getString("note_type"),
             isTopic = draft.getString("kind") == "topic",
             priority = draft.getDouble("priority"),
+            noteTypeConfigured = draft.optBoolean("note_type_configured"),
         )
     }
 
@@ -1389,6 +1390,8 @@ object Ankrimento {
         val noteType: String,
         val isTopic: Boolean,
         val priority: Double,
+        /** Desktop's extract note type setting chose [noteType] (otherwise the phone may choose it, see [ExtractNoteTypes]). */
+        val noteTypeConfigured: Boolean = false,
         /** For a card from scratch: the decks to choose from, and the one chosen first. */
         val decks: List<String> = emptyList(),
         val deck: String = "",

@@ -29,8 +29,8 @@
     <string name="ankrimento_extract_item">条目</string>
     <string name="ankrimento_extract_as_topic">主题</string>
     <string name="ankrimento_extract_priority_value">优先级 %d</string>
-    <string name="ankrimento_extract_add">添加</string>
-    <string name="ankrimento_extract_keep">继续摘录</string>
+    <string name="ankrimento_extract_add">添加卡片</string>
+    <string name="ankrimento_extract_keep">继续选择文字</string>
     <string name="ankrimento_extract_later">稍后添加</string>
     <string name="ankrimento_extract_queue_title">待添加的摘录</string>
     <string name="ankrimento_extract_queue_hint">在这里一起添加，或在离开此文档时添加。</string>
@@ -41,6 +41,14 @@
     </plurals>
     <plurals name="ankrimento_extract_queue_added">
         <item quantity="other">已添加 %d 条摘录</item>
+    </plurals>
+    <string name="ankrimento_extract_actions_help">稍后添加：在“待添加”队列（顶部栏）中等待，离开此文档时添加。继续选择文字：关闭此处；下一次选择会加入同一张卡片。</string>
+    <string name="ankrimento_extract_keep_help">继续选择文字：关闭此处；下一次选择会加入同一张卡片。</string>
+    <string name="ankrimento_extract_added_under">卡片已添加到知识树中的“%s”之下</string>
+    <string name="ankrimento_extract_kept">继续选择文字以加入此卡片</string>
+    <string name="ankrimento_new_card_added">卡片已添加到 %s</string>
+    <plurals name="ankrimento_extract_queued_toast">
+        <item quantity="other">已稍后添加：%d 条待添加，离开此文档时添加</item>
     </plurals>
     <string name="ankrimento_extract_discard">放弃</string>
     <string name="ankrimento_extract_added">卡片已添加</string>

@@ -31,8 +31,8 @@
     <string name="ankrimento_extract_item">Stavka</string>
     <string name="ankrimento_extract_as_topic">Tema</string>
     <string name="ankrimento_extract_priority_value">Prioritet %d</string>
-    <string name="ankrimento_extract_add">Dodaj</string>
-    <string name="ankrimento_extract_keep">Nastavi izdvajati</string>
+    <string name="ankrimento_extract_add">Dodaj kartu</string>
+    <string name="ankrimento_extract_keep">Odaberi još teksta</string>
     <string name="ankrimento_extract_later">Dodaj kasnije</string>
     <string name="ankrimento_extract_queue_title">Izdvojeno za dodavanje</string>
     <string name="ankrimento_extract_queue_hint">Dodaju se zajedno ovdje ili kad napustite ovaj dokument.</string>
@@ -47,6 +47,16 @@
         <item quantity="one">Dodan je %d izdvojeni dio</item>
         <item quantity="few">Dodana su %d izdvojena dijela</item>
         <item quantity="other">Dodano je %d izdvojenih dijelova</item>
+    </plurals>
+    <string name="ankrimento_extract_actions_help">Dodaj kasnije: čeka u redu „za dodavanje” (gornja traka) i dodaje se kad napustite ovaj dokument. Odaberi još teksta: zatvara ovo; sljedeći odabir ide u istu kartu.</string>
+    <string name="ankrimento_extract_keep_help">Odaberi još teksta: zatvara ovo; sljedeći odabir ide u istu kartu.</string>
+    <string name="ankrimento_extract_added_under">Karta je dodana pod „%s” u stablu znanja</string>
+    <string name="ankrimento_extract_kept">Odaberite još teksta za ovu kartu</string>
+    <string name="ankrimento_new_card_added">Karta je dodana u %s</string>
+    <plurals name="ankrimento_extract_queued_toast">
+        <item quantity="one">Spremljeno za kasnije: %d za dodavanje, kad napustite dokument</item>
+        <item quantity="few">Spremljeno za kasnije: %d za dodavanje, kad napustite dokument</item>
+        <item quantity="other">Spremljeno za kasnije: %d za dodavanje, kad napustite dokument</item>
     </plurals>
     <string name="ankrimento_extract_discard">Odbaci</string>
     <string name="ankrimento_extract_added">Karta je dodana</string>

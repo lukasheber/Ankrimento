@@ -162,13 +162,17 @@ def draft(source_card_id: int) -> dict[str, Any]:
     current = _drafts.get(int(source_card_id), Draft())
     note_types = sorted(nt.name for nt in col.models.all_names_and_ids())
     note_type = str(cfg.get("extract_notetype") or "").strip()
-    if note_type not in note_types:
+    # Desktop's extract note type setting; without it desktop keeps the Add Card window's last type,
+    # which the phone remembers per kind of document.
+    configured = note_type in note_types
+    if not configured:
         note_type = "Basic" if "Basic" in note_types else note_types[0]
     return {
         "fields": [current.fields.get(index, "") for index in range(2)],
         "page": current.page,
         "note_types": note_types,
         "note_type": note_type,
+        "note_type_configured": configured,
         "kind": configured_extract_default_type(cfg),
         "priority": round(calculate_priority(source_card_id, cfg), 2),
     }

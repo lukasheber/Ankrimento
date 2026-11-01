@@ -297,10 +297,11 @@ abstract class ReaderActivity : ComponentActivity() {
     private fun showExtractSheet() {
         lifecycleScope.launch {
             val draft =
-                runCatching { withCol { Ankrimento.extractDraft(cardId) } }.getOrElse { error ->
-                    Timber.w(error, "Loading the extract failed")
-                    return@launch
-                }
+                runCatching { withCol { Ankrimento.extractDraft(cardId) } }
+                    .getOrElse { error ->
+                        Timber.w(error, "Loading the extract failed")
+                        return@launch
+                    }.let { ExtractNoteTypes.choose(this@ReaderActivity, readerKind, it) }
             sheet = {
                 ExtractSheet(
                     draft = draft,
@@ -310,9 +311,13 @@ abstract class ReaderActivity : ComponentActivity() {
                     },
                     onLater = { choice ->
                         sheet = null
+                        ExtractNoteTypes.remember(this@ReaderActivity, readerKind, choice.noteType)
                         queueExtract(choice)
                     },
-                    onKeep = { sheet = null },
+                    onKeep = {
+                        sheet = null
+                        toast(getString(R.string.ankrimento_extract_kept))
+                    },
                     onDiscard = {
                         sheet = null
                         lifecycleScope.launch { withCol { Ankrimento.discardExtract(cardId) } }
@@ -326,11 +331,13 @@ abstract class ReaderActivity : ComponentActivity() {
         lifecycleScope.launch {
             runCatching {
                 withCol { Ankrimento.queueExtract(cardId, choice.fields, choice.noteType, choice.isTopic, choice.priority) }
-            }.onSuccess { queuedExtracts = it }
-                .onFailure { error ->
-                    Timber.w(error, "Queueing an extract failed")
-                    toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
-                }
+            }.onSuccess { count ->
+                queuedExtracts = count
+                toast(resources.getQuantityString(R.plurals.ankrimento_extract_queued_toast, count, count))
+            }.onFailure { error ->
+                Timber.w(error, "Queueing an extract failed")
+                toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
+            }
         }
     }
 
@@ -373,18 +380,23 @@ abstract class ReaderActivity : ComponentActivity() {
     }
 
     private fun addExtract(choice: ExtractChoice) {
+        ExtractNoteTypes.remember(this, readerKind, choice.noteType)
         lifecycleScope.launch {
             runCatching {
                 withCol { Ankrimento.createExtract(cardId, choice.fields, choice.noteType, choice.isTopic, choice.priority) }
             }.onSuccess { script ->
                 onExtractCreated(script)
-                toast(getString(R.string.ankrimento_extract_added))
+                // Where it went: under this document in the knowledge tree.
+                toast(getString(R.string.ankrimento_extract_added_under, title))
             }.onFailure { error ->
                 Timber.w(error, "Adding an extract failed")
                 toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
             }
         }
     }
+
+    /** This reader's kind ("pdf", "epub", …), as [intent] names it. */
+    private val readerKind: String by lazy { READERS.entries.firstOrNull { it.value == javaClass }?.key ?: "text" }
 
     /** "pdf" or "epub" for readers whose cards desktop reviews together (Review All), with where reading is. */
     protected open val reviewKind: String? = null
@@ -612,6 +624,18 @@ abstract class ReaderActivity : ComponentActivity() {
         /** The reader closed with Back: the session ends. */
         const val RESULT_LEAVE_SESSION = RESULT_FIRST_USER + 1
 
+        /** Each kind of reader's screen. */
+        private val READERS =
+            mapOf(
+                "pdf" to PdfReaderActivity::class.java,
+                "epub" to EpubReaderActivity::class.java,
+                "web" to WebReaderActivity::class.java,
+                "video" to VideoReaderActivity::class.java,
+                "writing" to WritingActivity::class.java,
+                "text" to TextReaderActivity::class.java,
+                "item" to ItemReaderActivity::class.java,
+            )
+
         /**
          * The reader for [cardId], whose kind [Ankrimento.cardReader] returned,
          * or null when the card has none. In a [session] it reviews the card.
@@ -622,17 +646,7 @@ abstract class ReaderActivity : ComponentActivity() {
             cardId: Long,
             session: Boolean,
         ): Intent? {
-            val activity =
-                when (reader) {
-                    "pdf" -> PdfReaderActivity::class.java
-                    "epub" -> EpubReaderActivity::class.java
-                    "web" -> WebReaderActivity::class.java
-                    "video" -> VideoReaderActivity::class.java
-                    "writing" -> WritingActivity::class.java
-                    "text" -> TextReaderActivity::class.java
-                    "item" -> ItemReaderActivity::class.java
-                    else -> return null
-                }
+            val activity = READERS[reader] ?: return null
             return Intent(context, activity).putExtra(EXTRA_CARD_ID, cardId).putExtra(EXTRA_SESSION, session)
         }
 

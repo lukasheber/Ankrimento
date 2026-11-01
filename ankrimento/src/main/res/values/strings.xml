@@ -30,8 +30,8 @@
     <string name="ankrimento_extract_item">Item</string>
     <string name="ankrimento_extract_as_topic">Topic</string>
     <string name="ankrimento_extract_priority_value">Priority %d</string>
-    <string name="ankrimento_extract_add">Add</string>
-    <string name="ankrimento_extract_keep">Keep extracting</string>
+    <string name="ankrimento_extract_add">Add card</string>
+    <string name="ankrimento_extract_keep">Select more text</string>
     <string name="ankrimento_extract_later">Add later</string>
     <string name="ankrimento_extract_queue_title">Extracts to add</string>
     <string name="ankrimento_extract_queue_hint">They are added together here, or when you leave this document.</string>
@@ -44,6 +44,15 @@
     <plurals name="ankrimento_extract_queue_added">
         <item quantity="one">%d extract added</item>
         <item quantity="other">%d extracts added</item>
+    </plurals>
+    <string name="ankrimento_extract_actions_help">Add later: waits in the “to add” queue (top bar) and is added when you leave this document. Select more text: closes this; your next selection goes into this same card.</string>
+    <string name="ankrimento_extract_keep_help">Select more text: closes this; your next selection goes into this same card.</string>
+    <string name="ankrimento_extract_added_under">Card added under “%s” in the knowledge tree</string>
+    <string name="ankrimento_extract_kept">Select more text to add to this card</string>
+    <string name="ankrimento_new_card_added">Card added to %s</string>
+    <plurals name="ankrimento_extract_queued_toast">
+        <item quantity="one">Saved for later: %d to add, when you leave this document</item>
+        <item quantity="other">Saved for later: %d to add, when you leave this document</item>
     </plurals>
     <string name="ankrimento_extract_discard">Discard</string>
     <string name="ankrimento_extract_added">Card added</string>

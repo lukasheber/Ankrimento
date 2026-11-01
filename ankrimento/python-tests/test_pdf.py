@@ -158,3 +158,19 @@ def test_extract_links_follow_desktops_setting(rt, extract_source):
     finally:
         mw.addonManager.writeConfig("incremento", saved)
         facade.discard_extract(extract_source)
+
+
+def test_the_draft_says_whether_desktops_extract_note_type_is_set(rt, extract_source):
+    """Without desktop's setting, desktop uses the Add Card window's last type: the phone remembers it per kind of document."""
+    import copy
+
+    from aqt import mw
+
+    assert json.loads(facade.extract_draft(extract_source))["note_type_configured"] is False
+    saved = copy.deepcopy(mw.addonManager.getConfig("incremento"))
+    mw.addonManager.writeConfig("incremento", {**copy.deepcopy(saved), "extract_notetype": "Basic"})
+    try:
+        draft = json.loads(facade.extract_draft(extract_source))
+        assert (draft["note_type"], draft["note_type_configured"]) == ("Basic", True)
+    finally:
+        mw.addonManager.writeConfig("incremento", saved)

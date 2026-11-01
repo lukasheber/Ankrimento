@@ -7,7 +7,6 @@ import android.text.TextUtils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -37,7 +36,6 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -148,21 +146,39 @@ internal fun ExtractSheet(
                 return ExtractChoice(fields, noteType, isTopic, priority.roundToInt().toDouble(), deck)
             }
             val ready = texts.firstOrNull()?.isNotBlank() == true
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = onDiscard) { Text(stringResource(R.string.ankrimento_extract_discard)) }
-                Spacer(Modifier.weight(1f))
-                TextButton(onClick = onKeep) { Text(stringResource(R.string.ankrimento_extract_keep)) }
+            // The main action first; the other two say what they do, so nothing seems lost.
+            Button(onClick = { onAdd(choice()) }, enabled = ready, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.ankrimento_extract_add))
             }
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Spacer(Modifier.weight(1f))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 onLater?.let { later ->
-                    OutlinedButton(
-                        onClick = { later(choice()) },
-                        enabled = ready,
-                    ) { Text(stringResource(R.string.ankrimento_extract_later)) }
+                    OutlinedButton(onClick = { later(choice()) }, enabled = ready, modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.ankrimento_extract_later))
+                    }
                 }
-                Button(onClick = { onAdd(choice()) }, enabled = ready) { Text(stringResource(R.string.ankrimento_extract_add)) }
+                if (!fromScratch) {
+                    OutlinedButton(
+                        onClick = onKeep,
+                        modifier = Modifier.weight(1f),
+                    ) { Text(stringResource(R.string.ankrimento_extract_keep)) }
+                }
             }
+            if (!fromScratch) {
+                Text(
+                    stringResource(
+                        if (onLater !=
+                            null
+                        ) {
+                            R.string.ankrimento_extract_actions_help
+                        } else {
+                            R.string.ankrimento_extract_keep_help
+                        },
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            TextButton(onClick = onDiscard) { Text(stringResource(R.string.ankrimento_extract_discard)) }
         }
     }
 }

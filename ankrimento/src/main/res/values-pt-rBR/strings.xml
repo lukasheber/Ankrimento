@@ -31,8 +31,8 @@
     <string name="ankrimento_extract_item">Item</string>
     <string name="ankrimento_extract_as_topic">Tópico</string>
     <string name="ankrimento_extract_priority_value">Prioridade %d</string>
-    <string name="ankrimento_extract_add">Adicionar</string>
-    <string name="ankrimento_extract_keep">Continuar extraindo</string>
+    <string name="ankrimento_extract_add">Adicionar cartão</string>
+    <string name="ankrimento_extract_keep">Selecionar mais texto</string>
     <string name="ankrimento_extract_later">Adicionar depois</string>
     <string name="ankrimento_extract_queue_title">Extratos a adicionar</string>
     <string name="ankrimento_extract_queue_hint">Eles são adicionados juntos aqui, ou quando você sai deste documento.</string>
@@ -47,6 +47,16 @@
         <item quantity="one">%d extrato adicionado</item>
         <item quantity="many">%d extratos adicionados</item>
         <item quantity="other">%d extratos adicionados</item>
+    </plurals>
+    <string name="ankrimento_extract_actions_help">Adicionar depois: espera na fila “a adicionar” (barra superior) e é adicionado quando você sai deste documento. Selecionar mais texto: fecha isto; sua próxima seleção vai para este mesmo cartão.</string>
+    <string name="ankrimento_extract_keep_help">Selecionar mais texto: fecha isto; sua próxima seleção vai para este mesmo cartão.</string>
+    <string name="ankrimento_extract_added_under">Cartão adicionado sob “%s” na árvore do conhecimento</string>
+    <string name="ankrimento_extract_kept">Selecione mais texto para adicionar a este cartão</string>
+    <string name="ankrimento_new_card_added">Cartão adicionado a %s</string>
+    <plurals name="ankrimento_extract_queued_toast">
+        <item quantity="one">Guardado para depois: %d a adicionar, ao sair deste documento</item>
+        <item quantity="many">Guardados para depois: %d a adicionar, ao sair deste documento</item>
+        <item quantity="other">Guardados para depois: %d a adicionar, ao sair deste documento</item>
     </plurals>
     <string name="ankrimento_extract_discard">Descartar</string>
     <string name="ankrimento_extract_added">Cartão adicionado</string>

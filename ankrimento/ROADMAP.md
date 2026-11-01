@@ -147,7 +147,7 @@ Mobile principles that guide every item:
 
 | Status | Feature | Mobile notes |
 |---|---|---|
-| ✅ | Extract to a new card in a bottom sheet: Item/Topic, front/back, note type, priority slider; Keep extracting keeps the draft | |
+| ✅ | Extract to a new card in a bottom sheet: Item/Topic, front/back, note type, priority slider | Add card (main button); Add later (the queue, added when the document is left) and Select more text (closes the sheet; the next selection joins this card), each explained on the sheet and confirmed after ("Card added under …"). Note type: desktop's extract note type setting when set, otherwise the one last used for that kind of document |
 | ✅ | Priority editor (slider, 0 to 100) | |
 | ✅ | **Priority always in reach on topics and items**: a "P 50" chip on screen, one tap to change it | Done for topics and items (chip in the top bar) |
 | ✅ | Extract queue: several extracts, then one review | The extract sheet's Add later sets the extract aside as chosen (type, priority, its source place) and frees the draft for the next selection; a "2 to add" chip in the top bar opens them to remove any and Add all; whatever is still waiting is added when the document is left or the session moves on. Keep extracting still keeps one draft open for more text |
@@ -239,9 +239,10 @@ Daily reading and extracting:
 24. ~~Web extract anchors~~ (done).
 25. ~~Links back to the source, for every kind of extract~~ (done).
 26. ~~Review all cards made from a document~~ (done).
-26a. The extract sheet made clear: what Add, Add later and Keep extracting each do, shown on the sheet and confirmed after
-     (where the card went, e.g. under its source in the knowledge tree); check that each works as it says.
-26b. The extract sheet's note type follows the document open (as desktop's extract options choose it per source).
+26a. ~~The extract sheet made clear~~ (done: Add card first; Add later and Select more text, each explained on the sheet;
+     a confirmation after each, saying where the card went).
+26b. ~~The extract sheet's note type follows the document open~~ (done: desktop's extract note type setting when set,
+     otherwise the type last used for that kind of document).
 27. Items with sound, typed answers or image occlusion in the learning screen.
 
 Things desktop has:

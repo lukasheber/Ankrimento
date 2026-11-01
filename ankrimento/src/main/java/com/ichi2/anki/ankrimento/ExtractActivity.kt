@@ -32,6 +32,9 @@ class ExtractActivity : ComponentActivity() {
     /** The card the extract comes from; 0 for a card from scratch. */
     private val sourceCardId by lazy { intent.getLongExtra(EXTRA_SOURCE, 0L) }
 
+    /** The kind its note type is remembered for (see [ExtractNoteTypes]). */
+    private val kind get() = if (sourceCardId != 0L) "card" else "scratch"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -42,7 +45,10 @@ class ExtractActivity : ComponentActivity() {
                         draft = shown,
                         onAdd = ::add,
                         onLater = null,
-                        onKeep = ::finish,
+                        onKeep = {
+                            if (sourceCardId != 0L) toast(getString(R.string.ankrimento_extract_kept))
+                            finish()
+                        },
                         onDiscard = {
                             if (sourceCardId != 0L) lifecycleScope.launch { withCol { Ankrimento.discardExtract(sourceCardId) } }
                             finish()
@@ -58,26 +64,30 @@ class ExtractActivity : ComponentActivity() {
                         Ankrimento.start(this@ExtractActivity, this)
                         if (sourceCardId != 0L) Ankrimento.extractDraft(sourceCardId) else Ankrimento.newCardDefaults()
                     }
-                }.getOrElse { error ->
-                    Timber.w(error, "Opening the extract sheet failed")
-                    toast(error.message ?: error.javaClass.simpleName)
-                    finish()
-                    return@launch
-                }
+                }.map { ExtractNoteTypes.choose(this@ExtractActivity, kind, it) }
+                    .getOrElse { error ->
+                        Timber.w(error, "Opening the extract sheet failed")
+                        toast(error.message ?: error.javaClass.simpleName)
+                        finish()
+                        return@launch
+                    }
         }
     }
 
     private fun add(choice: ExtractChoice) {
+        ExtractNoteTypes.remember(this, kind, choice.noteType)
         lifecycleScope.launch {
             runCatching {
                 withCol {
                     if (sourceCardId != 0L) {
                         Ankrimento.createExtract(sourceCardId, choice.fields, choice.noteType, choice.isTopic, choice.priority)
+                        getString(R.string.ankrimento_extract_added_under, Ankrimento.cardTitle(sourceCardId))
                     } else {
                         Ankrimento.createCard(choice.fields, choice.noteType, choice.isTopic, choice.priority, choice.deck)
+                        getString(R.string.ankrimento_new_card_added, choice.deck)
                     }
                 }
-            }.onSuccess { toast(getString(R.string.ankrimento_extract_added)) }
+            }.onSuccess { toast(it) }
                 .onFailure { error ->
                     Timber.w(error, "Adding a card failed")
                     toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
