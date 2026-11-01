@@ -172,7 +172,8 @@ Mobile principles that guide every item:
 | ⏸ | Incremento data via a shared folder (SAF: Drive, Dropbox, …), conflict-safe snapshots | Works on the device; further sync work waits for an agreement with upstream's author on the sync format |
 | ⏸ | Desktop "Ankrimento Sync" add-on | Built and API-checked; deferred until there is an agreement with upstream's author |
 | ⏸ | Sync status on the hub (last sync, conflicts, Sync now) | With the sync work above |
-| ✅ | Full backup / restore (same ZIP as desktop) [12] | Settings → Backup. Export: upstream's restore pre-check accepts it on desktop. Restore: upstream's pre-check and staging, an AnkiDroid safety backup, Incremento's folder swapped and the collection restored through AnkiDroid's own collection import (rolled back if it fails), then the app restarts. Automatic backups not yet. Upstream's own export and restore, so a phone backup restores on desktop and back: cards with scheduling and media, plus Incremento's folder (database, PDFs, EPUBs, videos, writings). In the Incremento settings, under Backup |
+| ✅ | Full backup / restore (same ZIP as desktop) [12] | Settings → Backup. Export: upstream's restore pre-check accepts it on desktop. Restore: upstream's pre-check and staging, an AnkiDroid safety backup, Incremento's folder swapped and the collection restored through AnkiDroid's own collection import (rolled back if it fails), then the app restarts. Upstream's own export and restore, so a phone backup restores on desktop and back: cards with scheduling and media, plus Incremento's folder (database, PDFs, EPUBs, videos, writings). In the Incremento settings, under Backup |
+| 🟡 | Automatic backups [12] | Settings → Backup → Automatic backups (opt-in, as on desktop): into a folder picked on this device, when the app opens and every 12 h to a week, keeping the latest 1 to 20 by upstream's own rotation (its slot names, so desktop recognises them); Back up now. The policy stays on this device, since desktop's names a desktop folder. Desktop's "on close" has no dependable moment on a phone. Not yet checked on a device past the settings rows (the folder picker is a system screen) |
 | ⬜ | Support bundle [12] | |
 | ⬜ | Clean up unused data [13] | |
 | ⬜ | Card-format updates notice [13] | |
@@ -225,7 +226,7 @@ Mobile principles that guide every item:
 15. ~~New AnkiDroid study screen (ReviewerFragment) opens readers~~ (done).
 16. EPUB paged mode.
 17. Images in imported web articles.
-18. Automatic backups.
+18. ~~Automatic backups~~ (built; the folder picker step still to try on a device).
 19. PDF annotation styles and bookmark comments.
 20. Advanced options: phase order, tag groups and locks.
 21. Items with sound, typed answers, math and image occlusion in the learning screen.

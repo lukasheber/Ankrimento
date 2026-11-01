@@ -60,6 +60,15 @@ class IncrementoMenu(
         activity.lifecycleScope.launch(Dispatchers.IO) {
             runCatching { Ankrimento.warmUp(activity) }.onFailure { Timber.w(it, "Ankrimento warm-up failed") }
         }
+        // Desktop's automatic backups: when the app opens, then whenever the interval has passed.
+        activity.lifecycleScope.launch {
+            activity.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                launch(Dispatchers.IO) {
+                    AutomaticBackups.runIfDue(activity, AutomaticBackups.Trigger.OPEN) ||
+                        AutomaticBackups.runIfDue(activity, AutomaticBackups.Trigger.INTERVAL)
+                }
+            }
+        }
         activity.lifecycleScope.launch {
             activity.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 Ankrimento.events.collect { event ->

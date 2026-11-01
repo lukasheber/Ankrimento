@@ -158,6 +158,35 @@ def export(out_path: str) -> dict[str, int]:
     return {"cards": int(cards), "files": user_files_copied, "bytes": os.path.getsize(out_path)}
 
 
+def automatic_plan(held: list[tuple[str, int]], keep: int) -> dict[str, Any]:
+    """Which automatic backup to write next in the backup folder, and which to remove.
+
+    The folder is one the user picked through Android's storage framework, not a path, so
+    upstream's rotation (``next_backup_path``, then ``prune_backups`` keeping the new one)
+    runs on a stand-in folder of empty files with the same names and modification times
+    (``held``: name and milliseconds).
+    """
+    import time
+
+    from incremento.backend.backup_schedule import next_backup_path, prune_backups
+
+    profile = runtime.current().profile
+    with tempfile.TemporaryDirectory() as stand_in:
+        folder = Path(stand_in)
+        for name, modified_ms in held:
+            if not name or "/" in name or "\\" in name or name in (".", ".."):
+                continue
+            path = folder / name
+            path.touch()
+            os.utime(path, ns=(int(modified_ms) * 1_000_000, int(modified_ms) * 1_000_000))
+        target = next_backup_path(folder, profile, int(keep))
+        target.touch()
+        now = time.time_ns()
+        os.utime(target, ns=(now, now))
+        removed = prune_backups(folder, profile, int(keep), protected=target)
+        return {"write": target.name, "remove": sorted(path.name for path in removed)}
+
+
 def precheck(path: str) -> Any:
     """Upstream's restore pre-check of a full backup (``BackupReport``).
 

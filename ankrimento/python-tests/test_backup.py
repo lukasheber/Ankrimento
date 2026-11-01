@@ -161,3 +161,22 @@ def test_restore_keeps_this_devices_automatic_backup_settings(rt, tmp_path):
 
     kept = load_addon_config(mw.addonManager, "incremento")["automatic_backups"][rt.profile]
     assert kept["directory"] == "this device"
+
+
+def _slot(rt, number: int) -> str:
+    from incremento.backend.paths import sanitize_profile_name
+
+    return f"incremento_{sanitize_profile_name(rt.profile)}_auto_backup_slot_{number:02d}.zip"
+
+
+def test_automatic_backups_fill_their_slots_then_reuse_the_oldest(rt):
+    """Upstream's rotation (next_backup_path, prune_backups), over the files the folder holds."""
+    assert json.loads(facade.automatic_backup_plan("[]", 3)) == {"write": _slot(rt, 1), "remove": []}
+
+    held = [[_slot(rt, 1), 100], [_slot(rt, 2), 300], [_slot(rt, 3), 200], ["my-own.zip", 50]]
+    assert json.loads(facade.automatic_backup_plan(json.dumps(held), 3)) == {"write": _slot(rt, 1), "remove": []}
+
+    # Fewer versions kept than are held: the oldest go, never the one being written nor other files.
+    plan = json.loads(facade.automatic_backup_plan(json.dumps(held), 2))
+    assert plan["write"] == _slot(rt, 1)
+    assert plan["remove"] == [_slot(rt, 3)]

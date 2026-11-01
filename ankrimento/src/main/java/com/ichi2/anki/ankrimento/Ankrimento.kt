@@ -203,6 +203,21 @@ object Ankrimento {
         return FullBackup(result.getInt("cards"), result.getInt("files"), result.getLong("bytes"))
     }
 
+    /**
+     * The automatic backup to write next and those rotation removes, by upstream's rules,
+     * from the backup folder's [files] (names and modification times).
+     */
+    @WorkerThread
+    fun automaticBackupPlan(
+        files: List<Pair<String, Long>>,
+        keep: Int,
+    ): Pair<String, List<String>> {
+        val held = JSONArray(files.map { (name, modified) -> JSONArray().put(name).put(modified) })
+        val plan = JSONObject(requireFacade().callAttr("automatic_backup_plan", held.toString(), keep).toString())
+        val remove = plan.getJSONArray("remove")
+        return plan.getString("write") to List(remove.length()) { remove.getString(it) }
+    }
+
     /** What a sync did, or would do: see `ankrimento.syncfolder.Status`. */
     data class SyncResult(
         val state: String,

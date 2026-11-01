@@ -952,6 +952,13 @@ def add_queued_extracts(source_card_id: int) -> str:
     return _dumps({"added": len(pages), "script": script})
 
 
+def automatic_backup_plan(held_json: str, keep: int) -> str:
+    """The automatic backup to write and those to remove, by upstream's rotation, from the folder's files."""
+    from ankrimento import backup
+
+    return _dumps(backup.automatic_plan([(str(name), int(ms)) for name, ms in json.loads(held_json)], int(keep)))
+
+
 def export_full_backup(out_path: str) -> str:
     """Writes desktop's full backup ZIP of this profile to ``out_path``: cards, files and counts."""
     from ankrimento import backup

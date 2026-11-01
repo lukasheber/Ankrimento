@@ -7,12 +7,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
+import android.text.format.DateUtils
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +26,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -83,6 +86,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private var profile by mutableStateOf("")
     private var syncFolder by mutableStateOf<Uri?>(null)
     private var backingUp by mutableStateOf(false)
+    private var automaticBackups by mutableStateOf(AutomaticBackups.Policy())
 
     /** A progress message while a backup is checked or restored. */
     private var restoring by mutableStateOf<Int?>(null)
@@ -97,6 +101,17 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private val saveBackup =
         registerForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
             if (uri != null) exportBackup(uri)
+        }
+
+    private val pickAutomaticBackupFolder =
+        registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+            if (uri == null) return@registerForActivityResult
+            runCatching { AutomaticBackups.chooseFolder(this, uri) }
+                .onSuccess { automaticBackups = it }
+                .onFailure { error ->
+                    Timber.w(error, "Choosing the backup folder failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
         }
 
     private val pickSyncFolder =
@@ -115,6 +130,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         profile = device.profile
         syncFolder = device.syncFolder
+        automaticBackups = AutomaticBackups.load(this)
         setContent { IncrementoTheme { Settings() } }
         lifecycleScope.launch {
             runCatching {
@@ -487,6 +503,94 @@ class IncrementoSettingsActivity : ComponentActivity() {
                     pickBackup.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream"))
                 },
         )
+        AutomaticBackupRows()
+    }
+
+    /** Desktop's automatic full backups, into a folder picked on this device. */
+    @Composable
+    private fun AutomaticBackupRows() {
+        val policy = automaticBackups
+        val on = policy.enabled && policy.folder != null
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_auto_backup)) },
+            supportingContent = { Text(stringResource(R.string.ankrimento_auto_backup_summary)) },
+            trailingContent = { Switch(checked = on, onCheckedChange = ::setAutomaticBackups) },
+            modifier = Modifier.clickable { setAutomaticBackups(!on) },
+        )
+        if (!on) return
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_auto_backup_folder)) },
+            supportingContent = { Text(folderName(policy.folder)) },
+            modifier = Modifier.clickable { pickAutomaticBackupFolder.launch(policy.folder) },
+        )
+        Toggle(R.string.ankrimento_auto_backup_on_open, policy.onOpen) { changeAutomaticBackups(policy.copy(onOpen = it)) }
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_auto_backup_every)) },
+            supportingContent = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    for ((hours, label) in AUTO_BACKUP_INTERVALS) {
+                        FilterChip(
+                            selected = policy.intervalHours == hours,
+                            onClick = { changeAutomaticBackups(policy.copy(intervalHours = hours)) },
+                            label = { Text(stringResource(label)) },
+                        )
+                    }
+                }
+            },
+        )
+        PercentSlider(R.string.ankrimento_auto_backup_versions, policy.versions, 1..AutomaticBackups.MAX_VERSIONS, suffix = "") {
+            changeAutomaticBackups(policy.copy(versions = it))
+        }
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_auto_backup_now)) },
+            supportingContent = {
+                Text(
+                    if (policy.lastSuccess > 0) {
+                        stringResource(
+                            R.string.ankrimento_auto_backup_last,
+                            DateUtils.getRelativeDateTimeString(
+                                this,
+                                policy.lastSuccess,
+                                DateUtils.MINUTE_IN_MILLIS,
+                                DateUtils.WEEK_IN_MILLIS,
+                                0,
+                            ),
+                        )
+                    } else {
+                        stringResource(R.string.ankrimento_auto_backup_never)
+                    },
+                )
+            },
+            modifier = Modifier.clickable(enabled = !backingUp, onClick = ::backUpNow),
+        )
+    }
+
+    private fun setAutomaticBackups(on: Boolean) {
+        if (on && automaticBackups.folder == null) {
+            pickAutomaticBackupFolder.launch(null)
+        } else {
+            changeAutomaticBackups(automaticBackups.copy(enabled = on))
+        }
+    }
+
+    private fun changeAutomaticBackups(policy: AutomaticBackups.Policy) {
+        AutomaticBackups.save(this, policy)
+        automaticBackups = policy
+    }
+
+    private fun backUpNow() {
+        backingUp = true
+        toast(getString(R.string.ankrimento_backup_working))
+        lifecycleScope.launch {
+            runCatching { AutomaticBackups.backUp(this@IncrementoSettingsActivity) }
+                .onSuccess { name -> name?.let { toast(getString(R.string.ankrimento_auto_backup_saved, it)) } }
+                .onFailure { error ->
+                    Timber.w(error, "Backing up now failed")
+                    toast(getString(R.string.ankrimento_backup_failed, error.message ?: error.javaClass.simpleName))
+                }
+            automaticBackups = AutomaticBackups.load(this@IncrementoSettingsActivity)
+            backingUp = false
+        }
     }
 
     @Composable
@@ -735,6 +839,16 @@ class IncrementoSettingsActivity : ComponentActivity() {
     }
 
     companion object {
+        /** Desktop's interval in hours (0: off), as the phone offers it. */
+        private val AUTO_BACKUP_INTERVALS =
+            listOf(
+                0 to R.string.ankrimento_auto_backup_off,
+                12 to R.string.ankrimento_auto_backup_12h,
+                24 to R.string.ankrimento_auto_backup_day,
+                72 to R.string.ankrimento_auto_backup_3days,
+                168 to R.string.ankrimento_auto_backup_week,
+            )
+
         fun intent(context: Context) = Intent(context, IncrementoSettingsActivity::class.java)
     }
 }
