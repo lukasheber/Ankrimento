@@ -14,8 +14,12 @@ from __future__ import annotations
 import ast
 import json
 import os
+import re
 import secrets
+from html.parser import HTMLParser
+from pathlib import Path
 from typing import Any
+from urllib.parse import unquote, urlsplit
 
 from aqt import mw
 
@@ -34,7 +38,9 @@ MSG_OPEN_LINK = "incremento_epub_open_link:"
 
 _ADDON_PKG = "incremento"
 _SCRIPT_CONSTANTS = ("_EPUB_HIGHLIGHT_COLORS", "_MAX_EPUB_SELECTION_CHARS", "_PYCMD_BRIDGE")
+_LINK_FUNCTIONS = ("_path_is_within_root", "_resolve_epub_reader_link")
 _builder: Any = None
+_resolver: Any = None
 
 
 def _context() -> tuple[str, str]:
@@ -86,6 +92,29 @@ def page_script_builder() -> Any:
     return _builder
 
 
+def link_resolver() -> Any:
+    """Upstream's ``_resolve_epub_reader_link``, compiled from ``frontend/epub_dock.py`` alone."""
+    global _resolver
+    if _resolver is not None:
+        return _resolver
+    from incremento.frontend.reader_links import normalize_external_reader_url
+
+    path = runtime.current().addon_dir / "frontend" / "epub_dock.py"
+    tree = ast.parse(path.read_text(encoding="utf8"), filename=str(path))
+    functions = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in _LINK_FUNCTIONS]
+    if len(functions) != len(_LINK_FUNCTIONS):
+        raise RuntimeError("upstream EPUB link resolver not found")
+    namespace: dict[str, Any] = {
+        "Path": Path,
+        "urlsplit": urlsplit,
+        "unquote": unquote,
+        "normalize_external_reader_url": normalize_external_reader_url,
+    }
+    exec(compile(ast.Module(body=functions, type_ignores=[]), str(path), "exec"), namespace)  # noqa: S102 - upstream's own code
+    _resolver = namespace["_resolve_epub_reader_link"]
+    return _resolver
+
+
 def _metadata(card_id: int) -> tuple[str, dict]:
     from incremento.backend.epub_manager import ensure_epub_extracted, epub_storage_abspath
 
@@ -123,12 +152,18 @@ def open_section(card_id: int, section_index: int | None = None) -> dict[str, An
 
 
 def section_script(
-    card_id: int, section_index: int, nonce: str, scroll_ratio: float | None = None, search_query: str = ""
+    card_id: int,
+    section_index: int,
+    nonce: str,
+    scroll_ratio: float | None = None,
+    search_query: str = "",
+    link_fragment: str = "",
 ) -> str:
     """The page script for a loaded chapter; mirrors desktop's ``_on_load_finished``.
 
     With ``search_query``, the script finds and selects its first match once loaded, as
-    desktop opens a search result.
+    desktop opens a search result; with ``link_fragment``, it opens at that anchor, as
+    desktop opens a followed link. Links are always tappable (desktop's links toggle on).
     """
     from incremento.backend.config_service import configured_reader_default_highlight_color
     from incremento.backend.epub_appearance import get_appearance
@@ -152,6 +187,8 @@ def section_script(
         search_query=str(search_query or ""),
         highlights=load_highlights(addon_dir, profile, card_id, section_index=section_index),
         bridge_nonce=nonce,
+        clickable_links=True,
+        link_fragment=str(link_fragment or ""),
         highlight_color=default_color,
         default_highlight_color=default_color,
         sections=metadata.get("sections") or [],
@@ -242,10 +279,122 @@ def handle(card_id: int, section_index: int, msg: str) -> dict[str, Any]:
             mw.notify_host("extract_draft", card_id=card_id)
     elif msg.startswith(MSG_OPEN_LINK):
         data = payload(MSG_OPEN_LINK)
-        href = str(data.get("href") or "")
-        if for_this_card(data) and href.startswith(("http://", "https://")):
-            mw.notify_host("open_url", url=href)
+        if for_this_card(data):
+            return {"link": open_link(card_id, section_index, str(data.get("href") or ""), data.get("sourceScrollRatio"))}
     return {}
+
+
+# ── Links ────────────────────────────────────────────────────────────────────
+#
+# Desktop resolves a tapped link with ``_resolve_epub_reader_link`` and opens the
+# chapter at its anchor, keeping where it was for its jump-back button. A phone
+# shows a footnote over the page instead of leaving it, so the note's text is
+# read here from the target chapter.
+
+_BLOCKS = {"p", "li", "aside", "div", "dd", "dt", "blockquote", "section", "td", "body", "footer"}
+_INLINE = {"a", "span", "sup", "sub", "small", "em", "strong", "b", "i"}
+_HEADINGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
+_VOID = {"br", "img", "hr", "meta", "link", "input", "col", "area", "wbr", "source"}
+_MAX_NOTE_CHARS = 1500
+
+
+def open_link(card_id: int, section_index: int, href: str, from_ratio: Any = None) -> dict[str, Any]:
+    """Where a tapped link leads: ``external`` (a web URL), ``internal`` (section, fragment and the
+    note's text when it is a footnote), or ``blocked`` with upstream's message."""
+    from incremento.backend.epub_manager import get_epub_extract_dir, get_epub_section_path
+    from incremento.backend.i18n import t
+
+    addon_dir, profile = _context()
+    filename, metadata = _metadata(card_id)
+    count = len(metadata.get("sections") or [])
+    paths = [get_epub_section_path(addon_dir, filename, index, profile=profile, metadata=metadata) for index in range(count)]
+    current = max(0, min(int(section_index), count - 1))
+    try:
+        resolved = link_resolver()(
+            href,
+            content_root=get_epub_extract_dir(filename, profile=profile),
+            current_section_path=paths[current],
+            section_paths=paths,
+        )
+    except Exception:  # noqa: BLE001 - as desktop, any failure blocks the link
+        resolved = None
+    if resolved is None:
+        return {"kind": "blocked", "message": t("reader_epub_link_blocked")}
+    if resolved["kind"] == "external":
+        return {"kind": "external", "url": resolved["url"]}
+    target, fragment = int(resolved["section_index"]), str(resolved.get("fragment") or "")
+    try:
+        ratio = max(0.0, min(float(from_ratio), 1.0))
+    except (TypeError, ValueError):
+        ratio = 0.0
+    return {
+        "kind": "internal",
+        "section_index": target,
+        "fragment": fragment,
+        "note": _note_text(paths[target], fragment) if fragment else "",
+        "from_ratio": ratio,
+    }
+
+
+class _Element:
+    def __init__(self, tag: str, parent: _Element | None) -> None:
+        self.tag, self.parent, self.parts = tag, parent, []
+
+    def text(self) -> str:
+        return "".join(part if isinstance(part, str) else part.text() for part in self.parts)
+
+
+class _Page(HTMLParser):
+    """A chapter as a light tree, with the element carrying each id or name."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.root = self.open = _Element("", None)
+        self.ids: dict[str, _Element] = {}
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        element = _Element(tag.lower(), self.open)
+        self.open.parts.append(element)
+        for name, value in attrs:
+            if name in ("id", "name") and value:
+                self.ids.setdefault(value, element)
+        if element.tag not in _VOID:
+            self.open = element
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+        if tag.lower() not in _VOID:
+            self.open = self.open.parent or self.root
+
+    def handle_endtag(self, tag: str) -> None:
+        tag, element = tag.lower(), self.open
+        while element is not None and element.tag != tag:
+            element = element.parent
+        if element is not None and element.parent is not None:
+            self.open = element.parent
+
+    def handle_data(self, data: str) -> None:
+        self.open.parts.append(data)
+
+
+def _note_text(path: str, fragment: str) -> str:
+    """The text of the note at ``fragment``: its block when the id is on a number or a link
+    inside it; "" for a heading, a whole chapter or anything longer than a note."""
+    try:
+        page = _Page()
+        page.feed(Path(path).read_text(encoding="utf8", errors="replace"))
+    except (OSError, ValueError):
+        return ""
+    element = page.ids.get(fragment)
+    if element is None or element.tag in _HEADINGS:
+        return ""
+    if element.tag in _INLINE or len(element.text().strip()) <= 3:
+        while element is not None and element.tag not in _BLOCKS:
+            element = element.parent
+    if element is None or element.tag == "body":
+        return ""
+    text = re.sub(r"\s+", " ", element.text()).strip()
+    return text if 0 < len(text) <= _MAX_NOTE_CHARS else ""
 
 
 def search(card_id: int, query: str, limit: int = 120) -> list[dict[str, Any]]:

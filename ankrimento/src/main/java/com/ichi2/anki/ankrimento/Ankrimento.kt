@@ -638,7 +638,11 @@ object Ankrimento {
         section: EpubSection,
         scrollRatio: Double?,
         searchQuery: String = "",
-    ): String = requireFacade().callAttr("epub_script", cardId, section.index, section.nonce, scrollRatio ?: -1.0, searchQuery).toString()
+        linkFragment: String = "",
+    ): String =
+        requireFacade()
+            .callAttr("epub_script", cardId, section.index, section.nonce, scrollRatio ?: -1.0, searchQuery, linkFragment)
+            .toString()
 
     /** The book's highlights in book order; [MarkHighlight.page] is the chapter, [MarkHighlight.place] its title. */
     @WorkerThread
@@ -705,10 +709,45 @@ object Ankrimento {
         cardId: Long,
         sectionIndex: Int,
         message: String,
-    ): Pair<Int, Double>? {
+    ): EpubAction? {
         val json = JSONObject(requireFacade().callAttr("epub_message", cardId, sectionIndex, message).toString())
-        val navigate = json.optJSONObject("navigate") ?: return null
-        return navigate.getInt("section_index") to navigate.getDouble("scroll_ratio")
+        json.optJSONObject("navigate")?.let { return EpubAction.Navigate(it.getInt("section_index"), it.getDouble("scroll_ratio")) }
+        val link = json.optJSONObject("link") ?: return null
+        return when (link.optString("kind")) {
+            "external" -> EpubAction.OpenWeb(link.getString("url"))
+            "internal" ->
+                EpubAction.FollowLink(
+                    link.getInt("section_index"),
+                    link.optString("fragment"),
+                    link.optString("note"),
+                    link.optDouble("from_ratio", 0.0),
+                )
+            else -> EpubAction.Blocked(link.optString("message"))
+        }
+    }
+
+    /** What the reader does after a page message: another chapter, or a tapped link. */
+    sealed interface EpubAction {
+        data class Navigate(
+            val section: Int,
+            val scrollRatio: Double,
+        ) : EpubAction
+
+        data class OpenWeb(
+            val url: String,
+        ) : EpubAction
+
+        /** A link inside the book: its chapter and anchor, the note's text when it is a footnote. */
+        data class FollowLink(
+            val section: Int,
+            val fragment: String,
+            val note: String,
+            val fromRatio: Double,
+        ) : EpubAction
+
+        data class Blocked(
+            val message: String,
+        ) : EpubAction
     }
 
     /**

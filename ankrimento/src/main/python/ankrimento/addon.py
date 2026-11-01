@@ -27,6 +27,7 @@ SHIPPED_ENTRIES = (
     "config.json",
     "manifest.json",
     "frontend/epub_dock.py",
+    "frontend/reader_links.py",
     "frontend/search_all_results.py",
     "web/web_dock_bridge.js",
 )

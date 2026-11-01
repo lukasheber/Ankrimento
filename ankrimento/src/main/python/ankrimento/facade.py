@@ -706,12 +706,15 @@ def epub_open(card_id: int, section_index: int = -1) -> str:
     return _dumps(epub_reader.open_section(int(card_id), None if int(section_index) < 0 else int(section_index)))
 
 
-def epub_script(card_id: int, section_index: int, nonce: str, scroll_ratio: float = -1.0, search_query: str = "") -> str:
-    """The page script for a loaded chapter (saved position when ``scroll_ratio`` < 0), finding ``search_query``."""
+def epub_script(
+    card_id: int, section_index: int, nonce: str, scroll_ratio: float = -1.0, search_query: str = "", link_fragment: str = ""
+) -> str:
+    """The page script for a loaded chapter (saved position when ``scroll_ratio`` < 0), finding
+    ``search_query`` or opening at ``link_fragment``."""
     from ankrimento import epub_reader
 
     ratio = None if float(scroll_ratio) < 0 else float(scroll_ratio)
-    return epub_reader.section_script(int(card_id), int(section_index), nonce, ratio, search_query)
+    return epub_reader.section_script(int(card_id), int(section_index), nonce, ratio, search_query, link_fragment)
 
 
 def epub_marks(card_id: int) -> str:

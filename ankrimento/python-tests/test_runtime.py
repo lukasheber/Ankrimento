@@ -23,8 +23,10 @@ def test_backend_errors_keep_their_type(rt):
 def test_addon_has_the_desktop_layout(rt):
     assert (rt.addon_dir / "backend" / "session.py").is_file()
     assert (rt.addon_dir / "user_files" / rt.profile / "incremento.db").is_file()
-    # From frontend/ only the EPUB dock (data for its page script) and Search ALL's Qt-free pipeline ship.
-    assert sorted(p.name for p in (rt.addon_dir / "frontend").iterdir()) == ["epub_dock.py", "search_all_results.py"]
+    # From frontend/ only the EPUB dock (data for its page script, its link resolver), its Qt-free link
+    # helpers and Search ALL's Qt-free pipeline ship.
+    shipped = sorted(p.name for p in (rt.addon_dir / "frontend").iterdir() if p.name != "__pycache__")
+    assert shipped == ["epub_dock.py", "reader_links.py", "search_all_results.py"]
     assert not (rt.addon_dir / "__init__.py").exists()
 
 

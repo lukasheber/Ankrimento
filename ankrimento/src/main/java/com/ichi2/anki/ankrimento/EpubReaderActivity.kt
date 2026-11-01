@@ -14,6 +14,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
@@ -25,8 +26,10 @@ import com.ichi2.anki.ankrimento.ui.FindBar
 import com.ichi2.anki.ankrimento.ui.FindHit
 import com.ichi2.anki.ankrimento.ui.FindSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.LinkBackChip
 import com.ichi2.anki.ankrimento.ui.MarkHighlight
 import com.ichi2.anki.ankrimento.ui.MarksSheet
+import com.ichi2.anki.ankrimento.ui.NoteSheet
 import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReadingSettingsSheet
@@ -58,6 +61,16 @@ class EpubReaderActivity : ReaderActivity() {
     private var findHits = emptyList<Ankrimento.EpubSearchHit>()
     private var findIndex = -1
     private var findStatus: String? = null
+
+    /** The anchor the next chapter's page script opens at (a followed link). */
+    private var pendingFragment = ""
+
+    /** Where each followed link was tapped (chapter, scroll ratio), most recent last; Back returns there. */
+    private val linkBack = ArrayDeque<Pair<Int, Double>>()
+    private val backFromLink =
+        object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() = returnFromLink()
+        }
     private var reading: Ankrimento.EpubReading? = null
     private lateinit var preferences: ReadingPreferences
 
@@ -90,6 +103,7 @@ class EpubReaderActivity : ReaderActivity() {
             )
         setReaderContent(webView)
         toggleBarsOnTap(webView)
+        onBackPressedDispatcher.addCallback(this, backFromLink)
         webView.addJavascriptInterface(PageTurns(), "AnkrimentoPages")
         preferences = ReadingPreferences.load(this)
         tools =
@@ -123,10 +137,70 @@ class EpubReaderActivity : ReaderActivity() {
                 val current = section ?: continue
                 if (!isDestroyed) showProgress(current, message)
                 runCatching { withCol { Ankrimento.epubMessage(cardId, current.index, message) } }
-                    .onSuccess { target -> if (!isDestroyed) target?.let { (index, ratio) -> load(index, ratio) } }
+                    .onSuccess { action -> if (!isDestroyed) action?.let { act(current, it) } }
                     .onFailure { Timber.w(it, "EPUB page message failed: %s", message.substringBefore(':')) }
             }
         }
+    }
+
+    private suspend fun act(
+        current: Ankrimento.EpubSection,
+        action: Ankrimento.EpubAction,
+    ) {
+        when (action) {
+            is Ankrimento.EpubAction.Navigate -> load(action.section, action.scrollRatio)
+            is Ankrimento.EpubAction.OpenWeb -> runOnUiThread { openUrl(action.url) }
+            is Ankrimento.EpubAction.Blocked -> runOnUiThread { toast(action.message) }
+            is Ankrimento.EpubAction.FollowLink ->
+                runOnUiThread {
+                    if (action.note.isEmpty()) {
+                        followLink(current, action)
+                    } else {
+                        // A footnote is read over the page, as in an ebook app; Go to note follows the link.
+                        sheet = {
+                            NoteSheet(
+                                text = action.note,
+                                onGoToNote = {
+                                    sheet = null
+                                    followLink(current, action)
+                                },
+                                onDismiss = { sheet = null },
+                            )
+                        }
+                    }
+                }
+        }
+    }
+
+    /** Opens the link's chapter at its anchor, as desktop does, keeping where it was tapped for Back. */
+    private fun followLink(
+        from: Ankrimento.EpubSection,
+        link: Ankrimento.EpubAction.FollowLink,
+    ) {
+        linkBack.addLast(from.index to link.fromRatio)
+        showLinkBack()
+        if (link.section == section?.index) {
+            runScript("window.incrementoOpenEpubAnchor && window.incrementoOpenEpubAnchor(${JSONObject.quote(link.fragment)});")
+        } else {
+            pendingFragment = link.fragment
+            lifecycleScope.launch { load(link.section, 0.0) }
+        }
+    }
+
+    private fun returnFromLink() {
+        val (index, ratio) = linkBack.removeLastOrNull() ?: return
+        showLinkBack()
+        lifecycleScope.launch { load(index, ratio) }
+    }
+
+    private fun showLinkBack() {
+        backFromLink.isEnabled = linkBack.isNotEmpty()
+        overlay =
+            if (linkBack.isEmpty()) {
+                null
+            } else {
+                { LinkBackChip(onBack = ::returnFromLink, modifier = Modifier.align(Alignment.BottomStart)) }
+            }
     }
 
     /** The previous chapter opens at its end, the next at its start. */
@@ -260,6 +334,9 @@ class EpubReaderActivity : ReaderActivity() {
     /** Opens the chapter of match [index]; its page script finds and selects the words, as desktop's result does. */
     private fun openHit(index: Int) {
         val hit = findHits.getOrNull(index) ?: return
+        // The find bar takes the place of the way back from a link.
+        linkBack.clear()
+        backFromLink.isEnabled = false
         findIndex = index
         pendingSearch = findQuery
         lifecycleScope.launch { load(hit.section, 0.0) }
@@ -385,7 +462,8 @@ class EpubReaderActivity : ReaderActivity() {
                     val current = section ?: return
                     lifecycleScope.launch {
                         val search = pendingSearch.also { pendingSearch = "" }
-                        val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio, search) }
+                        val fragment = pendingFragment.also { pendingFragment = "" }
+                        val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio, search, fragment) }
                         webView.evaluateJavascript(TOUCH_SELECTION_JS, null)
                         webView.evaluateJavascript(HIDE_READ_MARKER_JS, null)
                         webView.evaluateJavascript(script, null)

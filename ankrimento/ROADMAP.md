@@ -104,7 +104,7 @@ Mobile principles that guide every item:
 | ✅ | Pull past the end of a chapter for the next, past its start for the previous | |
 | ✅ | Swipe sideways to move one screen on or back (a couple of lines stay in view); it never changes chapter | |
 | ✅ | Search in book | Find in book: chapters matching (upstream's text index) with excerpts; a result opens its chapter with the words found and selected by the page script, as desktop does, then previous/next. Search ALL's EPUB results open the same way |
-| 🟡 | Links and footnotes inside the book | Opened externally or ignored |
+| ✅ | Links and footnotes inside the book | Links follow on a tap (desktop's links toggle, always on), resolved by upstream's own resolver: a footnote or other short passage shows in a sheet over the page with Go to note; other links open their chapter at the anchor; Back to where you were (chip or Back) returns to the exact place. Web links open in the browser; unsafe ones are refused with upstream's message |
 | ✅ | Highlights list and highlight notes | Highlights (⋮): the book's highlights by chapter with colour and note; one opens its chapter with its words found, or is recoloured, noted or deleted, the page following through its own hooks |
 
 ### Web
