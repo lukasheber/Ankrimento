@@ -247,6 +247,11 @@
         <item quantity="one">%d page read</item>
         <item quantity="other">%d pages read</item>
     </plurals>
+    <string name="ankrimento_library_search">Search titles</string>
+    <string name="ankrimento_library_sort">Sort</string>
+    <string name="ankrimento_library_sort_priority">Priority</string>
+    <string name="ankrimento_library_sort_title">Title</string>
+    <string name="ankrimento_library_sort_recent">Recently read</string>
     <!-- Search ALL -->
     <string name="ankrimento_search_all">Search ALL</string>
     <string name="ankrimento_search_all_hint">Search highlights, documents and cards</string>

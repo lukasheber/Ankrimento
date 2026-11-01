@@ -59,7 +59,7 @@ Mobile principles that guide every item:
 |---|---|---|
 | ✅ | Library screen (from the Incremento card): Continue reading on this device, documents by kind with position and priority, Add | |
 | ✅ | Deck-list overflow menu free of Incremento items: each has its place on the card, in the library or in settings | |
-| ⬜ | Library search, sort (title, priority, recent) and covers | |
+| ✅ | Library search, sort (title, priority, recent) and covers | Title search; sort by priority (the configured direction, as desktop's bookshelf), title, or recently read on this device; PDF and EPUB covers from desktop's cover fields |
 | ✅ | Add sheet: PDF, EPUB, web or video link, writing | Audio still to add |
 | ✅ | Share a link from any app to Incremento (web or video topic) | |
 | ✅ | Search ALL: highlights, sources, document text, cards [9] | From the Incremento card's ⋮ and the Library: upstream's own search with desktop's filters (as chips, saved as desktop saves them), results grouped as desktop groups them; a result opens its PDF page with the words highlighted, its EPUB section, or its card. PDF text is off by default, as on desktop |
@@ -217,7 +217,7 @@ Mobile principles that guide every item:
    annotation styles remain).
 8. ~~Knowledge tree screen, Search ALL, statistics screen, focus timer~~ (done).
 9. ~~EPUB tools to match the PDF's: search in the book, highlights list and notes~~ (done).
-10. Library search, sort and covers.
+10. ~~Library search, sort and covers~~ (done).
 11. Translations.
 
 Deferred: sync add-on and other sync work (until agreed with upstream's

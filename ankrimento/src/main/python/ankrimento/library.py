@@ -1,7 +1,8 @@
 """The library: Incremento's documents, as desktop's Document Bookshelf lists them.
 
 Each entry has what the bookshelf shows for a document: its kind, title,
-priority and where reading stopped, read from upstream's own progress
+priority, cover (the image named in the PDF or EPUB cover field, from the
+collection's media) and where reading stopped, read from upstream's own progress
 tables (``pdf_progress``, ``epub_progress``, ``video_progress``,
 ``web_progress``). Done topics (suspended) are flagged, not left out.
 """
@@ -23,6 +24,21 @@ KINDS = {
 _QUEUE_SUSPENDED = -1
 
 
+def _cover(col: Any, note: Any, kind: str) -> str:
+    """The cover image file desktop's bookshelf shows, or ""."""
+    import os
+
+    from incremento.backend.epub_manager import EPUB_COVER_FIELD
+    from incremento.backend.pdf_manager import PDF_COVER_FIELD
+
+    field = {"pdf": PDF_COVER_FIELD, "epub": EPUB_COVER_FIELD}.get(kind)
+    if field is None or field not in note.keys():
+        return ""
+    name = str(note[field] or "").strip()
+    path = os.path.join(col.media.dir(), name)
+    return path if name and "/" not in name and "\\" not in name and os.path.isfile(path) else ""
+
+
 def entries() -> list[dict[str, Any]]:
     from incremento.backend.db import get_connection
     from incremento.backend.knowledge_tree import _card_title
@@ -41,7 +57,8 @@ def entries() -> list[dict[str, Any]]:
     result = []
     for card_id in col.find_cards(search):
         card = col.get_card(card_id)
-        kind = KINDS.get(card.note().note_type()["name"])
+        note = card.note()
+        kind = KINDS.get(note.note_type()["name"])
         if kind is None:
             continue
         position = ""
@@ -65,6 +82,7 @@ def entries() -> list[dict[str, Any]]:
                 "priority": float(get_priority(addon_dir, profile, int(card_id))),
                 "position": position,
                 "done": card.queue == _QUEUE_SUSPENDED,
+                "cover": _cover(col, note, kind),
             }
         )
     return result

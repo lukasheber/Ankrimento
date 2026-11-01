@@ -4,18 +4,22 @@ package com.ichi2.anki.ankrimento
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -40,10 +44,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -53,7 +63,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import kotlin.math.roundToInt
 
@@ -67,6 +79,10 @@ class IncrementoHubActivity : ComponentActivity() {
     private var documents by mutableStateOf<List<Ankrimento.LibraryEntry>?>(null)
     private var recent by mutableStateOf<List<Ankrimento.LibraryEntry>>(emptyList())
     private var filter by mutableStateOf<String?>(null)
+    private var query by mutableStateOf("")
+    private var sort by mutableStateOf(SORT_PRIORITY)
+    private var lowerIsMoreImportant = true
+    private var recentOrder = emptyList<Long>()
     private var adding by mutableStateOf(false)
     private var askLink by mutableStateOf(false)
     private var askArticle by mutableStateOf(false)
@@ -130,14 +146,42 @@ class IncrementoHubActivity : ComponentActivity() {
                 toast(error.message ?: error.javaClass.simpleName)
                 emptyList()
             }
+        lowerIsMoreImportant =
+            runCatching { withCol { Ankrimento.settingsValues() }.optBoolean("priority_lower_is_more_important", true) }.getOrDefault(true)
         val byId = entries.associateBy { it.cardId }
+        recentOrder = RecentDocuments.cardIds(this)
         recent =
-            RecentDocuments
-                .cardIds(this)
+            recentOrder
                 .mapNotNull { byId[it] }
                 .filterNot { it.done }
                 .take(RECENT)
-        documents = entries.sortedWith(compareBy({ it.done }, { it.priority }, { it.title.lowercase() }))
+        documents = entries
+    }
+
+    /**
+     * The documents shown: of the chosen kind, with the search in their title, in the chosen order
+     * (desktop's bookshelf sorts by title or priority, in the configured direction; recently read is
+     * this device's reading history). Done ones come last.
+     */
+    private fun shown(all: List<Ankrimento.LibraryEntry>): List<Ankrimento.LibraryEntry> {
+        val words =
+            query
+                .trim()
+                .lowercase()
+                .split(Regex("\\s+"))
+                .filter { it.isNotEmpty() }
+        val matching = all.filter { entry -> (filter == null || entry.kind == filter) && words.all { it in entry.title.lowercase() } }
+        val alphabetical = matching.sortedBy { it.title.lowercase() }
+        val ordered =
+            when (sort) {
+                SORT_TITLE -> alphabetical
+                SORT_RECENT -> {
+                    val rank = recentOrder.withIndex().associate { (index, id) -> id to index }
+                    alphabetical.sortedBy { rank[it.cardId] ?: Int.MAX_VALUE }
+                }
+                else -> if (lowerIsMoreImportant) alphabetical.sortedBy { it.priority } else alphabetical.sortedByDescending { it.priority }
+            }
+        return ordered.sortedBy { it.done }
     }
 
     private fun open(entry: Ankrimento.LibraryEntry) {
@@ -227,8 +271,9 @@ class IncrementoHubActivity : ComponentActivity() {
                     }
                 }
                 item { SectionTitle(R.string.ankrimento_all_documents) }
+                item { SearchAndSort() }
                 item { KindFilters() }
-                val shown = all?.filter { filter == null || it.kind == filter }.orEmpty()
+                val shown = all?.let(::shown).orEmpty()
                 if (all != null && shown.isEmpty()) {
                     item {
                         Text(
@@ -273,12 +318,72 @@ class IncrementoHubActivity : ComponentActivity() {
     private fun RecentCard(entry: Ankrimento.LibraryEntry) {
         ElevatedCard(onClick = { open(entry) }, modifier = Modifier.width(200.dp)) {
             Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Icon(kindIcon(entry.kind), contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                Cover(entry, width = RECENT_COVER_WIDTH)
                 Text(entry.title, style = MaterialTheme.typography.titleSmall, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Text(details(entry, withPriority = false), style = MaterialTheme.typography.bodySmall, maxLines = 1)
             }
         }
     }
+
+    @Composable
+    private fun SearchAndSort() {
+        Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = query,
+                onValueChange = { query = it },
+                placeholder = { Text(stringResource(R.string.ankrimento_library_search)) },
+                leadingIcon = { Icon(IncrementoIcons.Search, contentDescription = null) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.ankrimento_library_sort), style = MaterialTheme.typography.labelLarge)
+                for ((value, label) in listOf(
+                    SORT_PRIORITY to R.string.ankrimento_library_sort_priority,
+                    SORT_TITLE to R.string.ankrimento_library_sort_title,
+                    SORT_RECENT to R.string.ankrimento_library_sort_recent,
+                )) {
+                    FilterChip(selected = sort == value, onClick = { sort = value }, label = { Text(stringResource(label)) })
+                }
+            }
+        }
+    }
+
+    /** The document's cover (as desktop's bookshelf shows it) when it has one, otherwise its kind. */
+    @Composable
+    private fun Cover(
+        entry: Ankrimento.LibraryEntry,
+        width: Int,
+    ) {
+        val image by produceState<ImageBitmap?>(null, entry.cover) {
+            value = if (entry.cover.isEmpty()) null else withContext(Dispatchers.IO) { thumbnail(entry.cover, width) }
+        }
+        val loaded = image
+        if (loaded != null) {
+            Image(
+                loaded,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.width(width.dp).height((width * COVER_RATIO).dp).clip(MaterialTheme.shapes.extraSmall),
+            )
+        } else {
+            Icon(kindIcon(entry.kind), contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        }
+    }
+
+    /** A cover decoded at about the size shown. */
+    private fun thumbnail(
+        path: String,
+        widthDp: Int,
+    ): ImageBitmap? =
+        runCatching {
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(path, bounds)
+            val target = (widthDp * resources.displayMetrics.density).toInt().coerceAtLeast(1)
+            var sample = 1
+            while (bounds.outWidth / (sample * 2) >= target) sample *= 2
+            BitmapFactory.decodeFile(path, BitmapFactory.Options().apply { inSampleSize = sample })?.asImageBitmap()
+        }.getOrNull()
 
     @Composable
     private fun KindFilters() {
@@ -298,7 +403,7 @@ class IncrementoHubActivity : ComponentActivity() {
         ListItem(
             headlineContent = { Text(entry.title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
             supportingContent = { Text(details(entry, withPriority = true), maxLines = 1) },
-            leadingContent = { Icon(kindIcon(entry.kind), contentDescription = null) },
+            leadingContent = { Cover(entry, width = ROW_COVER_WIDTH) },
             trailingContent =
                 if (entry.done) {
                     { Text(stringResource(R.string.ankrimento_done), style = MaterialTheme.typography.labelMedium) }
@@ -398,6 +503,14 @@ class IncrementoHubActivity : ComponentActivity() {
 
     companion object {
         private const val RECENT = 8
+        private const val SORT_PRIORITY = "priority"
+        private const val SORT_TITLE = "title"
+        private const val SORT_RECENT = "recent"
+        private const val ROW_COVER_WIDTH = 40
+        private const val RECENT_COVER_WIDTH = 64
+
+        /** Book covers are taller than wide. */
+        private const val COVER_RATIO = 1.4f
 
         private val KINDS =
             linkedMapOf(

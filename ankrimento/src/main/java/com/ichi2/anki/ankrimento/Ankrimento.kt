@@ -524,6 +524,8 @@ object Ankrimento {
         val priority: Double,
         val position: String,
         val done: Boolean,
+        /** The cover image file desktop's bookshelf shows (PDF, EPUB), or "". */
+        val cover: String = "",
     )
 
     /** The Incremento settings shown on mobile (upstream's config keys), as JSON. */
@@ -559,6 +561,7 @@ object Ankrimento {
                 priority = entry.getDouble("priority"),
                 position = entry.getString("position"),
                 done = entry.getBoolean("done"),
+                cover = entry.optString("cover"),
             )
         }
     }
