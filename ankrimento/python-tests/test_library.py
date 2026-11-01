@@ -45,3 +45,16 @@ def test_a_document_with_a_cover_image_gives_its_file(rt, tmp_path):
     import os
 
     assert os.path.isfile(cover)
+
+
+def test_reading_positions_come_as_numbers_for_the_app_to_word(rt, tmp_path):
+    """"p. 12" and "ch. 3" are words: the app writes them in its own language."""
+    from test_epub import _write_epub
+
+    path = tmp_path / "Positioned.epub"
+    _write_epub(path)
+    book = facade.import_epub(str(path), "Positioned", priority=50.0)
+    facade.epub_message(book, 1, "incremento_epub_progress:" + json.dumps({"cardId": book, "sectionIndex": 1, "scrollRatio": 0.0}))
+
+    entry = next(entry for entry in json.loads(facade.library()) if entry["card_id"] == book)
+    assert (entry["chapter"], entry["page"]) == (2, 0)

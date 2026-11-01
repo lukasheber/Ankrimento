@@ -61,13 +61,15 @@ def entries() -> list[dict[str, Any]]:
         kind = KINDS.get(note.note_type()["name"])
         if kind is None:
             continue
-        position = ""
+        position, page, chapter = "", 0, 0
         if kind == "pdf":
             row = progress("pdf_progress", "page", card_id)
-            position = f"p. {row[0]}" if row else ""
+            page = int(row[0]) if row else 0
+            position = f"p. {page}" if row else ""
         elif kind == "epub":
             row = progress("epub_progress", "section_index", card_id)
-            position = f"ch. {int(row[0]) + 1}" if row else ""
+            chapter = int(row[0]) + 1 if row else 0
+            position = f"ch. {chapter}" if row else ""
         elif kind == "video":
             row = progress("video_progress", "position", card_id)
             position = fmt_time(float(row[0])) if row and row[0] else ""
@@ -81,6 +83,9 @@ def entries() -> list[dict[str, Any]]:
                 "title": _card_title(card),
                 "priority": float(get_priority(addon_dir, profile, int(card_id))),
                 "position": position,
+                # The page or chapter reached, for the app to word in its language (0: none).
+                "page": page,
+                "chapter": chapter,
                 "done": card.queue == _QUEUE_SUSPENDED,
                 "cover": _cover(col, note, kind),
             }

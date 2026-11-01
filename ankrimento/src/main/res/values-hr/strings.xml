@@ -198,6 +198,7 @@
     <string name="ankrimento_settings_device">Ovaj uređaj</string>
     <string name="ankrimento_choose_date">Odaberi datum…</string>
     <string name="ankrimento_contents_empty">Ovaj dokument nema sadržaj.</string>
+    <string name="ankrimento_chapter_short">pogl. %d</string>
     <string name="ankrimento_page_short">str. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Stablo znanja</string>

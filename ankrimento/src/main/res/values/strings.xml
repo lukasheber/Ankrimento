@@ -195,6 +195,7 @@
     <string name="ankrimento_settings_device">This device</string>
     <string name="ankrimento_choose_date">Choose date…</string>
     <string name="ankrimento_contents_empty">This document has no contents list.</string>
+    <string name="ankrimento_chapter_short">ch. %d</string>
     <string name="ankrimento_page_short">p. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Knowledge tree</string>

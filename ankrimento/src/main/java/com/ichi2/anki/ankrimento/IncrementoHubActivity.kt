@@ -486,7 +486,11 @@ class IncrementoHubActivity : ComponentActivity() {
         val parts =
             listOfNotNull(
                 stringResource(KINDS.getValue(entry.kind)),
-                entry.position.takeIf { it.isNotEmpty() },
+                when {
+                    entry.page > 0 -> stringResource(R.string.ankrimento_page_short, entry.page)
+                    entry.chapter > 0 -> stringResource(R.string.ankrimento_chapter_short, entry.chapter)
+                    else -> entry.position.takeIf { it.isNotEmpty() }
+                },
                 if (withPriority) stringResource(R.string.ankrimento_priority_chip, entry.priority.roundToInt()) else null,
             )
         return parts.joinToString(" · ")

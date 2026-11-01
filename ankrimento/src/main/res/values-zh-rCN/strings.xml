@@ -192,6 +192,7 @@
     <string name="ankrimento_settings_device">本设备</string>
     <string name="ankrimento_choose_date">选择日期…</string>
     <string name="ankrimento_contents_empty">此文档没有目录。</string>
+    <string name="ankrimento_chapter_short">第 %d 章</string>
     <string name="ankrimento_page_short">第 %d 页</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">知识树</string>

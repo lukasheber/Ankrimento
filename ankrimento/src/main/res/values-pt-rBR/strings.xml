@@ -198,6 +198,7 @@
     <string name="ankrimento_settings_device">Este aparelho</string>
     <string name="ankrimento_choose_date">Escolher data…</string>
     <string name="ankrimento_contents_empty">Este documento não tem sumário.</string>
+    <string name="ankrimento_chapter_short">cap. %d</string>
     <string name="ankrimento_page_short">p. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Árvore do conhecimento</string>

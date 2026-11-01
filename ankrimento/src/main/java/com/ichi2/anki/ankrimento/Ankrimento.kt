@@ -529,6 +529,9 @@ object Ankrimento {
         val done: Boolean,
         /** The cover image file desktop's bookshelf shows (PDF, EPUB), or "". */
         val cover: String = "",
+        /** The PDF page or EPUB chapter reached (0: none), for [position] in the app's language. */
+        val page: Int = 0,
+        val chapter: Int = 0,
     )
 
     /** Desktop's review buttons (`group`, `done`, `postpone`, `extract`) and whether each is shown. */
@@ -577,6 +580,8 @@ object Ankrimento {
                 position = entry.getString("position"),
                 done = entry.getBoolean("done"),
                 cover = entry.optString("cover"),
+                page = entry.optInt("page"),
+                chapter = entry.optInt("chapter"),
             )
         }
     }
