@@ -40,3 +40,47 @@ def test_links_get_their_page_or_video_title(monkeypatch):
 
     monkeypatch.setattr(links, "_fetch", offline)
     assert links.title("https://example.org/essay") == ""
+
+
+_PNG = b"\x89PNG\r\n\x1a\n" + b"\x00" * 64
+
+
+def test_an_articles_images_come_with_it(rt, monkeypatch):
+    """Upstream turns images into links; the phone downloads them, so upstream's import stores them."""
+    import os
+
+    import incremento.backend.webpage_markdown as webpage_markdown
+
+    from ankrimento import web_images
+
+    article = dict(_ARTICLE, title="Illustrated reading")
+    article["markdown_document"] += (
+        "\n[Image: A diagram](<https://example.org/diagram.png>)\n\n[Image: Gone](<https://example.org/gone.png>)\n"
+    )
+    monkeypatch.setattr(webpage_markdown, "fetch_webpage_markdown", lambda url, **_: dict(article))
+
+    def download(url: str) -> bytes:
+        if url.endswith("gone.png"):
+            raise OSError("404")
+        return _PNG
+
+    monkeypatch.setattr(web_images, "_download", download)
+    added = json.loads(facade.import_web_document("https://example.org/illustrated"))
+
+    opened = json.loads(facade.epub_open(added["card_id"], 0))
+    stored = [name for _, _, names in os.walk(opened["root"]) for name in names]
+    assert any(name.endswith(".png") for name in stored)
+    text = "".join(open(os.path.join(d, n), encoding="utf8", errors="ignore").read() for d, _, ns in os.walk(opened["root"]) for n in ns if n.endswith((".xhtml", ".html")))
+    assert "<img" in text
+    # One that could not be downloaded stays a link to it, as upstream wrote it.
+    assert "https://example.org/gone.png" in text
+
+
+def test_image_links_become_local_images_within_upstreams_limits(tmp_path, monkeypatch):
+    from ankrimento import web_images
+
+    monkeypatch.setattr(web_images, "_download", lambda url: _PNG)
+    markdown = "Text [Image: One](<https://example.org/1.png>) and [Image: One](<https://example.org/1.png>)"
+    local = web_images.localize(markdown, tmp_path)
+    assert local == "Text ![One](web-images/image-1.png) and ![One](web-images/image-1.png)"
+    assert (tmp_path / "web-images" / "image-1.png").read_bytes() == _PNG

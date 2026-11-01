@@ -114,7 +114,7 @@ Mobile principles that guide every item:
 | ✅ | Page with upstream bridge; scroll position saved; extract selection | |
 | ✅ | Back steps through page history first | |
 | ✅ | **Import a web page as an article**: clean text read in the EPUB reader (Aa sheet, contents, progress, extracts), from the Library's Add or the share sheet | Upstream's page-to-Markdown fetch and Markdown document import, so desktop reads it too |
-| ⬜ | Images in imported articles | Upstream's converter turns images into text links ("[Image: …](url)"); download them or drop the links |
+| ✅ | Images in imported articles | Upstream's converter turns images into links; the phone downloads each one beside the article first (through upstream's public-network fetch, within its import limits), so upstream's Markdown import stores the pictures with the document, for desktop too. One that can't be fetched stays upstream's link. Checked on the tablet with a Wikipedia article |
 | ⏸ | Webpage to PDF [5] | Deferred in favour of the HTML / plain text import above |
 | ⬜ | Web extract anchors (jump back to the extract's place) | |
 
@@ -224,7 +224,7 @@ Mobile principles that guide every item:
 14. ~~Session preview before starting~~ (done).
 15. ~~New AnkiDroid study screen (ReviewerFragment) opens readers~~ (done).
 16. EPUB paged mode.
-17. Images in imported web articles.
+17. ~~Images in imported web articles~~ (done).
 18. ~~Automatic backups~~ (built; the folder picker step still to try on a device).
 19. ~~PDF annotation styles and bookmark comments~~ (done; EPUB styles too).
 20. ~~Advanced options: phase order, Order values~~ (done; locks and groups only link desktop's sliders).

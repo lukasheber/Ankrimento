@@ -571,6 +571,7 @@ def import_web_document(url: str, deck_name: str = "Topics", priority: float = 5
     import os
     import re
     import tempfile
+    from pathlib import Path
 
     from incremento.backend import webpage_markdown
     from incremento.backend.markdown_manager import add_markdown_card
@@ -582,8 +583,11 @@ def import_web_document(url: str, deck_name: str = "Topics", priority: float = 5
     with tempfile.TemporaryDirectory() as folder:
         stem = re.sub(r"[^\w\- ]+", "", title)[:80].strip() or "Web page"
         path = os.path.join(folder, f"{stem}.md")
+        from ankrimento import web_images
+
         with open(path, "w", encoding="utf8") as file:
-            file.write(page["markdown_document"])
+            # Its images, downloaded beside it, so upstream's import keeps them with the document.
+            file.write(web_images.localize(page["markdown_document"], Path(folder)))
         card_id = add_markdown_card(str(rt.addon_dir), rt.profile, rt.col, path, title, deck_name=deck_name)
     set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
     return _dumps({"card_id": int(card_id), "title": title})
