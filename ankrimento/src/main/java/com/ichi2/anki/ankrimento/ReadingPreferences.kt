@@ -52,7 +52,10 @@ data class ReadingPreferences(
             " var style = document.getElementById('ankrimento-reading');" +
             " if (!style) { style = document.createElement('style'); style.id = 'ankrimento-reading';" +
             " document.head.appendChild(style); }" +
-            " var css = 'body { box-sizing: border-box !important; max-width: 40em !important; margin: 0 auto !important;" +
+            // Upstream's page style pads `html.incremento-epub-scaled body` with !important: the same
+            // selector, added after it, is needed for these margins to apply.
+            " var css = 'body, html.incremento-epub-scaled body { box-sizing: border-box !important;" +
+            " max-width: 40em !important; margin: 0 auto !important;" +
             " padding: 1em ' + o.margin + 'em 3em !important; line-height: ' + o.lineHeight + ' !important; }'" +
             " + ' body p, body li, body blockquote, body dd { line-height: inherit !important; }'" +
             " + ' body img, body svg, body video { max-width: 100% !important; height: auto !important; }';" +
