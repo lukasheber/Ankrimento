@@ -59,6 +59,11 @@ class IncrementoMenu(
     init {
         activity.lifecycleScope.launch(Dispatchers.IO) {
             runCatching { Ankrimento.warmUp(activity) }.onFailure { Timber.w(it, "Ankrimento warm-up failed") }
+            // Then the rest of the start, so the first Incremento screen opens without waiting for it.
+            if (settings.hasStarted) {
+                runCatching { CollectionManager.withCol { Ankrimento.start(activity, this) } }
+                    .onFailure { Timber.w(it, "Ankrimento start failed") }
+            }
         }
         // Desktop's automatic backups: when the app opens, then whenever the interval has passed.
         activity.lifecycleScope.launch {

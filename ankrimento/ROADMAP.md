@@ -197,7 +197,7 @@ Mobile principles that guide every item:
 | 🟡 | Translations | Android screens in Brazilian Portuguese, Croatian and Simplified Chinese (Croatian and Chinese with desktop's own terms from upstream's catalogs, AnkiDroid's for cards and grades); upstream's messages follow the app's language at startup as desktop's do (Incremento's language setting, or the app's when auto). Upstream has no Portuguese, so its messages stay English in pt-BR. Machine-made: a native speaker should review each language |
 | ⬜ | Getting Started guide (first run) | |
 | ➖ | Dependency installer [13] | Desktop tools (FFmpeg, OCR) |
-| 🟡 | Startup time: Python cold start about 20 s on the first launch, about 3 s after warm-up | Warm-up runs on app start |
+| ✅ | Startup time | Measured on the tablet (Galaxy Tab S6 Lite), cold process, including right after an app update: Python warms up in 1.6 to 2.3 s while the deck list opens, then Incremento finishes starting in the background (about 1.8 s), so the first Incremento screen no longer waits for it. A first launch on fresh app data (Chaquopy unpacking) is not measured |
 | 🟡 | Tests: Python tests against the real backend, reviewer Robolectric tests, on-device smoke test | Add UI tests for the learning loop |
 | 🟡 | Tablet layout: works full screen | Two-pane library plus reader to consider |
 
@@ -234,7 +234,7 @@ Mobile principles that guide every item:
 
 Daily reading and extracting:
 
-22. Faster first launch (Python cold start about 20 s).
+22. ~~Faster first launch~~ (done: Incremento starts in the background after warm-up; the 20 s figure was out of date).
 23. Extract from the card shown in AnkiDroid's reviewer; add a card from scratch with a priority.
 24. Web extract anchors (jump from an extract back to its place in the page).
 25. Open a video extract's link at its moment, on the phone.
@@ -244,7 +244,7 @@ Daily reading and extracting:
 Things desktop has:
 
 28. Longer statistics: 30 days, a year, tag charts, the focus timer's numbers.
-29. Tablet two-pane layout (library beside the reader).
+29. Tablet two-pane layout (library beside the reader). (Deferred)
 30. PDF cross-references and page links; OCR status.
 31. Markdown documents (import) and the writing formatting toolbar.
 32. Audio import; check audio cards.
