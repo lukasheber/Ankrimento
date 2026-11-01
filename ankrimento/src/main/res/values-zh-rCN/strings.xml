@@ -196,6 +196,14 @@
     <string name="ankrimento_page_short">第 %d 页</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">知识树</string>
+    <string name="ankrimento_tree_show">在知识树中显示</string>
+    <string name="ankrimento_tree_search_hint">搜索知识树</string>
+    <string name="ankrimento_tree_go_to_parent">转到上级</string>
+    <string name="ankrimento_tree_not_found">此卡片不在知识树中</string>
+    <string name="ankrimento_tree_postpone">推迟此分支…</string>
+    <string name="ankrimento_tree_postpone_title">推迟此分支</string>
+    <string name="ankrimento_tree_postpone_preset">使用推迟预设“%s”</string>
+    <string name="ankrimento_tree_postpone_defaults">使用默认推迟设置</string>
     <string name="ankrimento_open">打开</string>
     <string name="ankrimento_expand">展开</string>
     <string name="ankrimento_collapse">折叠</string>

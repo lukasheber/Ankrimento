@@ -202,6 +202,14 @@
     <string name="ankrimento_page_short">str. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Stablo znanja</string>
+    <string name="ankrimento_tree_show">Prikaži u stablu znanja</string>
+    <string name="ankrimento_tree_search_hint">Pretraži stablo</string>
+    <string name="ankrimento_tree_go_to_parent">Idi na nadređeni</string>
+    <string name="ankrimento_tree_not_found">Ova karta nije u stablu znanja</string>
+    <string name="ankrimento_tree_postpone">Odgodi ovu granu…</string>
+    <string name="ankrimento_tree_postpone_title">Odgodi ovu granu</string>
+    <string name="ankrimento_tree_postpone_preset">S predloškom odgode „%s”</string>
+    <string name="ankrimento_tree_postpone_defaults">Sa zadanim postavkama odgode</string>
     <string name="ankrimento_open">Otvori</string>
     <string name="ankrimento_expand">Rasklopi</string>
     <string name="ankrimento_collapse">Sklopi</string>

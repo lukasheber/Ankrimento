@@ -313,6 +313,11 @@ abstract class ReaderActivity : ComponentActivity() {
                 add(ReaderTool(getString(R.string.ankrimento_show_card)) { finishWith(RESULT_SHOW_CARD, null) })
             }
             add(ReaderTool(getString(R.string.ankrimento_timer_title)) { timerSheet = true })
+            add(
+                ReaderTool(
+                    getString(R.string.ankrimento_tree_show),
+                ) { startActivity(KnowledgeTreeActivity.intent(this@ReaderActivity, cardId)) },
+            )
         }
 
     /** As desktop's summary reads today: pages read and cards reviewed, from Incremento's statistics. */

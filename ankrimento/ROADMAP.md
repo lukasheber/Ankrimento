@@ -64,7 +64,7 @@ Mobile principles that guide every item:
 | ✅ | Share a link from any app to Incremento (web or video topic) | |
 | ✅ | Search ALL: highlights, sources, document text, cards [9] | From the Incremento card's ⋮ and the Library: upstream's own search with desktop's filters (as chips, saved as desktop saves them), results grouped as desktop groups them; a result opens its PDF page with the words highlighted, its EPUB section, or its card. PDF text is off by default, as on desktop |
 | ✅ | Knowledge tree screen [9]: fold/unfold branches, kind and priority per node; Open, Study this branch, Priority | From the Library's top bar and the menu |
-| ⬜ | Knowledge tree: reveal the current card, go to parent, search, postpone a subtree | |
+| ✅ | Knowledge tree: reveal the current card, go to parent, search, postpone a subtree | Readers' ⋮ → Show in knowledge tree opens the tree with the card's branch unfolded and the card marked; the node sheet's Go to parent; the top bar's search (upstream's, titles and note text) reveals a result; Postpone this branch… shows upstream's simulation with the preset desktop's postpone dialog would load (the branch's, else the default, else upstream's defaults), then applies it |
 | ➖ | Command palette, keyboard shortcuts [14] | Replaced by visible tools and gestures; hardware keyboard shortcuts maybe later |
 
 ## 3. Readers [6, 7, 8]
@@ -219,7 +219,7 @@ Mobile principles that guide every item:
 9. ~~EPUB tools to match the PDF's: search in the book, highlights list and notes~~ (done).
 10. ~~Library search, sort and covers~~ (done).
 11. ~~Translations~~ (pt-BR, hr, zh-Hans done; native review needed).
-12. Knowledge tree: reveal the current card, go to parent, search, postpone a subtree.
+12. ~~Knowledge tree: reveal the current card, go to parent, search, postpone a subtree~~ (done).
 13. "Keep extracting" queue (several extracts, then one review).
 14. Session preview before starting.
 15. New AnkiDroid study screen (ReviewerFragment) opens readers.

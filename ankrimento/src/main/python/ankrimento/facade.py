@@ -144,6 +144,27 @@ def knowledge_tree() -> str:
     )
 
 
+def tree_search(query: str) -> str:
+    """Knowledge tree nodes matching ``query`` in their title or note text, in tree order."""
+    from ankrimento import tree
+
+    return _dumps(tree.search(query))
+
+
+def tree_postpone_plan(root_card_id: int) -> str:
+    """Upstream's simulation of postponing a branch: preset, summary lines, count."""
+    from ankrimento import tree
+
+    return _dumps(tree.postpone_plan(root_card_id))
+
+
+def tree_postpone_branch(root_card_id: int) -> str:
+    """Postpones a branch's qualifying cards as desktop's postpone dialog does."""
+    from ankrimento import tree
+
+    return _dumps(tree.postpone_branch(root_card_id))
+
+
 def start_branch_session(root_card_id: int) -> bool:
     """A session limited to one branch of the tree, as desktop's "Study branch" starts it."""
     from incremento.backend.knowledge_tree import build_branch_study_scope

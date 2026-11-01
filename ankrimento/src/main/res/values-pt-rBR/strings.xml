@@ -202,6 +202,14 @@
     <string name="ankrimento_page_short">p. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Árvore do conhecimento</string>
+    <string name="ankrimento_tree_show">Mostrar na árvore do conhecimento</string>
+    <string name="ankrimento_tree_search_hint">Pesquisar na árvore</string>
+    <string name="ankrimento_tree_go_to_parent">Ir para o pai</string>
+    <string name="ankrimento_tree_not_found">Este cartão não está na árvore do conhecimento</string>
+    <string name="ankrimento_tree_postpone">Adiar este ramo…</string>
+    <string name="ankrimento_tree_postpone_title">Adiar este ramo</string>
+    <string name="ankrimento_tree_postpone_preset">Com a predefinição de adiamento “%s”</string>
+    <string name="ankrimento_tree_postpone_defaults">Com as configurações padrão de adiamento</string>
     <string name="ankrimento_open">Abrir</string>
     <string name="ankrimento_expand">Expandir</string>
     <string name="ankrimento_collapse">Recolher</string>

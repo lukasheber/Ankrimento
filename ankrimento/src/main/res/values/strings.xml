@@ -199,6 +199,14 @@
     <string name="ankrimento_page_short">p. %d</string>
     <!-- Knowledge tree screen -->
     <string name="ankrimento_knowledge_tree_title">Knowledge tree</string>
+    <string name="ankrimento_tree_show">Show in knowledge tree</string>
+    <string name="ankrimento_tree_search_hint">Search the tree</string>
+    <string name="ankrimento_tree_go_to_parent">Go to parent</string>
+    <string name="ankrimento_tree_not_found">This card is not in the knowledge tree</string>
+    <string name="ankrimento_tree_postpone">Postpone this branch…</string>
+    <string name="ankrimento_tree_postpone_title">Postpone this branch</string>
+    <string name="ankrimento_tree_postpone_preset">With the postpone preset “%s”</string>
+    <string name="ankrimento_tree_postpone_defaults">With the default postpone settings</string>
     <string name="ankrimento_open">Open</string>
     <string name="ankrimento_expand">Unfold</string>
     <string name="ankrimento_collapse">Fold</string>

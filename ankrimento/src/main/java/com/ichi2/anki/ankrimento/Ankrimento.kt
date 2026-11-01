@@ -977,7 +977,44 @@ object Ankrimento {
         val title: String,
         val kind: String,
         val priority: Double?,
+        val parentId: Long? = null,
     )
+
+    /** A node matching a tree search, with upstream's reason ("Title", a field's name). */
+    data class TreeHit(
+        val cardId: Long,
+        val title: String,
+        val kind: String,
+        val reason: String,
+    )
+
+    /** Upstream's simulation of postponing a branch: the preset used ("" for the defaults), its summary, how many move. */
+    data class PostponePlan(
+        val preset: String,
+        val lines: List<String>,
+        val count: Int,
+    )
+
+    @WorkerThread
+    fun treeSearch(query: String): List<TreeHit> {
+        val hits = JSONArray(requireFacade().callAttr("tree_search", query).toString())
+        return List(hits.length()) { index ->
+            val hit = hits.getJSONObject(index)
+            TreeHit(hit.getLong("card_id"), displayTitle(hit.optString("title")), hit.optString("node_kind"), hit.optString("match_reason"))
+        }
+    }
+
+    @WorkerThread
+    fun treePostponePlan(rootCardId: Long): PostponePlan {
+        val plan = JSONObject(requireFacade().callAttr("tree_postpone_plan", rootCardId).toString())
+        val lines = plan.getJSONArray("lines")
+        return PostponePlan(plan.optString("preset"), List(lines.length()) { lines.getString(it) }, plan.optInt("count"))
+    }
+
+    /** Postpones the branch as planned; desktop's message about it. */
+    @WorkerThread
+    fun treePostponeBranch(rootCardId: Long): String =
+        JSONObject(requireFacade().callAttr("tree_postpone_branch", rootCardId).toString()).optString("message")
 
     @WorkerThread
     fun knowledgeTree(): List<TreeNode> {
@@ -990,6 +1027,7 @@ object Ankrimento {
                 title = displayTitle(row.optString("title")),
                 kind = row.optString("node_kind"),
                 priority = if (row.isNull("priority")) null else row.getDouble("priority"),
+                parentId = if (row.isNull("parent_card_id")) null else row.getLong("parent_card_id"),
             )
         }
     }
