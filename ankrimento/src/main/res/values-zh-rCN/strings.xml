@@ -365,6 +365,15 @@
     <string name="ankrimento_options_share">会话份额</string>
     <string name="ankrimento_options_media_outside_tags">标签配额之外的文档和媒体</string>
     <string name="ankrimento_options_media_outside_tags_help">关闭：挑选的文档和媒体必须带有上述标签。开启：标签未命中时可退而选择该类型的任意卡片。</string>
+    <string name="ankrimento_options_phases">阶段顺序</string>
+    <string name="ankrimento_options_phases_help">会话依次填充的各个部分。启用严格执行时，关闭的阶段会被跳过。</string>
+    <string name="ankrimento_options_phase_up">提前</string>
+    <string name="ankrimento_options_phase_down">延后</string>
+    <string name="ankrimento_options_order">顺序值</string>
+    <string name="ankrimento_options_order_help">设有顺序值的标签和内容类型会被优先安排，数字小的在前，与电脑版的优先顺序相同。</string>
+    <string name="ankrimento_options_order_none">顺序：无</string>
+    <string name="ankrimento_options_order_value">顺序：%d</string>
+    <string name="ankrimento_options_order_hint">1、2、3…（留空：无）</string>
     <string name="ankrimento_options_balancing">平衡</string>
     <string name="ankrimento_options_strict">严格执行</string>
     <string name="ankrimento_options_strict_help">会话的每个部分都会先完全填满再进入下一部分。关闭：每次挑选时所有目标混合考虑。</string>

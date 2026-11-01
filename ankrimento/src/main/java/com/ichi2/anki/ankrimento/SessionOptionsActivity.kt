@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,7 +43,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
@@ -129,16 +132,17 @@ class SessionOptionsActivity : ComponentActivity() {
                 TagQuotas(current)
                 ContentFirst(current)
                 Balancing(current)
+                Phases(current)
             }
         }
         editing?.let { key ->
             TextDialog(
                 key,
-                options
-                    ?.optString(key)
-                    .orEmpty()
-                    .takeIf { key != TAG }
-                    .orEmpty(),
+                when {
+                    key == TAG -> ""
+                    key.startsWith(ORDER) -> orderOf(key)?.toString().orEmpty()
+                    else -> options?.optString(key).orEmpty()
+                },
             )
         }
     }
@@ -167,6 +171,7 @@ class SessionOptionsActivity : ComponentActivity() {
             QuotaSlider(row.getString("tag"), row.getInt("weight"), onRemove = { change("tags", tags.without(index)) }) { weight ->
                 change("tags", JSONArray(tags.toString()).apply { getJSONObject(index).put("weight", weight) })
             }
+            if (current.optBoolean("priority_order")) OrderButton(row, "$ORDER:tags:$index")
         }
         ListItem(
             headlineContent = { Text(stringResource(R.string.ankrimento_options_add_tag)) },
@@ -205,6 +210,7 @@ class SessionOptionsActivity : ComponentActivity() {
                 QuotaSlider(stringResource(R.string.ankrimento_options_share), row.getInt("weight"), onRemove = null) { weight ->
                     change("content_types", JSONArray(rows.toString()).apply { getJSONObject(index).put("weight", weight) })
                 }
+                if (current.optBoolean("priority_order")) OrderButton(row, "$ORDER:content_types:$index")
             }
         }
         Toggle(
@@ -219,6 +225,9 @@ class SessionOptionsActivity : ComponentActivity() {
         Header(R.string.ankrimento_options_balancing, null)
         Toggle(R.string.ankrimento_options_strict, R.string.ankrimento_options_strict_help, current.getBoolean("strict")) {
             change("strict", it)
+        }
+        Toggle(R.string.ankrimento_options_order, R.string.ankrimento_options_order_help, current.optBoolean("priority_order")) {
+            change("priority_order", it)
         }
         Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
             Text(stringResource(R.string.ankrimento_options_scope), style = MaterialTheme.typography.bodyLarge)
@@ -244,6 +253,85 @@ class SessionOptionsActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    /** Desktop's phase funnel: the parts a session fills, in order; with strict enforcement, one turned off is skipped. */
+    @Composable
+    private fun Phases(current: JSONObject) {
+        Header(R.string.ankrimento_options_phases, R.string.ankrimento_options_phases_help)
+        val phases = current.optJSONArray("phases") ?: return
+        val ids = List(phases.length()) { phases.getJSONObject(it).getString("id") }
+        val strict = current.getBoolean("strict")
+        for (index in ids.indices) {
+            val phase = phases.getJSONObject(index)
+
+            fun move(by: Int) {
+                val order = ids.toMutableList()
+                order.add(index + by, order.removeAt(index))
+                change("phase_order", JSONArray(order))
+            }
+            ListItem(
+                headlineContent = { Text("${index + 1}. ${phase.getString("label")}") },
+                supportingContent = { Text(phase.optString("hint")) },
+                leadingContent = {
+                    Column {
+                        IconButton(onClick = { move(-1) }, enabled = index > 0) {
+                            Icon(
+                                IncrementoIcons.ExpandMore,
+                                contentDescription = stringResource(R.string.ankrimento_options_phase_up),
+                                modifier = Modifier.rotate(180f),
+                            )
+                        }
+                        IconButton(onClick = { move(1) }, enabled = index < ids.lastIndex) {
+                            Icon(IncrementoIcons.ExpandMore, contentDescription = stringResource(R.string.ankrimento_options_phase_down))
+                        }
+                    }
+                },
+                trailingContent = {
+                    Switch(
+                        checked = phase.getBoolean("enabled"),
+                        enabled = strict,
+                        onCheckedChange = { on -> change("phases_enabled", JSONObject().put(phase.getString("id"), on)) },
+                    )
+                },
+            )
+        }
+    }
+
+    /** A row's Order value (desktop's priority order): its number, or none; tapping edits it. */
+    @Composable
+    private fun OrderButton(
+        row: JSONObject,
+        key: String,
+    ) {
+        val order = row.optInt("order", 0).takeIf { !row.isNull("order") && it > 0 }
+        TextButton(onClick = { editing = key }, modifier = Modifier.padding(start = 4.dp)) {
+            Text(
+                if (order == null) {
+                    stringResource(R.string.ankrimento_options_order_none)
+                } else {
+                    stringResource(R.string.ankrimento_options_order_value, order)
+                },
+            )
+        }
+    }
+
+    /** The Order value an [ORDER] key ("order:tags:2") points at. */
+    private fun orderOf(key: String): Int? {
+        val (_, list, index) = key.split(':')
+        val row = options?.optJSONArray(list)?.optJSONObject(index.toInt()) ?: return null
+        return row.optInt("order", 0).takeIf { !row.isNull("order") && it > 0 }
+    }
+
+    private fun setOrder(
+        key: String,
+        text: String,
+    ) {
+        val (_, list, index) = key.split(':')
+        val rows = JSONArray(options?.optJSONArray(list)?.toString() ?: return)
+        val order = text.trim().toIntOrNull()?.takeIf { it > 0 }
+        rows.getJSONObject(index.toInt()).put("order", order ?: JSONObject.NULL)
+        change(list, rows)
     }
 
     @Composable
@@ -319,14 +407,16 @@ class SessionOptionsActivity : ComponentActivity() {
     ) {
         var text by remember(key) { mutableStateOf(initial) }
         val adding = key == TAG
+        val ordering = key.startsWith(ORDER)
         AlertDialog(
             onDismissRequest = { editing = null },
             title = {
                 Text(
                     stringResource(
-                        when (key) {
-                            TAG -> R.string.ankrimento_options_add_tag
-                            "topics_filter" -> R.string.ankrimento_options_topics_filter
+                        when {
+                            adding -> R.string.ankrimento_options_add_tag
+                            ordering -> R.string.ankrimento_options_order
+                            key == "topics_filter" -> R.string.ankrimento_options_topics_filter
                             else -> R.string.ankrimento_options_items_filter
                         },
                     ),
@@ -337,8 +427,17 @@ class SessionOptionsActivity : ComponentActivity() {
                     value = text,
                     onValueChange = { text = it },
                     placeholder = {
-                        Text(stringResource(if (adding) R.string.ankrimento_options_tag_hint else R.string.ankrimento_options_filter_hint))
+                        Text(
+                            stringResource(
+                                when {
+                                    adding -> R.string.ankrimento_options_tag_hint
+                                    ordering -> R.string.ankrimento_options_order_hint
+                                    else -> R.string.ankrimento_options_filter_hint
+                                },
+                            ),
+                        )
                     },
+                    keyboardOptions = if (ordering) KeyboardOptions(keyboardType = KeyboardType.Number) else KeyboardOptions.Default,
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -346,7 +445,9 @@ class SessionOptionsActivity : ComponentActivity() {
             confirmButton = {
                 TextButton(enabled = !adding || text.isNotBlank(), onClick = {
                     editing = null
-                    if (adding) {
+                    if (ordering) {
+                        setOrder(key, text)
+                    } else if (adding) {
                         val tags = options?.getJSONArray("tags") ?: JSONArray()
                         change(
                             "tags",
@@ -365,6 +466,7 @@ class SessionOptionsActivity : ComponentActivity() {
 
     companion object {
         private const val TAG = "tag"
+        private const val ORDER = "order"
         private const val DEFAULT_TAG_SHARE = 20
         private const val DEFAULT_CONTENT_SHARE = 10
 

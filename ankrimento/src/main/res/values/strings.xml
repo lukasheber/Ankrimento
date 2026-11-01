@@ -375,6 +375,15 @@
     <string name="ankrimento_options_share">Share of the session</string>
     <string name="ankrimento_options_media_outside_tags">Documents and media outside the tag quotas</string>
     <string name="ankrimento_options_media_outside_tags_help">Off: document and media picks must match the tags above. On: a tag miss may fall back to any card of that type.</string>
+    <string name="ankrimento_options_phases">Phase order</string>
+    <string name="ankrimento_options_phases_help">The parts a session fills, first to last. With strict enforcement, a phase turned off is skipped.</string>
+    <string name="ankrimento_options_phase_up">Earlier</string>
+    <string name="ankrimento_options_phase_down">Later</string>
+    <string name="ankrimento_options_order">Order values</string>
+    <string name="ankrimento_options_order_help">Tags and content types with an Order are scheduled first, lowest number first, as desktop\'s priority order does.</string>
+    <string name="ankrimento_options_order_none">Order: none</string>
+    <string name="ankrimento_options_order_value">Order: %d</string>
+    <string name="ankrimento_options_order_hint">1, 2, 3… (empty: none)</string>
     <string name="ankrimento_options_balancing">Balancing</string>
     <string name="ankrimento_options_strict">Strict enforcement</string>
     <string name="ankrimento_options_strict_help">Each part of the session is filled in full before the next. Off: every target blends at each pick.</string>

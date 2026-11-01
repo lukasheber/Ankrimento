@@ -96,3 +96,39 @@ def test_other_cards_off_leaves_only_tagged_cards(rt):
 
     assert _options()["other_cards"] is False
     assert load_scheduler_config().include_rest is False
+
+
+def test_the_phase_order_and_its_phases_reach_upstreams_scheduler(rt):
+    from incremento.backend.scheduler_config import load_scheduler_config
+
+    phases = _options()["phases"]
+    assert [p["id"] for p in phases] == ["content_types", "tags", "type", "mode"]
+    assert all(p["label"] and p["enabled"] for p in phases)
+
+    options = _set(phase_order=["tags", "mode", "content_types", "type"], phases_enabled={"mode": False})
+    assert [(p["id"], p["enabled"]) for p in options["phases"]] == [
+        ("tags", True), ("mode", False), ("content_types", True), ("type", True),
+    ]
+    config = load_scheduler_config()
+    assert config.phase_order == ["tags", "mode", "content_types", "type"]
+    assert config.phases_enabled["mode"] is False
+
+
+def test_order_values_put_tags_and_content_first_as_desktops_do(rt):
+    from incremento.backend.scheduler_config import load_scheduler_config
+
+    options = _set(
+        priority_order=True,
+        tags=[{"tag": "exam", "weight": 30, "order": 1}, {"tag": "later", "weight": 10}],
+        content_types=[{"type": "pdf", "enabled": True, "weight": 20, "order": 2}],
+    )
+    assert options["priority_order"] is True
+    assert [(t["tag"], t["order"]) for t in options["tags"]] == [("exam", 1), ("later", None)]
+    assert options["content_types"][0]["order"] == 2
+
+    config = load_scheduler_config()
+    assert config.priority_order_enabled is True
+    assert config.priority_order_entries == [
+        {"kind": "tag", "value": "exam", "order": 1},
+        {"kind": "content_type", "value": "pdf", "order": 2},
+    ]

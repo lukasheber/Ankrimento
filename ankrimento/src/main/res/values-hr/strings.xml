@@ -385,6 +385,15 @@
     <string name="ankrimento_options_share">Udio sesije</string>
     <string name="ankrimento_options_media_outside_tags">Dokumenti i mediji izvan kvota oznaka</string>
     <string name="ankrimento_options_media_outside_tags_help">Isključeno: odabrani dokumenti i mediji moraju imati gornje oznake. Uključeno: kad oznaka nedostaje, može se uzeti bilo koja karta te vrste.</string>
+    <string name="ankrimento_options_phases">Redoslijed faza</string>
+    <string name="ankrimento_options_phases_help">Dijelovi koje sesija popunjava, od prvog do posljednjeg. Uz strogu provedbu isključena faza se preskače.</string>
+    <string name="ankrimento_options_phase_up">Ranije</string>
+    <string name="ankrimento_options_phase_down">Kasnije</string>
+    <string name="ankrimento_options_order">Vrijednosti redoslijeda</string>
+    <string name="ankrimento_options_order_help">Oznake i vrste sadržaja s redoslijedom zakazuju se prve, od najmanjeg broja, kao prioritetni redoslijed na računalu.</string>
+    <string name="ankrimento_options_order_none">Redoslijed: nema</string>
+    <string name="ankrimento_options_order_value">Redoslijed: %d</string>
+    <string name="ankrimento_options_order_hint">1, 2, 3… (prazno: nema)</string>
     <string name="ankrimento_options_balancing">Uravnoteženje</string>
     <string name="ankrimento_options_strict">Stroga provedba</string>
     <string name="ankrimento_options_strict_help">Svaki dio sesije popunjava se u cijelosti prije sljedećeg. Isključeno: svi se ciljevi miješaju pri svakom odabiru.</string>

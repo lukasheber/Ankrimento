@@ -47,7 +47,7 @@ Mobile principles that guide every item:
 | ➖ | Swipe between elements | Sideways swipe turns pages in the readers; moving between elements stays on the footer buttons, where a stray swipe cannot answer a topic |
 | ✅ | Session settings: card count, topic/item and document mix, random/priority, card states, top-up | In the settings screen |
 | ✅ | Session presets: save, load, rename, delete | Settings → Session → Preset, stored as desktop stores them; each preset keeps its own session deck (hidden from the deck list like the base one, renamed with its preset, emptied when its preset is deleted) |
-| 🟡 | Advanced scheduler options: quotas, tag quotas, filters, card states, priority order, scope | Settings → Session → Advanced options: topics/items filters (checked by Anki before saving), tag quotas with Other cards, content types scheduled first, documents outside tag quotas, strict enforcement, scope (card states are in Session). Not yet: the phase (funnel) order and Order values, tag groups and locks |
+| ✅ | Advanced scheduler options: quotas, tag quotas, filters, card states, priority order, scope | Settings → Session → Advanced options: topics/items filters (checked by Anki before saving), tag quotas with Other cards, content types scheduled first, documents outside tag quotas, strict enforcement, scope (card states are in Session), Order values on tags and content types (desktop's priority order), and the phase order with each phase on or off (under strict enforcement), named as desktop names them. Desktop's slider locks and groups are not offered: they only link the desktop dialog's sliders, and the scheduler never reads them |
 | ✅ | Session preview before starting | The Incremento card's ⋮ → Preview session: the cards upstream's scheduler picks with the current settings (as desktop's session dialog previews them), each with its type, pick mode and tag; Start this session starts with exactly those cards while the settings stay the same, as desktop's preview override does |
 | ✅ | Branch study from the knowledge tree | Checked on the tablet; an empty branch explains why with upstream's message |
 | ✅ | Desktop review hooks: review time, topic A-factor, custom schedule, learning leech tags | |
@@ -211,8 +211,7 @@ Mobile principles that guide every item:
 3. ~~Extract bottom sheet and video extract at timestamp~~ (done).
 4. ~~Library with Continue reading and Add; web pages as articles; link
    titles~~ (done).
-5. ~~Settings screen, session presets, advanced options~~ (done; the phase
-   order, tag groups and locks remain).
+5. ~~Settings screen, session presets, advanced options~~ (done).
 6. ~~Full backup / restore (same ZIP as desktop)~~ (done; automatic backups later).
 7. ~~Native PDF tools: search, contents, bookmarks, highlights/notes~~ (done;
    annotation styles remain).
@@ -228,7 +227,7 @@ Mobile principles that guide every item:
 17. Images in imported web articles.
 18. ~~Automatic backups~~ (built; the folder picker step still to try on a device).
 19. ~~PDF annotation styles and bookmark comments~~ (done; EPUB styles too).
-20. Advanced options: phase order, tag groups and locks.
+20. ~~Advanced options: phase order, Order values~~ (done; locks and groups only link desktop's sliders).
 21. Items with sound, typed answers, math and image occlusion in the learning screen.
 
 Deferred: sync add-on and other sync work (until agreed with upstream's

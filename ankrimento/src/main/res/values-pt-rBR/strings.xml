@@ -385,6 +385,15 @@
     <string name="ankrimento_options_share">Parte da sessão</string>
     <string name="ankrimento_options_media_outside_tags">Documentos e mídia fora das cotas por etiqueta</string>
     <string name="ankrimento_options_media_outside_tags_help">Desligado: documentos e mídia escolhidos precisam ter as etiquetas acima. Ligado: na falta da etiqueta, pode entrar qualquer cartão desse tipo.</string>
+    <string name="ankrimento_options_phases">Ordem das fases</string>
+    <string name="ankrimento_options_phases_help">As partes que a sessão preenche, da primeira à última. Com aplicação rigorosa, uma fase desligada é pulada.</string>
+    <string name="ankrimento_options_phase_up">Antes</string>
+    <string name="ankrimento_options_phase_down">Depois</string>
+    <string name="ankrimento_options_order">Valores de ordem</string>
+    <string name="ankrimento_options_order_help">Etiquetas e tipos de conteúdo com uma ordem são agendados primeiro, do menor número ao maior, como na ordem de prioridade do computador.</string>
+    <string name="ankrimento_options_order_none">Ordem: nenhuma</string>
+    <string name="ankrimento_options_order_value">Ordem: %d</string>
+    <string name="ankrimento_options_order_hint">1, 2, 3… (vazio: nenhuma)</string>
     <string name="ankrimento_options_balancing">Equilíbrio</string>
     <string name="ankrimento_options_strict">Aplicação rigorosa</string>
     <string name="ankrimento_options_strict_help">Cada parte da sessão é preenchida por inteiro antes da seguinte. Desligado: todas as metas se misturam a cada escolha.</string>
