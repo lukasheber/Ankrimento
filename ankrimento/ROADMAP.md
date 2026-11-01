@@ -193,7 +193,7 @@ Mobile principles that guide every item:
 |---|---|---|
 | ✅ | Settings screen (the Incremento card's gear): session, review, extraction and priority, reading, this device's profile and sync folder | Upstream's own settings, normalized by upstream on every change |
 | ⬜ | More of upstream's settings (writing, PDF details, shortcuts that make sense on a phone) | |
-| ⬜ | Translations: upstream's locales for backend messages are shipped; Android strings are English only | |
+| 🟡 | Translations | Android screens in Brazilian Portuguese, Croatian and Simplified Chinese (Croatian and Chinese with desktop's own terms from upstream's catalogs, AnkiDroid's for cards and grades); upstream's messages follow the app's language at startup as desktop's do (Incremento's language setting, or the app's when auto). Upstream has no Portuguese, so its messages stay English in pt-BR. Machine-made: a native speaker should review each language |
 | ⬜ | Getting Started guide (first run) | |
 | ➖ | Dependency installer [13] | Desktop tools (FFmpeg, OCR) |
 | 🟡 | Startup time: Python cold start about 20 s on the first launch, about 3 s after warm-up | Warm-up runs on app start |
@@ -218,7 +218,7 @@ Mobile principles that guide every item:
 8. ~~Knowledge tree screen, Search ALL, statistics screen, focus timer~~ (done).
 9. ~~EPUB tools to match the PDF's: search in the book, highlights list and notes~~ (done).
 10. ~~Library search, sort and covers~~ (done).
-11. Translations.
+11. ~~Translations~~ (pt-BR, hr, zh-Hans done; native review needed).
 
 Deferred: sync add-on and other sync work (until agreed with upstream's
 author), SuperMemo import, Webpage to PDF.
