@@ -2,10 +2,12 @@
 
 package com.ichi2.anki.ankrimento
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -47,6 +49,12 @@ class IncrementoMenu(
     private var sessionStarting = false
     private var sessionDeckId by mutableStateOf<Long?>(null)
     private var sessionRemaining by mutableStateOf<Int?>(null)
+
+    /** The preview's Start: the session starts here, where its review opens. */
+    private val preview =
+        activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) activity.lifecycleScope.launch { startSession() }
+        }
 
     init {
         activity.lifecycleScope.launch(Dispatchers.IO) {
@@ -96,6 +104,9 @@ class IncrementoMenu(
             },
             SessionCardAction(IncrementoIcons.Add, R.string.ankrimento_add_to_incremento) {
                 activity.startActivity(IncrementoHubActivity.intent(activity, add = true))
+            },
+            SessionCardAction(IncrementoIcons.Contents, R.string.ankrimento_session_preview) {
+                preview.launch(SessionPreviewActivity.intent(activity))
             },
             SessionCardAction(IncrementoIcons.Search, R.string.ankrimento_search_all) {
                 activity.startActivity(SearchAllActivity.intent(activity))

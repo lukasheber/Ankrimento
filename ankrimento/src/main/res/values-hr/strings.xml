@@ -138,6 +138,13 @@
         <item quantity="few">U ovoj sesiji preostala su %d elementa</item>
         <item quantity="other">U ovoj sesiji preostalo je %d elemenata</item>
     </plurals>
+    <string name="ankrimento_session_preview">Pregled sesije</string>
+    <string name="ankrimento_session_preview_title">Sljedeća sesija</string>
+    <string name="ankrimento_session_preview_count">%1$d od %2$d karata</string>
+    <string name="ankrimento_session_preview_limited">Uvjete ispunjava manje karata nego što sesija traži.</string>
+    <string name="ankrimento_session_preview_empty">Nijedna karta ne ispunjava uvjete s ovim postavkama.</string>
+    <string name="ankrimento_session_preview_hint">Pokretanje sada koristi upravo ove karte, osim ako se postavke prije toga promijene.</string>
+    <string name="ankrimento_session_preview_start">Pokreni ovu sesiju</string>
     <string name="ankrimento_session_continue">Nastavi</string>
     <string name="ankrimento_session_start">Početak</string>
     <!-- Topic actions in the review bar -->

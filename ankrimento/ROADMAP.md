@@ -48,7 +48,7 @@ Mobile principles that guide every item:
 | ✅ | Session settings: card count, topic/item and document mix, random/priority, card states, top-up | In the settings screen |
 | ✅ | Session presets: save, load, rename, delete | Settings → Session → Preset, stored as desktop stores them; each preset keeps its own session deck (hidden from the deck list like the base one, renamed with its preset, emptied when its preset is deleted) |
 | 🟡 | Advanced scheduler options: quotas, tag quotas, filters, card states, priority order, scope | Settings → Session → Advanced options: topics/items filters (checked by Anki before saving), tag quotas with Other cards, content types scheduled first, documents outside tag quotas, strict enforcement, scope (card states are in Session). Not yet: the phase (funnel) order and Order values, tag groups and locks |
-| ⬜ | Session preview before starting | |
+| ✅ | Session preview before starting | The Incremento card's ⋮ → Preview session: the cards upstream's scheduler picks with the current settings (as desktop's session dialog previews them), each with its type, pick mode and tag; Start this session starts with exactly those cards while the settings stay the same, as desktop's preview override does |
 | ✅ | Branch study from the knowledge tree | Checked on the tablet; an empty branch explains why with upstream's message |
 | ✅ | Desktop review hooks: review time, topic A-factor, custom schedule, learning leech tags | |
 | ⬜ | New AnkiDroid study screen (ReviewerFragment) opens readers like the legacy one | Buttons done; readers not yet |
@@ -221,7 +221,7 @@ Mobile principles that guide every item:
 11. ~~Translations~~ (pt-BR, hr, zh-Hans done; native review needed).
 12. ~~Knowledge tree: reveal the current card, go to parent, search, postpone a subtree~~ (done).
 13. ~~Extract queue (several extracts, then one review)~~ (done).
-14. Session preview before starting.
+14. ~~Session preview before starting~~ (done).
 15. New AnkiDroid study screen (ReviewerFragment) opens readers.
 16. EPUB paged mode.
 17. Images in imported web articles.

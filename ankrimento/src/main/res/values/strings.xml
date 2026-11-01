@@ -134,6 +134,13 @@
         <item quantity="one">%d element left in this session</item>
         <item quantity="other">%d elements left in this session</item>
     </plurals>
+    <string name="ankrimento_session_preview">Preview session</string>
+    <string name="ankrimento_session_preview_title">Next session</string>
+    <string name="ankrimento_session_preview_count">%1$d of %2$d cards</string>
+    <string name="ankrimento_session_preview_limited">Fewer cards qualify than the session asks for.</string>
+    <string name="ankrimento_session_preview_empty">No cards qualify with these settings.</string>
+    <string name="ankrimento_session_preview_hint">Starting now uses exactly these cards, unless the settings change first.</string>
+    <string name="ankrimento_session_preview_start">Start this session</string>
     <string name="ankrimento_session_continue">Continue</string>
     <string name="ankrimento_session_start">Start</string>
     <!-- Topic actions in the review bar -->

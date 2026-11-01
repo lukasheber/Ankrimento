@@ -37,6 +37,13 @@ def start_session() -> None:
     session.start()
 
 
+def session_preview() -> str:
+    """The cards the next session would get (upstream's selection); starting then uses them."""
+    from ankrimento import session
+
+    return _dumps(session.preview())
+
+
 def session_settings() -> str:
     """The session settings of desktop's Basic view, as plain percentages.
 

@@ -130,6 +130,13 @@
     <plurals name="ankrimento_session_remaining">
         <item quantity="other">本次会话还剩 %d 个元素</item>
     </plurals>
+    <string name="ankrimento_session_preview">预览会话</string>
+    <string name="ankrimento_session_preview_title">下一次会话</string>
+    <string name="ankrimento_session_preview_count">%1$d / %2$d 张卡片</string>
+    <string name="ankrimento_session_preview_limited">符合条件的卡片少于会话要求的数量。</string>
+    <string name="ankrimento_session_preview_empty">在这些设置下没有符合条件的卡片。</string>
+    <string name="ankrimento_session_preview_hint">现在开始将完全使用这些卡片，除非设置先被更改。</string>
+    <string name="ankrimento_session_preview_start">开始此会话</string>
     <string name="ankrimento_session_continue">继续</string>
     <string name="ankrimento_session_start">开始</string>
     <!-- Topic actions in the review bar -->

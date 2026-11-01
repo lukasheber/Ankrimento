@@ -1084,6 +1084,41 @@ object Ankrimento {
         }
     }
 
+    /** A card the next session would get: its title, and upstream's type, pick mode and tag labels. */
+    data class PreviewEntry(
+        val cardId: Long,
+        val title: String,
+        val type: String,
+        val mode: String,
+        val tag: String,
+    )
+
+    /** The next session's cards, as desktop's dialog previews them, and how many the session asks for. */
+    data class SessionPreview(
+        val target: Int,
+        val entries: List<PreviewEntry>,
+    )
+
+    /** Upstream's selection for the next session; starting then uses these cards while the settings stay the same. */
+    @WorkerThread
+    fun sessionPreview(): SessionPreview {
+        val preview = JSONObject(requireFacade().callAttr("session_preview").toString())
+        val entries = preview.getJSONArray("entries")
+        return SessionPreview(
+            preview.optInt("target"),
+            List(entries.length()) { index ->
+                val e = entries.getJSONObject(index)
+                PreviewEntry(
+                    e.getLong("card_id"),
+                    displayTitle(e.optString("title")),
+                    e.optString("type"),
+                    e.optString("mode"),
+                    e.optString("tag"),
+                )
+            },
+        )
+    }
+
     /** Start a session limited to [rootCardId]'s branch; [Event.EnterReview] follows. */
     @WorkerThread
     fun startBranchSession(rootCardId: Long): Boolean = requireFacade().callAttr("start_branch_session", rootCardId).toBoolean()

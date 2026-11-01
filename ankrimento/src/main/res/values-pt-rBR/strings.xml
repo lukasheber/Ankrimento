@@ -138,6 +138,13 @@
         <item quantity="many">%d elementos restantes nesta sessão</item>
         <item quantity="other">%d elementos restantes nesta sessão</item>
     </plurals>
+    <string name="ankrimento_session_preview">Prévia da sessão</string>
+    <string name="ankrimento_session_preview_title">Próxima sessão</string>
+    <string name="ankrimento_session_preview_count">%1$d de %2$d cartões</string>
+    <string name="ankrimento_session_preview_limited">Menos cartões se qualificam do que a sessão pede.</string>
+    <string name="ankrimento_session_preview_empty">Nenhum cartão se qualifica com estas configurações.</string>
+    <string name="ankrimento_session_preview_hint">Iniciar agora usa exatamente estes cartões, a menos que as configurações mudem antes.</string>
+    <string name="ankrimento_session_preview_start">Iniciar esta sessão</string>
     <string name="ankrimento_session_continue">Continuar</string>
     <string name="ankrimento_session_start">Iniciar</string>
     <!-- Topic actions in the review bar -->

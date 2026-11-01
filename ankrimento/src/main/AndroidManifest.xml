@@ -53,6 +53,10 @@
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
         <activity
+            android:name="com.ichi2.anki.ankrimento.SessionPreviewActivity"
+            android:exported="false"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+        <activity
             android:name="com.ichi2.anki.ankrimento.StatisticsActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Material.Light.NoActionBar" />
