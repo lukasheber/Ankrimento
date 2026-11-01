@@ -219,6 +219,16 @@ Mobile principles that guide every item:
 9. ~~EPUB tools to match the PDF's: search in the book, highlights list and notes~~ (done).
 10. ~~Library search, sort and covers~~ (done).
 11. ~~Translations~~ (pt-BR, hr, zh-Hans done; native review needed).
+12. Knowledge tree: reveal the current card, go to parent, search, postpone a subtree.
+13. "Keep extracting" queue (several extracts, then one review).
+14. Session preview before starting.
+15. New AnkiDroid study screen (ReviewerFragment) opens readers.
+16. EPUB paged mode.
+17. Images in imported web articles.
+18. Automatic backups.
+19. PDF annotation styles and bookmark comments.
+20. Advanced options: phase order, tag groups and locks.
+21. Items with sound, typed answers, math and image occlusion in the learning screen.
 
 Deferred: sync add-on and other sync work (until agreed with upstream's
 author), SuperMemo import, Webpage to PDF.
