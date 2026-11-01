@@ -105,7 +105,7 @@ Mobile principles that guide every item:
 | ✅ | Swipe sideways to move one screen on or back (a couple of lines stay in view); it never changes chapter | |
 | ✅ | Search in book | Find in book: chapters matching (upstream's text index) with excerpts; a result opens its chapter with the words found and selected by the page script, as desktop does, then previous/next. Search ALL's EPUB results open the same way |
 | 🟡 | Links and footnotes inside the book | Opened externally or ignored |
-| ⬜ | Highlights list and highlight notes | |
+| ✅ | Highlights list and highlight notes | Highlights (⋮): the book's highlights by chapter with colour and note; one opens its chapter with its words found, or is recoloured, noted or deleted, the page following through its own hooks |
 
 ### Web
 
@@ -216,7 +216,7 @@ Mobile principles that guide every item:
 7. ~~Native PDF tools: search, contents, bookmarks, highlights/notes~~ (done;
    annotation styles remain).
 8. ~~Knowledge tree screen, Search ALL, statistics screen, focus timer~~ (done).
-9. EPUB tools to match the PDF's: search in the book, highlights list and notes.
+9. ~~EPUB tools to match the PDF's: search in the book, highlights list and notes~~ (done).
 10. Library search, sort and covers.
 11. Translations.
 

@@ -266,3 +266,66 @@ def search(card_id: int, query: str, limit: int = 120) -> list[dict[str, Any]]:
         ({"section": int(section), "title": str(title or ""), "snippet": _search_snippet(text or "", normalized)} for section, title, text in rows),
         key=lambda hit: hit["section"],
     )
+
+
+# ── Highlights outside the page ──────────────────────────────────────────────
+#
+# Desktop edits them from the page's own highlight menu. The device lists them
+# in a sheet; each change is made with upstream's EPUB highlight functions, as
+# desktop's dock makes it, then the page is updated through its own hooks.
+
+
+def _js_call(function: str, *args: Any) -> str:
+    rendered = ", ".join(json.dumps(arg) for arg in args)
+    return f"window.{function} && window.{function}({rendered});"
+
+
+def marks(card_id: int) -> dict[str, Any]:
+    """The book's highlights in book order, each with its chapter's title, colour and note."""
+    from incremento.backend.epub_highlights import load_highlights
+
+    addon_dir, profile = _context()
+    _, metadata = _metadata(card_id)
+    titles = [str(section.get("title") or "") for section in metadata.get("sections") or []]
+    return {
+        "highlights": [
+            {
+                "id": str(h["id"]),
+                "section": int(h["sectionIndex"]),
+                "title": titles[h["sectionIndex"]] if 0 <= h["sectionIndex"] < len(titles) else "",
+                "text": str(h.get("text") or ""),
+                "color": str(h.get("color") or "yellow"),
+                "note": str(h.get("note") or ""),
+            }
+            for h in load_highlights(addon_dir, profile, int(card_id))
+        ]
+    }
+
+
+def highlight_color(card_id: int, highlight_id: str, color: str) -> str:
+    from incremento.backend.epub_highlights import update_highlight_color
+
+    addon_dir, profile = _context()
+    if not update_highlight_color(addon_dir, profile, int(card_id), str(highlight_id), str(color)):
+        return ""
+    return _js_call("incrementoUpdateEpubHighlightColor", str(highlight_id), str(color))
+
+
+def highlight_note(card_id: int, highlight_id: str, note: str) -> str:
+    from incremento.backend.epub_highlights import update_highlight_note
+
+    addon_dir, profile = _context()
+    updated = update_highlight_note(addon_dir, profile, int(card_id), str(highlight_id), str(note or ""))
+    if not updated:
+        return ""
+    return _js_call("incrementoUpdateEpubHighlightNote", str(highlight_id), updated.get("note", ""), updated.get("note_html", ""))
+
+
+def delete_highlight(card_id: int, highlight_id: str, section_index: int) -> str:
+    """Removes a highlight as the page's delete does, then gives the page the chapter's remaining ones."""
+    from incremento.backend.epub_highlights import load_highlights, remove_highlight
+
+    addon_dir, profile = _context()
+    remove_highlight(addon_dir, profile, int(card_id), str(highlight_id))
+    rows = load_highlights(addon_dir, profile, int(card_id), section_index=int(section_index))
+    return _js_call("incrementoReplaceEpubHighlights", rows)

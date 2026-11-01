@@ -25,6 +25,8 @@ import com.ichi2.anki.ankrimento.ui.FindBar
 import com.ichi2.anki.ankrimento.ui.FindHit
 import com.ichi2.anki.ankrimento.ui.FindSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.MarkHighlight
+import com.ichi2.anki.ankrimento.ui.MarksSheet
 import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReadingSettingsSheet
@@ -95,6 +97,7 @@ class EpubReaderActivity : ReaderActivity() {
                 ReaderTool(getString(R.string.ankrimento_reading_settings), IncrementoIcons.TextFormat, ::showReadingSettings),
                 ReaderTool(getString(R.string.ankrimento_contents), IncrementoIcons.Contents, ::showContents),
                 ReaderTool(getString(R.string.ankrimento_epub_find), IncrementoIcons.Search, onClick = ::showFind),
+                ReaderTool(getString(R.string.ankrimento_marks_highlights), IncrementoIcons.Bookmark) { changeHighlights { "" } },
                 ReaderTool(getString(R.string.ankrimento_epub_read_here)) {
                     webView.evaluateJavascript(READ_MARKER_JS) { placed ->
                         if (placed == "true") toast(getString(R.string.ankrimento_marked_read))
@@ -163,6 +166,57 @@ class EpubReaderActivity : ReaderActivity() {
     ) {
         val fraction = (current.index + chapterRatio.coerceIn(0.0, 1.0)) / current.count.coerceAtLeast(1)
         progress = ReaderProgress(fraction.toFloat(), getString(R.string.ankrimento_epub_chapter, current.index + 1, current.count))
+    }
+
+    /** The book's highlights; each change is applied, then the page and the sheet follow. */
+    private fun changeHighlights(change: () -> String) {
+        lifecycleScope.launch {
+            runCatching {
+                withCol {
+                    val script = change()
+                    script to Ankrimento.epubHighlights(cardId)
+                }
+            }.onSuccess { (script, highlights) ->
+                if (script.isNotEmpty()) runScript(script)
+                val named =
+                    highlights.map { h ->
+                        MarkHighlight(
+                            h.id,
+                            h.page,
+                            h.text,
+                            h.color,
+                            h.note,
+                            h.place.ifBlank { getString(R.string.ankrimento_epub_chapter_short, h.page + 1) },
+                        )
+                    }
+                sheet = {
+                    MarksSheet(
+                        page = 0,
+                        bookmarks = null,
+                        highlights = named,
+                        onOpenPage = {},
+                        onOpenHighlight = { highlight ->
+                            sheet = null
+                            // The page script finds the highlighted words once the chapter loads.
+                            pendingSearch = highlight.text.take(HIGHLIGHT_SEARCH_CHARS)
+                            lifecycleScope.launch { load(highlight.page, 0.0) }
+                        },
+                        onAddBookmark = {},
+                        onDeleteBookmark = {},
+                        onHighlightColor = { id, color -> changeHighlights { Ankrimento.epubHighlightColor(cardId, id, color) } },
+                        onHighlightNote = { id, note -> changeHighlights { Ankrimento.epubHighlightNote(cardId, id, note) } },
+                        onDeleteHighlight = { id ->
+                            val shown = section?.index ?: 0
+                            changeHighlights { Ankrimento.epubDeleteHighlight(cardId, id, shown) }
+                        },
+                        onDismiss = { sheet = null },
+                    )
+                }
+            }.onFailure { error ->
+                Timber.w(error, "Changing EPUB highlights failed")
+                toast(error.message ?: error.javaClass.simpleName)
+            }
+        }
     }
 
     private fun showFind() {
@@ -360,6 +414,9 @@ class EpubReaderActivity : ReaderActivity() {
     }
 
     companion object {
+        /** Enough of a highlight's text for the page script to find it. */
+        private const val HIGHLIGHT_SEARCH_CHARS = 120
+
         private const val ORIGIN_HOST = "appassets.androidplatform.net"
 
         /** Upstream's _PYCMD_BRIDGE; each message is prefix + nonce + ":" + message. */

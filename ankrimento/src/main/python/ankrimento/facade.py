@@ -701,6 +701,33 @@ def epub_script(card_id: int, section_index: int, nonce: str, scroll_ratio: floa
     return epub_reader.section_script(int(card_id), int(section_index), nonce, ratio, search_query)
 
 
+def epub_marks(card_id: int) -> str:
+    """The book's highlights in book order, each with its chapter."""
+    from ankrimento import epub_reader
+
+    return _dumps(epub_reader.marks(card_id))
+
+
+def epub_highlight_color(card_id: int, highlight_id: str, color: str) -> str:
+    """Recolours a highlight; returns the script that updates the page."""
+    from ankrimento import epub_reader
+
+    return epub_reader.highlight_color(card_id, highlight_id, color)
+
+
+def epub_highlight_note(card_id: int, highlight_id: str, note: str) -> str:
+    from ankrimento import epub_reader
+
+    return epub_reader.highlight_note(card_id, highlight_id, note)
+
+
+def epub_delete_highlight(card_id: int, highlight_id: str, section_index: int) -> str:
+    """Deletes a highlight; returns the script giving the shown chapter its remaining highlights."""
+    from ankrimento import epub_reader
+
+    return epub_reader.delete_highlight(card_id, highlight_id, section_index)
+
+
 def epub_search(card_id: int, query: str) -> str:
     """The sections of the book matching ``query``: section, title and excerpt."""
     from ankrimento import epub_reader

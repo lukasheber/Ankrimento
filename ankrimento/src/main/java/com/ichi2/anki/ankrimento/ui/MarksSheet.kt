@@ -54,12 +54,14 @@ class MarkBookmark(
     val comment: String,
 )
 
+/** A highlight; [page] is where it opens (a PDF page, an EPUB chapter), [place] how it is named (a page when empty). */
 class MarkHighlight(
     val id: String,
     val page: Int,
     val text: String,
     val color: String,
     val note: String,
+    val place: String = "",
 )
 
 /** Upstream's highlight colours, in its order. */
@@ -78,15 +80,16 @@ internal val HIGHLIGHT_COLORS =
 /**
  * The document's bookmarks and highlights. A bookmark or a highlight opens its page;
  * the page shown can be bookmarked; a highlight's colour and note are changed, or it is
- * deleted, from its own dialog.
+ * deleted, from its own dialog. Without [bookmarks], only the highlights are shown.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MarksSheet(
     page: Int,
-    bookmarks: List<MarkBookmark>,
+    bookmarks: List<MarkBookmark>?,
     highlights: List<MarkHighlight>,
     onOpenPage: (Int) -> Unit,
+    onOpenHighlight: (MarkHighlight) -> Unit = { onOpenPage(it.page) },
     onAddBookmark: () -> Unit,
     onDeleteBookmark: (String) -> Unit,
     onHighlightColor: (String, String) -> Unit,
@@ -94,20 +97,28 @@ internal fun MarksSheet(
     onDeleteHighlight: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var tab by rememberSaveable { mutableIntStateOf(0) }
+    var tab by rememberSaveable { mutableIntStateOf(if (bookmarks == null) 1 else 0) }
     var chosen by remember { mutableStateOf<String?>(null) }
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(Modifier.navigationBarsPadding().padding(bottom = 8.dp)) {
-            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-                listOf(R.string.ankrimento_marks_bookmarks, R.string.ankrimento_marks_highlights).forEachIndexed { index, label ->
-                    SegmentedButton(
-                        selected = tab == index,
-                        onClick = { tab = index },
-                        shape = SegmentedButtonDefaults.itemShape(index, 2),
-                    ) { Text(stringResource(label)) }
+            if (bookmarks != null) {
+                SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                    listOf(R.string.ankrimento_marks_bookmarks, R.string.ankrimento_marks_highlights).forEachIndexed { index, label ->
+                        SegmentedButton(
+                            selected = tab == index,
+                            onClick = { tab = index },
+                            shape = SegmentedButtonDefaults.itemShape(index, 2),
+                        ) { Text(stringResource(label)) }
+                    }
                 }
+            } else {
+                Text(
+                    stringResource(R.string.ankrimento_marks_highlights),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                )
             }
-            if (tab == 0) {
+            if (tab == 0 && bookmarks != null) {
                 ListItem(
                     headlineContent = { Text(stringResource(R.string.ankrimento_marks_add_bookmark, page)) },
                     leadingContent = { Icon(IncrementoIcons.Bookmark, contentDescription = null) },
@@ -142,7 +153,11 @@ internal fun MarksSheet(
                 LazyColumn(Modifier.heightIn(max = 560.dp)) {
                     items(highlights, key = { it.id }) { highlight ->
                         ListItem(
-                            overlineContent = { Text(stringResource(R.string.ankrimento_page_short, highlight.page)) },
+                            overlineContent = {
+                                Text(
+                                    highlight.place.ifEmpty { stringResource(R.string.ankrimento_page_short, highlight.page) },
+                                )
+                            },
                             headlineContent = { Text(highlight.text, maxLines = 3, overflow = TextOverflow.Ellipsis) },
                             supportingContent =
                                 highlight.note.takeIf { it.isNotEmpty() }?.let { note ->
@@ -157,7 +172,7 @@ internal fun MarksSheet(
                                     )
                                 }
                             },
-                            modifier = Modifier.clickable { onOpenPage(highlight.page) },
+                            modifier = Modifier.clickable { onOpenHighlight(highlight) },
                         )
                     }
                 }
@@ -215,7 +230,7 @@ private fun HighlightDialog(
     var note by remember(highlight.id) { mutableStateOf(highlight.note) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.ankrimento_page_short, highlight.page)) },
+        title = { Text(highlight.place.ifEmpty { stringResource(R.string.ankrimento_page_short, highlight.page) }) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(highlight.text, maxLines = 4, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)

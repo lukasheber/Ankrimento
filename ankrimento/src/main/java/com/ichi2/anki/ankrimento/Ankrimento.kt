@@ -625,6 +625,45 @@ object Ankrimento {
         searchQuery: String = "",
     ): String = requireFacade().callAttr("epub_script", cardId, section.index, section.nonce, scrollRatio ?: -1.0, searchQuery).toString()
 
+    /** The book's highlights in book order; [MarkHighlight.page] is the chapter, [MarkHighlight.place] its title. */
+    @WorkerThread
+    fun epubHighlights(cardId: Long): List<MarkHighlight> {
+        val highlights = JSONObject(requireFacade().callAttr("epub_marks", cardId).toString()).getJSONArray("highlights")
+        return List(highlights.length()) { index ->
+            val h = highlights.getJSONObject(index)
+            MarkHighlight(
+                h.getString("id"),
+                h.getInt("section"),
+                h.optString("text"),
+                h.optString("color"),
+                h.optString("note"),
+                h.optString("title"),
+            )
+        }
+    }
+
+    /** Each of these changes a highlight and returns the script that updates the page. */
+    @WorkerThread
+    fun epubHighlightColor(
+        cardId: Long,
+        highlightId: String,
+        color: String,
+    ): String = requireFacade().callAttr("epub_highlight_color", cardId, highlightId, color).toString()
+
+    @WorkerThread
+    fun epubHighlightNote(
+        cardId: Long,
+        highlightId: String,
+        note: String,
+    ): String = requireFacade().callAttr("epub_highlight_note", cardId, highlightId, note).toString()
+
+    @WorkerThread
+    fun epubDeleteHighlight(
+        cardId: Long,
+        highlightId: String,
+        sectionIndex: Int,
+    ): String = requireFacade().callAttr("epub_delete_highlight", cardId, highlightId, sectionIndex).toString()
+
     /** A chapter matching a search: its index, title and an excerpt. */
     data class EpubSearchHit(
         val section: Int,
