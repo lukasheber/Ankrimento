@@ -125,6 +125,7 @@ internal fun ReaderScaffold(
     onPriority: () -> Unit = {},
     progress: ReaderProgress? = null,
     pager: ReaderPager? = null,
+    timer: (@Composable () -> Unit)? = null,
     content: @Composable (Modifier) -> Unit,
 ) {
     Scaffold(
@@ -145,6 +146,7 @@ internal fun ReaderScaffold(
                         }
                     },
                     actions = {
+                        timer?.invoke()
                         if (priority != null) PriorityChip(priority, onPriority)
                         val barIcons = tools.filter { it.icon != null }.take(MAX_BAR_ICONS)
                         barIcons.forEach { tool ->

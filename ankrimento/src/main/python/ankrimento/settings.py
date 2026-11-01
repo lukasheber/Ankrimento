@@ -33,6 +33,8 @@ SETTINGS: dict[str, Any] = {
     "priority_lower_is_more_important": "bool",
     # Reading
     "pdf_default_appearance": ("original", "dark", "night"),
+    # Focus timer
+    "timer_completion_beep": "bool",
 }
 
 

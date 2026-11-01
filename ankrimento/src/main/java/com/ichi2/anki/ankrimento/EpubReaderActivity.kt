@@ -137,9 +137,10 @@ class EpubReaderActivity : ReaderActivity() {
         message: String,
     ) {
         if (!message.startsWith(PROGRESS_PREFIX)) return
-        val ratio =
-            runCatching { JSONObject(message.removePrefix(PROGRESS_PREFIX)).optDouble("scrollRatio", 0.0) }.getOrDefault(0.0)
-        showProgress(current, ratio)
+        val data = runCatching { JSONObject(message.removePrefix(PROGRESS_PREFIX)) }.getOrNull()
+        // The page index desktop counts for its focus timer.
+        data?.optInt("pageIndex", -1)?.let { FocusTimer.epubPageRead(cardId, it) }
+        showProgress(current, data?.optDouble("scrollRatio", 0.0) ?: 0.0)
     }
 
     private fun showProgress(

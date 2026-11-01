@@ -340,6 +340,7 @@ class PdfReaderActivity : ReaderActivity() {
     ) {
         page = current
         pages = total
+        FocusTimer.pdfPageRead(cardId, current)
         pager = if (current > 0 && total > 0) ReaderPager(current, total, ::goToPage) else null
     }
 

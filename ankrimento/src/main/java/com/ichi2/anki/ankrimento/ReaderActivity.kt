@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +46,9 @@ import com.ichi2.anki.ankrimento.ui.ReaderScaffold
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReviewBarState
 import com.ichi2.anki.ankrimento.ui.RevisitDateDialog
+import com.ichi2.anki.ankrimento.ui.TimerChip
+import com.ichi2.anki.ankrimento.ui.TimerSheet
+import com.ichi2.anki.ankrimento.ui.TimerSummaryDialog
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -107,12 +112,18 @@ abstract class ReaderActivity : ComponentActivity() {
     private var editedPriority by mutableStateOf<Double?>(null)
     private var choosingRevisitDate by mutableStateOf(false)
     private var priority by mutableStateOf<Double?>(null)
+    private var timerSheet by mutableStateOf(false)
+
+    /** Today's pages read and cards reviewed, for the focus timer's summary. */
+    private var today by mutableStateOf<Pair<Int, Int>?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
             IncrementoTheme {
+                val timer by FocusTimer.state.collectAsState()
+                val finishedRun by FocusTimer.finished.collectAsState()
                 ReaderScaffold(
                     title = title,
                     subtitle = subtitle,
@@ -125,6 +136,7 @@ abstract class ReaderActivity : ComponentActivity() {
                     onPriority = ::editPriority,
                     progress = progress,
                     pager = pager,
+                    timer = if (timer.active) ({ TimerChip(timer) { timerSheet = true } }) else null,
                 ) { modifier ->
                     val view = content
                     if (view == null) {
@@ -137,6 +149,23 @@ abstract class ReaderActivity : ComponentActivity() {
                     }
                 }
                 sheet?.invoke()
+                if (timerSheet) {
+                    TimerSheet(
+                        timer,
+                        onPick = FocusTimer::pick,
+                        onStart = FocusTimer::start,
+                        onPause = FocusTimer::pause,
+                        onReset = FocusTimer::reset,
+                        onDismiss = { timerSheet = false },
+                    )
+                }
+                finishedRun?.let { run ->
+                    LaunchedEffect(run) { today = todayCounts() }
+                    TimerSummaryDialog(run, today?.first, today?.second) {
+                        FocusTimer.finished.value = null
+                        today = null
+                    }
+                }
                 if (choosingRevisitDate) {
                     RevisitDateDialog(onDismiss = { choosingRevisitDate = false }) { date ->
                         choosingRevisitDate = false
@@ -265,7 +294,18 @@ abstract class ReaderActivity : ComponentActivity() {
             if (inSession) {
                 add(ReaderTool(getString(R.string.ankrimento_show_card)) { finishWith(RESULT_SHOW_CARD, null) })
             }
+            add(ReaderTool(getString(R.string.ankrimento_timer_title)) { timerSheet = true })
         }
+
+    /** As desktop's summary reads today: pages read and cards reviewed, from Incremento's statistics. */
+    private suspend fun todayCounts(): Pair<Int, Int>? =
+        runCatching {
+            val stats = withCol { Ankrimento.statistics(1) }
+            val cards = stats.getJSONObject("today").getJSONObject("cards")
+            val history = stats.getJSONArray("history")
+            val pages = if (history.length() > 0) history.getJSONObject(history.length() - 1).optInt("pages") else 0
+            pages to cards.keys().asSequence().sumOf { cards.optInt(it) }
+        }.getOrNull()
 
     private fun reviewBar(): ReviewBarState? {
         if (!inSession || (answerButtons.isEmpty() && revealAction == null)) return null
@@ -297,9 +337,10 @@ abstract class ReaderActivity : ComponentActivity() {
             reveal = revealAction,
         ) { rating ->
             continueAfter(rating = rating) {
-                LearnLoop.answer(this, cardId, rating, answerAlreadyShown) { suspended ->
-                    toast(getString(if (suspended) R.string.ankrimento_leech_suspended else R.string.ankrimento_leech))
-                }
+                LearnLoop
+                    .answer(this, cardId, rating, answerAlreadyShown) { suspended ->
+                        toast(getString(if (suspended) R.string.ankrimento_leech_suspended else R.string.ankrimento_leech))
+                    }.also { FocusTimer.cardAnswered() }
             }
         }
     }

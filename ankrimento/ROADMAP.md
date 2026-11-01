@@ -162,7 +162,7 @@ Mobile principles that guide every item:
 |---|---|---|
 | ✅ | Statistics screen: today's tiles, cards per day for 7 days (tap a day), by kind today and all time, reading and watching | From the Library's top bar and the menu |
 | ⬜ | Longer history (30 days, a year), tag charts, the focus timer's numbers | Desktop has them |
-| ⬜ | Focus timer | Persistent chip in the reader top bar |
+| ✅ | Focus timer | Readers' ⋮ → Focus timer: desktop's presets, start/pause/reset, a chip in the top bar while it runs, one timer across elements; at the end a tone (desktop's setting) and desktop's summary (cards answered and PDF/EPUB pages read in the run, today so far). Not yet: desktop's automatic start for chosen card types or tags, and answers in AnkiDroid's own reviewer |
 
 ## 6. Sync, data and safety [12, 13]
 

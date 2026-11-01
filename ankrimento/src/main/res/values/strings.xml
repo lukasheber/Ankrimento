@@ -218,6 +218,35 @@
     <string name="ankrimento_marked_read">Marked as read up to here</string>
     <string name="ankrimento_add_to_incremento">Add to Incremento…</string>
     <string name="ankrimento_statistics_menu">Statistics</string>
+    <!-- Focus timer (desktop's wording) -->
+    <string name="ankrimento_timer_title">Focus timer</string>
+    <string name="ankrimento_timer_minutes">%d min</string>
+    <string name="ankrimento_timer_counts">While it runs, the cards you answer and the PDF and EPUB pages you read are counted.</string>
+    <string name="ankrimento_timer_start">Start</string>
+    <string name="ankrimento_timer_pause">Pause</string>
+    <string name="ankrimento_timer_resume">Resume</string>
+    <string name="ankrimento_timer_reset">Reset</string>
+    <string name="ankrimento_timer_complete">%d-minute focus timer complete</string>
+    <string name="ankrimento_timer_this">This focus timer</string>
+    <string name="ankrimento_timer_empty">No cards or pages tracked for this timer run.</string>
+    <string name="ankrimento_timer_today">Today</string>
+    <string name="ankrimento_timer_today_summary">%1$s and %2$s so far today.</string>
+    <plurals name="ankrimento_timer_cards">
+        <item quantity="one">%d card reviewed</item>
+        <item quantity="other">%d cards reviewed</item>
+    </plurals>
+    <plurals name="ankrimento_timer_pages">
+        <item quantity="one">%1$d %2$s page read</item>
+        <item quantity="other">%1$d %2$s pages read</item>
+    </plurals>
+    <plurals name="ankrimento_timer_documents">
+        <item quantity="one">across %d book</item>
+        <item quantity="other">across %d books</item>
+    </plurals>
+    <plurals name="ankrimento_timer_today_pages">
+        <item quantity="one">%d page read</item>
+        <item quantity="other">%d pages read</item>
+    </plurals>
     <!-- Search ALL -->
     <string name="ankrimento_search_all">Search ALL</string>
     <string name="ankrimento_search_all_hint">Search highlights, documents and cards</string>
