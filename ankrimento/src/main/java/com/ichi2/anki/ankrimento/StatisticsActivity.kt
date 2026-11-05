@@ -11,82 +11,110 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
 import kotlinx.coroutines.launch
+import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
-import java.time.LocalDate
-import java.time.format.TextStyle
-import java.util.Locale
 
 /**
- * Incremento's statistics, as desktop's statistics dialog reads them: today
- * at a glance, the last days as bars (tap one for its numbers), what was
- * reviewed by kind, and reading and watching.
+ * Incremento's statistics, as desktop's statistics dialog shows them, by its
+ * scopes: today, 7 days, 30 days, a year and all time. Every scope opens with
+ * desktop's progress dashboard (pages, study time and cards, compared with the
+ * period before, and a chart of days or, for a year, weeks); a period adds its
+ * streak and the activity calendar, today and all time what was reviewed by
+ * kind and by tag. Numbers and texts are desktop's ([Ankrimento.statisticsView]).
  */
 class StatisticsActivity : ComponentActivity() {
-    private var stats by mutableStateOf<JSONObject?>(null)
+    private val views = mutableStateMapOf<String, JSONObject>()
+    private var scope by mutableStateOf(FIRST_SCOPE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        savedInstanceState?.getString(KEY_SCOPE)?.let { scope = it }
         setContent { IncrementoTheme { Statistics() } }
+        load(scope)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(KEY_SCOPE, scope)
+    }
+
+    private fun load(key: String) {
+        if (key in views) return
         lifecycleScope.launch {
             runCatching {
                 withCol {
                     Ankrimento.start(this@StatisticsActivity, this)
-                    Ankrimento.statistics(DAYS)
+                    Ankrimento.statisticsView(key)
                 }
-            }.onSuccess { stats = it }
+            }.onSuccess { views[key] = it }
                 .onFailure { error ->
                     Timber.w(error, "Loading statistics failed")
                     Toast.makeText(this@StatisticsActivity, error.message ?: error.javaClass.simpleName, Toast.LENGTH_LONG).show()
                 }
         }
     }
-
-    private class Day(
-        val date: LocalDate,
-        val cards: Int,
-        val seconds: Double,
-        val pages: Int,
-    )
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -103,15 +131,8 @@ class StatisticsActivity : ComponentActivity() {
                 )
             },
         ) { padding ->
-            val data = stats ?: return@Scaffold
-            val history = data.getJSONArray("history")
-            val days =
-                List(history.length()) { index ->
-                    val day = history.getJSONObject(index)
-                    Day(LocalDate.parse(day.getString("date")), day.getInt("cards"), day.getDouble("seconds"), day.getInt("pages"))
-                }
-            val today = data.getJSONObject("today")
-            val media = data.getJSONObject("media")
+            // The scopes' names come with any loaded scope; today's loads first.
+            val scopes = views.values.firstOrNull()?.getJSONArray("scopes") ?: return@Scaffold
             Column(
                 Modifier
                     .padding(top = padding.calculateTopPadding())
@@ -120,103 +141,142 @@ class StatisticsActivity : ComponentActivity() {
                     .padding(bottom = 24.dp),
             ) {
                 Row(
-                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Tile(
-                        R.string.ankrimento_stats_reviewed_today,
-                        total(today.getJSONObject("cards")).toInt().toString(),
-                        Modifier.weight(1f),
-                    )
-                    Tile(R.string.ankrimento_stats_time_today, duration(total(today.getJSONObject("seconds"))), Modifier.weight(1f))
-                    Tile(R.string.ankrimento_stats_pages_today, (days.lastOrNull()?.pages ?: 0).toString(), Modifier.weight(1f))
+                    pairs(scopes).forEach { (key, label) ->
+                        FilterChip(
+                            selected = key == scope,
+                            onClick = {
+                                scope = key
+                                load(key)
+                            },
+                            label = { Text(label) },
+                        )
+                    }
                 }
-                Section(R.string.ankrimento_stats_last_days)
-                DailyBars(days)
-                Section(R.string.ankrimento_stats_by_kind_today)
-                ByKind(today)
-                Section(R.string.ankrimento_stats_by_kind_lifetime)
-                ByKind(data.getJSONObject("lifetime"))
-                Section(R.string.ankrimento_stats_reading)
-                Line(R.string.ankrimento_stats_pages_read, media.optInt("pages").toString())
-                Line(R.string.ankrimento_stats_videos, media.optInt("videos_watched").toString())
-                Line(R.string.ankrimento_stats_watch_time, duration(media.optDouble("video_watch_seconds", 0.0)))
+                val view = views[scope] ?: return@Column
+                Dashboard(view.getJSONObject("dashboard"))
+                if (view.has("days")) {
+                    Note(view.getString("insight"))
+                    Heatmap(view)
+                } else {
+                    Kinds(view)
+                    Tags(view)
+                }
+                Section(view.getString("media_title"))
+                pairs(view.getJSONArray("media")).forEach { (label, value) -> Line(label, value) }
             }
         }
+    }
+
+    /** Desktop's ProgressDashboard: three totals, then a chart of the chosen one; a tap on a bar gives its day or week. */
+    @Composable
+    private fun Dashboard(dashboard: JSONObject) {
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(dashboard.getString("heading"), style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+            Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.secondaryContainer) {
+                Text(
+                    dashboard.getString("streak"),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                )
+            }
+        }
+        val tiles = dashboard.getJSONArray("tiles")
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            objects(tiles).forEach { tile -> Tile(tile, Modifier.weight(1f)) }
+        }
+        val metrics = pairs(dashboard.getJSONArray("metrics"))
+        var metric by rememberSaveable { mutableStateOf(metrics.first().first) }
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+            metrics.forEachIndexed { index, (key, label) ->
+                SegmentedButton(
+                    selected = key == metric,
+                    onClick = { metric = key },
+                    shape = SegmentedButtonDefaults.itemShape(index, metrics.size),
+                ) { Text(label, maxLines = 1) }
+            }
+        }
+        Note(dashboard.getString("chart_window") + "\n" + dashboard.getString("consistency"))
+        Text(
+            dashboard.getString("chart_title"),
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 4.dp),
+        )
+        Bars(objects(dashboard.getJSONArray("bars")), metric, dashboard.getString("empty"))
     }
 
     @Composable
     private fun Tile(
-        label: Int,
-        value: String,
+        tile: JSONObject,
         modifier: Modifier,
     ) {
         ElevatedCard(modifier) {
-            Column(Modifier.padding(16.dp)) {
-                Text(value, style = MaterialTheme.typography.headlineMedium)
-                Text(
-                    stringResource(label),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text(tile.getString("name"), style = MaterialTheme.typography.labelMedium)
+                Text(tile.getString("value"), style = MaterialTheme.typography.headlineSmall)
+                Text(tile.getString("hint"), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                tile.optString("comparison").takeIf { it.isNotEmpty() && it != "null" }?.let {
+                    Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
             }
         }
     }
 
-    @Composable
-    private fun Section(label: Int) {
-        HorizontalDivider(Modifier.padding(top = 12.dp))
-        Text(
-            stringResource(label),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp),
-        )
-    }
-
     /**
-     * Cards per day: one series, so one colour and no legend. Bars are rounded
-     * at the top and sit on the baseline; a tap on a day shows its numbers above.
+     * One series, so one colour and no legend: thin bars rounded at the top on a
+     * baseline, the picked one darker. A tap picks a bar; its line shows below.
      */
     @Composable
-    private fun DailyBars(days: List<Day>) {
-        if (days.isEmpty()) return
-        var picked by remember { mutableIntStateOf(days.lastIndex) }
-        val bar = MaterialTheme.colorScheme.primary
-        val pickedBar = MaterialTheme.colorScheme.tertiary
+    private fun Bars(
+        bars: List<JSONObject>,
+        metric: String,
+        empty: String,
+    ) {
+        if (bars.isEmpty()) return
+        val values = bars.map { it.optDouble(metric, 0.0) }
+        var picked by remember(bars.size) { mutableIntStateOf(bars.lastIndex) }
+        val detail = bars[picked.coerceIn(bars.indices)].getJSONObject("detail").getString(metric)
+        if (values.all { it <= 0.0 }) Note(empty)
+        val bar = MaterialTheme.colorScheme.primary.copy(alpha = 0.55f)
+        val pickedBar = MaterialTheme.colorScheme.primary
         val axis = MaterialTheme.colorScheme.outlineVariant
-        val day = days[picked.coerceIn(days.indices)]
-        Text(
-            stringResource(R.string.ankrimento_stats_day, dayName(day.date), day.cards, duration(day.seconds), day.pages),
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-        )
-        val peak = (days.maxOf { it.cards }).coerceAtLeast(1)
+        val peak = values.max().takeIf { it > 0 } ?: 1.0
         Canvas(
             Modifier
                 .fillMaxWidth()
-                .height(140.dp)
+                .height(160.dp)
                 .padding(horizontal = 16.dp)
-                .pointerInput(days) {
-                    detectTapGestures { offset -> picked = (offset.x / (size.width / days.size)).toInt().coerceIn(days.indices) }
+                .semantics { contentDescription = detail }
+                .pointerInput(bars.size) {
+                    detectTapGestures { offset -> picked = (offset.x / (size.width / bars.size)).toInt().coerceIn(bars.indices) }
                 },
         ) {
-            val slot = size.width / days.size
+            val slot = size.width / bars.size
             val gap = 2.dp.toPx()
-            val width = (slot * 0.6f).coerceAtMost(28.dp.toPx())
-            val radius = 4.dp.toPx()
-            days.forEachIndexed { index, d ->
-                val height = size.height * d.cards / peak
+            val width = (slot - gap).coerceIn(1f, 28.dp.toPx())
+            val radius = minOf(4.dp.toPx(), width / 2)
+            values.forEachIndexed { index, value ->
+                val height = (size.height * value / peak).toFloat()
                 if (height <= 0f) return@forEachIndexed
-                val left = index * slot + (slot - width) / 2 + gap / 2
-                val top = size.height - height
+                val left = index * slot + (slot - width) / 2
                 val path =
                     Path().apply {
                         addRoundRect(
-                            androidx.compose.ui.geometry.RoundRect(
+                            RoundRect(
                                 left = left,
-                                top = top,
-                                right = left + width - gap,
+                                top = size.height - height,
+                                right = left + width,
                                 bottom = size.height,
                                 topLeftCornerRadius = CornerRadius(radius),
                                 topRightCornerRadius = CornerRadius(radius),
@@ -227,38 +287,166 @@ class StatisticsActivity : ComponentActivity() {
             }
             drawLine(axis, Offset(0f, size.height), Offset(size.width, size.height), strokeWidth = 1.dp.toPx())
         }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            days.forEach { d ->
-                Text(
-                    dayName(d.date),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f),
-                )
+        // Every label for a week of days; the first and last for longer charts.
+        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 2.dp)) {
+            if (bars.size <= 7) {
+                bars.forEach { Axis(it.getString("label"), Modifier.weight(1f), TextAlign.Center) }
+            } else {
+                Axis(bars.first().getString("label"), Modifier.weight(1f), TextAlign.Start)
+                Axis(bars.last().getString("label"), Modifier.weight(1f), TextAlign.End)
             }
         }
+        Text(detail, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp))
     }
 
     @Composable
-    private fun ByKind(block: JSONObject) {
-        val cards = block.getJSONObject("cards")
-        val seconds = block.getJSONObject("seconds")
-        val kinds = (cards.keys().asSequence() + seconds.keys().asSequence()).toSortedSet()
-        if (kinds.isEmpty()) {
-            Text("–", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-            return
+    private fun Axis(
+        label: String,
+        modifier: Modifier,
+        align: TextAlign,
+    ) {
+        Text(
+            label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = align,
+            modifier = modifier,
+        )
+    }
+
+    /**
+     * Desktop's activity calendar: a row per weekday from Monday, a column per
+     * week, darker for more activity. It scrolls sideways and opens on the
+     * latest weeks; a tap on a day gives its numbers.
+     */
+    @Composable
+    private fun Heatmap(view: JSONObject) {
+        Section(view.getString("heatmap_title"))
+        val days = objects(view.getJSONArray("days"))
+        val months = strings(view.getJSONArray("months"))
+        val weekdays = strings(view.getJSONArray("weekdays"))
+        val first = view.getInt("first_weekday")
+        var picked by remember(days.size) { mutableIntStateOf(-1) }
+        val cell = 16.dp
+        val gap = 2.dp
+        val step = cell + gap
+        val empty = MaterialTheme.colorScheme.surfaceVariant
+        val fill = MaterialTheme.colorScheme.primary
+        val outline = MaterialTheme.colorScheme.onSurface
+        val scroll = rememberScrollState()
+        LaunchedEffect(days.size, scroll.maxValue) { scroll.scrollTo(scroll.maxValue) }
+        Row(Modifier.padding(horizontal = 16.dp)) {
+            Column(Modifier.padding(top = step, end = 6.dp)) {
+                weekdays.forEach { day ->
+                    Box(Modifier.height(step), contentAlignment = Alignment.CenterStart) {
+                        Text(day, fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+                    }
+                }
+            }
+            Column(Modifier.horizontalScroll(scroll)) {
+                Row(Modifier.height(step)) {
+                    months.forEach { month ->
+                        Box(Modifier.width(step).wrapContentWidth(Alignment.Start, unbounded = true)) {
+                            Text(
+                                month,
+                                fontSize = 10.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                softWrap = false,
+                            )
+                        }
+                    }
+                }
+                Canvas(
+                    Modifier
+                        .width(step * months.size)
+                        .height(step * 7)
+                        .semantics { contentDescription = view.getString("heatmap_title") }
+                        .pointerInput(days.size) {
+                            detectTapGestures { offset ->
+                                val slot = (offset.x / step.toPx()).toInt() * 7 + (offset.y / step.toPx()).toInt() - first
+                                if (slot in days.indices) picked = slot
+                            }
+                        },
+                ) {
+                    val size = cell.toPx()
+                    val radius = CornerRadius(3.dp.toPx())
+                    days.forEachIndexed { index, day ->
+                        val slot = first + index
+                        val topLeft = Offset((slot / 7) * step.toPx(), (slot % 7) * step.toPx())
+                        val intensity = day.optInt("intensity")
+                        val color = if (intensity <= 0) empty else fill.copy(alpha = INTENSITY_ALPHA[intensity.coerceIn(1, 4) - 1])
+                        drawRoundRect(color, topLeft, Size(size, size), radius)
+                        if (index == picked) drawRoundRect(outline, topLeft, Size(size, size), radius, style = Stroke(2.dp.toPx()))
+                    }
+                }
+            }
         }
-        kinds.forEach { kind ->
-            Line(kind.replaceFirstChar { it.titlecase() }, "${cards.optInt(kind)} · ${duration(seconds.optDouble(kind, 0.0))}")
-        }
+        Note(days.getOrNull(picked)?.getString("detail") ?: view.getString("heatmap_hint"))
     }
 
     @Composable
-    private fun Line(
-        label: Int,
-        value: String,
-    ) = Line(stringResource(label), value)
+    private fun Kinds(view: JSONObject) {
+        Section(view.getString("kinds_title"))
+        val kinds = pairs(view.getJSONArray("kinds"))
+        if (kinds.isEmpty()) Note(view.getString("empty"))
+        kinds.forEach { (label, value) -> Line(label, value) }
+    }
+
+    /** Desktop's tag pies as rows, a better fit for a phone: each tag's cards and time, its bar sized by cards. */
+    @Composable
+    private fun Tags(view: JSONObject) {
+        val titles = view.getJSONObject("tag_titles")
+        val tags = view.getJSONObject("tags")
+        for (kind in listOf("topics", "items")) {
+            Section(titles.getString(kind))
+            val rows = tags.getJSONArray(kind)
+            if (rows.length() == 0) {
+                Note("–")
+                continue
+            }
+            val peak = (0 until rows.length()).maxOf { rows.getJSONArray(it).getDouble(3) }.takeIf { it > 0 } ?: 1.0
+            for (index in 0 until rows.length()) {
+                val row = rows.getJSONArray(index)
+                Column(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+                    Row(Modifier.fillMaxWidth()) {
+                        Text(row.getString(0), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+                        Text("${row.getString(1)} · ${row.getString(2)}", style = MaterialTheme.typography.bodyMedium)
+                    }
+                    Spacer(Modifier.height(4.dp))
+                    LinearProgressIndicator(
+                        progress = { (row.getDouble(3) / peak).toFloat() },
+                        modifier = Modifier.fillMaxWidth().height(6.dp),
+                        drawStopIndicator = {},
+                        gapSize = 0.dp,
+                    )
+                }
+            }
+        }
+        // Desktop's hint speaks of pie slices; the phone shows rows.
+        Note(stringResource(R.string.ankrimento_stats_tag_rows))
+    }
+
+    @Composable
+    private fun Section(label: String) {
+        HorizontalDivider(Modifier.padding(top = 12.dp))
+        Text(
+            label,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp),
+        )
+    }
+
+    @Composable
+    private fun Note(text: String) {
+        Text(
+            text,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+        )
+    }
 
     @Composable
     private fun Line(
@@ -268,17 +456,19 @@ class StatisticsActivity : ComponentActivity() {
         ListItem(headlineContent = { Text(label) }, trailingContent = { Text(value, style = MaterialTheme.typography.bodyLarge) })
     }
 
-    private fun total(block: JSONObject): Double = block.keys().asSequence().sumOf { block.optDouble(it, 0.0) }
+    private fun objects(array: JSONArray) = List(array.length()) { array.getJSONObject(it) }
 
-    private fun dayName(date: LocalDate): String = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+    private fun strings(array: JSONArray) = List(array.length()) { array.getString(it) }
 
-    private fun duration(seconds: Double): String {
-        val total = seconds.toLong()
-        return if (total >= 3600) "%dh %02dm".format(total / 3600, total % 3600 / 60) else "%dm %02ds".format(total / 60, total % 60)
-    }
+    private fun pairs(array: JSONArray) =
+        List(array.length()) { array.getJSONArray(it).let { pair -> pair.getString(0) to pair.getString(1) } }
 
     companion object {
-        private const val DAYS = 7
+        private const val FIRST_SCOPE = "daily"
+        private const val KEY_SCOPE = "scope"
+
+        /** Activity levels 1–4 (desktop's heatmap), one hue from light to full. */
+        private val INTENSITY_ALPHA = floatArrayOf(0.3f, 0.5f, 0.75f, 1f)
 
         fun intent(context: Context) = Intent(context, StatisticsActivity::class.java)
     }

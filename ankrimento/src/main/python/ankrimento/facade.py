@@ -131,6 +131,13 @@ def statistics(days: int = 7) -> str:
     )
 
 
+def statistics_view(scope: str) -> str:
+    """The statistics screen for one of desktop's scopes (see ``statistics_view``)."""
+    from ankrimento import statistics_view as stats_view
+
+    return _dumps(stats_view.view(str(scope)))
+
+
 def knowledge_tree() -> str:
     """The knowledge tree in display order, as desktop's tree dialog loads it."""
     from incremento.backend.knowledge_tree import load_knowledge_tree_snapshot

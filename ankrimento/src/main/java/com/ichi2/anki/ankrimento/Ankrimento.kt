@@ -1099,6 +1099,10 @@ object Ankrimento {
     @WorkerThread
     fun statistics(days: Int = 7): JSONObject = JSONObject(requireFacade().callAttr("statistics", days).toString())
 
+    /** Desktop's statistics dialog for one of its scopes ("daily", "7d", "30d", "365d", "lifetime"). */
+    @WorkerThread
+    fun statisticsView(scope: String): JSONObject = JSONObject(requireFacade().callAttr("statistics_view", scope).toString())
+
     /** One entry of the knowledge tree, in display order with its [depth]. */
     data class TreeNode(
         val cardId: Long,

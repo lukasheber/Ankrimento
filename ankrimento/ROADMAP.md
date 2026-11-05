@@ -161,7 +161,7 @@ Mobile principles that guide every item:
 | Status | Feature | Mobile notes |
 |---|---|---|
 | ✅ | Statistics screen: today's tiles, cards per day for 7 days (tap a day), by kind today and all time, reading and watching | From the Library's top bar and the menu |
-| ⬜ | Longer history (30 days, a year), tag charts, the focus timer's numbers | Desktop has them |
+| ✅ | Longer history (30 days, a year), tag charts | Desktop's scopes as chips: Today, 7 days, 30 days, Year, All time. Each opens with desktop's progress dashboard (pages, study time and cards with the change from the period before; daily bars, weekly for a year, a tap gives the day or week). Periods add desktop's streak line and its activity calendar (weekday rows, scrolls to the latest weeks, a tap gives the day); Today and All time add cards by kind and by tag (desktop's tag pies, as rows). Numbers and texts are desktop's own helpers. Not here: the session scope (it needs desktop's session counters), daily goals, CSV export, the cumulative chart and the Documents and Learning views. Desktop keeps no focus-timer statistics beyond the summary the timer already shows |
 | ✅ | Focus timer | Readers' ⋮ → Focus timer: desktop's presets, start/pause/reset, a chip in the top bar while it runs, one timer across elements; at the end a tone (desktop's setting) and desktop's summary (cards answered and PDF/EPUB pages read in the run, today so far). Not yet: desktop's automatic start for chosen card types or tags, and answers in AnkiDroid's own reviewer |
 
 ## 6. Sync, data and safety [12, 13]
@@ -248,7 +248,7 @@ Daily reading and extracting:
 
 Things desktop has:
 
-28. Longer statistics: 30 days, a year, tag charts, the focus timer's numbers.
+28. ~~Longer statistics: 30 days, a year, tag charts~~ (done; desktop has no focus-timer statistics to add).
 29. Tablet two-pane layout (library beside the reader). (Deferred: it does not suit the phone-first experience.)
 30. PDF cross-references and page links; OCR status.
 31. Markdown documents (import) and the writing formatting toolbar.

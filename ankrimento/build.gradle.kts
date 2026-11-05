@@ -106,6 +106,9 @@ val incrementoAddonSource =
                 "frontend/epub_dock.py",
                 "frontend/reader_links.py",
                 "frontend/search_all_results.py",
+                "frontend/stats_dashboard.py",
+                "frontend/stats_dialog.py",
+                "frontend/stats_progress.py",
                 "web/web_dock_bridge.js",
             )
             exclude("**/__pycache__/**", "**/AGENTS.md")

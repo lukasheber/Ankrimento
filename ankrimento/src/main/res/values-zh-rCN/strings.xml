@@ -69,6 +69,7 @@
     <string name="ankrimento_sync_keep_device">保留本设备的</string>
     <string name="ankrimento_sync_keep_folder">保留另一台设备的</string>
     <string name="ankrimento_statistics_title">Incremento 统计</string>
+    <string name="ankrimento_stats_tag_rows">按标签统计已复习的卡片：每行显示卡片数和学习时长。</string>
     <string name="ankrimento_stats_today">今天（卡片 · 时间）</string>
     <string name="ankrimento_stats_lifetime">全部时间（卡片 · 时间）</string>
     <string name="ankrimento_stats_media">最近 7 天：已读 %1$d 页，%2$d 个视频，观看 %3$s</string>
@@ -246,17 +247,6 @@
     <string name="ankrimento_expand">展开</string>
     <string name="ankrimento_collapse">折叠</string>
     <!-- Statistics screen -->
-    <string name="ankrimento_stats_reviewed_today">今天已复习</string>
-    <string name="ankrimento_stats_time_today">今天学习</string>
-    <string name="ankrimento_stats_pages_today">今天页数</string>
-    <string name="ankrimento_stats_last_days">每天卡片数，最近 7 天</string>
-    <string name="ankrimento_stats_day">%1$s：%2$d 张卡片 · %3$s · %4$d 页</string>
-    <string name="ankrimento_stats_by_kind_today">今天，按类型</string>
-    <string name="ankrimento_stats_by_kind_lifetime">全部时间，按类型</string>
-    <string name="ankrimento_stats_reading">阅读与观看，最近 7 天</string>
-    <string name="ankrimento_stats_pages_read">已读页数</string>
-    <string name="ankrimento_stats_videos">已看视频</string>
-    <string name="ankrimento_stats_watch_time">观看时间</string>
     <string name="ankrimento_leech">此卡片是记忆难点</string>
     <string name="ankrimento_leech_suspended">此卡片是记忆难点，已被暂停</string>
     <string name="ankrimento_marked_read">已标记读到此处</string>
