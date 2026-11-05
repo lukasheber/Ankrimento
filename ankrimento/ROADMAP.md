@@ -193,7 +193,7 @@ Mobile principles that guide every item:
 | Status | Feature | Mobile notes |
 |---|---|---|
 | ✅ | Settings screen (the Incremento card's gear): session, review, extraction and priority, reading, this device's profile and sync folder | Upstream's own settings, normalized by upstream on every change |
-| 🟡 | More of upstream's settings (writing, PDF details, shortcuts that make sense on a phone) | Added the ones the phone honours, with desktop's wording: Reading → always force the PDF appearance, delete X on PDF highlights, scroll to top on the next PDF page; Writing → automatic backups, word counting mode. Not yet on a device. Settings that only change desktop's screens stay there; the writing backup schedule (a list) is still desktop's |
+| 🟡 | More of upstream's settings (writing, PDF details, shortcuts that make sense on a phone) | Added the ones the phone honours, with desktop's wording: Reading → always force the PDF appearance, delete X on PDF highlights, scroll to top on the next PDF page; Writing → automatic backups, word counting mode. Shown on the tablet; saving is covered by tests. Settings that only change desktop's screens stay there; the writing backup schedule (a list) is still desktop's |
 | 🟡 | Translations | Android screens in Brazilian Portuguese, Croatian and Simplified Chinese (Croatian and Chinese with desktop's own terms from upstream's catalogs, AnkiDroid's for cards and grades); upstream's messages follow the app's language at startup as desktop's do (Incremento's language setting, or the app's when auto). Upstream has no Portuguese, so its messages stay English in pt-BR. Machine-made: a native speaker should review each language |
 | ⬜ | Getting Started guide (first run) | |
 | ➖ | Dependency installer [13] | Desktop tools (FFmpeg, OCR) |
@@ -254,7 +254,7 @@ Things desktop has:
 31. ~~Markdown documents (import) and the writing formatting toolbar~~ (done).
 32. ~~Audio import; check audio cards~~ (done).
 33. ~~Video bookmarks, Vimeo, fuller playback controls~~ (done). Captions: the providers' own; desktop's subtitle files wait for sync. Extract at a moment works (its card links back to that second); desktop's Create Mobile Clip cuts the video with FFmpeg, which the phone lacks.
-34. ~~More of upstream's settings (writing, PDF details)~~ (done, but the new rows have not been checked on a device yet).
+34. ~~More of upstream's settings (writing, PDF details)~~ (done).
 35. Getting Started guide. (Deferred)
 
 Upkeep and rarely used:
