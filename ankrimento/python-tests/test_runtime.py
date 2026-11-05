@@ -25,7 +25,7 @@ def test_addon_has_the_desktop_layout(rt):
     assert (rt.addon_dir / "user_files" / rt.profile / "incremento.db").is_file()
     # From frontend/ only the EPUB dock (data for its page script, its link resolver), its Qt-free link
     # helpers, Search ALL's Qt-free pipeline and the statistics dialog's files (read for their pure
-    # helpers; the period model imported) ship.
+    # helpers; the period model imported) and the writing dock (read for its text helpers) ship.
     shipped = sorted(p.name for p in (rt.addon_dir / "frontend").iterdir() if p.name != "__pycache__")
     assert shipped == [
         "epub_dock.py",
@@ -34,6 +34,7 @@ def test_addon_has_the_desktop_layout(rt):
         "stats_dashboard.py",
         "stats_dialog.py",
         "stats_progress.py",
+        "writing_dock.py",
     ]
     assert not (rt.addon_dir / "__init__.py").exists()
 

@@ -95,3 +95,87 @@ def create(title: str, deck_name: str = "Topics") -> int:
 
     rt = runtime.current()
     return int(add_writing_card(str(rt.addon_dir), rt.col, title, deck_name=deck_name))
+
+
+# ── Formatting toolbar and preview ────────────────────────────────────────────
+#
+# Desktop's toolbar buttons rewrite the selection with ``_apply_markdown_transform``,
+# which works on its Qt editor; the text helpers it calls are compiled from
+# ``frontend/writing_dock.py`` alone (shipped to be read, never imported).
+
+_TEXT_HELPERS = ("_normalize_selection_text", "_wrap_selection_text", "_prefix_lines_text")
+_text_helpers: dict[str, Any] | None = None
+
+# The toolbar's formatting buttons in desktop's order: kind, label (a message id or the text itself), tooltip.
+_TOOLBAR = (
+    ("h1", "H1", "writing_insert_heading"),
+    ("bold", "B", "writing_bold"),
+    ("italic", "I", "writing_italic"),
+    ("bullet", "•", "writing_bullet_list"),
+    ("number", "1.", "writing_numbered_list"),
+    ("quote", "writing_quote", "writing_block_quote"),
+    ("code", "</>", "writing_code_block"),
+    ("rule", "HR", "writing_horizontal_rule"),
+)
+
+
+def _helpers() -> dict[str, Any]:
+    global _text_helpers
+    if _text_helpers is None:
+        import ast
+
+        path = runtime.current().addon_dir / "frontend" / "writing_dock.py"
+        tree = ast.parse(path.read_text(encoding="utf8"), filename=str(path))
+        functions = [node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name in _TEXT_HELPERS]
+        if len(functions) != len(_TEXT_HELPERS):
+            raise RuntimeError("upstream writing helpers not found")
+        namespace: dict[str, Any] = {}
+        exec(compile(ast.Module(body=functions, type_ignores=[]), str(path), "exec"), namespace)  # noqa: S102 - upstream's own code
+        _text_helpers = namespace
+    return _text_helpers
+
+
+def toolbar() -> list[dict[str, str]]:
+    """Desktop's formatting buttons, with its labels and tooltips."""
+    from incremento.backend.i18n import t
+
+    return [
+        {"kind": kind, "label": t(label) if label.startswith("writing_") else label, "description": t(description)}
+        for kind, label, description in _TOOLBAR
+    ]
+
+
+def transform(kind: str, selected: str) -> str:
+    """What a toolbar button puts in place of ``selected``; mirrors ``_apply_markdown_transform``."""
+    from incremento.backend.i18n import t
+
+    helpers = _helpers()
+    selected = helpers["_normalize_selection_text"](selected)
+    if kind == "h1":
+        return helpers["_prefix_lines_text"](selected, "# ", t("writing_placeholder_heading"))
+    if kind == "bold":
+        return helpers["_wrap_selection_text"](selected, "**", "**", t("writing_placeholder_bold"))
+    if kind == "italic":
+        return helpers["_wrap_selection_text"](selected, "*", "*", t("writing_placeholder_italic"))
+    if kind == "bullet":
+        return helpers["_prefix_lines_text"](selected, "- ", t("writing_placeholder_list_item"))
+    if kind == "number":
+        body = selected.strip()
+        if not body:
+            return "1. " + t("writing_placeholder_list_item")
+        return "\n".join(f"{idx + 1}. {line}" if line else f"{idx + 1}." for idx, line in enumerate(body.splitlines()))
+    if kind == "quote":
+        return helpers["_prefix_lines_text"](selected, "> ", t("writing_placeholder_quote"))
+    if kind == "code":
+        body = selected.strip("\n") or t("writing_placeholder_code")
+        return f"```\n{body}\n```"
+    if kind == "rule":
+        return "\n\n---\n\n"
+    raise ValueError(f"unknown formatting: {kind!r}")
+
+
+def preview(text: str) -> str:
+    """Desktop's inert Markdown preview of the writing."""
+    from incremento.backend.markdown_manager import render_markdown_text_preview
+
+    return render_markdown_text_preview(text)

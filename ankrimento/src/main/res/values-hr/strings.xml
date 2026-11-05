@@ -468,4 +468,7 @@
     <string name="ankrimento_page_link_here">Poveži s ovom stranicom</string>
     <string name="ankrimento_page_linked">Stranica je povezana</string>
     <string name="ankrimento_page_link_unavailable">Ta se stranica ne može otvoriti ni povezati: dokument nedostaje ili je stranica izvan današnjeg ograničenja stranica.</string>
+    <string name="ankrimento_add_markdown_file">Markdown dokument</string>
+    <string name="ankrimento_writing_preview">Pregled</string>
+    <string name="ankrimento_writing_edit">Uredi</string>
 </resources>

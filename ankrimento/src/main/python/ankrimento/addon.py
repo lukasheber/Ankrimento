@@ -22,7 +22,8 @@ ADDON_PACKAGE = "incremento"
 # frontend/search_all_results.py (Search ALL's Qt-free search pipeline),
 # frontend/stats_dialog.py and frontend/stats_dashboard.py (read, never imported,
 # for their statistics helpers), frontend/stats_progress.py (the statistics'
-# period model) and the
+# period model), frontend/writing_dock.py (read, never imported, for its text
+# helpers) and the
 # web dock's bridge script.
 SHIPPED_ENTRIES = (
     "backend",
@@ -35,6 +36,7 @@ SHIPPED_ENTRIES = (
     "frontend/stats_dashboard.py",
     "frontend/stats_dialog.py",
     "frontend/stats_progress.py",
+    "frontend/writing_dock.py",
     "web/web_dock_bridge.js",
 )
 

@@ -468,4 +468,7 @@
     <string name="ankrimento_page_link_here">Vincular a esta página</string>
     <string name="ankrimento_page_linked">Página vinculada</string>
     <string name="ankrimento_page_link_unavailable">Essa página não pode ser aberta nem vinculada: o documento não existe ou a página está além do limite de páginas de hoje.</string>
+    <string name="ankrimento_add_markdown_file">Documento Markdown</string>
+    <string name="ankrimento_writing_preview">Pré-visualizar</string>
+    <string name="ankrimento_writing_edit">Editar</string>
 </resources>

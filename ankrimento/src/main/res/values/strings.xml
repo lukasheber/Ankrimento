@@ -455,4 +455,7 @@
     <string name="ankrimento_page_link_here">Link to this page</string>
     <string name="ankrimento_page_linked">Page linked</string>
     <string name="ankrimento_page_link_unavailable">That page can\'t be opened or linked: the document is missing, or the page is past today\'s page limit.</string>
+    <string name="ankrimento_add_markdown_file">Markdown document</string>
+    <string name="ankrimento_writing_preview">Preview</string>
+    <string name="ankrimento_writing_edit">Edit</string>
 </resources>

@@ -442,4 +442,7 @@
     <string name="ankrimento_page_link_here">链接到此页面</string>
     <string name="ankrimento_page_linked">页面已链接</string>
     <string name="ankrimento_page_link_unavailable">无法打开或链接该页面：文档缺失，或该页超出今天的页数限制。</string>
+    <string name="ankrimento_add_markdown_file">Markdown 文档</string>
+    <string name="ankrimento_writing_preview">预览</string>
+    <string name="ankrimento_writing_edit">编辑</string>
 </resources>

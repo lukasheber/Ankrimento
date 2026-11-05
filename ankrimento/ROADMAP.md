@@ -139,8 +139,8 @@ Mobile principles that guide every item:
 | Status | Feature | Mobile notes |
 |---|---|---|
 | ✅ | Writing card editor with autosave and word count (upstream backups) | |
-| ⬜ | Markdown preview / formatting toolbar | |
-| ⬜ | Markdown documents (import, read as EPUB-like) [5] | |
+| ✅ | Markdown preview / formatting toolbar | Desktop's formatting buttons (heading, bold, italic, lists, quote, code block, rule) in a row above the keyboard, with desktop's labels and its own rewriting of the selection; Preview shows desktop's rendering of the text. Checked on the tablet. Not here: desktop's font size, wrap, focus mode, marker, bookmarks and backups buttons |
+| ✅ | Markdown documents (import, read as EPUB-like) [5] | Add → Markdown document: desktop's Markdown import makes a study document read in the EPUB reader (its headings become chapters). Checked on the tablet. Android's file picker hands over the file alone, so its pictures in nearby files are left as their alt text, as desktop's import does with any image it can't read |
 | ⬜ | Local file cards [8] | Open with another app |
 
 ## 4. Extraction and cards [11]
@@ -251,7 +251,7 @@ Things desktop has:
 28. ~~Longer statistics: 30 days, a year, tag charts~~ (done; desktop has no focus-timer statistics to add).
 29. Tablet two-pane layout (library beside the reader). (Deferred: it does not suit the phone-first experience.)
 30. ~~PDF cross-references and page links; OCR status~~ (done).
-31. Markdown documents (import) and the writing formatting toolbar.
+31. ~~Markdown documents (import) and the writing formatting toolbar~~ (done).
 32. Audio import; check audio cards.
 33. Video bookmarks, captions, Vimeo, fuller playback controls. Check if extract video sessio/snip is implemented 
 34. More of upstream's settings (writing, PDF details).

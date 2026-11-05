@@ -92,7 +92,12 @@ class AnkrimentoSmokeTestActivity : Activity() {
                         CollectionManager.withCol {
                             Ankrimento.start(this@AnkrimentoSmokeTestActivity, this)
                             val pdf = intent.getStringExtra(EXTRA_PDF)?.let { Ankrimento.importPdf(it, File(it).nameWithoutExtension) }
-                            val epub = intent.getStringExtra(EXTRA_EPUB)?.let { Ankrimento.importEpub(it, File(it).nameWithoutExtension) }
+                            val epub =
+                                intent.getStringExtra(EXTRA_EPUB)?.let { Ankrimento.importEpub(it, File(it).nameWithoutExtension) }
+                                    ?: intent
+                                        .getStringExtra(
+                                            EXTRA_MARKDOWN,
+                                        )?.let { Ankrimento.importMarkdown(it, File(it).nameWithoutExtension) }
                             intent.getStringExtra(EXTRA_BACKUP)?.let { log("full backup: ${Ankrimento.exportFullBackup(File(it))}") }
                             pdf?.let { log("imported PDF card $it") }
                             epub?.let { log("imported EPUB card $it") }
@@ -321,6 +326,7 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_BACKUP = "backup"
         const val EXTRA_RESTORE = "restore"
         const val EXTRA_SEED_MEDIA = "seedmedia"
+        const val EXTRA_MARKDOWN = "markdown"
         const val EXTRA_ITEM = "item"
         const val TYPED_NOTE_TYPE = "Typed test"
         const val TTS_NOTE_TYPE = "TTS test"

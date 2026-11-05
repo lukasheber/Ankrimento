@@ -574,6 +574,36 @@ def import_epub(path: str, title: str, deck_name: str = "Topics", priority: floa
     return int(card_id)
 
 
+def import_markdown(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0) -> int:
+    """Add a Markdown file as a study document (read as an EPUB), as desktop's Markdown import does."""
+    from incremento.backend.markdown_manager import add_markdown_card
+    from incremento.backend.priority_manager import set_priority
+
+    rt = runtime.current()
+    card_id = add_markdown_card(str(rt.addon_dir), rt.profile, rt.col, path, title, deck_name=deck_name)
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return int(card_id)
+
+
+def writing_toolbar() -> str:
+    """Desktop's writing formatting buttons (see ``writing.toolbar``)."""
+    from ankrimento import writing
+
+    return _dumps(writing.toolbar())
+
+
+def writing_transform(kind: str, selected: str) -> str:
+    from ankrimento import writing
+
+    return writing.transform(str(kind), str(selected))
+
+
+def writing_preview(text: str) -> str:
+    from ankrimento import writing
+
+    return writing.preview(str(text))
+
+
 def import_web(url: str, title: str = "", deck_name: str = "Topics", priority: float = 50.0) -> int:
     """Add a web page as an Incremento Web topic card, as desktop's Web Page does."""
     from incremento.backend.priority_manager import set_priority

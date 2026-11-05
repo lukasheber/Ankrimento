@@ -109,6 +109,7 @@ val incrementoAddonSource =
                 "frontend/stats_dashboard.py",
                 "frontend/stats_dialog.py",
                 "frontend/stats_progress.py",
+                "frontend/writing_dock.py",
                 "web/web_dock_bridge.js",
             )
             exclude("**/__pycache__/**", "**/AGENTS.md")

@@ -124,6 +124,17 @@ class IncrementoHubActivity : ComponentActivity() {
             }
         }
 
+    private val pickMarkdown =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                lifecycleScope.launch {
+                    importDocument {
+                        DocumentImport.import(this@IncrementoHubActivity, uri, "document.md", Ankrimento::importMarkdown)
+                    }
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -421,6 +432,8 @@ class IncrementoHubActivity : ComponentActivity() {
             Column(Modifier.navigationBarsPadding().padding(bottom = 16.dp)) {
                 AddOption(IncrementoIcons.Document, R.string.ankrimento_add_pdf_file) { pickPdf.launch(arrayOf("application/pdf")) }
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_epub_file) { pickEpub.launch(arrayOf("application/epub+zip")) }
+                // File managers name Markdown's type in several ways, often only as text or as bytes.
+                AddOption(IncrementoIcons.Document, R.string.ankrimento_add_markdown_file) { pickMarkdown.launch(MARKDOWN_TYPES) }
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_article) { askArticle = true }
                 AddOption(IncrementoIcons.Web, R.string.ankrimento_add_link) { askLink = true }
                 AddOption(IncrementoIcons.Edit, R.string.ankrimento_new_writing) { askWriting = true }
@@ -510,6 +523,8 @@ class IncrementoHubActivity : ComponentActivity() {
         }
 
     companion object {
+        private val MARKDOWN_TYPES = arrayOf("text/markdown", "text/x-markdown", "text/plain", "application/octet-stream")
+
         private const val RECENT = 8
         private const val SORT_PRIORITY = "priority"
         private const val SORT_TITLE = "title"

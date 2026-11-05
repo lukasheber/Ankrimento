@@ -650,6 +650,13 @@ object Ankrimento {
         title: String,
     ): Long = requireFacade().callAttr("import_epub", path, title).toLong()
 
+    /** A Markdown file as a study document, read in the EPUB reader (desktop's Markdown import). */
+    @WorkerThread
+    fun importMarkdown(
+        path: String,
+        title: String,
+    ): Long = requireFacade().callAttr("import_markdown", path, title).toLong()
+
     /** A chapter of an EPUB topic, extracted to [root]; [path] is the chapter file. */
     data class EpubSection(
         val root: String,
@@ -917,6 +924,32 @@ object Ankrimento {
     /** A writing topic's Markdown text. */
     @WorkerThread
     fun writingOpen(cardId: Long): String = JSONObject(requireFacade().callAttr("writing_open", cardId).toString()).getString("text")
+
+    /** One of desktop's writing formatting buttons: its [kind], [label] and tooltip ([description]). */
+    data class WritingButton(
+        val kind: String,
+        val label: String,
+        val description: String,
+    )
+
+    @WorkerThread
+    fun writingToolbar(): List<WritingButton> {
+        val rows = JSONArray(requireFacade().callAttr("writing_toolbar").toString())
+        return List(rows.length()) { index ->
+            rows.getJSONObject(index).let { WritingButton(it.getString("kind"), it.getString("label"), it.getString("description")) }
+        }
+    }
+
+    /** What a formatting button puts in place of [selected]. */
+    @WorkerThread
+    fun writingTransform(
+        kind: String,
+        selected: String,
+    ): String = requireFacade().callAttr("writing_transform", kind, selected).toString()
+
+    /** Desktop's Markdown preview of [text], as HTML. */
+    @WorkerThread
+    fun writingPreview(text: String): String = requireFacade().callAttr("writing_preview", text).toString()
 
     /** Save a writing topic as desktop does (backups, word stats); returns the word count. */
     @WorkerThread
