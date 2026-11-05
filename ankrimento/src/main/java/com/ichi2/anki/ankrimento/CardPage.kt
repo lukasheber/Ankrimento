@@ -5,8 +5,15 @@ package com.ichi2.anki.ankrimento
 import android.content.Context
 import android.webkit.WebResourceResponse
 import androidx.annotation.WorkerThread
+import com.ichi2.anki.libanki.AvRef
+import com.ichi2.anki.libanki.AvTag
 import com.ichi2.anki.libanki.Card
 import com.ichi2.anki.libanki.Collection
+import com.ichi2.anki.libanki.Sound
+import com.ichi2.anki.libanki.SoundOrVideoTag
+import com.ichi2.anki.libanki.TTSTag
+import com.ichi2.anki.libanki.stripAvRefs
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.FileInputStream
@@ -20,11 +27,183 @@ object CardPage {
     /** Where pages are loaded from; media requests are under it. */
     const val BASE_URL = "https://appassets.androidplatform.net/media/"
 
-    /** Audio and video placeholders; readers show text only (see [canShow]). */
-    private val AV_TAG = Regex("""\[anki:play:[^\]]*]""")
+    /** `[[type:Field]]`, as AnkiDroid's `TypeAnswer.PATTERN`. */
+    private val TYPE_TAG = Regex("""\[\[type:(.+?)]]""")
 
-    /** What only AnkiDroid's reviewer shows properly: typed answers, image occlusion. */
-    private val NEEDS_REVIEWER = listOf("[[type:", "image-occlusion", "<canvas")
+    private const val OCCLUSION = "image-occlusion"
+
+    /** Anki's review styles: replay buttons, the typed comparison's colours, image occlusion. */
+    private const val REVIEWER_CSS = "<link rel=\"stylesheet\" href=\"/_anki/css/reviewer.css\">"
+
+    /** Draws image occlusion: the note type's template calls `anki.imageOcclusion.setup()`. */
+    private const val REVIEWER_JS = "<script src=\"/_anki/js/reviewer_extras_bundle.js\"></script>"
+
+    /** Plays a side's sound in order, as the reviewer's player does; `ankrimentoPlay` is a replay button's. */
+    private const val PLAYER = """
+(function (media) {
+  var current = null, queue = [];
+  function next() {
+    var ref = queue.shift();
+    current = null;
+    if (!ref) return;
+    var player = document.querySelector('video[data-play="' + ref + '"]') || new Audio(media.urls[ref]);
+    current = player;
+    player.onended = next;
+    player.onerror = next;
+    var started = player.play();
+    if (started) started.catch(next);
+  }
+  window.ankrimentoStop = function () {
+    queue = [];
+    if (current) { current.onended = null; current.onerror = null; }
+    if (current) current.pause();
+    current = null;
+    document.querySelectorAll('video').forEach(function (video) { video.pause(); });
+  };
+  window.ankrimentoPlay = function (ref) { window.ankrimentoStop(); queue = [ref]; next(); return false; };
+  window.addEventListener('load', function () { queue = media.autoplay.slice(); next(); });
+})"""
+
+    /** AnkiDroid's replay button (`expandSounds`). */
+    private fun replayButton(ref: String) =
+        "<a class=\"replay-button soundLink\" href=\"#\" onclick=\"return ankrimentoPlay('$ref')\"><span>" +
+            "<svg class=\"playImage\" viewBox=\"0 0 64 64\" version=\"1.1\"><circle cx=\"32\" cy=\"32\" r=\"29\"/>" +
+            "<path d=\"M56.502,32.301l-37.502,20.101l0.329,-40.804l37.173,20.703Z\"/></svg></span></a>"
+
+    /**
+     * What a side of an item plays: its `[anki:play:…]` references, the ones it plays by
+     * itself when shown ([autoplay], as `q:0`), and whether references show play buttons.
+     */
+    class SideMedia private constructor(
+        private val question: List<AvTag>,
+        private val answer: List<AvTag>,
+        val autoplay: List<String>,
+        private val showButtons: Boolean,
+    ) {
+        private fun tag(ref: AvRef) = (if (ref.side == "q") question else answer).getOrNull(ref.index)
+
+        private fun url(tag: SoundOrVideoTag) = BASE_URL + android.net.Uri.encode(tag.filename)
+
+        /** Audio or video in a video container: the reader cannot tell them apart without decoding, a player shows both. */
+        private fun isVideo(tag: SoundOrVideoTag) =
+            tag.filename.substringAfterLast('.', "").lowercase().let {
+                it in Sound.VIDEO_ONLY_EXTENSIONS || it in Sound.AUDIO_OR_VIDEO_EXTENSIONS
+            }
+
+        fun expand(body: String): String =
+            AvRef.REGEX.replace(body) { match ->
+                val ref = AvRef.from(match) ?: return@replace ""
+                val tag = tag(ref) as? SoundOrVideoTag ?: return@replace ""
+                val name = "${ref.side}:${ref.index}"
+                when {
+                    isVideo(tag) -> "<video src=\"${url(tag)}\" controls playsinline data-play=\"$name\" style=\"max-width: 100%\"></video>"
+                    showButtons -> replayButton(name)
+                    else -> ""
+                }
+            }
+
+        fun script(): String {
+            val urls = JSONObject()
+            for ((side, tags) in listOf("q" to question, "a" to answer)) {
+                tags.forEachIndexed { index, tag ->
+                    if (tag is SoundOrVideoTag && !isVideo(tag)) urls.put("$side:$index", url(tag))
+                }
+            }
+            val media = JSONObject().put("urls", urls).put("autoplay", JSONArray(autoplay))
+            return "<script>$PLAYER(${media.toString().replace("</", "<\\/")});</script>"
+        }
+
+        companion object {
+            /** [side] is "q" or "a". Desktop's `Reviewer._replay`: the question's sound again on the answer when the deck says so. */
+            fun of(
+                question: List<AvTag>,
+                answer: List<AvTag>,
+                side: String,
+                autoplay: Boolean,
+                replayQuestion: Boolean,
+                showButtons: Boolean,
+            ): SideMedia {
+                fun refs(
+                    name: String,
+                    tags: List<AvTag>,
+                ) = tags.indices.map { "$name:$it" }
+                val played =
+                    when {
+                        !autoplay -> emptyList()
+                        side == "q" -> refs("q", question)
+                        replayQuestion -> refs("q", question) + refs("a", answer)
+                        else -> refs("a", answer)
+                    }
+                return SideMedia(question, answer, played, showButtons)
+            }
+        }
+    }
+
+    /** A card's `[[type:…]]` tag: mirrors AnkiDroid's `TypeAnswerModifiers`, internal to its app module. */
+    data class TypedTag(
+        val field: String,
+        val combining: Boolean,
+        val cloze: Boolean,
+        val noSuggest: Boolean,
+    ) {
+        companion object {
+            fun find(text: String): TypedTag? {
+                var remaining = TYPE_TAG.find(text)?.groupValues?.get(1) ?: return null
+                var combining = true
+                var cloze = false
+                var noSuggest = false
+                while (true) {
+                    when {
+                        remaining.startsWith("nosuggest:") -> noSuggest = true
+                        remaining.startsWith("cloze:") -> cloze = true
+                        remaining.startsWith("nc:") -> combining = false
+                        else -> return TypedTag(remaining, combining, cloze, noSuggest)
+                    }
+                    remaining = remaining.substringAfter(':')
+                }
+            }
+        }
+    }
+
+    /** An answer to type: the box on the question, the comparison on the answer, as AnkiDroid's `TypeAnswer`. */
+    class TypedAnswer(
+        val expected: String,
+        val combining: Boolean,
+        private val noSuggest: Boolean,
+        private val font: String,
+        private val fontSize: Int,
+    ) {
+        private val fontStyle = "font-family: '$font'; font-size: ${fontSize}px"
+
+        fun onQuestion(text: String): String {
+            val suggestions = if (noSuggest) "autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\" " else ""
+            val box =
+                "<center><input type=\"text\" id=\"typeans\" autocomplete=\"off\" $suggestions" +
+                    "style=\"$fontStyle\" onkeydown=\"if (event.key === 'Enter') AnkrimentoItem.submit()\"></center>"
+            return TYPE_TAG.replace(text) { box }
+        }
+
+        fun onAnswer(
+            text: String,
+            comparison: String,
+        ): String = TYPE_TAG.replace(text) { "<div style=\"$fontStyle\">$comparison</div>" }
+
+        companion object {
+            /** The answer [text] asks for, or null when it asks for none or names no field of the card. */
+            @WorkerThread
+            fun of(
+                col: Collection,
+                card: Card,
+                text: String,
+            ): TypedAnswer? {
+                val tag = TypedTag.find(text) ?: return null
+                val field = card.noteType(col).fields.firstOrNull { it.name == tag.field } ?: return null
+                val value = card.note(col).getItem(tag.field)
+                val expected = if (tag.cloze) col.extractClozeForTyping(value, card.ord + 1) else value
+                return TypedAnswer(expected, tag.combining, tag.noSuggest, field.font, field.fontSize)
+            }
+        }
+    }
 
     /** Anki's math delimiters. */
     private val MATH = listOf("\\(", "\\[")
@@ -57,20 +236,29 @@ object CardPage {
         }
     }
 
+    /** The page for [body]; without [media] its sound and video are left out (a topic read as text). */
     fun html(
         css: String,
         body: String,
-    ): String =
-        "<!doctype html><html><head><meta charset=\"utf-8\">" +
+        media: SideMedia? = null,
+    ): String {
+        val occlusion = OCCLUSION in body
+        val reviewerStyles = occlusion || media != null || "id=\"typeans\"" in body || "id=typeans" in body
+        return "<!doctype html><html><head><meta charset=\"utf-8\">" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
+            (if (reviewerStyles) REVIEWER_CSS else "") +
             "<style>$css</style><script>$PYCMD</script>" +
+            (if (occlusion) REVIEWER_JS else "") +
             (if (MATH.any { it in body }) MATHJAX else "") +
+            (media?.script() ?: "") +
             "</head>" +
-            "<body class=\"card\"><div id=\"qa\">${body.replace(AV_TAG, "")}</div></body></html>"
+            "<body class=\"card\"><div id=\"qa\">${media?.expand(body) ?: stripAvRefs(body)}</div></body></html>"
+    }
 
     /**
-     * Whether a reader shows [card] as faithfully as the reviewer: no sound or
-     * video to play, no answer to type, no math or image occlusion to draw.
+     * Whether a reader shows [card] as faithfully as the reviewer. Not text to speech, whose
+     * player is in AnkiDroid's app module, nor a typed answer naming a field the card lacks:
+     * the reviewer explains that one.
      */
     @WorkerThread
     fun canShow(
@@ -78,14 +266,13 @@ object CardPage {
         card: Card,
     ): Boolean {
         val output = card.renderOutput(col)
-        if (output.questionAvTags.isNotEmpty() || output.answerAvTags.isNotEmpty()) return false
-        val text = output.questionText + output.answerText
-        return NEEDS_REVIEWER.none { it in text }
+        if ((output.questionAvTags + output.answerAvTags).any { it is TTSTag }) return false
+        return TypedTag.find(output.questionText) == null || TypedAnswer.of(col, card, output.questionText) != null
     }
 
     /**
      * AnkiDroid's own web assets under `/_anki/` (as its `ViewerResourceHandler` serves them):
-     * MathJax and its parts at `js/…`, its stylesheet at `mathjax.css`.
+     * MathJax and its parts at `js/…`, its stylesheet at `mathjax.css`, Anki's review styles at `css/…`.
      */
     fun ankiAssets(context: Context): (String) -> WebResourceResponse? {
         val assets = context.applicationContext.assets
@@ -93,7 +280,7 @@ object CardPage {
             val asset =
                 when {
                     path == "mathjax.css" -> "mathjax/mathjax.css"
-                    path.startsWith("js/") && ".." !in path -> "backend/$path"
+                    (path.startsWith("js/") || path.startsWith("css/")) && ".." !in path -> "backend/$path"
                     else -> null
                 }
             asset?.let {

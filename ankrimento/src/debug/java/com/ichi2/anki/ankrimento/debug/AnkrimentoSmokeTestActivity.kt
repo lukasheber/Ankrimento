@@ -3,6 +3,8 @@
 package com.ichi2.anki.ankrimento.debug
 
 import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.ScrollView
@@ -27,6 +29,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import java.io.File
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 /**
  * Debug builds only: runs Ankrimento's review flow on the device's real
@@ -47,6 +51,24 @@ class AnkrimentoSmokeTestActivity : Activity() {
         // `--el open <card id>` opens that card's reader; with `--ez only true`, imports and
         // `open` run without the session check (which needs cards due). `--es backup <path>`
         // writes a full backup there; `--es restore <path>` restores one (replacing the collection).
+        // `--ez seedmedia true` adds items with sound, a typed answer and image occlusion, and logs
+        // their card ids; `--el item <card id>` shows one as a session does, question first.
+        if (intent.getBooleanExtra(EXTRA_SEED_MEDIA, false)) {
+            scope.launch {
+                CollectionManager.withCol {
+                    Ankrimento.start(this@AnkrimentoSmokeTestActivity, this)
+                    seedItemMedia(this)
+                }
+            }
+            return
+        }
+        intent.getLongExtra(EXTRA_ITEM, 0L).takeIf { it > 0 }?.let { cardId ->
+            scope.launch {
+                CollectionManager.withCol { Ankrimento.start(this@AnkrimentoSmokeTestActivity, this) }
+                ReaderActivity.intent(this@AnkrimentoSmokeTestActivity, "item", cardId, session = true)?.let(::startActivity)
+            }
+            return
+        }
         intent.getStringExtra(EXTRA_RESTORE)?.let { path ->
             scope.launch {
                 runCatching {
@@ -203,6 +225,64 @@ class AnkrimentoSmokeTestActivity : Activity() {
         return col.findCards(query).toSet()
     }
 
+    private fun seedItemMedia(col: Collection) {
+        val wav = File(cacheDir, "ankrimento-test.wav").apply { writeBytes(toneWav()) }
+        val sound = col.media.addFile(wav)
+        log(
+            "sound note ${Ankrimento.createCard(
+                listOf("Sound front [sound:$sound]", "Sound back [sound:$sound]"),
+                "Basic",
+                false,
+                10.0,
+                "Topics",
+            )}",
+        )
+
+        if (col.notetypes.byName(TYPED_NOTE_TYPE) == null) {
+            val typed = col.notetypes.copy(col.notetypes.byName("Basic")!!)
+            typed.name = TYPED_NOTE_TYPE
+            typed.templates[0].qfmt = "{{Front}}<br>{{type:Back}}"
+            typed.templates[0].afmt = "{{Front}}<hr id=answer>{{type:Back}}"
+            col.notetypes.save(typed)
+        }
+        log("typed note ${Ankrimento.createCard(listOf("Capital of France?", "Paris"), TYPED_NOTE_TYPE, false, 10.0, "Topics")}")
+
+        val image = File(cacheDir, "ankrimento-occlusion.png")
+        val bitmap = Bitmap.createBitmap(600, 400, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.rgb(120, 170, 220)) }
+        image.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        col.addImageOcclusionNoteType()
+        val occlusion = col.notetypes.byName("Image Occlusion")!!
+        col.addImageOcclusionNote(
+            occlusion.id,
+            image.path,
+            "{{c1::image-occlusion:rect:left=.1:top=.1:width=.3:height=.3}}<br>{{c2::image-occlusion:rect:left=.5:top=.5:width=.3:height=.3}}<br>",
+            "Occlusion header",
+            "",
+            listOf(SMOKE_TAG),
+        )
+        log("occlusion cards ${col.findCards("note:\"Image Occlusion\"")}")
+    }
+
+    /** Two seconds of a tone, as 8 kHz 8-bit PCM. */
+    private fun toneWav(): ByteArray {
+        val samples = ByteArray(16000) { (128 + 60 * kotlin.math.sin(it * 2 * Math.PI * 440 / 8000)).toInt().toByte() }
+        val header = ByteBuffer.allocate(44).order(ByteOrder.LITTLE_ENDIAN)
+        header
+            .put("RIFF".toByteArray())
+            .putInt(36 + samples.size)
+            .put("WAVEfmt ".toByteArray())
+            .putInt(16)
+        header
+            .putShort(1)
+            .putShort(1)
+            .putInt(8000)
+            .putInt(8000)
+            .putShort(1)
+            .putShort(8)
+        header.put("data".toByteArray()).putInt(samples.size)
+        return header.array() + samples
+    }
+
     private fun log(message: String) {
         Log.i(TAG, message)
         runOnUiThread { output.append("$message\n") }
@@ -219,5 +299,8 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_ONLY = "only"
         const val EXTRA_BACKUP = "backup"
         const val EXTRA_RESTORE = "restore"
+        const val EXTRA_SEED_MEDIA = "seedmedia"
+        const val EXTRA_ITEM = "item"
+        const val TYPED_NOTE_TYPE = "Typed test"
     }
 }

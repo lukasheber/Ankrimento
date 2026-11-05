@@ -41,8 +41,8 @@ Mobile principles that guide every item:
 | ✅ | **Fixed "Incremento" entry on the main screen** that is the session's filtered deck: Continue while it has cards, Start when empty, gear for settings, ⋮ for Library, Add, Knowledge tree, Statistics (and Sync now when a folder is set) | The deck's own row is hidden from the list; on a tablet its side panel has no Study button |
 | 🟡 | When a session finds nothing to study, say why and offer the session settings | Dialog with upstream's message and a Session settings button; not yet seen on a device (document topics always qualify, as upstream intends) |
 | ✅ | Plain-text topics in a reader (no "Show answer"): the note as its template renders it, Aa settings, Extract on selection, review bar | |
-| ✅ | Items in the same learning screen as topics: question, Show answer, then Anki's grades (or Fail/Pass when enabled), with intervals, Back and the priority chip | Session deck only; cards with sound, typed answers or image occlusion still use the reviewer |
-| 🟡 | Items with sound, typed answers, math (MathJax) and image occlusion in the learning screen | Math: AnkiDroid's own MathJax, loaded and typeset as its card pages do (checked on the tablet), so math cards stay in the learning screen and the text reader. Sound, typed answers and image occlusion still open in AnkiDroid's reviewer, which shows Incremento's buttons |
+| ✅ | Items in the same learning screen as topics: question, Show answer, then Anki's grades (or Fail/Pass when enabled), with intervals, Back and the priority chip | Session deck only; cards read aloud by text to speech still use the reviewer |
+| ✅ | Items with sound, typed answers, math (MathJax) and image occlusion in the learning screen | Math: AnkiDroid's own MathJax, typeset as its card pages do. Sound: AnkiDroid's replay buttons (hidden with its option) and desktop's autoplay and "replay question" deck options; video files in a player. Typed answers: a box on the question, Enter or Show answer compares with Anki's own comparison. Image occlusion: Anki's own review script and styles. All checked on the tablet. Text to speech still opens in AnkiDroid's reviewer (its player is in the app module) |
 | 🟡 | Leech notice when an item becomes a leech in the learning screen | A notice after the answer (and whether it was suspended); not yet seen on a device |
 | ➖ | Swipe between elements | Sideways swipe turns pages in the readers; moving between elements stays on the footer buttons, where a stray swipe cannot answer a topic |
 | ✅ | Session settings: card count, topic/item and document mix, random/priority, card states, top-up | In the settings screen |
@@ -244,7 +244,7 @@ Daily reading and extracting:
      a confirmation after each, saying where the card went).
 26b. ~~The extract sheet's note type follows the document open~~ (done: desktop's extract note type setting when set,
      otherwise the type last used for that kind of document).
-27. Items with sound, typed answers or image occlusion in the learning screen.
+27. ~~Items with sound, typed answers or image occlusion in the learning screen~~ (done; text to speech stays in the reviewer).
 
 Things desktop has:
 
