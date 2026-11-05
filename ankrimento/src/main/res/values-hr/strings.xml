@@ -475,4 +475,12 @@
     <string name="ankrimento_video_forward_10">10 sekundi naprijed</string>
     <string name="ankrimento_video_speed">Brzina: %1$s</string>
     <string name="ankrimento_video_bookmark_here">Označi ovaj trenutak (%1$s)</string>
+    <string name="ankrimento_settings_pdf_force">Uvijek prisili ovaj izgled za svaki PDF</string>
+    <string name="ankrimento_settings_pdf_delete_buttons">Prikaži X za brisanje na PDF isticanjima</string>
+    <string name="ankrimento_settings_pdf_scroll_top">Pomakni na vrh pri prelasku na sljedeću stranicu PDF-a</string>
+    <string name="ankrimento_settings_writing">Pisanje</string>
+    <string name="ankrimento_settings_writing_backups">Stvaraj automatske sigurnosne kopije pisanja</string>
+    <string name="ankrimento_settings_word_count">Način brojanja riječi</string>
+    <string name="ankrimento_settings_word_simple">Jednostavno, prema razmacima</string>
+    <string name="ankrimento_settings_word_like">Poput Worda</string>
 </resources>

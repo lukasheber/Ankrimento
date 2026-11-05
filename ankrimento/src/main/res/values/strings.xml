@@ -462,4 +462,12 @@
     <string name="ankrimento_video_forward_10">Forward 10 seconds</string>
     <string name="ankrimento_video_speed">Speed: %1$s</string>
     <string name="ankrimento_video_bookmark_here">Bookmark this moment (%1$s)</string>
+    <string name="ankrimento_settings_pdf_force">Always force this appearance for every PDF</string>
+    <string name="ankrimento_settings_pdf_delete_buttons">Show delete X on PDF highlights</string>
+    <string name="ankrimento_settings_pdf_scroll_top">Scroll to top when going to the next PDF page</string>
+    <string name="ankrimento_settings_writing">Writing</string>
+    <string name="ankrimento_settings_writing_backups">Create automatic writing backups</string>
+    <string name="ankrimento_settings_word_count">Word counting mode</string>
+    <string name="ankrimento_settings_word_simple">Simple whitespace</string>
+    <string name="ankrimento_settings_word_like">Word-like</string>
 </resources>

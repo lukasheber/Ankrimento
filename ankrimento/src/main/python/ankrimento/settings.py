@@ -33,6 +33,12 @@ SETTINGS: dict[str, Any] = {
     "priority_lower_is_more_important": "bool",
     # Reading
     "pdf_default_appearance": ("original", "dark", "night"),
+    "pdf_force_default_appearance": "bool",
+    "pdf_show_highlight_delete_buttons": "bool",
+    "pdf_scroll_to_top_on_page_change": "bool",
+    # Writing
+    "writing_backups_enabled": "bool",
+    "writing_word_count_mode": ("simple", "word_like"),
     # Focus timer
     "timer_completion_beep": "bool",
 }

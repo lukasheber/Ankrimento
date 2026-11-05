@@ -449,4 +449,12 @@
     <string name="ankrimento_video_forward_10">前进 10 秒</string>
     <string name="ankrimento_video_speed">速度：%1$s</string>
     <string name="ankrimento_video_bookmark_here">为此时刻添加书签（%1$s）</string>
+    <string name="ankrimento_settings_pdf_force">对所有 PDF 始终强制使用此外观</string>
+    <string name="ankrimento_settings_pdf_delete_buttons">在 PDF 高亮上显示删除 X 按钮</string>
+    <string name="ankrimento_settings_pdf_scroll_top">翻到 PDF 下一页时滚动到顶部</string>
+    <string name="ankrimento_settings_writing">写作</string>
+    <string name="ankrimento_settings_writing_backups">自动创建写作备份</string>
+    <string name="ankrimento_settings_word_count">字数统计方式</string>
+    <string name="ankrimento_settings_word_simple">按空白分隔计数</string>
+    <string name="ankrimento_settings_word_like">类似 Word</string>
 </resources>

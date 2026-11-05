@@ -475,4 +475,12 @@
     <string name="ankrimento_video_forward_10">Avançar 10 segundos</string>
     <string name="ankrimento_video_speed">Velocidade: %1$s</string>
     <string name="ankrimento_video_bookmark_here">Marcar este momento (%1$s)</string>
+    <string name="ankrimento_settings_pdf_force">Sempre forçar esta aparência em todos os PDFs</string>
+    <string name="ankrimento_settings_pdf_delete_buttons">Mostrar o X de excluir nos destaques do PDF</string>
+    <string name="ankrimento_settings_pdf_scroll_top">Rolar para o topo ao ir para a próxima página do PDF</string>
+    <string name="ankrimento_settings_writing">Escrita</string>
+    <string name="ankrimento_settings_writing_backups">Criar backups automáticos dos textos</string>
+    <string name="ankrimento_settings_word_count">Modo de contagem de palavras</string>
+    <string name="ankrimento_settings_word_simple">Simples, por espaços</string>
+    <string name="ankrimento_settings_word_like">Como no Word</string>
 </resources>

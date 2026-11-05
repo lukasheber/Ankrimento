@@ -316,6 +316,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
                     ReviewSection(settings)
                     ExtractionSection(settings)
                     ReadingSection(settings)
+                    WritingSection(settings)
                 }
                 DeviceSection()
                 BackupSection()
@@ -690,6 +691,28 @@ class IncrementoSettingsActivity : ComponentActivity() {
             ),
             v.optString("pdf_default_appearance", "original"),
         ) { set("pdf_default_appearance", it) }
+        Toggle(R.string.ankrimento_settings_pdf_force, v.optBoolean("pdf_force_default_appearance")) {
+            set("pdf_force_default_appearance", it)
+        }
+        Toggle(R.string.ankrimento_settings_pdf_delete_buttons, v.optBoolean("pdf_show_highlight_delete_buttons", true)) {
+            set("pdf_show_highlight_delete_buttons", it)
+        }
+        Toggle(R.string.ankrimento_settings_pdf_scroll_top, v.optBoolean("pdf_scroll_to_top_on_page_change", true)) {
+            set("pdf_scroll_to_top_on_page_change", it)
+        }
+    }
+
+    @Composable
+    private fun WritingSection(v: JSONObject) {
+        Header(R.string.ankrimento_settings_writing)
+        Toggle(R.string.ankrimento_settings_writing_backups, v.optBoolean("writing_backups_enabled", true)) {
+            set("writing_backups_enabled", it)
+        }
+        Choice(
+            R.string.ankrimento_settings_word_count,
+            listOf("simple" to R.string.ankrimento_settings_word_simple, "word_like" to R.string.ankrimento_settings_word_like),
+            v.optString("writing_word_count_mode", "simple"),
+        ) { set("writing_word_count_mode", it) }
     }
 
     @Composable
