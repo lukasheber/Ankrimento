@@ -234,7 +234,7 @@ Mobile principles that guide every item:
 
 Daily reading and extracting:
 
-22. Faster first launch (Python cold start about 20 s).
+22. ~~Faster first launch~~ (done).
 23. ~~Extract from the card shown in AnkiDroid's reviewer; add a card from scratch with a priority~~ (done; the new study screen's Extract remains).
 24. ~~Web extract anchors~~ (done).
 25. ~~Links back to the source, for every kind of extract~~ (done).
@@ -249,13 +249,13 @@ Daily reading and extracting:
 Things desktop has:
 
 28. Longer statistics: 30 days, a year, tag charts, the focus timer's numbers.
-29. Tablet two-pane layout (library beside the reader). (Deferred)
+29. Tablet two-pane layout (library beside the reader). (Deferred: it does not suit the phone-first experience.)
 30. PDF cross-references and page links; OCR status.
 31. Markdown documents (import) and the writing formatting toolbar.
 32. Audio import; check audio cards.
 33. Video bookmarks, captions, Vimeo, fuller playback controls. Check if extract video sessio/snip is implemented 
 34. More of upstream's settings (writing, PDF details).
-35. Getting Started guide.
+35. Getting Started guide. (Deferred)
 
 Upkeep and rarely used:
 
