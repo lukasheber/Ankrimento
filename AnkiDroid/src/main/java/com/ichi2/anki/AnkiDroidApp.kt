@@ -198,6 +198,7 @@ open class AnkiDroidApp :
         WidgetNotificationScheduler.register { scheduleNotification() }
         AnkrimentoApp.safetyBackup = { performBackupInBackground(force = true) }
         AnkrimentoApp.restartApp = { context -> safeRestartApp(context) }
+        AnkrimentoApp.cardDisplay = IncrementoCardDisplay
         WidgetStatus.register(Prefs) { context -> AnkiDroidWidgetSmall.UpdateService().doUpdate(context) }
         Animations.setPreferencesProvider { context -> PrefsRepository(context) }
         CollectionLockedException.messageProvider = {

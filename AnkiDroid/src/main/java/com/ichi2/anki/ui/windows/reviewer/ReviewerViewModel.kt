@@ -17,7 +17,6 @@ import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.CardPage
 import com.ichi2.anki.asyncIO
 import com.ichi2.anki.cardviewer.SingleCardSide
-import com.ichi2.anki.cardviewer.appendNoSuggestAttributes
 import com.ichi2.anki.common.annotations.NeedsTest
 import com.ichi2.anki.common.destinations.BrowserDestination
 import com.ichi2.anki.common.destinations.CardInfoDestination
@@ -42,7 +41,6 @@ import com.ichi2.anki.pages.PostRequestUri
 import com.ichi2.anki.preferences.reviewer.ViewerAction
 import com.ichi2.anki.previewer.CardViewerViewModel
 import com.ichi2.anki.previewer.TypeAnswer
-import com.ichi2.anki.previewer.typeAnsRe
 import com.ichi2.anki.reviewer.BindingProcessor
 import com.ichi2.anki.reviewer.CardSide
 import com.ichi2.anki.reviewer.ReviewerBinding
@@ -68,7 +66,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
-import org.intellij.lang.annotations.Language
 import timber.log.Timber
 import kotlin.time.Duration.Companion.seconds
 import com.ichi2.anki.common.destinations.Destination as NavigateDestination
@@ -686,34 +683,11 @@ class ReviewerViewModel(
         } else {
             typeAnswerFlow.emit(typeAnswer)
             if (isHtmlTypeAnswerEnabled) {
-                typeAnswer?.let { typeAnsQuestionFilter(text, it) } ?: text
+                typeAnswer?.questionFilter(text) ?: text
             } else {
                 TypeAnswer.removeTags(text)
             }
         }
-    }
-
-    // https://github.com/ankitects/anki/blob/da907053460e2b78c31199f97bbea3cf3600f0c2/qt/aqt/reviewer.py#L704
-    private fun typeAnsQuestionFilter(
-        text: String,
-        typeAnswer: TypeAnswer,
-    ): String {
-        val keyboardAttributes =
-            buildString {
-                if (typeAnswer.noSuggest) appendNoSuggestAttributes()
-            }
-
-        @Suppress("XmlDeprecatedElement") // upstream uses `<center>`
-        @Language("HTML")
-        val repl =
-            """
-            <center>
-            <input type="text" id="typeans" onkeydown="ankidroid.onTypeAnswerKeyDown(event);" 
-               $keyboardAttributes
-               style="font-family: '${typeAnswer.font}'; font-size: ${typeAnswer.fontSize}px;">
-            </center>
-            """.trimIndent()
-        return typeAnsRe.replace(text, repl)
     }
 
     private suspend fun updateUndoAndRedoLabels() {

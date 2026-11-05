@@ -5,6 +5,7 @@ package com.ichi2.anki.previewer
 import android.os.LocaleList
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.cardviewer.TypeAnswerModifiers
+import com.ichi2.anki.cardviewer.appendNoSuggestAttributes
 import com.ichi2.anki.libanki.Card
 import com.ichi2.anki.libanki.Field
 import com.ichi2.anki.servicelayer.LanguageHintService
@@ -40,6 +41,27 @@ class TypeAnswer private constructor(
      *   a language for the keyboard. @see [LanguageHintService] */
     val imeHintLocales: LocaleList? by lazy {
         field.languageHint?.let { LocaleList(it) }
+    }
+
+    /** The question's box to type the answer in; Enter shows the answer (`ankidroid-reviewer.js`). */
+    // https://github.com/ankitects/anki/blob/da907053460e2b78c31199f97bbea3cf3600f0c2/qt/aqt/reviewer.py#L704
+    fun questionFilter(text: String): String {
+        val keyboardAttributes =
+            buildString {
+                if (noSuggest) appendNoSuggestAttributes()
+            }
+
+        @Suppress("XmlDeprecatedElement") // upstream uses `<center>`
+        @Language("HTML")
+        val repl =
+            """
+            <center>
+            <input type="text" id="typeans" onkeydown="ankidroid.onTypeAnswerKeyDown(event);"
+               $keyboardAttributes
+               style="font-family: '$font'; font-size: ${fontSize}px;">
+            </center>
+            """.trimIndent()
+        return typeAnsRe.replace(text, repl)
     }
 
     suspend fun answerFilter(typedAnswer: String = ""): String {

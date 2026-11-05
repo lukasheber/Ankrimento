@@ -51,8 +51,9 @@ class AnkrimentoSmokeTestActivity : Activity() {
         // `--el open <card id>` opens that card's reader; with `--ez only true`, imports and
         // `open` run without the session check (which needs cards due). `--es backup <path>`
         // writes a full backup there; `--es restore <path>` restores one (replacing the collection).
-        // `--ez seedmedia true` adds items with sound, a typed answer and image occlusion, and logs
-        // their card ids; `--el item <card id>` shows one as a session does, question first.
+        // `--ez seedmedia true` adds items with sound, text to speech, a typed answer and image
+        // occlusion (and a video with `--es seedvideo <path>`), and logs their card ids;
+        // `--el item <card id>` shows one as a session does, question first.
         if (intent.getBooleanExtra(EXTRA_SEED_MEDIA, false)) {
             scope.launch {
                 CollectionManager.withCol {
@@ -228,15 +229,31 @@ class AnkrimentoSmokeTestActivity : Activity() {
     private fun seedItemMedia(col: Collection) {
         val wav = File(cacheDir, "ankrimento-test.wav").apply { writeBytes(toneWav()) }
         val sound = col.media.addFile(wav)
-        log(
-            "sound note ${Ankrimento.createCard(
-                listOf("Sound front [sound:$sound]", "Sound back [sound:$sound]"),
-                "Basic",
-                false,
-                10.0,
-                "Topics",
-            )}",
-        )
+
+        // Each is added once: seeding again only logs the cards.
+        fun seed(
+            what: String,
+            front: String,
+            back: String,
+            noteType: String,
+        ) {
+            val cards =
+                col.findCards("\"Front:${front.substringBefore(" [")}*\"").ifEmpty {
+                    col.findCards("nid:${Ankrimento.createCard(listOf(front, back), noteType, false, 10.0, "Topics")}")
+                }
+            log("$what card $cards")
+        }
+        seed("sound", "Sound front [sound:$sound]", "Sound back [sound:$sound]", "Basic")
+        intent.getStringExtra(EXTRA_SEED_VIDEO)?.let { path ->
+            seed("video", "Video front [sound:${col.media.addFile(File(path))}]", "Video back", "Basic")
+        }
+        if (col.notetypes.byName(TTS_NOTE_TYPE) == null) {
+            val spoken = col.notetypes.copy(col.notetypes.byName("Basic")!!)
+            spoken.name = TTS_NOTE_TYPE
+            spoken.templates[0].qfmt = "{{Front}} {{tts en_US:Front}}"
+            col.notetypes.save(spoken)
+        }
+        seed("text to speech", "Hello world", "Back", TTS_NOTE_TYPE)
 
         if (col.notetypes.byName(TYPED_NOTE_TYPE) == null) {
             val typed = col.notetypes.copy(col.notetypes.byName("Basic")!!)
@@ -245,8 +262,13 @@ class AnkrimentoSmokeTestActivity : Activity() {
             typed.templates[0].afmt = "{{Front}}<hr id=answer>{{type:Back}}"
             col.notetypes.save(typed)
         }
-        log("typed note ${Ankrimento.createCard(listOf("Capital of France?", "Paris"), TYPED_NOTE_TYPE, false, 10.0, "Topics")}")
+        seed("typed", "Capital of France?", "Paris", TYPED_NOTE_TYPE)
 
+        if (col.findCards("note:\"Image Occlusion\"").isEmpty()) seedOcclusion(col)
+        log("occlusion cards ${col.findCards("note:\"Image Occlusion\"")}")
+    }
+
+    private fun seedOcclusion(col: Collection) {
         val image = File(cacheDir, "ankrimento-occlusion.png")
         val bitmap = Bitmap.createBitmap(600, 400, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.rgb(120, 170, 220)) }
         image.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
@@ -260,7 +282,6 @@ class AnkrimentoSmokeTestActivity : Activity() {
             "",
             listOf(SMOKE_TAG),
         )
-        log("occlusion cards ${col.findCards("note:\"Image Occlusion\"")}")
     }
 
     /** Two seconds of a tone, as 8 kHz 8-bit PCM. */
@@ -302,5 +323,7 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_SEED_MEDIA = "seedmedia"
         const val EXTRA_ITEM = "item"
         const val TYPED_NOTE_TYPE = "Typed test"
+        const val TTS_NOTE_TYPE = "TTS test"
+        const val EXTRA_SEED_VIDEO = "seedvideo"
     }
 }
