@@ -36,6 +36,9 @@ MSG_FINISHED = "incremento_pdf_finished:"
 MSG_FILL_FIELD = "incremento_fill_field:"
 MSG_OPEN_LINK = "incremento_pdf_open_link:"
 MSG_GET_PAGE_CARDS = "incremento_get_page_cards:"
+MSG_PAGE_LINKS = "incremento_pdf_page_links:"
+MSG_LINK_PREVIEW_SIZE = "incremento_pdf_link_preview_size:"
+MSG_LINK_PREVIEW_ZOOM = "incremento_pdf_link_preview_zoom:"
 
 _ADDON_PKG = "incremento"
 
@@ -392,9 +395,46 @@ def handle(card_id: int, msg: str) -> list[str]:
         if int(data.get("cardId", 0) or 0) == card_id:
             mw.notify_host("open_url", url=str(data.get("url") or ""))
         return []
-    # Desktop-only features (annotation sync, snapshots, linked references,
-    # due-card review from the reader) are not handled yet.
+    if msg.startswith(MSG_PAGE_LINKS):
+        from ankrimento import pdf_links
+
+        return pdf_links.viewer_message(card_id, payload(MSG_PAGE_LINKS))
+    if msg.startswith((MSG_LINK_PREVIEW_SIZE, MSG_LINK_PREVIEW_ZOOM)):
+        _save_link_preview(card_id, msg)
+        return []
+    # Desktop-only features (annotation sync, snapshots, due-card review from
+    # the reader) are not handled yet.
     return []
+
+
+def _save_link_preview(card_id: int, msg: str) -> None:
+    """The link preview's size or zoom, kept per profile (the pdf_dock branches for these messages)."""
+    from incremento.backend.config_service import (
+        configured_pdf_link_preview_size,
+        normalize_pdf_link_preview_size,
+        normalize_pdf_link_preview_zoom,
+        save_addon_config,
+    )
+
+    _, profile = _context()
+    data = json.loads(msg.split(":", 1)[1])
+    if not isinstance(data, dict) or data.get("cardId") != card_id:
+        return
+    cfg = dict(_config())
+    if msg.startswith(MSG_LINK_PREVIEW_SIZE):
+        size = normalize_pdf_link_preview_size(data.get("size"))
+        if size is None or configured_pdf_link_preview_size(cfg, profile) == size:
+            return
+        key, value = "pdf_link_preview_size_by_profile", size
+    else:
+        zoom = data.get("zoom")
+        if type(zoom) not in (int, float) or not 1 <= zoom <= 4:
+            return
+        key, value = "pdf_link_preview_zoom_by_profile", normalize_pdf_link_preview_zoom(zoom)
+    values = dict(cfg.get(key) or {})
+    values[profile] = value
+    cfg[key] = values
+    save_addon_config(mw.addonManager, _ADDON_PKG, cfg)
 
 
 # ── Find in document ──────────────────────────────────────────────────────────

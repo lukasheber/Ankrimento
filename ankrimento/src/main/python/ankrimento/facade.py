@@ -928,6 +928,47 @@ def pdf_delete_highlight(card_id: int, highlight_id: str) -> str:
     return pdf_reader.delete_highlight(card_id, highlight_id)
 
 
+def pdf_page_links(card_id: int, page: int) -> str:
+    """The page's links to other PDF pages, from either end (see ``pdf_links``)."""
+    from ankrimento import pdf_links
+
+    return _dumps(pdf_links.links(int(card_id), int(page)))
+
+
+def pdf_page_link_target(card_id: int, page: int, link_id: int, direction: str) -> str:
+    """Where a page link opens; raises when its document or page is unavailable."""
+    from ankrimento import pdf_links
+
+    return _dumps(pdf_links.target(int(card_id), int(page), int(link_id), str(direction)))
+
+
+def pdf_page_link_remove(card_id: int, page: int, link_id: int) -> bool:
+    from ankrimento import pdf_links
+
+    return pdf_links.remove(int(card_id), int(page), int(link_id))
+
+
+def pdf_page_link_limit(card_id: int) -> int:
+    """The last page of ``card_id`` a link may point to."""
+    from ankrimento import pdf_links
+
+    return pdf_links.limit(int(card_id))
+
+
+def pdf_page_link_add(
+    source_card_id: int,
+    source_page: int,
+    source_y: float | None,
+    target_card_id: int,
+    target_page: int,
+    target_scroll: float,
+    target_y: float | None,
+) -> int:
+    from ankrimento import pdf_links
+
+    return pdf_links.add(source_card_id, source_page, source_y, target_card_id, target_page, target_scroll, target_y)
+
+
 def pdf_message(card_id: int, message: str) -> str:
     """Apply a ``pycmd`` message from the PDF viewer; returns JavaScript to run."""
     from ankrimento import pdf_reader

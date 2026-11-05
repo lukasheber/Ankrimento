@@ -323,7 +323,7 @@
     <string name="ankrimento_find_hint">在此文档中查找</string>
     <string name="ankrimento_find_searching">正在搜索…</string>
     <string name="ankrimento_find_reading">正在读取文档文本… 完成后，结果将包括到那时已读取的页面。</string>
-    <string name="ankrimento_find_no_text">此 PDF 没有可搜索的文本（没有文本层的扫描件）。</string>
+    <string name="ankrimento_find_no_text">此 PDF 没有可搜索的文本（没有文本层的扫描件）。电脑上的 Incremento 导入 PDF 时可用 OCR 添加文本层。</string>
     <string name="ankrimento_find_previous">上一个匹配</string>
     <string name="ankrimento_find_next">下一个匹配</string>
     <string name="ankrimento_find_close">关闭查找</string>
@@ -430,4 +430,16 @@
     <plurals name="ankrimento_backup_saved">
         <item quantity="other">备份已保存：%1$d 张卡片，%2$d 个 Incremento 文件</item>
     </plurals>
+    <string name="ankrimento_page_links">页面链接</string>
+    <string name="ankrimento_page_links_title">第 %1$d 页的链接</string>
+    <string name="ankrimento_page_links_empty">此页面还没有指向其他页面的链接。</string>
+    <string name="ankrimento_page_link_add">链接此页面…</string>
+    <string name="ankrimento_page_link_to">指向 %1$s，第 %2$d 页</string>
+    <string name="ankrimento_page_link_from">来自 %1$s，第 %2$d 页</string>
+    <string name="ankrimento_page_link_remove">移除链接</string>
+    <string name="ankrimento_page_link_choose_document">链接到哪个 PDF？</string>
+    <string name="ankrimento_page_link_choose_place">前往此页面要链接到的页面</string>
+    <string name="ankrimento_page_link_here">链接到此页面</string>
+    <string name="ankrimento_page_linked">页面已链接</string>
+    <string name="ankrimento_page_link_unavailable">无法打开或链接该页面：文档缺失，或该页超出今天的页数限制。</string>
 </resources>

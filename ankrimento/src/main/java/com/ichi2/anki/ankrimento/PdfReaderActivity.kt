@@ -11,9 +11,15 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.Toast
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
@@ -26,7 +32,9 @@ import com.ichi2.anki.ankrimento.ui.FindBar
 import com.ichi2.anki.ankrimento.ui.FindHit
 import com.ichi2.anki.ankrimento.ui.FindSheet
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.LinkTargetSheet
 import com.ichi2.anki.ankrimento.ui.MarksSheet
+import com.ichi2.anki.ankrimento.ui.PageLinksSheet
 import com.ichi2.anki.ankrimento.ui.PdfViewSheet
 import com.ichi2.anki.ankrimento.ui.ReaderPager
 import com.ichi2.anki.ankrimento.ui.ReaderTool
@@ -51,6 +59,10 @@ import java.io.FileInputStream
  * Extract is on the text-selection menu. Upstream's desktop panel stays one
  * tap away, for its annotation and link tools.
  *
+ * Page links (desktop's connections between PDF pages) have their own sheet. A
+ * link is made by opening the destination PDF in a mode that only chooses the
+ * place, as desktop's destination dialog: nothing it does is saved for that PDF.
+ *
  * Find searches upstream's per-page text index. Desktop fills it with PyMuPDF,
  * which the device lacks, so the viewer's pdf.js reads each page's text in the
  * background the first time (and when the file changes) and hands it to
@@ -67,6 +79,11 @@ class PdfReaderActivity : ReaderActivity() {
 
     private var pages = 0
     private var zoom = 1.0
+
+    /** The PDF whose page is being linked when this reader only chooses the destination (0 otherwise). */
+    private val linkSource by lazy { intent.getLongExtra(EXTRA_LINK_FROM, 0L) }
+    private val choosingDestination get() = linkSource != 0L
+    private var scrollRatio = 0.0
     private var appearance = "original"
 
     private var findQuery = ""
@@ -93,6 +110,7 @@ class PdfReaderActivity : ReaderActivity() {
         setReaderContent(webView)
         toggleBarsOnTap(webView)
         showViewerControls(false)
+        if (choosingDestination) chooseDestination()
         lifecycleScope.launch {
             val path = withCol { Ankrimento.pdfPath(cardId) }
             if (path.isEmpty()) {
@@ -105,6 +123,7 @@ class PdfReaderActivity : ReaderActivity() {
         Ankrimento.readerScope.launch {
             for (message in messages) {
                 if (!isDestroyed) followViewer(message)
+                if (choosingDestination && DESTINATION_KEEPS_NOTHING.any { message.startsWith(it) }) continue
                 if (message.startsWith(CONTENTS_PREFIX)) {
                     if (!isDestroyed) showContents(message.removePrefix(CONTENTS_PREFIX))
                     continue
@@ -125,7 +144,7 @@ class PdfReaderActivity : ReaderActivity() {
     private fun showViewerControls(show: Boolean) {
         viewerControlsShown = show
         webView.evaluateJavascript("document.body && document.body.classList.toggle('$COMPACT_CLASS', ${!show});", null)
-        tools =
+        val finding =
             listOf(
                 ReaderTool(getString(R.string.ankrimento_pdf_view), IncrementoIcons.Tune, ::showView),
                 tool(
@@ -134,7 +153,17 @@ class PdfReaderActivity : ReaderActivity() {
                     "window.incrementoPdfOpenContents && window.incrementoPdfOpenContents();",
                 ),
                 ReaderTool(getString(R.string.ankrimento_pdf_find), IncrementoIcons.Search, onClick = ::showFind),
+            )
+        // Choosing a link's destination needs only the tools that find the place.
+        if (choosingDestination) {
+            tools = finding
+            return
+        }
+        tools =
+            finding +
+            listOf(
                 ReaderTool(getString(R.string.ankrimento_marks), IncrementoIcons.Bookmark, onClick = ::showMarks),
+                ReaderTool(getString(R.string.ankrimento_page_links), IncrementoIcons.Link, onClick = ::showPageLinks),
                 ReaderTool(getString(R.string.ankrimento_pdf_mark_read)) {
                     webView.evaluateJavascript("window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();", null)
                     toast(getString(R.string.ankrimento_marked_read))
@@ -333,6 +362,12 @@ class PdfReaderActivity : ReaderActivity() {
 
     /** Upstream reports page turns as `incremento_pdf_nav:<card>:<page>` and zoom as `incremento_pdf_zoom:<card>:<zoom>`. */
     private fun followViewer(message: String) {
+        if (message.startsWith(SCROLL_PREFIX)) {
+            runCatching { JSONObject(message.removePrefix(SCROLL_PREFIX)).optDouble("scrollRatio", 0.0) }
+                .getOrNull()
+                ?.let { scrollRatio = it.coerceIn(0.0, 1.0) }
+            return
+        }
         val parts = message.split(':')
         if (parts.size != 3) return
         when (parts[0]) {
@@ -347,7 +382,7 @@ class PdfReaderActivity : ReaderActivity() {
     ) {
         page = current
         pages = total
-        FocusTimer.pdfPageRead(cardId, current)
+        if (!choosingDestination) FocusTimer.pdfPageRead(cardId, current)
         pager = if (current > 0 && total > 0) ReaderPager(current, total, ::goToPage) else null
     }
 
@@ -505,6 +540,134 @@ class PdfReaderActivity : ReaderActivity() {
         }
     }
 
+    /** The page's links: each opens its other end or is removed; the page can be linked to another. */
+    private fun showPageLinks() {
+        val shown = page.coerceAtLeast(1)
+        lifecycleScope.launch {
+            val links =
+                runCatching { withCol { Ankrimento.pdfPageLinks(cardId, shown) } }.getOrElse { error ->
+                    Timber.w(error, "Loading the page's links failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                    return@launch
+                }
+            sheet = {
+                PageLinksSheet(
+                    page = shown,
+                    links = links,
+                    onOpen = { link ->
+                        sheet = null
+                        openLink(shown, link)
+                    },
+                    onRemove = { link ->
+                        lifecycleScope.launch {
+                            runCatching { withCol { Ankrimento.pdfPageLinkRemove(cardId, shown, link) } }
+                                .onFailure { Timber.w(it, "Removing a page link failed") }
+                            refreshViewerLinks()
+                            showPageLinks()
+                        }
+                    },
+                    onAdd = { chooseLinkTarget(shown, null) },
+                    onDismiss = { sheet = null },
+                )
+            }
+        }
+    }
+
+    private fun openLink(
+        shown: Int,
+        link: Ankrimento.PageLink,
+    ) {
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.pdfPageLinkTarget(cardId, shown, link) } }
+                .onSuccess(::openPlace)
+                .onFailure {
+                    Timber.w(it, "Opening a page link failed")
+                    toast(getString(R.string.ankrimento_page_link_unavailable))
+                }
+        }
+    }
+
+    /** A link's other end: a page here, or another PDF's reader at that page. */
+    private fun openPlace(place: Ankrimento.PdfPlace) {
+        if (place.cardId == cardId) {
+            goToPage(place.page)
+        } else {
+            ReaderActivity.intentAt(this, "pdf", place.cardId, place.page, "")?.let(::startActivity)
+        }
+    }
+
+    /** Desktop's bookshelf of PDFs, then the chosen one opened to choose the place ([chooseDestination]). */
+    private fun chooseLinkTarget(
+        sourcePage: Int,
+        sourceY: Double?,
+    ) {
+        lifecycleScope.launch {
+            val documents =
+                runCatching { withCol { Ankrimento.library() } }
+                    .getOrDefault(emptyList())
+                    .filter { it.kind == "pdf" }
+            sheet = {
+                LinkTargetSheet(
+                    documents = documents,
+                    onPick = { document ->
+                        sheet = null
+                        startActivity(destinationIntent(this@PdfReaderActivity, document.cardId, cardId, sourcePage, sourceY))
+                    },
+                    onDismiss = { sheet = null },
+                )
+            }
+        }
+    }
+
+    /** Only choosing a place: the reader's tools give way to one button that links the source page here. */
+    private fun chooseDestination() {
+        webView.selectionActions = emptyList()
+        subtitle = getString(R.string.ankrimento_page_link_choose_place)
+        overlay = {
+            Button(
+                onClick = ::linkHere,
+                modifier = Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(16.dp),
+            ) { Text(stringResource(R.string.ankrimento_page_link_here)) }
+        }
+    }
+
+    private fun linkHere() {
+        val sourcePage = intent.getIntExtra(EXTRA_LINK_PAGE, 1)
+        val sourceY = intent.getDoubleExtra(EXTRA_LINK_Y, -1.0).takeIf { it >= 0 }
+        val place = Ankrimento.PdfPlace(cardId, page.coerceAtLeast(1), scrollRatio)
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.pdfPageLinkAdd(linkSource, sourcePage, sourceY, place) } }
+                .onSuccess {
+                    toast(getString(R.string.ankrimento_page_linked))
+                    finish()
+                }.onFailure {
+                    Timber.w(it, "Linking a page failed")
+                    toast(getString(R.string.ankrimento_page_link_unavailable))
+                }
+        }
+    }
+
+    private fun refreshViewerLinks() =
+        webView.evaluateJavascript("window.incrementoRefreshPdfPageLinks && window.incrementoRefreshPdfPageLinks();", null)
+
+    override fun onResume() {
+        super.onResume()
+        // A link made from another reader shows in the viewer's own panel too.
+        if (::webView.isInitialized) refreshViewerLinks()
+    }
+
+    override fun onDocumentEvent(event: Ankrimento.Event) {
+        if (choosingDestination) return
+        when (event) {
+            is Ankrimento.Event.PdfOpen -> if (event.sourceCardId == cardId) openPlace(event.place)
+            is Ankrimento.Event.PdfPageLinks ->
+                if (event.cardId == cardId) {
+                    if (event.create) chooseLinkTarget(event.page, event.pageY) else showPageLinks()
+                }
+            else -> Unit
+        }
+    }
+
     override fun onExtractCreated(script: String) {
         if (script.isNotEmpty()) webView.evaluateJavascript(script, null)
     }
@@ -640,5 +803,39 @@ class PdfReaderActivity : ReaderActivity() {
             context: Context,
             cardId: Long,
         ): Intent = ReaderActivity.intent(context, "pdf", cardId, session = false)!!
+
+        private const val EXTRA_LINK_FROM = "link_from"
+        private const val EXTRA_LINK_PAGE = "link_page"
+        private const val EXTRA_LINK_Y = "link_y"
+        private const val SCROLL_PREFIX = "incremento_pdf_scroll:"
+
+        /** What the viewer saves for its document: dropped while it only chooses a link's destination. */
+        private val DESTINATION_KEEPS_NOTHING =
+            listOf(
+                "incremento_pdf_nav:",
+                "incremento_pdf_zoom:",
+                SCROLL_PREFIX,
+                "incremento_pdf_appearance:",
+                "incremento_pdf_hl_",
+                "incremento_pdf_mark_read:",
+                "incremento_pdf_bookmark_",
+                "incremento_pdf_limit_override:",
+                "incremento_pdf_finished:",
+                "incremento_fill_field:",
+                "incremento_pdf_page_links:",
+            )
+
+        /** [targetCardId]'s PDF, opened to choose where [sourcePage] of [sourceCardId] links to. */
+        fun destinationIntent(
+            context: Context,
+            targetCardId: Long,
+            sourceCardId: Long,
+            sourcePage: Int,
+            sourceY: Double?,
+        ): Intent =
+            intent(context, targetCardId)
+                .putExtra(EXTRA_LINK_FROM, sourceCardId)
+                .putExtra(EXTRA_LINK_PAGE, sourcePage)
+                .putExtra(EXTRA_LINK_Y, sourceY ?: -1.0)
     }
 }

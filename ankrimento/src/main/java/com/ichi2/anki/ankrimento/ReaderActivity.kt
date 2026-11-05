@@ -279,12 +279,16 @@ abstract class ReaderActivity : ComponentActivity() {
     /** Runs when the extract sheet created a card from this document, with the script that marks the source. */
     protected open fun onExtractCreated(script: String) = Unit
 
+    /** A document reader's own events (a PDF's page links). */
+    protected open fun onDocumentEvent(event: Ankrimento.Event) = Unit
+
     private fun onEvent(event: Ankrimento.Event) {
         when (event) {
             is Ankrimento.Event.ExtractDraft -> if (event.sourceCardId == cardId) showExtractSheet()
             is Ankrimento.Event.CloseReader -> if (event.cardId == cardId) finish()
             is Ankrimento.Event.OpenUrl -> openUrl(event.url)
             is Ankrimento.Event.Message -> toast(event.text)
+            is Ankrimento.Event.PdfOpen, is Ankrimento.Event.PdfPageLinks -> onDocumentEvent(event)
             Ankrimento.Event.EnterReview ->
                 if (documentReviewStarting) {
                     documentReviewStarting = false

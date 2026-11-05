@@ -68,6 +68,20 @@ object Ankrimento {
         data class ExtractDraft(
             val sourceCardId: Long,
         ) : Event
+
+        /** A page link in [sourceCardId]'s viewer opens its other end. */
+        data class PdfOpen(
+            val sourceCardId: Long,
+            val place: PdfPlace,
+        ) : Event
+
+        /** [cardId]'s viewer asks to link its [page] to another, or to show the page's links. */
+        data class PdfPageLinks(
+            val cardId: Long,
+            val page: Int,
+            val create: Boolean,
+            val pageY: Double?,
+        ) : Event
     }
 
     private val mutableEvents = MutableSharedFlow<Event>(extraBufferCapacity = 16)
@@ -1099,6 +1113,73 @@ object Ankrimento {
     @WorkerThread
     fun statistics(days: Int = 7): JSONObject = JSONObject(requireFacade().callAttr("statistics", days).toString())
 
+    /** A link of a PDF page to a page of another (or the same) PDF; [direction] is "outgoing" or "incoming". */
+    data class PageLink(
+        val id: Long,
+        val direction: String,
+        val page: Int,
+        val title: String,
+        val available: Boolean,
+    )
+
+    /** A place in a PDF: its card, page and how far down the page. */
+    data class PdfPlace(
+        val cardId: Long,
+        val page: Int,
+        val scroll: Double,
+    ) {
+        companion object {
+            fun from(json: JSONObject) = PdfPlace(json.getLong("card_id"), json.getInt("page"), json.optDouble("scroll", 0.0))
+        }
+    }
+
+    /** [page]'s links from either end, as desktop's page links show them. */
+    @WorkerThread
+    fun pdfPageLinks(
+        cardId: Long,
+        page: Int,
+    ): List<PageLink> {
+        val rows = JSONArray(requireFacade().callAttr("pdf_page_links", cardId, page).toString())
+        return List(rows.length()) { index ->
+            val row = rows.getJSONObject(index)
+            PageLink(
+                row.getLong("id"),
+                row.getString("direction"),
+                row.getInt("target_page"),
+                row.getString("title"),
+                row.getBoolean("available"),
+            )
+        }
+    }
+
+    /** Where [link] opens; throws when its document is gone or the page is past its daily limit. */
+    @WorkerThread
+    fun pdfPageLinkTarget(
+        cardId: Long,
+        page: Int,
+        link: PageLink,
+    ): PdfPlace =
+        PdfPlace.from(JSONObject(requireFacade().callAttr("pdf_page_link_target", cardId, page, link.id, link.direction).toString()))
+
+    @WorkerThread
+    fun pdfPageLinkRemove(
+        cardId: Long,
+        page: Int,
+        link: PageLink,
+    ): Boolean = requireFacade().callAttr("pdf_page_link_remove", cardId, page, link.id).toBoolean()
+
+    /** Links [sourcePage] of [sourceCardId] to [target]; throws as desktop refuses (a page past the daily limit). */
+    @WorkerThread
+    fun pdfPageLinkAdd(
+        sourceCardId: Long,
+        sourcePage: Int,
+        sourceY: Double?,
+        target: PdfPlace,
+    ): Long =
+        requireFacade()
+            .callAttr("pdf_page_link_add", sourceCardId, sourcePage, sourceY, target.cardId, target.page, target.scroll, null)
+            .toLong()
+
     /** Desktop's statistics dialog for one of its scopes ("daily", "7d", "30d", "365d", "lifetime"). */
     @WorkerThread
     fun statisticsView(scope: String): JSONObject = JSONObject(requireFacade().callAttr("statistics_view", scope).toString())
@@ -1383,6 +1464,16 @@ object Ankrimento {
             "pdf_close" -> mutableEvents.tryEmit(Event.CloseReader(fields.getLong("card_id")))
             "open_url" -> mutableEvents.tryEmit(Event.OpenUrl(fields.getString("url")))
             "extract_draft" -> mutableEvents.tryEmit(Event.ExtractDraft(fields.getLong("card_id")))
+            "pdf_open" -> mutableEvents.tryEmit(Event.PdfOpen(fields.getLong("source_card_id"), PdfPlace.from(fields)))
+            "pdf_page_link_create", "pdf_page_links_show" ->
+                mutableEvents.tryEmit(
+                    Event.PdfPageLinks(
+                        fields.getLong("card_id"),
+                        fields.getInt("page"),
+                        create = event == "pdf_page_link_create",
+                        pageY = fields.optDouble("page_y").takeIf { !it.isNaN() },
+                    ),
+                )
             else -> Timber.d("Ankrimento event %s %s", event, fieldsJson)
         }
     }

@@ -334,7 +334,7 @@
     <string name="ankrimento_find_hint">Find in this document</string>
     <string name="ankrimento_find_searching">Searching…</string>
     <string name="ankrimento_find_reading">Reading the document\'s text… Results will include the pages read so far once it is done.</string>
-    <string name="ankrimento_find_no_text">This PDF has no text to search (a scan without a text layer).</string>
+    <string name="ankrimento_find_no_text">This PDF has no text to search (a scan without a text layer). Incremento on a computer can add one with OCR when it imports the PDF.</string>
     <string name="ankrimento_find_previous">Previous match</string>
     <string name="ankrimento_find_next">Next match</string>
     <string name="ankrimento_find_close">Close find</string>
@@ -443,4 +443,16 @@
         <item quantity="one">Backup saved: %1$d card, %2$d Incremento files</item>
         <item quantity="other">Backup saved: %1$d cards, %2$d Incremento files</item>
     </plurals>
+    <string name="ankrimento_page_links">Page links</string>
+    <string name="ankrimento_page_links_title">Links of page %1$d</string>
+    <string name="ankrimento_page_links_empty">This page has no links to other pages yet.</string>
+    <string name="ankrimento_page_link_add">Link this page…</string>
+    <string name="ankrimento_page_link_to">To %1$s, p. %2$d</string>
+    <string name="ankrimento_page_link_from">From %1$s, p. %2$d</string>
+    <string name="ankrimento_page_link_remove">Remove link</string>
+    <string name="ankrimento_page_link_choose_document">Link to which PDF?</string>
+    <string name="ankrimento_page_link_choose_place">Go to the page this one should link to</string>
+    <string name="ankrimento_page_link_here">Link to this page</string>
+    <string name="ankrimento_page_linked">Page linked</string>
+    <string name="ankrimento_page_link_unavailable">That page can\'t be opened or linked: the document is missing, or the page is past today\'s page limit.</string>
 </resources>

@@ -345,7 +345,7 @@
     <string name="ankrimento_find_hint">Localizar neste documento</string>
     <string name="ankrimento_find_searching">Pesquisando…</string>
     <string name="ankrimento_find_reading">Lendo o texto do documento… Quando terminar, os resultados incluirão as páginas lidas até então.</string>
-    <string name="ankrimento_find_no_text">Este PDF não tem texto para pesquisar (uma digitalização sem camada de texto).</string>
+    <string name="ankrimento_find_no_text">Este PDF não tem texto para pesquisar (uma digitalização sem camada de texto). O Incremento no computador pode adicionar uma com OCR ao importar o PDF.</string>
     <string name="ankrimento_find_previous">Resultado anterior</string>
     <string name="ankrimento_find_next">Próximo resultado</string>
     <string name="ankrimento_find_close">Fechar a busca</string>
@@ -456,4 +456,16 @@
         <item quantity="many">Backup salvo: %1$d cartões, %2$d arquivos do Incremento</item>
         <item quantity="other">Backup salvo: %1$d cartões, %2$d arquivos do Incremento</item>
     </plurals>
+    <string name="ankrimento_page_links">Links da página</string>
+    <string name="ankrimento_page_links_title">Links da página %1$d</string>
+    <string name="ankrimento_page_links_empty">Esta página ainda não tem links para outras páginas.</string>
+    <string name="ankrimento_page_link_add">Vincular esta página…</string>
+    <string name="ankrimento_page_link_to">Para %1$s, p. %2$d</string>
+    <string name="ankrimento_page_link_from">De %1$s, p. %2$d</string>
+    <string name="ankrimento_page_link_remove">Remover link</string>
+    <string name="ankrimento_page_link_choose_document">Vincular a qual PDF?</string>
+    <string name="ankrimento_page_link_choose_place">Vá até a página para a qual esta deve levar</string>
+    <string name="ankrimento_page_link_here">Vincular a esta página</string>
+    <string name="ankrimento_page_linked">Página vinculada</string>
+    <string name="ankrimento_page_link_unavailable">Essa página não pode ser aberta nem vinculada: o documento não existe ou a página está além do limite de páginas de hoje.</string>
 </resources>

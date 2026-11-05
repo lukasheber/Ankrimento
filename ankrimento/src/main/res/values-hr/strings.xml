@@ -345,7 +345,7 @@
     <string name="ankrimento_find_hint">Traži u ovom dokumentu</string>
     <string name="ankrimento_find_searching">Pretraživanje…</string>
     <string name="ankrimento_find_reading">Čitanje teksta dokumenta… Kad završi, rezultati će uključivati dotad pročitane stranice.</string>
-    <string name="ankrimento_find_no_text">Ovaj PDF nema teksta za pretraživanje (skenirani dokument bez tekstnog sloja).</string>
+    <string name="ankrimento_find_no_text">Ovaj PDF nema teksta za pretraživanje (skenirani dokument bez tekstnog sloja). Incremento na računalu može ga dodati OCR-om pri uvozu PDF-a.</string>
     <string name="ankrimento_find_previous">Prethodni rezultat</string>
     <string name="ankrimento_find_next">Sljedeći rezultat</string>
     <string name="ankrimento_find_close">Zatvori traženje</string>
@@ -456,4 +456,16 @@
         <item quantity="few">Sigurnosna kopija spremljena: karata %1$d, Incremento datoteka %2$d</item>
         <item quantity="other">Sigurnosna kopija spremljena: karata %1$d, Incremento datoteka %2$d</item>
     </plurals>
+    <string name="ankrimento_page_links">Poveznice stranice</string>
+    <string name="ankrimento_page_links_title">Poveznice stranice %1$d</string>
+    <string name="ankrimento_page_links_empty">Ova stranica još nema poveznica na druge stranice.</string>
+    <string name="ankrimento_page_link_add">Poveži ovu stranicu…</string>
+    <string name="ankrimento_page_link_to">Prema %1$s, str. %2$d</string>
+    <string name="ankrimento_page_link_from">Iz %1$s, str. %2$d</string>
+    <string name="ankrimento_page_link_remove">Ukloni poveznicu</string>
+    <string name="ankrimento_page_link_choose_document">Povezati s kojim PDF-om?</string>
+    <string name="ankrimento_page_link_choose_place">Idite na stranicu na koju ova treba voditi</string>
+    <string name="ankrimento_page_link_here">Poveži s ovom stranicom</string>
+    <string name="ankrimento_page_linked">Stranica je povezana</string>
+    <string name="ankrimento_page_link_unavailable">Ta se stranica ne može otvoriti ni povezati: dokument nedostaje ili je stranica izvan današnjeg ograničenja stranica.</string>
 </resources>
