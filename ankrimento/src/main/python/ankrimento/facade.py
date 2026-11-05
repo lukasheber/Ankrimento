@@ -615,6 +615,25 @@ def writing_preview(text: str) -> str:
     return writing.preview(str(text))
 
 
+def support_bundle(path: str) -> str:
+    """Desktop's support bundle written to ``path`` (see ``upkeep``)."""
+    from ankrimento import upkeep
+
+    return _dumps(upkeep.support_bundle(str(path)))
+
+
+def card_format_updates() -> str:
+    from ankrimento import upkeep
+
+    return _dumps(upkeep.card_format_updates())
+
+
+def apply_card_format_updates() -> str:
+    from ankrimento import upkeep
+
+    return _dumps(upkeep.apply_card_format_updates())
+
+
 def import_web(url: str, title: str = "", deck_name: str = "Topics", priority: float = 50.0) -> int:
     """Add a web page as an Incremento Web topic card, as desktop's Web Page does."""
     from incremento.backend.priority_manager import set_priority

@@ -483,4 +483,14 @@
     <string name="ankrimento_settings_word_count">Način brojanja riječi</string>
     <string name="ankrimento_settings_word_simple">Jednostavno, prema razmacima</string>
     <string name="ankrimento_settings_word_like">Poput Worda</string>
+    <string name="ankrimento_settings_upkeep">Održavanje</string>
+    <string name="ankrimento_card_formats">Ažuriranja formata kartica</string>
+    <string name="ankrimento_card_formats_current">Incrementove vrste bilješki su ažurne</string>
+    <string name="ankrimento_card_formats_pending">Za ažuriranje: %1$s</string>
+    <string name="ankrimento_card_formats_confirm">Ove vrste bilješki dobivaju polja i predloške ove verzije: %1$s.\n\nPromjena vrsta bilješki zahtijeva potpunu sinkronizaciju s AnkiWebom, koja zamjenjuje kopiju na drugoj strani. Ako drugi uređaj ima nesinkronizirane promjene, najprije sinkronizirajte, a zatim ažurirajte.</string>
+    <string name="ankrimento_card_formats_apply">Ažuriraj</string>
+    <string name="ankrimento_card_formats_done">Formati kartica su ažurirani. Sljedeća sinkronizacija s AnkiWebom bit će potpuna.</string>
+    <string name="ankrimento_support_bundle">Izradi paket za podršku</string>
+    <string name="ankrimento_support_bundle_summary">Incrementove postavke bez osobnih podataka i nedavna dijagnostika, za prijavu pogreške: bez teksta kartica, imena i datoteka</string>
+    <string name="ankrimento_support_bundle_failed">Izrada paketa za podršku nije uspjela: %1$s</string>
 </resources>

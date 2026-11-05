@@ -174,9 +174,9 @@ Mobile principles that guide every item:
 | ⏸ | Sync status on the hub (last sync, conflicts, Sync now) | With the sync work above |
 | ✅ | Full backup / restore (same ZIP as desktop) [12] | Settings → Backup. Export: upstream's restore pre-check accepts it on desktop. Restore: upstream's pre-check and staging, an AnkiDroid safety backup, Incremento's folder swapped and the collection restored through AnkiDroid's own collection import (rolled back if it fails), then the app restarts. Upstream's own export and restore, so a phone backup restores on desktop and back: cards with scheduling and media, plus Incremento's folder (database, PDFs, EPUBs, videos, writings). In the Incremento settings, under Backup |
 | 🟡 | Automatic backups [12] | Settings → Backup → Automatic backups (opt-in, as on desktop): into a folder picked on this device, when the app opens and every 12 h to a week, keeping the latest 1 to 20 by upstream's own rotation (its slot names, so desktop recognises them); Back up now. The policy stays on this device, since desktop's names a desktop folder. Desktop's "on close" has no dependable moment on a phone. Not yet checked on a device past the settings rows (the folder picker is a system screen) |
-| ⬜ | Support bundle [12] | |
-| ⬜ | Clean up unused data [13] | |
-| ⬜ | Card-format updates notice [13] | |
+| ✅ | Support bundle [12] | Settings → Upkeep → Create a support bundle: desktop's privacy-safe diagnostics ZIP (built by its backend), handed to Android's share sheet. Built and checked by tests; the share sheet is Android's |
+| ➖ | Clean up unused data [13] | Desktop's clean-up (orphaned PDFs and videos, stale rows, unused screenshots) is its Tools menu's own logic, not the backend's; copying it to delete files on the phone risks removing the wrong data, so it stays on desktop |
+| ✅ | Card-format updates notice [13] | Settings → Upkeep → Card format updates: desktop's check of Incremento's note types; when one is older, Update applies desktop's update after warning that AnkiWeb then needs a full sync. Shown on the tablet (up to date there); the update itself is covered by tests |
 
 ## 7. Import [5]
 
@@ -259,7 +259,7 @@ Things desktop has:
 
 Upkeep and rarely used:
 
-36. Support bundle, clean-up of unused data, card-format update notice.
+36. ~~Support bundle, card-format update notice~~ (done). Clean-up of unused data stays on desktop.
 37. Batch Q/A cards, PDF snapshot previews.
 38. DjVu documents. Implement only if there is a readly available library to read DjVu files.
 39. PDF reflow, only if extracts and highlights map back to the PDF exactly.

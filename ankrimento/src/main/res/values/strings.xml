@@ -470,4 +470,14 @@
     <string name="ankrimento_settings_word_count">Word counting mode</string>
     <string name="ankrimento_settings_word_simple">Simple whitespace</string>
     <string name="ankrimento_settings_word_like">Word-like</string>
+    <string name="ankrimento_settings_upkeep">Upkeep</string>
+    <string name="ankrimento_card_formats">Card format updates</string>
+    <string name="ankrimento_card_formats_current">Incremento\'s note types are up to date</string>
+    <string name="ankrimento_card_formats_pending">To update: %1$s</string>
+    <string name="ankrimento_card_formats_confirm">These note types get this version\'s fields and templates: %1$s.\n\nChanging note types needs a full sync with AnkiWeb, which replaces the copy on the other side. If another device has changes not yet synced, sync first and update afterwards.</string>
+    <string name="ankrimento_card_formats_apply">Update</string>
+    <string name="ankrimento_card_formats_done">Card formats updated. The next sync with AnkiWeb will be a full sync.</string>
+    <string name="ankrimento_support_bundle">Create a support bundle</string>
+    <string name="ankrimento_support_bundle_summary">Incremento\'s settings without personal data and its recent diagnostics, to attach to a bug report: no card text, names or files</string>
+    <string name="ankrimento_support_bundle_failed">Creating the support bundle failed: %1$s</string>
 </resources>

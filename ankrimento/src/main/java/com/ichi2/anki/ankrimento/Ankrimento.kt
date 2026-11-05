@@ -1252,6 +1252,30 @@ object Ankrimento {
             .callAttr("pdf_page_link_add", sourceCardId, sourcePage, sourceY, target.cardId, target.page, target.scroll, null)
             .toLong()
 
+    /** Desktop's support bundle (redacted settings, recent diagnostics) written to [file]. */
+    @WorkerThread
+    fun supportBundle(file: File) {
+        requireFacade().callAttr("support_bundle", file.absolutePath)
+    }
+
+    /** Incremento note types older than this version's, each with what would change. */
+    @WorkerThread
+    fun cardFormatUpdates(): List<Pair<String, List<String>>> {
+        val rows = JSONArray(requireFacade().callAttr("card_format_updates").toString())
+        return List(rows.length()) { index ->
+            val row = rows.getJSONObject(index)
+            val changes = row.getJSONArray("changes")
+            row.getString("note_type") to List(changes.length()) { changes.getString(it) }
+        }
+    }
+
+    /** Applies the pending card format updates; returns the note types changed. */
+    @WorkerThread
+    fun applyCardFormatUpdates(): List<String> {
+        val names = JSONArray(requireFacade().callAttr("apply_card_format_updates").toString())
+        return List(names.length()) { names.getString(it) }
+    }
+
     /** Desktop's statistics dialog for one of its scopes ("daily", "7d", "30d", "365d", "lifetime"). */
     @WorkerThread
     fun statisticsView(scope: String): JSONObject = JSONObject(requireFacade().callAttr("statistics_view", scope).toString())

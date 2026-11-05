@@ -82,6 +82,10 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private var namingPreset by mutableStateOf<String?>(null)
     private var deletingPreset by mutableStateOf<String?>(null)
     private var values by mutableStateOf<JSONObject?>(null)
+
+    /** Incremento note types to update (null until read); [confirmingFormats] asks before changing them. */
+    private var formatUpdates by mutableStateOf<List<Pair<String, List<String>>>?>(null)
+    private var confirmingFormats by mutableStateOf(false)
     private val device by lazy { AnkrimentoSettings(this) }
     private var profile by mutableStateOf("")
     private var syncFolder by mutableStateOf<Uri?>(null)
@@ -138,6 +142,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
                     Ankrimento.start(this@IncrementoSettingsActivity, this)
                     presets = Ankrimento.sessionPresets()
                     reviewButtons = Ankrimento.reviewButtons()
+                    formatUpdates = Ankrimento.cardFormatUpdates()
                     Ankrimento.sessionSettings() to Ankrimento.settingsValues()
                 }
             }.onSuccess { (sessionSettings, settings) ->
@@ -320,8 +325,10 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 }
                 DeviceSection()
                 BackupSection()
+                UpkeepSection()
             }
         }
+        if (confirmingFormats) ConfirmFormatUpdates()
         if (backingUp) Working(R.string.ankrimento_backup_export, R.string.ankrimento_backup_working)
         restoring?.let { Working(R.string.ankrimento_backup_restore, it) }
         restoreCheck?.let { ConfirmRestore(it) }
@@ -713,6 +720,85 @@ class IncrementoSettingsActivity : ComponentActivity() {
             listOf("simple" to R.string.ankrimento_settings_word_simple, "word_like" to R.string.ankrimento_settings_word_like),
             v.optString("writing_word_count_mode", "simple"),
         ) { set("writing_word_count_mode", it) }
+    }
+
+    /** Desktop's Tools: card format updates and the support bundle. */
+    @Composable
+    private fun UpkeepSection() {
+        Header(R.string.ankrimento_settings_upkeep)
+        val pending = formatUpdates.orEmpty()
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_card_formats)) },
+            supportingContent = {
+                Text(
+                    if (pending.isEmpty()) {
+                        stringResource(R.string.ankrimento_card_formats_current)
+                    } else {
+                        stringResource(R.string.ankrimento_card_formats_pending, pending.joinToString { it.first })
+                    },
+                )
+            },
+            modifier = Modifier.clickable(enabled = pending.isNotEmpty()) { confirmingFormats = true },
+        )
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.ankrimento_support_bundle)) },
+            supportingContent = { Text(stringResource(R.string.ankrimento_support_bundle_summary)) },
+            modifier = Modifier.clickable(onClick = ::shareSupportBundle),
+        )
+    }
+
+    @Composable
+    private fun ConfirmFormatUpdates() {
+        val names = formatUpdates.orEmpty().joinToString { it.first }
+        AlertDialog(
+            onDismissRequest = { confirmingFormats = false },
+            title = { Text(stringResource(R.string.ankrimento_card_formats)) },
+            text = { Text(stringResource(R.string.ankrimento_card_formats_confirm, names)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmingFormats = false
+                    applyFormatUpdates()
+                }) { Text(stringResource(R.string.ankrimento_card_formats_apply)) }
+            },
+            dismissButton = { TextButton(onClick = { confirmingFormats = false }) { Text(stringResource(android.R.string.cancel)) } },
+        )
+    }
+
+    private fun applyFormatUpdates() {
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.applyCardFormatUpdates().also { formatUpdates = Ankrimento.cardFormatUpdates() } } }
+                .onSuccess { toast(getString(R.string.ankrimento_card_formats_done)) }
+                .onFailure { error ->
+                    Timber.w(error, "Updating card formats failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
+        }
+    }
+
+    /** Builds desktop's support bundle beside the app and hands it to Android's share sheet. */
+    private fun shareSupportBundle() {
+        lifecycleScope.launch {
+            val folder = File(cacheDir, "support").apply { mkdirs() }
+            val bundle = File(folder, "incremento_support_bundle_${java.time.LocalDate.now()}.zip")
+            runCatching { withCol { Ankrimento.supportBundle(bundle) } }
+                .onSuccess {
+                    val uri =
+                        androidx.core.content.FileProvider.getUriForFile(
+                            this@IncrementoSettingsActivity,
+                            "$packageName.apkgfileprovider",
+                            bundle,
+                        )
+                    val share =
+                        Intent(Intent.ACTION_SEND)
+                            .setType("application/zip")
+                            .putExtra(Intent.EXTRA_STREAM, uri)
+                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    startActivity(Intent.createChooser(share, getString(R.string.ankrimento_support_bundle)))
+                }.onFailure { error ->
+                    Timber.w(error, "Creating the support bundle failed")
+                    toast(getString(R.string.ankrimento_support_bundle_failed, error.message ?: error.javaClass.simpleName))
+                }
+        }
     }
 
     @Composable

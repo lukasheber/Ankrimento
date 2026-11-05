@@ -457,4 +457,14 @@
     <string name="ankrimento_settings_word_count">字数统计方式</string>
     <string name="ankrimento_settings_word_simple">按空白分隔计数</string>
     <string name="ankrimento_settings_word_like">类似 Word</string>
+    <string name="ankrimento_settings_upkeep">维护</string>
+    <string name="ankrimento_card_formats">卡片格式更新</string>
+    <string name="ankrimento_card_formats_current">Incremento 的笔记类型已是最新</string>
+    <string name="ankrimento_card_formats_pending">待更新：%1$s</string>
+    <string name="ankrimento_card_formats_confirm">这些笔记类型将获得此版本的字段和模板：%1$s。\n\n更改笔记类型需要与 AnkiWeb 进行完全同步，这会替换另一端的副本。如果其他设备有尚未同步的更改，请先同步再更新。</string>
+    <string name="ankrimento_card_formats_apply">更新</string>
+    <string name="ankrimento_card_formats_done">卡片格式已更新。下一次与 AnkiWeb 同步将是完全同步。</string>
+    <string name="ankrimento_support_bundle">创建支持包</string>
+    <string name="ankrimento_support_bundle_summary">Incremento 去除个人信息的设置和近期诊断，可附在错误报告中：不含卡片文本、名称或文件</string>
+    <string name="ankrimento_support_bundle_failed">创建支持包失败：%1$s</string>
 </resources>

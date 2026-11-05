@@ -483,4 +483,14 @@
     <string name="ankrimento_settings_word_count">Modo de contagem de palavras</string>
     <string name="ankrimento_settings_word_simple">Simples, por espaços</string>
     <string name="ankrimento_settings_word_like">Como no Word</string>
+    <string name="ankrimento_settings_upkeep">Manutenção</string>
+    <string name="ankrimento_card_formats">Atualizações do formato dos cartões</string>
+    <string name="ankrimento_card_formats_current">Os tipos de nota do Incremento estão atualizados</string>
+    <string name="ankrimento_card_formats_pending">Para atualizar: %1$s</string>
+    <string name="ankrimento_card_formats_confirm">Estes tipos de nota recebem os campos e modelos desta versão: %1$s.\n\nAlterar tipos de nota exige uma sincronização completa com o AnkiWeb, que substitui a cópia do outro lado. Se outro dispositivo tiver alterações ainda não sincronizadas, sincronize antes e atualize depois.</string>
+    <string name="ankrimento_card_formats_apply">Atualizar</string>
+    <string name="ankrimento_card_formats_done">Formatos dos cartões atualizados. A próxima sincronização com o AnkiWeb será completa.</string>
+    <string name="ankrimento_support_bundle">Criar um pacote de suporte</string>
+    <string name="ankrimento_support_bundle_summary">As configurações do Incremento sem dados pessoais e seus diagnósticos recentes, para anexar a um relato de erro: sem texto de cartões, nomes nem arquivos</string>
+    <string name="ankrimento_support_bundle_failed">Não foi possível criar o pacote de suporte: %1$s</string>
 </resources>
