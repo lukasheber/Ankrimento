@@ -112,15 +112,97 @@ object CardPage {
             else -> "application/octet-stream"
         }
 
-    /** A file of the collection's media, never outside its folder. */
+    /**
+     * A file of the collection's media, never outside its folder. A [range] request
+     * (`bytes=start-end`) gets that part, as a server's would: audio and video can then seek.
+     */
     fun mediaFile(
         media: File,
         path: String,
+        range: String? = null,
     ): WebResourceResponse? {
         val file = File(media, path).canonicalFile
         if (!file.path.startsWith(media.path + File.separator) || !file.isFile) return null
-        return WebResourceResponse(URLConnection.guessContentTypeFromName(file.name), null, FileInputStream(file))
+        val type = URLConnection.guessContentTypeFromName(file.name) ?: "application/octet-stream"
+        val length = file.length()
+        val match = range?.let { RANGE.matchEntire(it.trim()) }
+        if (match == null) {
+            return WebResourceResponse(type, null, FileInputStream(file)).apply {
+                responseHeaders = mapOf("Accept-Ranges" to "bytes", "Content-Length" to length.toString())
+            }
+        }
+        val start = match.groupValues[1].toLong()
+        val end = (match.groupValues[2].toLongOrNull() ?: (length - 1)).coerceAtMost(length - 1)
+        if (start >= length || start > end) {
+            return WebResourceResponse(
+                type,
+                null,
+                416,
+                "Range Not Satisfiable",
+                mapOf("Content-Range" to "bytes */$length"),
+                "".byteInputStream(),
+            )
+        }
+        val part =
+            FileInputStream(file)
+                .apply {
+                    // skipNBytes needs Android 13; skip may stop short, so it is repeated.
+                    var skipped = 0L
+                    while (skipped < start) {
+                        val step = skip(start - skipped)
+                        if (step <= 0) break
+                        skipped += step
+                    }
+                }.let { stream ->
+                    object : java.io.FilterInputStream(stream) {
+                        private var left = end - start + 1
+
+                        override fun read(): Int = if (left <= 0) -1 else super.read().also { if (it >= 0) left-- }
+
+                        override fun read(
+                            buffer: ByteArray,
+                            offset: Int,
+                            count: Int,
+                        ): Int {
+                            if (left <= 0) return -1
+                            return super.read(buffer, offset, minOf(count.toLong(), left).toInt()).also { if (it > 0) left -= it }
+                        }
+                    }
+                }
+        val headers =
+            mapOf(
+                "Content-Range" to "bytes $start-$end/$length",
+                "Accept-Ranges" to "bytes",
+                "Content-Length" to (end - start + 1).toString(),
+            )
+        return WebResourceResponse(type, null, 206, "Partial Content", headers, part)
     }
+
+    /** A page's request for a media file (under [BASE_URL]), with its range, or null for any other request. */
+    fun mediaRequest(
+        media: File,
+        request: android.webkit.WebResourceRequest,
+    ): WebResourceResponse? {
+        val url = request.url
+        if (url.host !=
+            android.net.Uri
+                .parse(BASE_URL)
+                .host
+        ) {
+            return null
+        }
+        val path = url.path?.takeIf { it.startsWith(MEDIA_PATH) }?.removePrefix(MEDIA_PATH) ?: return null
+        return mediaFile(
+            media,
+            path,
+            request.requestHeaders.entries
+                .firstOrNull { it.key.equals("Range", ignoreCase = true) }
+                ?.value,
+        )
+    }
+
+    private const val MEDIA_PATH = "/media/"
+    private val RANGE = Regex("""bytes=(\d+)-(\d*)""")
 
     /** Text size and page colour; the colours are upstream's EPUB appearance modes. */
     fun pageScript(

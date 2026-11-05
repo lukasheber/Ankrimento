@@ -445,4 +445,5 @@
     <string name="ankrimento_add_markdown_file">Markdown 文档</string>
     <string name="ankrimento_writing_preview">预览</string>
     <string name="ankrimento_writing_edit">编辑</string>
+    <string name="ankrimento_add_audio_file">音频文件</string>
 </resources>

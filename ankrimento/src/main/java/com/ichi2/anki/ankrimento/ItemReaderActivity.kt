@@ -126,7 +126,7 @@ class ItemReaderActivity : ReaderActivity() {
             override fun shouldInterceptRequest(
                 view: WebView,
                 request: WebResourceRequest,
-            ): WebResourceResponse? = assetLoader.shouldInterceptRequest(request.url)
+            ): WebResourceResponse? = CardPage.mediaRequest(media, request) ?: assetLoader.shouldInterceptRequest(request.url)
 
             override fun onPageFinished(
                 view: WebView,

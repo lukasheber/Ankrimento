@@ -650,6 +650,13 @@ object Ankrimento {
         title: String,
     ): Long = requireFacade().callAttr("import_epub", path, title).toLong()
 
+    /** An audio file as desktop's Incremento Audio topic (MP3, M4A, AAC or WAV), played by its card's own player. */
+    @WorkerThread
+    fun importAudio(
+        path: String,
+        title: String,
+    ): Long = requireFacade().callAttr("import_audio", path, title).toLong()
+
     /** A Markdown file as a study document, read in the EPUB reader (desktop's Markdown import). */
     @WorkerThread
     fun importMarkdown(

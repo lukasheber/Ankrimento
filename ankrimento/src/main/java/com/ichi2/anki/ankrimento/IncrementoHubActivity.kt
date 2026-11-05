@@ -135,6 +135,17 @@ class IncrementoHubActivity : ComponentActivity() {
             }
         }
 
+    private val pickAudio =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                lifecycleScope.launch {
+                    importDocument {
+                        DocumentImport.import(this@IncrementoHubActivity, uri, "audio.mp3", Ankrimento::importAudio)
+                    }
+                }
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -434,6 +445,7 @@ class IncrementoHubActivity : ComponentActivity() {
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_epub_file) { pickEpub.launch(arrayOf("application/epub+zip")) }
                 // File managers name Markdown's type in several ways, often only as text or as bytes.
                 AddOption(IncrementoIcons.Document, R.string.ankrimento_add_markdown_file) { pickMarkdown.launch(MARKDOWN_TYPES) }
+                AddOption(IncrementoIcons.Video, R.string.ankrimento_add_audio_file) { pickAudio.launch(arrayOf("audio/*")) }
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_article) { askArticle = true }
                 AddOption(IncrementoIcons.Web, R.string.ankrimento_add_link) { askLink = true }
                 AddOption(IncrementoIcons.Edit, R.string.ankrimento_new_writing) { askWriting = true }

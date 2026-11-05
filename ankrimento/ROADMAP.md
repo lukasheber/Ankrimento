@@ -60,7 +60,7 @@ Mobile principles that guide every item:
 | ✅ | Library screen (from the Incremento card): Continue reading on this device, documents by kind with position and priority, Add | |
 | ✅ | Deck-list overflow menu free of Incremento items: each has its place on the card, in the library or in settings | |
 | ✅ | Library search, sort (title, priority, recent) and covers | Title search; sort by priority (the configured direction, as desktop's bookshelf), title, or recently read on this device; PDF and EPUB covers from desktop's cover fields |
-| ✅ | Add sheet: PDF, EPUB, web or video link, writing | Audio still to add |
+| ✅ | Add sheet: PDF, EPUB, Markdown, audio, web or video link, writing | |
 | ✅ | Share a link from any app to Incremento (web or video topic) | |
 | ✅ | Search ALL: highlights, sources, document text, cards [9] | From the Incremento card's ⋮ and the Library: upstream's own search with desktop's filters (as chips, saved as desktop saves them), results grouped as desktop groups them; a result opens its PDF page with the words highlighted, its EPUB section, or its card. PDF text is off by default, as on desktop |
 | ✅ | Knowledge tree screen [9]: fold/unfold branches, kind and priority per node; Open, Study this branch, Priority | From the Library's top bar and the menu |
@@ -132,7 +132,7 @@ Mobile principles that guide every item:
 | ⬜ | Video bookmarks | |
 | ⬜ | Captions (target/reference) | |
 | ➖ | Create Mobile Clip, Download Local Copy | Need FFmpeg/yt-dlp; desktop makes clips that sync as media |
-| 🟡 | Audio cards | Ordinary Anki media, played by AnkiDroid itself; not yet checked |
+| ✅ | Audio cards | Ordinary Anki sound plays through AnkiDroid's own player, in its reviewer and in the learning screen (checked on the tablet). Desktop's audio topics play in their card's own player, which seeks (media is served in ranges) and resumes where listening stopped |
 
 ### Writing, Markdown and local files [5, 8]
 
@@ -185,7 +185,7 @@ Mobile principles that guide every item:
 | ✅ | PDF, EPUB from the device | |
 | ✅ | Web and video links (menu and share sheet) | |
 | ⏸ | SuperMemo collection import [5] | Deferred |
-| ⬜ | Audio import | |
+| ✅ | Audio import | Add → Audio file (MP3, M4A, AAC, WAV): desktop's audio import makes its Incremento Audio topic. Checked on the tablet: plays, seeks, resumes |
 | ➖ | Browser extension companion [5] | Desktop browser only; the share sheet covers mobile |
 
 ## 8. Settings, language and quality [13]
@@ -252,7 +252,7 @@ Things desktop has:
 29. Tablet two-pane layout (library beside the reader). (Deferred: it does not suit the phone-first experience.)
 30. ~~PDF cross-references and page links; OCR status~~ (done).
 31. ~~Markdown documents (import) and the writing formatting toolbar~~ (done).
-32. Audio import; check audio cards.
+32. ~~Audio import; check audio cards~~ (done).
 33. Video bookmarks, captions, Vimeo, fuller playback controls. Check if extract video sessio/snip is implemented 
 34. More of upstream's settings (writing, PDF details).
 35. Getting Started guide. (Deferred)

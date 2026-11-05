@@ -471,4 +471,5 @@
     <string name="ankrimento_add_markdown_file">Markdown dokument</string>
     <string name="ankrimento_writing_preview">Pregled</string>
     <string name="ankrimento_writing_edit">Uredi</string>
+    <string name="ankrimento_add_audio_file">Zvučna datoteka</string>
 </resources>

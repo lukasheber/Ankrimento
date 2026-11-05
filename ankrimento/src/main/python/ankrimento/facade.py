@@ -585,6 +585,17 @@ def import_markdown(path: str, title: str, deck_name: str = "Topics", priority: 
     return int(card_id)
 
 
+def import_audio(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0) -> int:
+    """Add an audio file as an Incremento Audio topic, as desktop's audio import does."""
+    from incremento.backend.audio_manager import add_audio_card
+    from incremento.backend.priority_manager import set_priority
+
+    rt = runtime.current()
+    card_id = add_audio_card(str(rt.addon_dir), rt.profile, rt.col, source_path=path, title=title, deck_name=deck_name)
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return int(card_id)
+
+
 def writing_toolbar() -> str:
     """Desktop's writing formatting buttons (see ``writing.toolbar``)."""
     from ankrimento import writing

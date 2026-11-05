@@ -49,6 +49,8 @@ class TextReaderActivity : ReaderActivity() {
                 settings.javaScriptEnabled = true
                 settings.allowFileAccess = false
                 settings.allowContentAccess = false
+                // Desktop's audio topic keeps where listening stopped in the page's local storage.
+                settings.domStorageEnabled = true
             }
         webView.selectionActions =
             listOf(
@@ -94,7 +96,7 @@ class TextReaderActivity : ReaderActivity() {
                 override fun shouldInterceptRequest(
                     view: WebView,
                     request: WebResourceRequest,
-                ): WebResourceResponse? = assetLoader.shouldInterceptRequest(request.url)
+                ): WebResourceResponse? = CardPage.mediaRequest(media, request) ?: assetLoader.shouldInterceptRequest(request.url)
 
                 // Links in a topic open in the browser, not in place of the topic.
                 override fun shouldOverrideUrlLoading(

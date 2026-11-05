@@ -98,6 +98,7 @@ class AnkrimentoSmokeTestActivity : Activity() {
                                         .getStringExtra(
                                             EXTRA_MARKDOWN,
                                         )?.let { Ankrimento.importMarkdown(it, File(it).nameWithoutExtension) }
+                                    ?: intent.getStringExtra(EXTRA_AUDIO)?.let { Ankrimento.importAudio(it, File(it).nameWithoutExtension) }
                             intent.getStringExtra(EXTRA_BACKUP)?.let { log("full backup: ${Ankrimento.exportFullBackup(File(it))}") }
                             pdf?.let { log("imported PDF card $it") }
                             epub?.let { log("imported EPUB card $it") }
@@ -327,6 +328,7 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_RESTORE = "restore"
         const val EXTRA_SEED_MEDIA = "seedmedia"
         const val EXTRA_MARKDOWN = "markdown"
+        const val EXTRA_AUDIO = "audio"
         const val EXTRA_ITEM = "item"
         const val TYPED_NOTE_TYPE = "Typed test"
         const val TTS_NOTE_TYPE = "TTS test"
