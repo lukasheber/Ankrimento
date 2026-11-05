@@ -153,7 +153,7 @@ Mobile principles that guide every item:
 | ✅ | Extract queue: several extracts, then one review | The extract sheet's Add later sets the extract aside as chosen (type, priority, its source place) and frees the draft for the next selection; a "2 to add" chip in the top bar opens them to remove any and Add all; whatever is still waiting is added when the document is left or the session moves on. Keep extracting still keeps one draft open for more text |
 | 🟡 | Extract card from the current reviewer card [11] | AnkiDroid's reviewer: Extract on the selected text's toolbar opens the extract sheet with the card as its source (priority from it, a child of it in the knowledge tree); checked on the tablet. Items in the learning screen have the same Extract on their selection (not yet tried on a device). Not yet in AnkiDroid's new study screen |
 | ✅ | Add Card dock / card from scratch with priority [11] | Library → Add → New card: Item/Topic, front/back, note type, deck (upstream's defaults) and priority (50, desktop's scratch priority); no source and no place in the tree, as on desktop. Made without Incremento's metadata fields, which would change the note type and force a full sync |
-| ⬜ | Batch Q/A cards [11] | |
+| ✅ | Batch Q/A cards [11] | Batch Q/A… on the extract sheet (readers, reviewer extracts, new card): the text as alternating lines or Q:/A: blocks, previewed as desktop's parser reads it, then one card per valid pair with the sheet's type, note type and priority, under the source (or in the chosen deck). Desktop's labels and summary. Checked on the tablet |
 | ⬜ | PDF snapshot previews on cards [13] | Mobile already shows snapshots created on desktop |
 
 ## 5. Statistics and focus [10]

@@ -34,6 +34,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.BatchSheet
 import com.ichi2.anki.ankrimento.ui.DocumentReviewSheet
 import com.ichi2.anki.ankrimento.ui.ExtractChoice
 import com.ichi2.anki.ankrimento.ui.ExtractQueueChip
@@ -300,14 +301,17 @@ abstract class ReaderActivity : ComponentActivity() {
     /** The pending extract from this document, in the extract sheet. */
     private fun showExtractSheet() {
         lifecycleScope.launch {
-            val draft =
-                runCatching { withCol { Ankrimento.extractDraft(cardId) } }
+            val (loaded, labels) =
+                runCatching { withCol { Ankrimento.extractDraft(cardId) to Ankrimento.extractBatchLabels() } }
                     .getOrElse { error ->
                         Timber.w(error, "Loading the extract failed")
                         return@launch
-                    }.let { ExtractNoteTypes.choose(this@ReaderActivity, readerKind, it) }
+                    }
+            val draft = ExtractNoteTypes.choose(this@ReaderActivity, readerKind, loaded)
             sheet = {
                 ExtractSheet(
+                    batchLabel = labels["button"],
+                    onBatch = { choice, text -> showBatchSheet(labels, choice, text) },
                     draft = draft,
                     onAdd = { choice ->
                         sheet = null
@@ -381,6 +385,44 @@ abstract class ReaderActivity : ComponentActivity() {
                 queuedExtracts = runCatching { withCol { Ankrimento.extractQueue(cardId) }.size }.getOrDefault(0)
                 toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
             }
+    }
+
+    /** Desktop's Batch Q/A from this document: each valid pair a card under it, with the sheet's choices. */
+    private fun showBatchSheet(
+        labels: Map<String, String>,
+        choice: ExtractChoice,
+        text: String,
+    ) {
+        sheet = {
+            BatchSheet(
+                labels = labels,
+                initialText = text,
+                preview = { withCol { Ankrimento.extractBatchPreview(it) } },
+                onCreate = { pairs ->
+                    sheet = null
+                    ExtractNoteTypes.remember(this, readerKind, choice.noteType)
+                    lifecycleScope.launch {
+                        runCatching {
+                            withCol {
+                                Ankrimento.extractBatchCreate(
+                                    cardId,
+                                    pairs,
+                                    choice.noteType,
+                                    choice.isTopic,
+                                    choice.priority,
+                                    "",
+                                )
+                            }
+                        }.onSuccess { (_, summary) -> toast(summary) }
+                            .onFailure { error ->
+                                Timber.w(error, "Adding batch extracts failed")
+                                toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
+                            }
+                    }
+                },
+                onDismiss = { sheet = null },
+            )
+        }
     }
 
     private fun addExtract(choice: ExtractChoice) {

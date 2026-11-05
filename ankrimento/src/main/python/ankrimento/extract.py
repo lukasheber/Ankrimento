@@ -366,3 +366,63 @@ def _create(
 
     on_op_finished(mw, changes, None)
     return int(note.id)
+
+
+# ── Batch Q/A ────────────────────────────────────────────────────────────────
+#
+# Desktop's Batch Q/A (``frontend/extract_batch_dialog.py``, run from the Add
+# Card dock) parses pasted pairs with ``backend/reviewer_extract.parse_batch_qa_text``
+# and makes one card from each valid pair with the dock's extract options; on
+# the phone those options are the extract sheet's.
+
+
+def batch_preview(text: str) -> list[dict[str, Any]]:
+    from incremento.backend.reviewer_extract import parse_batch_qa_text
+
+    return parse_batch_qa_text(text)
+
+
+def batch_labels() -> dict[str, str]:
+    """Desktop's own names for the batch sheet."""
+    from incremento.backend.i18n import t
+
+    return {
+        "button": t("add_card_batch_qa"),
+        "title": t("extract_batch_title"),
+        "hint": t("extract_batch_hint"),
+        "create": t("extract_batch_create_all"),
+        "question": t("extract_batch_question"),
+        "answer": t("extract_batch_answer"),
+        "invalid": t("common_invalid"),
+    }
+
+
+def create_batch(source_card_id: int, text: str, note_type: str, kind: str, priority: float, deck_name: str = "") -> dict[str, Any]:
+    """One card per valid pair, as ``create_extract_batch_notes``: under the source when there is one,
+    otherwise from scratch in ``deck_name``. Returns desktop's counts and its summary lines."""
+    from incremento.backend.i18n import t
+
+    source_card_id = int(source_card_id)
+    current = _drafts.get(source_card_id, Draft())
+    created = skipped = failed = 0
+    errors: list[str] = []
+    for index, row in enumerate(batch_preview(text), start=1):
+        if not row.get("valid"):
+            skipped += 1
+            continue
+        fields = [str(row["question"]), str(row["answer"])]
+        try:
+            if source_card_id:
+                _create(source_card_id, fields, note_type, kind, float(priority), current.page, current.highlight_id)
+            else:
+                create_card(fields, note_type, kind, float(priority), deck_name)
+            created += 1
+        except Exception as error:  # noqa: BLE001 - counted and shown, as desktop's batch does
+            failed += 1
+            errors.append(f"Row {index}: {error}")
+    if source_card_id and created:
+        discard(source_card_id)
+    lines = [t("root_batch_created", count=created), t("root_batch_skipped", count=skipped), t("root_batch_failed", count=failed)]
+    if errors:
+        lines.extend(["", *errors[:10]])
+    return {"created": created, "skipped": skipped, "failed": failed, "summary": "\n".join(lines)}

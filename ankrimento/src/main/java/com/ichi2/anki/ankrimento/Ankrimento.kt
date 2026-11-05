@@ -1252,6 +1252,50 @@ object Ankrimento {
             .callAttr("pdf_page_link_add", sourceCardId, sourcePage, sourceY, target.cardId, target.page, target.scroll, null)
             .toLong()
 
+    /** A pasted Q/A pair as desktop's batch parsing reads it; [error] says why an invalid one can't become a card. */
+    data class BatchRow(
+        val question: String,
+        val answer: String,
+        val valid: Boolean,
+        val error: String,
+    )
+
+    @WorkerThread
+    fun extractBatchPreview(text: String): List<BatchRow> {
+        val rows = JSONArray(requireFacade().callAttr("extract_batch_preview", text).toString())
+        return List(rows.length()) { index ->
+            rows.getJSONObject(index).let {
+                BatchRow(it.optString("question"), it.optString("answer"), it.optBoolean("valid"), it.optString("error"))
+            }
+        }
+    }
+
+    /** Desktop's names for the batch sheet: button, title, hint, create, question, answer, invalid. */
+    @WorkerThread
+    fun extractBatchLabels(): Map<String, String> {
+        val labels = JSONObject(requireFacade().callAttr("extract_batch_labels").toString())
+        return labels.keys().asSequence().associateWith { labels.getString(it) }
+    }
+
+    /** One card per valid pair: under [sourceCardId], or from scratch in [deck] when it is 0. Returns how many and desktop's summary. */
+    @WorkerThread
+    fun extractBatchCreate(
+        sourceCardId: Long,
+        text: String,
+        noteType: String,
+        isTopic: Boolean,
+        priority: Double,
+        deck: String,
+    ): Pair<Int, String> {
+        val result =
+            JSONObject(
+                requireFacade()
+                    .callAttr("extract_batch_create", sourceCardId, text, noteType, if (isTopic) "topic" else "item", priority, deck)
+                    .toString(),
+            )
+        return result.getInt("created") to result.getString("summary")
+    }
+
     /** Desktop's support bundle (redacted settings, recent diagnostics) written to [file]. */
     @WorkerThread
     fun supportBundle(file: File) {

@@ -1101,6 +1101,26 @@ def create_card(fields_json: str, note_type: str, kind: str, priority: float, de
     return extract.create_card(list(json.loads(fields_json)), note_type, kind, float(priority), deck_name)
 
 
+def extract_batch_preview(text: str) -> str:
+    """Desktop's parsing of pasted Q/A pairs (see ``extract.batch_preview``)."""
+    from ankrimento import extract
+
+    return _dumps(extract.batch_preview(str(text)))
+
+
+def extract_batch_labels() -> str:
+    from ankrimento import extract
+
+    return _dumps(extract.batch_labels())
+
+
+def extract_batch_create(source_card_id: int, text: str, note_type: str, kind: str, priority: float, deck_name: str) -> str:
+    """One card per valid pair; ``source_card_id`` 0 makes them from scratch in ``deck_name``."""
+    from ankrimento import extract
+
+    return _dumps(extract.create_batch(int(source_card_id), str(text), str(note_type), str(kind), float(priority), str(deck_name)))
+
+
 def queue_extract(source_card_id: int, fields_json: str, note_type: str, kind: str, priority: float) -> int:
     """Sets the extract aside to add later ("Add later"); returns how many are waiting."""
     from ankrimento import extract

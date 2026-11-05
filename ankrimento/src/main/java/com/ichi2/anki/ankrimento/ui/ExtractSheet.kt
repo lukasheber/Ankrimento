@@ -69,6 +69,8 @@ internal fun ExtractSheet(
     onLater: ((ExtractChoice) -> Unit)?,
     onKeep: () -> Unit,
     onDiscard: () -> Unit,
+    batchLabel: String? = null,
+    onBatch: (ExtractChoice, String) -> Unit = { _, _ -> },
 ) {
     val originals = remember(draft) { draft.fields.map { Html.fromHtml(it, Html.FROM_HTML_MODE_COMPACT).toString().trim() } }
     var texts by remember(draft) { mutableStateOf(originals) }
@@ -178,7 +180,11 @@ internal fun ExtractSheet(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            TextButton(onClick = onDiscard) { Text(stringResource(R.string.ankrimento_extract_discard)) }
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                TextButton(onClick = onDiscard) { Text(stringResource(R.string.ankrimento_extract_discard)) }
+                // Desktop's Batch Q/A: the text as pairs, one card each.
+                batchLabel?.let { label -> TextButton(onClick = { onBatch(choice(), texts.firstOrNull().orEmpty()) }) { Text(label) } }
+            }
         }
     }
 }
