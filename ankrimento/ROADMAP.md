@@ -238,7 +238,8 @@ Daily reading and extracting:
 23. ~~Extract from the card shown in AnkiDroid's reviewer; add a card from scratch with a priority~~ (done; the new study screen's Extract remains).
 24. ~~Web extract anchors~~ (done).
 25. ~~Links back to the source, for every kind of extract~~ (done).
-26. ~~Review all cards made from a document~~ (done).
+26. ~~Review all cards made from a document~~ (done; the phone also empties the review deck when the review ends
+    and keeps it out of the deck list while nothing in it is due).
 26a. ~~The extract sheet made clear~~ (done: Add card first; Add later and Select more text, each explained on the sheet;
      a confirmation after each, saying where the card went).
 26b. ~~The extract sheet's note type follows the document open~~ (done: desktop's extract note type setting when set,

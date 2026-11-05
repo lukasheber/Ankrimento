@@ -927,7 +927,10 @@ open class DeckPicker :
             // Filtering must not recreate the study options fragment: its menu invalidation closes search.
             deckListAdapter.submit(
                 // The session deck is the Incremento card above the list.
-                data = deckList.data.filterNot { it.filtered && incrementoMenu.isSessionDeck(it.fullDeckName) },
+                data =
+                    deckList.data.filterNot {
+                        it.filtered && incrementoMenu.isHiddenFilteredDeck(it.fullDeckName, it.newCount + it.lrnCount + it.revCount)
+                    },
                 hasSubDecks = deckList.hasSubDecks,
             )
         }

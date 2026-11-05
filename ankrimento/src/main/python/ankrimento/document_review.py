@@ -81,6 +81,7 @@ def start(card_id: int, kind: str, position: float, options: dict | None = None)
     label, deck = _KINDS[kind][0], _deck(kind)
     seed = random.SystemRandom().randrange(1, 2**31)
     classifier = _classifier()
+    selected_before = rt.col.decks.get_current_id()
 
     def select_ids(col) -> list[int]:
         return linked_media_review_card_ids(
@@ -88,6 +89,15 @@ def start(card_id: int, kind: str, position: float, options: dict | None = None)
             random_seed=seed, include_tree_descendants=True, target_deck_name=deck,
             topic_classifier=classifier, **chosen,
         )
+
+    def empty_deck() -> None:
+        # The phone's addition to desktop's end of review (which reopens the reader): the deck is
+        # emptied, so its cards go back to their own decks and it need not show in the deck list,
+        # and the deck selected before is selected again, as the review's own is now out of sight.
+        deck_id = rt.col.decks.id_for_name(deck)
+        if deck_id:
+            rt.col.sched.empty_filtered_deck(deck_id)
+            rt.col.decks.select(selected_before if selected_before != deck_id else 1)
 
     return bool(
         start_explicit_review_from_selector(
@@ -97,6 +107,7 @@ def start(card_id: int, kind: str, position: float, options: dict | None = None)
             reschedule=True,
             empty_message=t("reader_media_no_matching_cards", media=label),
             error_message=t("reader_media_review_start_failed", media=label),
+            on_finished=empty_deck,
             diagnostic_source="media_review",
             diagnostic_content_kind=kind,
         )

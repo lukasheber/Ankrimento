@@ -144,6 +144,12 @@ class IncrementoMenu(
      */
     fun isSessionDeck(fullDeckName: String): Boolean = SessionDeck.isSessionDeckName(fullDeckName)
 
+    /** Whether a filtered deck stays out of the deck list: the session's, or an idle document review's. */
+    fun isHiddenFilteredDeck(
+        fullDeckName: String,
+        dueCards: Int,
+    ): Boolean = isSessionDeck(fullDeckName) || SessionDeck.isHiddenReviewDeck(fullDeckName, dueCards)
+
     /** The session deck tapped in the list: continue or start, as the session card does. */
     fun onDeckClick(deckId: Long): Boolean {
         if (deckId != sessionDeckId) return false

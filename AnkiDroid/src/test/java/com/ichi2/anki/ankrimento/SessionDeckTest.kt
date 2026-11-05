@@ -38,6 +38,15 @@ class SessionDeckTest : RobolectricTest() {
         assertThat(SessionDeck.isSessionDeckName("Topics"), equalTo(false))
     }
 
+    @Test
+    fun `desktop's document review decks leave the list while nothing in them is due`() {
+        assertThat(SessionDeck.isHiddenReviewDeck("Incremento PDF Review", dueCards = 0), equalTo(true))
+        assertThat(SessionDeck.isHiddenReviewDeck("Incremento EPUB Review", dueCards = 0), equalTo(true))
+        // Cards left in one (a review made on desktop and synced) can still be reached.
+        assertThat(SessionDeck.isHiddenReviewDeck("Incremento PDF Review", dueCards = 2), equalTo(false))
+        assertThat(SessionDeck.isHiddenReviewDeck("Incremento PDF Reviews", dueCards = 0), equalTo(false))
+    }
+
     private companion object {
         const val SESSION = "Incremento Session"
     }

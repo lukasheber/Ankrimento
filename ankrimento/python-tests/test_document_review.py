@@ -41,6 +41,7 @@ def test_the_preview_counts_the_documents_cards_for_each_choice(rt, document):
 def test_review_starts_with_the_chosen_cards_in_desktops_review_deck(rt, document):
     from aqt import mw
 
+    before = rt.col.decks.get_current_id()
     entered = threading.Event()
     previous = mw.host_events
     mw.host_events = lambda event, fields: entered.set() if event == "move_to_state" and fields.get("state") == "review" else None
@@ -50,5 +51,12 @@ def test_review_starts_with_the_chosen_cards_in_desktops_review_deck(rt, documen
     finally:
         mw.host_events = previous
     deck_id = rt.col.decks.id_for_name("Incremento PDF Review")
-    assert len(rt.col.find_cards(f"did:{deck_id}")) == 2
+    reviewed = rt.col.find_cards(f"did:{deck_id}")
+    assert len(reviewed) == 2
+
+    # When the review ends the deck is emptied: its cards go back to their own decks.
     facade.reviewer_closed()
+    assert rt.col.find_cards(f"did:{deck_id}") == []
+    assert all(rt.col.get_card(card).odid == 0 for card in reviewed)
+    # And the deck selected before is selected again: the review's own leaves the list.
+    assert rt.col.decks.get_current_id() == before
