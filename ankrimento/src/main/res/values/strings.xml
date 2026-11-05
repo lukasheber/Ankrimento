@@ -459,4 +459,7 @@
     <string name="ankrimento_writing_preview">Preview</string>
     <string name="ankrimento_writing_edit">Edit</string>
     <string name="ankrimento_add_audio_file">Audio file</string>
+    <string name="ankrimento_video_forward_10">Forward 10 seconds</string>
+    <string name="ankrimento_video_speed">Speed: %1$s</string>
+    <string name="ankrimento_video_bookmark_here">Bookmark this moment (%1$s)</string>
 </resources>

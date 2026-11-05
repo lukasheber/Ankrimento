@@ -124,13 +124,13 @@ Mobile principles that guide every item:
 |---|---|---|
 | ✅ | YouTube (upstream player page) and local files | |
 | ✅ | Position resume and watch time, as desktop saves them | |
-| ⬜ | Vimeo | |
+| ✅ | Vimeo | Played in Vimeo's own player page, as desktop's dock loads it; position, watch time, bookmarks, ±10 seconds and speed work through its video. A shared Vimeo link becomes a video topic, as on desktop. Checked on the tablet |
 | ✅ | Extract at the current timestamp: the front links back to that moment, as desktop's "Add Card at this point" | |
-| 🟡 | Native controls: Back 10 seconds | Play/pause, speed and seek still come from the player itself |
+| ✅ | Native controls: back and forward 10 seconds, desktop's speeds (0.75× to 2×) | In the reader's menu, for YouTube, Vimeo and local files; play/pause and the seek bar are the player's own. Checked on the tablet |
 | ✅ | Titles for shared links: YouTube's title, or the page's own title | Looked up when a link comes without one; the URL stays if that fails |
 | ✅ | Open an extract's link back to its source, on mobile | Extracts made on the phone carry desktop's link back, as desktop's fill adds it (unless the extract source links setting turns a kind off): web page, PDF page (with the excerpt found and highlighted), EPUB chapter and place, video moment. The links open their reader from cards in the readers and in AnkiDroid's reviewer. Checked on the tablet for web, PDF and EPUB. The EPUB place is the scroll position; desktop also focuses the selection by its offset |
-| ⬜ | Video bookmarks | |
-| ⬜ | Captions (target/reference) | |
+| ✅ | Video bookmarks | Desktop's video bookmarks: keep the moment playing, open one (playback moves there), comment or delete it; desktop's labels (0:19). Checked on the tablet |
+| 🟡 | Captions (target/reference) | YouTube's and Vimeo's own captions show in their players. Desktop's paired subtitle files (target and reference language) are not shown yet: they reach the phone only with Incremento's sync, which is deferred |
 | ➖ | Create Mobile Clip, Download Local Copy | Need FFmpeg/yt-dlp; desktop makes clips that sync as media |
 | ✅ | Audio cards | Ordinary Anki sound plays through AnkiDroid's own player, in its reviewer and in the learning screen (checked on the tablet). Desktop's audio topics play in their card's own player, which seeks (media is served in ranges) and resumes where listening stopped |
 
@@ -253,7 +253,7 @@ Things desktop has:
 30. ~~PDF cross-references and page links; OCR status~~ (done).
 31. ~~Markdown documents (import) and the writing formatting toolbar~~ (done).
 32. ~~Audio import; check audio cards~~ (done).
-33. Video bookmarks, captions, Vimeo, fuller playback controls. Check if extract video sessio/snip is implemented 
+33. ~~Video bookmarks, Vimeo, fuller playback controls~~ (done). Captions: the providers' own; desktop's subtitle files wait for sync. Extract at a moment works (its card links back to that second); desktop's Create Mobile Clip cuts the video with FFmpeg, which the phone lacks.
 34. More of upstream's settings (writing, PDF details).
 35. Getting Started guide. (Deferred)
 

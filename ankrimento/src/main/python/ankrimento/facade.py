@@ -763,6 +763,30 @@ def video_open(card_id: int) -> str:
     return _dumps(video_reader.open_video(int(card_id)))
 
 
+def video_bookmarks(card_id: int) -> str:
+    from ankrimento import video_reader
+
+    return _dumps(video_reader.bookmarks(int(card_id)))
+
+
+def video_add_bookmark(card_id: int, seconds: float) -> str:
+    from ankrimento import video_reader
+
+    return _dumps(video_reader.add_bookmark(int(card_id), float(seconds)))
+
+
+def video_delete_bookmark(card_id: int, bookmark_id: str) -> str:
+    from ankrimento import video_reader
+
+    return _dumps(video_reader.delete_bookmark(int(card_id), str(bookmark_id)))
+
+
+def video_bookmark_comment(card_id: int, bookmark_id: str, comment: str) -> str:
+    from ankrimento import video_reader
+
+    return _dumps(video_reader.bookmark_comment(int(card_id), str(bookmark_id), str(comment)))
+
+
 def video_progress(card_id: int, position: float, watched_seconds: float) -> None:
     from ankrimento import video_reader
 

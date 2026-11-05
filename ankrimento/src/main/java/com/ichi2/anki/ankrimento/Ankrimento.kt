@@ -897,7 +897,39 @@ object Ankrimento {
         title: String,
     ): Long = JSONObject(requireFacade().callAttr("import_link", url, title).toString()).getLong("card_id")
 
-    /** What a video topic plays: [kind] "local" ([path]), "youtube" ([videoId]) or "none" ([url]). */
+    /** The video's bookmarks by time, as the bookmarks sheet shows them ([MarkBookmark.page] holds the second). */
+    @WorkerThread
+    fun videoBookmarks(cardId: Long): List<MarkBookmark> = videoMarks(requireFacade().callAttr("video_bookmarks", cardId))
+
+    @WorkerThread
+    fun videoAddBookmark(
+        cardId: Long,
+        seconds: Double,
+    ): List<MarkBookmark> = videoMarks(requireFacade().callAttr("video_add_bookmark", cardId, seconds))
+
+    @WorkerThread
+    fun videoDeleteBookmark(
+        cardId: Long,
+        bookmarkId: String,
+    ): List<MarkBookmark> = videoMarks(requireFacade().callAttr("video_delete_bookmark", cardId, bookmarkId))
+
+    @WorkerThread
+    fun videoBookmarkComment(
+        cardId: Long,
+        bookmarkId: String,
+        comment: String,
+    ): List<MarkBookmark> = videoMarks(requireFacade().callAttr("video_bookmark_comment", cardId, bookmarkId, comment))
+
+    private fun videoMarks(result: PyObject): List<MarkBookmark> {
+        val rows = JSONArray(result.toString())
+        return List(rows.length()) { index ->
+            rows.getJSONObject(index).let {
+                MarkBookmark(it.getString("id"), it.getDouble("seconds").toInt(), it.getString("label"), it.getString("comment"))
+            }
+        }
+    }
+
+    /** What a video topic plays: [kind] "local" ([path]), "youtube" ([videoId]), "vimeo" (its player page, [url]) or "none" ([url]). */
     data class Video(
         val kind: String,
         val path: String,

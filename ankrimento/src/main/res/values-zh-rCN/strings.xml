@@ -446,4 +446,7 @@
     <string name="ankrimento_writing_preview">预览</string>
     <string name="ankrimento_writing_edit">编辑</string>
     <string name="ankrimento_add_audio_file">音频文件</string>
+    <string name="ankrimento_video_forward_10">前进 10 秒</string>
+    <string name="ankrimento_video_speed">速度：%1$s</string>
+    <string name="ankrimento_video_bookmark_here">为此时刻添加书签（%1$s）</string>
 </resources>

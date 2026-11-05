@@ -43,6 +43,13 @@ def open_video(card_id: int) -> dict[str, Any]:
     video_id = extract_video_id(url)
     if video_id:
         return {"kind": "youtube", "video_id": video_id, "url": url, "position": position}
+    # Desktop plays any other supported provider (Vimeo) in the provider's own player page.
+    from incremento.backend.video_providers import build_remote_video_watch_url, detect_video_provider
+
+    if detect_video_provider(url) == "vimeo":
+        player = build_remote_video_watch_url(url, start_sec=int(position))
+        if player:
+            return {"kind": "vimeo", "url": player, "position": position}
     return {"kind": "none", "url": url, "position": position}
 
 
@@ -85,6 +92,50 @@ def import_video(url: str, title: str = "", deck_name: str = "Topics") -> int:
 
 
 def is_video_url(url: str) -> bool:
-    from incremento.backend.video_manager import extract_video_id
+    """A link desktop adds as a video: any provider it supports (YouTube, Vimeo)."""
+    from incremento.backend.video_providers import is_supported_video_url
 
-    return bool(extract_video_id(url))
+    return bool(is_supported_video_url(url))
+
+
+def bookmarks(card_id: int) -> list[dict[str, Any]]:
+    """The video's bookmarks by time: desktop's reader bookmarks of kind "video", with its labels and comments."""
+    from incremento.backend.reader_bookmarks import list_reader_bookmarks
+
+    addon_dir, profile = _context()
+    rows = [
+        {
+            "id": row["id"],
+            "seconds": float((row.get("location") or {}).get("seconds") or 0.0),
+            "label": row.get("label") or "",
+            "comment": row.get("comment_text") or "",
+        }
+        for row in list_reader_bookmarks(addon_dir, profile, int(card_id), "video")
+    ]
+    return sorted(rows, key=lambda row: row["seconds"])
+
+
+def add_bookmark(card_id: int, seconds: float) -> list[dict[str, Any]]:
+    """Mirrors ``_add_current_video_bookmark``."""
+    from incremento.backend.reader_bookmarks import add_reader_bookmark
+
+    addon_dir, profile = _context()
+    add_reader_bookmark(addon_dir, profile, int(card_id), "video", {"seconds": max(0.0, float(seconds))})
+    return bookmarks(card_id)
+
+
+def delete_bookmark(card_id: int, bookmark_id: str) -> list[dict[str, Any]]:
+    from incremento.backend.reader_bookmarks import delete_reader_bookmark
+
+    addon_dir, profile = _context()
+    delete_reader_bookmark(addon_dir, profile, int(card_id), "video", str(bookmark_id))
+    return bookmarks(card_id)
+
+
+def bookmark_comment(card_id: int, bookmark_id: str, comment: str) -> list[dict[str, Any]]:
+    """Mirrors ``_edit_video_bookmark_comment``."""
+    from incremento.backend.reader_bookmarks import update_reader_bookmark_comment
+
+    addon_dir, profile = _context()
+    update_reader_bookmark_comment(addon_dir, profile, int(card_id), "video", str(bookmark_id), str(comment or ""))
+    return bookmarks(card_id)

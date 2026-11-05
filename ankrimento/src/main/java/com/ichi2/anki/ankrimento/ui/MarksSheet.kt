@@ -95,7 +95,9 @@ internal val HIGHLIGHT_COLORS =
 /**
  * The document's bookmarks and highlights. A bookmark or a highlight opens its page;
  * the page shown can be bookmarked; a highlight's colour and note are changed, or it is
- * deleted, from its own dialog. Without [bookmarks], only the highlights are shown.
+ * deleted, from its own dialog. Without [bookmarks], only the highlights are shown;
+ * without [withHighlights], only the bookmarks. [placeOf] names a bookmark's place
+ * and [addLabel] the action adding one (a page by default; a video's moment).
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,13 +115,23 @@ internal fun MarksSheet(
     onDismiss: () -> Unit,
     onHighlightStyle: (String, String) -> Unit = { _, _ -> },
     onBookmarkComment: (String, String) -> Unit = { _, _ -> },
+    withHighlights: Boolean = true,
+    placeOf: @Composable (MarkBookmark) -> String = { stringResource(R.string.ankrimento_page_short, it.page) },
+    addLabel: String? = null,
+    canAdd: Boolean = page > 0,
 ) {
     var tab by rememberSaveable { mutableIntStateOf(if (bookmarks == null) 1 else 0) }
     var chosen by remember { mutableStateOf<String?>(null) }
     var commenting by remember { mutableStateOf<MarkBookmark?>(null) }
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(Modifier.navigationBarsPadding().padding(bottom = 8.dp)) {
-            if (bookmarks != null) {
+            if (bookmarks != null && !withHighlights) {
+                Text(
+                    stringResource(R.string.ankrimento_marks_bookmarks),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                )
+            } else if (bookmarks != null) {
                 SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
                     listOf(R.string.ankrimento_marks_bookmarks, R.string.ankrimento_marks_highlights).forEachIndexed { index, label ->
                         SegmentedButton(
@@ -138,15 +150,15 @@ internal fun MarksSheet(
             }
             if (tab == 0 && bookmarks != null) {
                 ListItem(
-                    headlineContent = { Text(stringResource(R.string.ankrimento_marks_add_bookmark, page)) },
+                    headlineContent = { Text(addLabel ?: stringResource(R.string.ankrimento_marks_add_bookmark, page)) },
                     leadingContent = { Icon(IncrementoIcons.Bookmark, contentDescription = null) },
-                    modifier = Modifier.clickable(enabled = page > 0, onClick = onAddBookmark),
+                    modifier = Modifier.clickable(enabled = canAdd, onClick = onAddBookmark),
                 )
                 if (bookmarks.isEmpty()) Empty(R.string.ankrimento_marks_no_bookmarks)
                 LazyColumn(Modifier.heightIn(max = 480.dp)) {
                     items(bookmarks, key = { it.id }) { bookmark ->
                         ListItem(
-                            overlineContent = { Text(stringResource(R.string.ankrimento_page_short, bookmark.page)) },
+                            overlineContent = { Text(placeOf(bookmark)) },
                             headlineContent = {
                                 Text(
                                     bookmark.comment.ifEmpty { bookmark.label },
@@ -219,7 +231,7 @@ internal fun MarksSheet(
         var comment by remember(bookmark.id) { mutableStateOf(bookmark.comment) }
         AlertDialog(
             onDismissRequest = { commenting = null },
-            title = { Text(stringResource(R.string.ankrimento_page_short, bookmark.page)) },
+            title = { Text(placeOf(bookmark)) },
             text = {
                 OutlinedTextField(
                     value = comment,

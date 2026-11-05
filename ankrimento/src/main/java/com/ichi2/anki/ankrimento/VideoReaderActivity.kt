@@ -15,11 +15,14 @@ import android.webkit.WebView
 import android.widget.MediaController
 import android.widget.Toast
 import android.widget.VideoView
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.MarkBookmark
+import com.ichi2.anki.ankrimento.ui.MarksSheet
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,10 +32,12 @@ import timber.log.Timber
 import java.io.File
 
 /**
- * Incremento's video reader: YouTube through upstream's `web/video_player.html`
- * and downloaded videos with Android's player, as desktop's video dock uses
- * its web page and Qt's player. Saves where playback stopped and observed
- * watch time, as desktop does.
+ * Incremento's video reader: YouTube through upstream's `web/video_player.html`,
+ * Vimeo in Vimeo's own player page, and downloaded videos with Android's player,
+ * as desktop's video dock uses its web pages and Qt's player. Saves where
+ * playback stopped and observed watch time, as desktop does. Bookmarks keep
+ * moments (desktop's video bookmarks, with comments); playback moves by ten
+ * seconds and plays at desktop's speeds.
  */
 class VideoReaderActivity : ReaderActivity() {
     /** Current position and whether it is playing, read from whichever player is shown. */
@@ -42,13 +47,16 @@ class VideoReaderActivity : ReaderActivity() {
     /** Moves playback by [seconds] in whichever player is shown. */
     private var seekBy: ((Double) -> Unit)? = null
 
+    /** Moves playback to [seconds]. */
+    private var seekTo: ((Double) -> Unit)? = null
+
+    /** Plays at a speed (1.0 is normal). */
+    private var setSpeed: ((Float) -> Unit)? = null
+    private var speed = 1.0f
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tools =
-            listOf(
-                ReaderTool(getString(R.string.ankrimento_video_extract), IncrementoIcons.Add, ::extractHere),
-                ReaderTool(getString(R.string.ankrimento_video_back_10)) { seekBy?.invoke(-10.0) },
-            )
+        showTools()
         lifecycleScope.launch {
             var video =
                 runCatching { withCol { Ankrimento.videoOpen(cardId) } }.getOrElse { error ->
@@ -64,6 +72,7 @@ class VideoReaderActivity : ReaderActivity() {
             when (video.kind) {
                 "local" -> showLocal(video)
                 "youtube" -> showYouTube(video)
+                "vimeo" -> showVimeo(video)
                 else -> {
                     openExternally(video.url)
                     finish()
@@ -79,12 +88,110 @@ class VideoReaderActivity : ReaderActivity() {
         setReaderContent(player)
         player.setMediaController(MediaController(this).apply { setAnchorView(player) })
         player.setVideoURI(Uri.fromFile(File(video.path)))
-        player.setOnPreparedListener {
+        player.setOnPreparedListener { media ->
             player.seekTo((video.position * 1000).toInt())
             player.start()
+            setSpeed = { rate ->
+                // A speed above zero also starts playback; a paused video stays paused.
+                val playing = player.isPlaying
+                runCatching { media.playbackParams = media.playbackParams.setSpeed(rate) }
+                    .onFailure { Timber.w(it, "Setting the playback speed failed") }
+                if (!playing) player.pause()
+            }
         }
         readPlayer = { player.currentPosition / 1000.0 to player.isPlaying }
         seekBy = { seconds -> player.seekTo((player.currentPosition + seconds * 1000).toInt().coerceAtLeast(0)) }
+        seekTo = { seconds -> player.seekTo((seconds * 1000).toInt().coerceAtLeast(0)) }
+    }
+
+    private fun showTools() {
+        tools =
+            listOf(
+                ReaderTool(getString(R.string.ankrimento_video_extract), IncrementoIcons.Add, ::extractHere),
+                ReaderTool(getString(R.string.ankrimento_marks_bookmarks), IncrementoIcons.Bookmark, ::showBookmarks),
+                ReaderTool(getString(R.string.ankrimento_video_back_10)) { seekBy?.invoke(-10.0) },
+                ReaderTool(getString(R.string.ankrimento_video_forward_10)) { seekBy?.invoke(10.0) },
+                ReaderTool(getString(R.string.ankrimento_video_speed, speedLabel(speed))) {
+                    // Desktop's speeds, in turn.
+                    speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.size]
+                    setSpeed?.invoke(speed)
+                    showTools()
+                },
+            )
+    }
+
+    private fun speedLabel(rate: Float) = (if (rate == rate.toInt().toFloat()) rate.toInt().toString() else rate.toString()) + "×"
+
+    /** Desktop's video bookmarks: the moment playing now can be kept; each opens there, takes a comment, or goes. */
+    private fun showBookmarks() {
+        lifecycleScope.launch {
+            val now = readPlayer?.invoke()?.first ?: lastPosition
+            changeBookmarks(now) { Ankrimento.videoBookmarks(cardId) }
+        }
+    }
+
+    private fun changeBookmarks(
+        now: Double,
+        change: com.ichi2.anki.libanki.Collection.() -> List<MarkBookmark>,
+    ) {
+        lifecycleScope.launch {
+            val bookmarks =
+                runCatching { withCol { change() } }.getOrElse { error ->
+                    Timber.w(error, "Changing video bookmarks failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                    return@launch
+                }
+            sheet = {
+                MarksSheet(
+                    page = now.toInt(),
+                    bookmarks = bookmarks,
+                    highlights = emptyList(),
+                    onOpenPage = { seconds ->
+                        sheet = null
+                        seekTo?.invoke(seconds.toDouble())
+                    },
+                    onAddBookmark = { changeBookmarks(now) { Ankrimento.videoAddBookmark(cardId, now) } },
+                    onDeleteBookmark = { id -> changeBookmarks(now) { Ankrimento.videoDeleteBookmark(cardId, id) } },
+                    onBookmarkComment = { id, comment -> changeBookmarks(now) { Ankrimento.videoBookmarkComment(cardId, id, comment) } },
+                    onHighlightColor = { _, _ -> },
+                    onHighlightNote = { _, _ -> },
+                    onDeleteHighlight = {},
+                    onDismiss = { sheet = null },
+                    withHighlights = false,
+                    placeOf = { it.label },
+                    addLabel = stringResource(R.string.ankrimento_video_bookmark_here, clock(now)),
+                    canAdd = true,
+                )
+            }
+        }
+    }
+
+    private fun clock(seconds: Double): String {
+        val total = seconds.toLong().coerceAtLeast(0)
+        val (hours, minutes, secs) = Triple(total / 3600, total % 3600 / 60, total % 60)
+        return if (hours > 0) "%d:%02d:%02d".format(hours, minutes, secs) else "%d:%02d".format(minutes, secs)
+    }
+
+    /** Vimeo's own player page, as desktop's dock loads it; its video element reports and moves playback. */
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun showVimeo(video: Ankrimento.Video) {
+        val webView = WebView(this)
+        setReaderContent(webView)
+        webView.settings.javaScriptEnabled = true
+        webView.settings.domStorageEnabled = true
+        webView.settings.mediaPlaybackRequiresUserGesture = false
+        webView.webViewClient = WebViewClientCompat()
+        webView.loadUrl(video.url)
+        readPlayer = {
+            val result = evaluate(webView, VIMEO_STATE_JS)
+            runCatching { JSONObject(JSONObject("{\"v\":$result}").getString("v")) }
+                .getOrNull()
+                ?.let { it.getDouble("t") to it.getBoolean("p") }
+        }
+        seekBy =
+            { seconds -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.currentTime = Math.max(0, v.currentTime + $seconds);", null) }
+        seekTo = { seconds -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.currentTime = Math.max(0, $seconds);", null) }
+        setSpeed = { rate -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.playbackRate = $rate;", null) }
     }
 
     /** Desktop's "Add Card at this point": an extract whose front links back to this moment. */
@@ -135,6 +242,11 @@ class VideoReaderActivity : ReaderActivity() {
                 null,
             )
         }
+        seekTo = { seconds -> webView.evaluateJavascript("window._ytp && window._ytp.seekTo && window._ytp.seekTo($seconds, true);", null) }
+        setSpeed =
+            { rate ->
+                webView.evaluateJavascript("window._ytp && window._ytp.setPlaybackRate && window._ytp.setPlaybackRate($rate);", null)
+            }
     }
 
     /** Every few seconds, save the position and the playback observed since the last check. */
@@ -189,6 +301,13 @@ class VideoReaderActivity : ReaderActivity() {
         private const val PLAYER_URL = "https://appassets.androidplatform.net/assets/ankrimento/web/video_player.html"
         private const val PROGRESS_INTERVAL_MS = 5_000L
         private const val YOUTUBE_PLAYING = 1
+
+        /** Desktop's playback speeds (its local player's rate menu). */
+        private val SPEEDS = listOf(0.75f, 1.0f, 1.25f, 1.5f, 2.0f)
+
+        private const val VIMEO_VIDEO = "var v = document.querySelector('video');"
+        private const val VIMEO_STATE_JS =
+            "(function () { $VIMEO_VIDEO return v ? JSON.stringify({t: v.currentTime, p: !v.paused}) : null; })()"
         private const val PLAYER_STATE_JS =
             "JSON.stringify(window._ytp && window._ytp.getCurrentTime ? " +
                 "{t: window._ytp.getCurrentTime(), s: window._ytp.getPlayerState()} : null)"
