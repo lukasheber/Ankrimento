@@ -22,7 +22,6 @@ import com.ichi2.anki.common.destinations.NoteEditorDestination
 import com.ichi2.anki.common.destinations.toIntent
 import kotlinx.coroutines.launch
 import org.json.JSONArray
-import org.json.JSONObject
 import timber.log.Timber
 
 /**
@@ -61,8 +60,7 @@ class TextReaderActivity : ReaderActivity() {
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), SELECTION_JS) { result ->
                     extract(decodeJsString(result))
                 },
-                // SuperMemo's way from reading to items: the selection hidden in its sentence.
-                ReaderWebView.SelectionAction(getString(R.string.ankrimento_cloze), CLOZE_JS, ::cloze),
+                clozeAction(),
             )
         setReaderContent(webView)
         webView.addJavascriptInterface(CardPage.Links(this), "AnkrimentoCard")
@@ -93,29 +91,6 @@ class TextReaderActivity : ReaderActivity() {
         if (editing) {
             editing = false
             lifecycleScope.launch { load() }
-        }
-    }
-
-    private fun cloze(result: String) {
-        val parts = runCatching { JSONObject(decodeJsString(result)) }.getOrNull()
-        if (parts == null || parts.optString("selected").isBlank()) {
-            toast(getString(R.string.ankrimento_web_select_first))
-            return
-        }
-        lifecycleScope.launch {
-            runCatching {
-                withCol {
-                    Ankrimento.extractCloze(
-                        cardId,
-                        parts.optString("before"),
-                        parts.optString("selected"),
-                        parts.optString("after"),
-                    )
-                }
-            }.onFailure { error ->
-                Timber.w(error, "Making a cloze failed")
-                toast(error.message ?: error.javaClass.simpleName)
-            }
         }
     }
 
@@ -215,22 +190,6 @@ class TextReaderActivity : ReaderActivity() {
     private fun decodeJsString(result: String): String = runCatching { JSONArray("[$result]").getString(0) }.getOrDefault("")
 
     companion object {
-        /**
-         * The selection and its sentence: the text of the paragraph around it, from the end of the sentence
-         * before (". ", "! ", "? ") to the end of its own; as JSON (before, selected, after).
-         */
-        private const val CLOZE_JS =
-            "(function () { var s = window.getSelection(); if (!s || !s.rangeCount || s.isCollapsed) return null;" +
-                " var r = s.getRangeAt(0); var node = r.startContainer; var block = node.nodeType === 1 ? node : node.parentElement;" +
-                " block = (block && block.closest('p,li,dd,dt,blockquote,h1,h2,h3,h4,h5,h6,td,div')) || document.body;" +
-                " var head = document.createRange(); head.selectNodeContents(block); head.setEnd(r.startContainer, r.startOffset);" +
-                " var start = head.toString().length; var selected = r.toString(); var text = block.textContent || '';" +
-                " var end = Math.min(text.length, start + selected.length);" +
-                " var from = start; while (from > 1 && !/[.!?]\\s/.test(text.slice(from - 2, from))) from--; if (from <= 1) from = 0;" +
-                " var stop = /[.!?](\\s|$)/g; stop.lastIndex = end; var found = stop.exec(text);" +
-                " var to = found ? found.index + 1 : text.length;" +
-                " return JSON.stringify({before: text.slice(from, start), selected: selected, after: text.slice(end, to)}); })()"
-
         private const val SELECTION_JS = "String(window.getSelection ? window.getSelection() : '')"
 
         /** Shared with the item reader, which shows cards in the same text size and page colour. */

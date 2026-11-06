@@ -86,6 +86,7 @@ class WebReaderActivity : ReaderActivity() {
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), SELECTION_JS) { result ->
                     extract(decodeJsString(result))
                 },
+                clozeAction(),
             )
         setReaderContent(webView)
         onBackPressedDispatcher.addCallback(this, backInPage)

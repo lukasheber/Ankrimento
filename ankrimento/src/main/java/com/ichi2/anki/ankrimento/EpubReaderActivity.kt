@@ -104,6 +104,7 @@ class EpubReaderActivity : ReaderActivity() {
             listOf(
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS),
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_highlight), HIGHLIGHT_JS),
+                clozeAction(),
             )
         setReaderContent(webView)
         toggleBarsOnTap(webView)

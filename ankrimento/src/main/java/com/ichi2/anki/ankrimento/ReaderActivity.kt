@@ -59,6 +59,8 @@ import com.ichi2.anki.common.destinations.toIntent
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import timber.log.Timber
 
 /**
@@ -146,7 +148,8 @@ abstract class ReaderActivity : ComponentActivity() {
                 val finishedRun by FocusTimer.finished.collectAsState()
                 ReaderScaffold(
                     title = title,
-                    subtitle = subtitle ?: sessionLine,
+                    // A chapter named like its book (a saved web page) says nothing new.
+                    subtitle = subtitle?.takeUnless { it.trim() == title.trim() } ?: sessionLine,
                     // Desktop's Extract review button hidden: so is the extract tool (the selection menu keeps it).
                     tools =
                         if ("extract" in
@@ -663,11 +666,56 @@ abstract class ReaderActivity : ComponentActivity() {
         }
     }
 
+    /** SuperMemo's way from reading to items: the selection hidden in its sentence, on the selection menu. */
+    internal fun clozeAction() = ReaderWebView.SelectionAction(getString(R.string.ankrimento_cloze), CLOZE_JS, ::cloze)
+
+    private fun cloze(result: String) {
+        val parts = runCatching { JSONObject(JSONArray("[$result]").getString(0)) }.getOrNull()
+        if (parts == null || parts.optString("selected").isBlank()) {
+            toast(getString(R.string.ankrimento_web_select_first))
+            return
+        }
+        lifecycleScope.launch {
+            runCatching {
+                withCol {
+                    Ankrimento.extractCloze(
+                        cardId,
+                        parts.optString("before"),
+                        parts.optString("selected"),
+                        parts.optString("after"),
+                    )
+                }
+            }.onFailure { error ->
+                Timber.w(error, "Making a cloze failed")
+                toast(error.message ?: error.javaClass.simpleName)
+            }
+        }
+    }
+
     protected fun toast(text: String) {
         if (text.isNotEmpty()) Toast.makeText(this, text, Toast.LENGTH_LONG).show()
     }
 
     companion object {
+        /**
+         * The selection and its sentence: the text of the paragraph around it, from the end of the sentence
+         * before to the end of its own; as JSON (before, selected, after). A sentence ends at ".", "!" or "?"
+         * followed by a capital letter or an opening quote ("et al. (2013)" and "e.g. 90%" do not end one),
+         * or at "。", "！", "？".
+         */
+        internal const val CLOZE_JS =
+            "(function () { var s = window.getSelection(); if (!s || !s.rangeCount || s.isCollapsed) return null;" +
+                " var r = s.getRangeAt(0); var node = r.startContainer; var block = node.nodeType === 1 ? node : node.parentElement;" +
+                " block = (block && block.closest('p,li,dd,dt,blockquote,h1,h2,h3,h4,h5,h6,td,div')) || document.body;" +
+                " var head = document.createRange(); head.selectNodeContents(block); head.setEnd(r.startContainer, r.startOffset);" +
+                " var start = head.toString().length; var selected = r.toString(); var text = block.textContent || '';" +
+                " var end = Math.min(text.length, start + selected.length);" +
+                " var ends = /([.!?]+[\"”’')\\]]*)\\s+(?=[\\p{Lu}\\p{Lo}\"“‘'«¿¡\\[])|[。！？]+/gu;" +
+                " var from = 0, to = text.length, m;" +
+                " while ((m = ends.exec(text))) { var close = m.index + (m[1] ? m[1].length : m[0].length);" +
+                " var next = m.index + m[0].length; if (next <= start) { from = next; } else if (close >= end) { to = close; break; } }" +
+                " return JSON.stringify({before: text.slice(from, start), selected: selected, after: text.slice(end, to)}); })()"
+
         const val EXTRA_CARD_ID = "card_id"
 
         /** Where to open: a PDF page (from 1) or an EPUB section (from 0). */

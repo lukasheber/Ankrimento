@@ -182,11 +182,18 @@ def draft(source_card_id: int) -> dict[str, Any]:
         "fields": [current.fields.get(index, "") for index in range(2)],
         "page": current.page,
         "note_types": note_types,
+        "field_names": _field_names(),
         "note_type": note_type,
         "note_type_configured": configured,
         "kind": kind,
         "priority": round(calculate_priority(source_card_id, cfg), 2),
     }
+
+
+def _field_names() -> dict[str, list[str]]:
+    """The first two field names of each note type: the sheet's labels for the fields it edits."""
+    col = runtime.current().col
+    return {model["name"]: [field["name"] for field in model["flds"][:2]] for model in col.models.all()}
 
 
 def _cloze_note_type() -> str | None:
@@ -274,6 +281,7 @@ def scratch_defaults() -> dict[str, Any]:
     return {
         "fields": ["", ""],
         "note_types": sorted(available_note_type_names()),
+        "field_names": _field_names(),
         "note_type": default_note_type_name(None),
         "decks": sorted(available_deck_names()),
         "deck": default_deck_name(None),

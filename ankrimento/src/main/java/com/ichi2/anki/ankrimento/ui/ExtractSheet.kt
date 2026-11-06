@@ -137,17 +137,9 @@ internal fun ExtractSheet(
                     value = text,
                     onValueChange = { changed -> texts = texts.toMutableList().also { it[index] = changed } },
                     label = {
-                        Text(
-                            stringResource(
-                                if (index ==
-                                    0
-                                ) {
-                                    R.string.ankrimento_extract_front
-                                } else {
-                                    R.string.ankrimento_extract_back
-                                },
-                            ),
-                        )
+                        // The chosen note type's own field names ("Text" for a cloze), Front/Back otherwise.
+                        val fallback = if (index == 0) R.string.ankrimento_extract_front else R.string.ankrimento_extract_back
+                        Text(draft.fieldNames[noteType]?.getOrNull(index) ?: stringResource(fallback))
                     },
                     minLines = if (index == 0) 3 else 2,
                     modifier = Modifier.fillMaxWidth(),

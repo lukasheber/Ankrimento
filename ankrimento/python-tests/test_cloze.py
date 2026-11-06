@@ -72,3 +72,11 @@ def test_without_a_cloze_note_type_ankis_own_is_added_never_image_occlusion(rt, 
     chosen = models.by_name(json.loads(facade.extract_draft(topic))["note_type"])
     assert chosen["type"] == MODEL_CLOZE
     assert not occlusion(chosen)
+
+
+def test_the_draft_names_each_note_types_fields_for_the_sheets_labels(rt, topic):
+    facade.extract_cloze(topic, "Spacing beats ", "cramming", ".")
+    draft = json.loads(facade.extract_draft(topic))
+    assert draft["field_names"][draft["note_type"]] == ["Text", "Back Extra"]
+    assert draft["field_names"]["Basic"] == ["Front", "Back"]
+    assert json.loads(facade.new_card_defaults())["field_names"]["Basic"] == ["Front", "Back"]

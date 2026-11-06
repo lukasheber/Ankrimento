@@ -1078,11 +1078,20 @@ object Ankrimento {
         return ExtractDraft(
             fields = List(fields.length()) { fields.getString(it) },
             noteTypes = List(noteTypes.length()) { noteTypes.getString(it) },
+            fieldNames = fieldNames(draft),
             noteType = draft.getString("note_type"),
             isTopic = draft.getString("kind") == "topic",
             priority = draft.getDouble("priority"),
             noteTypeConfigured = draft.optBoolean("note_type_configured"),
         )
+    }
+
+    private fun fieldNames(draft: JSONObject): Map<String, List<String>> {
+        val names = draft.optJSONObject("field_names") ?: return emptyMap()
+        return names.keys().asSequence().associateWith { type ->
+            val fields = names.getJSONArray(type)
+            List(fields.length()) { fields.getString(it) }
+        }
     }
 
     /** A card from scratch: upstream's note type and deck, the item/topic choice, priority 50. */
@@ -1095,6 +1104,7 @@ object Ankrimento {
         return ExtractDraft(
             fields = List(fields.length()) { fields.getString(it) },
             noteTypes = List(noteTypes.length()) { noteTypes.getString(it) },
+            fieldNames = fieldNames(draft),
             noteType = draft.getString("note_type"),
             isTopic = draft.getString("kind") == "topic",
             priority = draft.getDouble("priority"),
@@ -1641,6 +1651,8 @@ object Ankrimento {
         /** For a card from scratch: the decks to choose from, and the one chosen first. */
         val decks: List<String> = emptyList(),
         val deck: String = "",
+        /** Each note type's first two field names: the labels of the fields the sheet edits. */
+        val fieldNames: Map<String, List<String>> = emptyMap(),
     )
 
     /**
