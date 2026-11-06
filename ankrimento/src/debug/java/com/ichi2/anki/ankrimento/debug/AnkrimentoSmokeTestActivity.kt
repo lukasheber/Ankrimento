@@ -65,8 +65,13 @@ class AnkrimentoSmokeTestActivity : Activity() {
         }
         intent.getLongExtra(EXTRA_ITEM, 0L).takeIf { it > 0 }?.let { cardId ->
             scope.launch {
-                CollectionManager.withCol { Ankrimento.start(this@AnkrimentoSmokeTestActivity, this) }
-                ReaderActivity.intent(this@AnkrimentoSmokeTestActivity, "item", cardId, session = true)?.let(::startActivity)
+                // The reader a session opens: a document's or "text" for a topic, the item reader otherwise.
+                val reader =
+                    CollectionManager.withCol {
+                        Ankrimento.start(this@AnkrimentoSmokeTestActivity, this)
+                        Ankrimento.cardReader(cardId).ifEmpty { "item" }
+                    }
+                ReaderActivity.intent(this@AnkrimentoSmokeTestActivity, reader, cardId, session = true)?.let(::startActivity)
             }
             return
         }

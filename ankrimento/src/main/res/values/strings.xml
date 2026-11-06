@@ -163,6 +163,14 @@
     <string name="ankrimento_done">Done</string>
     <string name="ankrimento_postpone">Postpone</string>
     <string name="ankrimento_revisit">Revisit</string>
+    <string name="ankrimento_topic_next">Next topic</string>
+    <string name="ankrimento_topic_sooner">Sooner</string>
+    <string name="ankrimento_topic_later">Later</string>
+    <string name="ankrimento_topic_returns">Read again in %s</string>
+    <string name="ankrimento_topic_menu">Topic</string>
+    <string name="ankrimento_done_hint">Stop reviewing it; its extracts keep going</string>
+    <string name="ankrimento_postpone_hint">Not now: it comes back later</string>
+    <string name="ankrimento_revisit_hint">Put it aside until then</string>
     <plurals name="ankrimento_months">
         <item quantity="one">In %d month</item>
         <item quantity="other">In %d months</item>

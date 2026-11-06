@@ -168,6 +168,14 @@
     <string name="ankrimento_done">Concluído</string>
     <string name="ankrimento_postpone">Adiar</string>
     <string name="ankrimento_revisit">Rever</string>
+    <string name="ankrimento_topic_next">Próximo tópico</string>
+    <string name="ankrimento_topic_sooner">Antes</string>
+    <string name="ankrimento_topic_later">Depois</string>
+    <string name="ankrimento_topic_returns">Ler de novo em %s</string>
+    <string name="ankrimento_topic_menu">Tópico</string>
+    <string name="ankrimento_done_hint">Para de revisá-lo; os extratos continuam</string>
+    <string name="ankrimento_postpone_hint">Agora não: ele volta mais tarde</string>
+    <string name="ankrimento_revisit_hint">Deixá-lo de lado até lá</string>
     <plurals name="ankrimento_months">
         <item quantity="one">Em %d mês</item>
         <item quantity="many">Em %d meses</item>

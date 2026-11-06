@@ -539,9 +539,16 @@ abstract class ReaderActivity : ComponentActivity() {
         val topicActions =
             if (topic) {
                 listOfNotNull(
-                    ReaderTool(getString(R.string.ankrimento_done), IncrementoIcons.Check) { topicAction { Ankrimento.topicDone(cardId) } }
+                    ReaderTool(
+                        getString(R.string.ankrimento_done),
+                        IncrementoIcons.Check,
+                        getString(R.string.ankrimento_done_hint),
+                    ) { topicAction { Ankrimento.topicDone(cardId) } }
                         .takeIf { "done" in reviewButtons },
-                    ReaderTool(getString(R.string.ankrimento_postpone)) { topicAction { Ankrimento.topicPostpone(cardId) } }
+                    ReaderTool(
+                        getString(R.string.ankrimento_postpone),
+                        description = getString(R.string.ankrimento_postpone_hint),
+                    ) { topicAction { Ankrimento.topicPostpone(cardId) } }
                         .takeIf { "postpone" in reviewButtons },
                 )
             } else {
@@ -563,6 +570,7 @@ abstract class ReaderActivity : ComponentActivity() {
             revisitOptions,
             onBack = if (canGoBack) ::goBack else null,
             reveal = revealAction,
+            topic = topic,
         ) { rating ->
             continueAfter(rating = rating) {
                 LearnLoop

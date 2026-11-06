@@ -113,8 +113,8 @@ class EpubReaderActivity : ReaderActivity() {
         preferences = ReadingPreferences.load(this)
         tools =
             listOf(
-                ReaderTool(getString(R.string.ankrimento_reading_settings), IncrementoIcons.TextFormat, ::showReadingSettings),
-                ReaderTool(getString(R.string.ankrimento_contents), IncrementoIcons.Contents, ::showContents),
+                ReaderTool(getString(R.string.ankrimento_reading_settings), IncrementoIcons.TextFormat, onClick = ::showReadingSettings),
+                ReaderTool(getString(R.string.ankrimento_contents), IncrementoIcons.Contents, onClick = ::showContents),
                 ReaderTool(getString(R.string.ankrimento_epub_find), IncrementoIcons.Search, onClick = ::showFind),
                 ReaderTool(getString(R.string.ankrimento_marks_highlights), IncrementoIcons.Bookmark) { changeHighlights { "" } },
                 ReaderTool(getString(R.string.ankrimento_epub_read_here)) {

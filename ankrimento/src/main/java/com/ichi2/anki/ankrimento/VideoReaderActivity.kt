@@ -107,8 +107,8 @@ class VideoReaderActivity : ReaderActivity() {
     private fun showTools() {
         tools =
             listOf(
-                ReaderTool(getString(R.string.ankrimento_video_extract), IncrementoIcons.Add, ::extractHere),
-                ReaderTool(getString(R.string.ankrimento_marks_bookmarks), IncrementoIcons.Bookmark, ::showBookmarks),
+                ReaderTool(getString(R.string.ankrimento_video_extract), IncrementoIcons.Add, onClick = ::extractHere),
+                ReaderTool(getString(R.string.ankrimento_marks_bookmarks), IncrementoIcons.Bookmark, onClick = ::showBookmarks),
                 ReaderTool(getString(R.string.ankrimento_video_back_10)) { seekBy?.invoke(-10.0) },
                 ReaderTool(getString(R.string.ankrimento_video_forward_10)) { seekBy?.invoke(10.0) },
                 ReaderTool(getString(R.string.ankrimento_video_speed, speedLabel(speed))) {

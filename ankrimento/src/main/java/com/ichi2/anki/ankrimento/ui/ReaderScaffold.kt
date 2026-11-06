@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,6 +69,8 @@ import kotlin.math.roundToInt
 class ReaderTool(
     val label: String,
     val icon: ImageVector? = null,
+    /** What it does, in a line, where a menu has room for it. */
+    val description: String? = null,
     val onClick: () -> Unit,
 )
 
@@ -85,6 +88,8 @@ internal class ReviewBarState(
     val onBack: (() -> Unit)?,
     /** An item's Show answer, offered instead of the answers until it is used. */
     val reveal: (() -> Unit)? = null,
+    /** A topic's More / Same / Less, shown as SuperMemo's Next with Sooner and Later beside it. */
+    val topic: Boolean = false,
     val onAnswer: (Rating) -> Unit,
 )
 
@@ -285,8 +290,123 @@ private fun OverflowMenu(entries: List<ReaderTool>) {
 private fun ReviewBar(state: ReviewBarState) {
     Surface(tonalElevation = 3.dp, shadowElevation = 3.dp) {
         Column(Modifier.navigationBarsPadding()) {
-            if (state.topicActions.isNotEmpty() || state.revisitOptions.isNotEmpty()) TopicActionRow(state)
-            AnswerRow(state)
+            if (state.topic && state.buttons.size == 3) {
+                TopicBar(state)
+            } else {
+                if (state.topicActions.isNotEmpty() || state.revisitOptions.isNotEmpty()) TopicActionRow(state)
+                AnswerRow(state)
+            }
+        }
+    }
+}
+
+/**
+ * A topic read in a session, as SuperMemo's Next: one large button reads on and keeps the topic's
+ * pace (desktop's Same); Sooner and Later beside it change how often it returns (More and Less).
+ * All three schedule it, so the line above says when it comes back. Done, Postpone and Revisit,
+ * each with what it does, are in the Topic menu.
+ */
+@Composable
+private fun TopicBar(state: ReviewBarState) {
+    val (sooner, next, later) = state.buttons.sortedBy { it.rating.number }
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(start = 56.dp, end = 4.dp, top = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            if (next.due.isNullOrEmpty()) "" else stringResource(R.string.ankrimento_topic_returns, next.due),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        if (state.topicActions.isNotEmpty() || state.revisitOptions.isNotEmpty()) TopicMenu(state)
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = { state.onBack?.invoke() }, enabled = state.onBack != null) {
+            Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_previous_element))
+        }
+        val side = Modifier.heightIn(min = 56.dp).padding(horizontal = 4.dp)
+        FilledTonalButton(onClick = { state.onAnswer(sooner.rating) }, modifier = side.weight(1f)) {
+            PaceLabel(stringResource(R.string.ankrimento_topic_sooner), sooner.due)
+        }
+        Button(onClick = { state.onAnswer(next.rating) }, modifier = side.weight(1.6f)) {
+            Text(stringResource(R.string.ankrimento_topic_next), fontWeight = FontWeight.Medium, maxLines = 1)
+        }
+        FilledTonalButton(onClick = { state.onAnswer(later.rating) }, modifier = side.weight(1f)) {
+            PaceLabel(stringResource(R.string.ankrimento_topic_later), later.due)
+        }
+    }
+}
+
+@Composable
+private fun PaceLabel(
+    label: String,
+    due: String?,
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(label, fontWeight = FontWeight.Medium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        if (!due.isNullOrEmpty()) Text(due, style = MaterialTheme.typography.labelSmall, maxLines = 1)
+    }
+}
+
+/** Done, Postpone and Revisit in…, each with a line on what it does. */
+@Composable
+private fun TopicMenu(state: ReviewBarState) {
+    var expanded by remember { mutableStateOf(false) }
+    Box {
+        TextButton(onClick = { expanded = true }) {
+            Text(stringResource(R.string.ankrimento_topic_menu))
+            Icon(IncrementoIcons.ExpandMore, contentDescription = null, modifier = Modifier.size(18.dp))
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            // Rows without an icon keep its room, so the labels line up.
+            val iconRoom = state.topicActions.any { it.icon != null }
+            state.topicActions.forEach { action ->
+                DropdownMenuItem(
+                    text = { MenuLine(action.label, action.description) },
+                    leadingIcon =
+                        action.icon?.let { icon -> { Icon(icon, contentDescription = null) } }
+                            ?: if (iconRoom) ({ Spacer(Modifier.size(24.dp)) }) else null,
+                    onClick = {
+                        expanded = false
+                        action.onClick()
+                    },
+                )
+            }
+            if (state.revisitOptions.isNotEmpty()) {
+                if (state.topicActions.isNotEmpty()) HorizontalDivider()
+                MenuLine(
+                    stringResource(R.string.ankrimento_revisit),
+                    stringResource(R.string.ankrimento_revisit_hint),
+                    Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                )
+                state.revisitOptions.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option.label) },
+                        onClick = {
+                            expanded = false
+                            option.onClick()
+                        },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MenuLine(
+    label: String,
+    description: String?,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier) {
+        Text(label, style = MaterialTheme.typography.bodyLarge)
+        if (description != null) {
+            Text(description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

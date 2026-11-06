@@ -157,7 +157,7 @@ class PdfReaderActivity : ReaderActivity() {
         webView.evaluateJavascript("document.body && document.body.classList.toggle('$COMPACT_CLASS', ${!show});", null)
         val finding =
             listOf(
-                ReaderTool(getString(R.string.ankrimento_pdf_view), IncrementoIcons.Tune, ::showView),
+                ReaderTool(getString(R.string.ankrimento_pdf_view), IncrementoIcons.Tune, onClick = ::showView),
                 tool(
                     R.string.ankrimento_contents,
                     IncrementoIcons.Contents,

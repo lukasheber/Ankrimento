@@ -158,6 +158,14 @@
     <string name="ankrimento_done">完成</string>
     <string name="ankrimento_postpone">推迟</string>
     <string name="ankrimento_revisit">重新学习</string>
+    <string name="ankrimento_topic_next">下一个主题</string>
+    <string name="ankrimento_topic_sooner">提前</string>
+    <string name="ankrimento_topic_later">推后</string>
+    <string name="ankrimento_topic_returns">%s后再读</string>
+    <string name="ankrimento_topic_menu">主题</string>
+    <string name="ankrimento_done_hint">不再复习它；它的摘录照常复习</string>
+    <string name="ankrimento_postpone_hint">现在不读：稍后再出现</string>
+    <string name="ankrimento_revisit_hint">暂时搁置，到时再读</string>
     <plurals name="ankrimento_months">
         <item quantity="other">%d 个月后</item>
     </plurals>

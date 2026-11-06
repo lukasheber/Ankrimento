@@ -168,6 +168,14 @@
     <string name="ankrimento_done">Gotovo</string>
     <string name="ankrimento_postpone">Odgodi</string>
     <string name="ankrimento_revisit">Ponovno pregledaj</string>
+    <string name="ankrimento_topic_next">Sljedeća tema</string>
+    <string name="ankrimento_topic_sooner">Ranije</string>
+    <string name="ankrimento_topic_later">Kasnije</string>
+    <string name="ankrimento_topic_returns">Ponovno čitanje za %s</string>
+    <string name="ankrimento_topic_menu">Tema</string>
+    <string name="ankrimento_done_hint">Prestani je ponavljati; izvadci se nastavljaju</string>
+    <string name="ankrimento_postpone_hint">Ne sada: vraća se kasnije</string>
+    <string name="ankrimento_revisit_hint">Ostavi je po strani do tada</string>
     <plurals name="ankrimento_months">
         <item quantity="one">Za %d mjesec</item>
         <item quantity="few">Za %d mjeseca</item>

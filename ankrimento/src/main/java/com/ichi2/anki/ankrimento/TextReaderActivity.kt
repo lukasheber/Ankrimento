@@ -67,11 +67,11 @@ class TextReaderActivity : ReaderActivity() {
         toggleBarsOnTap(webView)
         tools =
             listOf(
-                ReaderTool(getString(R.string.ankrimento_reading_settings), IncrementoIcons.TextFormat, ::showReadingSettings),
+                ReaderTool(getString(R.string.ankrimento_reading_settings), IncrementoIcons.TextFormat, onClick = ::showReadingSettings),
                 ReaderTool(getString(R.string.ankrimento_extract_selection)) {
                     webView.evaluateJavascript(SELECTION_JS) { extract(decodeJsString(it)) }
                 },
-                ReaderTool(getString(R.string.ankrimento_edit_topic), IncrementoIcons.Edit, ::editTopic),
+                ReaderTool(getString(R.string.ankrimento_edit_topic), IncrementoIcons.Edit, onClick = ::editTopic),
             )
         lifecycleScope.launch { load() }
     }
