@@ -27,7 +27,7 @@ internal object DocumentImport {
         val name = displayName(context, uri) ?: fallbackName
         val staged = File(context.cacheDir, "ankrimento-import").apply { mkdirs() }.resolve(File(name).name)
         withContext(Dispatchers.IO) {
-            context.contentResolver.openInputStream(uri).use { input ->
+            context.contentResolver.openInputStreamSafely(uri).use { input ->
                 checkNotNull(input) { "cannot read $uri" }
                 staged.outputStream().use { input.copyTo(it) }
             }

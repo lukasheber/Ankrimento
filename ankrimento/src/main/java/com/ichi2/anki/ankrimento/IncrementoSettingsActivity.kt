@@ -229,7 +229,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
         lifecycleScope.launch {
             runCatching {
                 withContext(Dispatchers.IO) {
-                    val input = contentResolver.openInputStream(source) ?: error("Cannot read the chosen file")
+                    val input = contentResolver.openInputStreamSafely(source) ?: error("Cannot read the chosen file")
                     input.use { stream -> restoreFile.outputStream().use { stream.copyTo(it) } }
                 }
                 withCol { Ankrimento.stageRestore(restoreFile) }

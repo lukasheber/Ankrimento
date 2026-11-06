@@ -30,7 +30,7 @@ class SafStore(
 
     fun readText(rel: String): String? =
         find(rel)?.let { uri ->
-            resolver.openInputStream(uri)?.use {
+            resolver.openInputStreamSafely(uri)?.use {
                 it.readBytes().toString(Charsets.UTF_8)
             }
         }
@@ -51,7 +51,7 @@ class SafStore(
         localPath: String,
     ) {
         val uri = find(rel) ?: throw FileNotFoundException(rel)
-        val input = resolver.openInputStream(uri) ?: throw FileNotFoundException(rel)
+        val input = resolver.openInputStreamSafely(uri) ?: throw FileNotFoundException(rel)
         input.use { File(localPath).outputStream().use { output -> it.copyTo(output) } }
     }
 
