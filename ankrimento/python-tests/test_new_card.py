@@ -70,3 +70,16 @@ def test_image_occlusion_is_not_offered_for_text_cards(rt):
     names = {model["name"] for model in rt.col.models.all() if occlusion(model)}
     assert names
     assert not set(_json.loads(facade.new_card_defaults())["note_types"]) & names
+
+
+def test_audio_and_local_file_topics_are_not_offered_for_cards_either(rt):
+    # Desktop opens these note types as an audio player and an outside file: a card of one is broken.
+    import json as _json
+
+    from incremento.backend.audio_manager import ensure_audio_note_type
+    from incremento.backend.local_file_manager import ensure_local_file_note_type
+
+    ensure_audio_note_type(rt.col)
+    ensure_local_file_note_type(rt.col)
+    offered = set(_json.loads(facade.new_card_defaults())["note_types"])
+    assert not offered & {"Incremento Audio", "Incremento Local File"}

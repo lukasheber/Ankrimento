@@ -159,21 +159,41 @@ def calculate_priority(source_card_id: int, cfg: dict[str, Any]) -> float:
     return max(0.0, min(100.0, source * multiplier))
 
 
-# Incremento's own document note types: desktop's readers open their cards as documents, so a card
-# made with one opens as a broken document. Desktop lists them in its Add Card dock; the phone does not.
-DOCUMENT_NOTE_TYPES = frozenset(
-    {"Incremento PDF", "Incremento EPUB", "Incremento Web", "Incremento Video", "Incremento Writing"}
-)
+def _document_note_types() -> frozenset[str]:
+    """Incremento's own document note types, named by desktop's specs (audio, PDF, EPUB, video, web,
+    writing, local file): desktop's readers open their cards as documents, so a card made with one opens
+    as a broken document. Desktop lists them in its Add Card dock; the phone does not."""
+    from incremento.backend import (
+        audio_manager,
+        epub_manager,
+        local_file_manager,
+        pdf_manager,
+        video_manager,
+        web_manager,
+        writing_manager,
+    )
+
+    specs = (
+        audio_manager.audio_note_type_spec(),
+        pdf_manager.pdf_note_type_spec(),
+        epub_manager.epub_note_type_spec(),
+        video_manager.video_note_type_spec(),
+        web_manager.web_note_type_spec(),
+        writing_manager.writing_note_type_spec(),
+        local_file_manager.local_file_note_type_spec(),
+    )
+    return frozenset(spec.name for spec in specs)
 
 
 def card_note_types(names) -> list[str]:
     """The note types a card can be made with, sorted: all but Incremento's document ones, and image
     occlusion (its Occlusion field holds shapes drawn in AnkiDroid's occlusion editor, not text)."""
+    documents = _document_note_types()
     models = runtime.current().col.models
     occlusion = {
         str(model["name"]) for model in models.all() if "Occlusion" in [field["name"] for field in model["flds"]]
     }
-    return sorted(str(name) for name in names if str(name) not in DOCUMENT_NOTE_TYPES and str(name) not in occlusion)
+    return sorted(str(name) for name in names if str(name) not in documents and str(name) not in occlusion)
 
 
 def draft(source_card_id: int) -> dict[str, Any]:
