@@ -59,6 +59,10 @@ configure<LibraryExtension> {
             abiFilters += listOf("arm64-v8a", "x86_64")
         }
     }
+    // As the app: java.time and java.nio below API 26 come from desugaring (lint checks against it).
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+    }
 }
 
 val ankiWheel = layout.buildDirectory.file("ankrimento/anki-$ankiPythonVersion.whl")
@@ -188,6 +192,7 @@ tasks.configureEach {
 }
 
 dependencies {
+    coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
     implementation(project(":anki-common"))
     implementation(project(":common"))
     implementation(project(":libanki"))

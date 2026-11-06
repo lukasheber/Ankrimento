@@ -329,13 +329,15 @@ private fun TopicBar(state: ReviewBarState) {
             Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_previous_element))
         }
         val side = Modifier.heightIn(min = 56.dp).padding(horizontal = 4.dp)
-        FilledTonalButton(onClick = { state.onAnswer(sooner.rating) }, modifier = side.weight(1f)) {
+        // Narrow phones and longer translations: little side padding, and the label may take two lines.
+        val padding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
+        FilledTonalButton(onClick = { state.onAnswer(sooner.rating) }, modifier = side.weight(1f), contentPadding = padding) {
             PaceLabel(stringResource(R.string.ankrimento_topic_sooner), sooner.due)
         }
-        Button(onClick = { state.onAnswer(next.rating) }, modifier = side.weight(1.6f)) {
-            Text(stringResource(R.string.ankrimento_topic_next), fontWeight = FontWeight.Medium, maxLines = 1)
+        Button(onClick = { state.onAnswer(next.rating) }, modifier = side.weight(1.6f), contentPadding = padding) {
+            Text(stringResource(R.string.ankrimento_topic_next), fontWeight = FontWeight.Medium, maxLines = 2, textAlign = TextAlign.Center)
         }
-        FilledTonalButton(onClick = { state.onAnswer(later.rating) }, modifier = side.weight(1f)) {
+        FilledTonalButton(onClick = { state.onAnswer(later.rating) }, modifier = side.weight(1f), contentPadding = padding) {
             PaceLabel(stringResource(R.string.ankrimento_topic_later), later.due)
         }
     }
