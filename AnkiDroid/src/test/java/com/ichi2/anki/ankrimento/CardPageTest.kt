@@ -25,24 +25,19 @@ class CardPageTest {
     }
 
     @Test
-    fun `media answers a range request with that part, so a player can seek`() {
+    fun `media is answered whole, saying ranges may be asked for`() {
+        // WebView applies a Range itself, skipping into the stream it gets: a stream already at the range
+        // was skipped twice, and seeking an audio card past its middle failed.
         val media = createTempDirectory("media").toFile()
         File(media, "clip.mp3").writeBytes("0123456789".toByteArray())
 
-        val part = CardPage.mediaFile(media, "clip.mp3", range = "bytes=2-5")!!
-        assertThat(part.statusCode, equalTo(206))
-        assertThat(part.responseHeaders["Content-Range"], equalTo("bytes 2-5/10"))
-        assertThat(part.data.readBytes().decodeToString(), equalTo("2345"))
-
-        val rest = CardPage.mediaFile(media, "clip.mp3", range = "bytes=7-")!!
-        assertThat(rest.data.readBytes().decodeToString(), equalTo("789"))
-
-        // Without a range, the whole file, saying ranges may be asked for.
         val whole = CardPage.mediaFile(media, "clip.mp3")!!
+        assertThat(whole.statusCode == 206, equalTo(false)) // never a part: WebView makes the 206
         assertThat(whole.responseHeaders["Accept-Ranges"], equalTo("bytes"))
+        // WebView sets the length for the range it serves; another one confused the player.
+        assertThat(whole.responseHeaders.containsKey("Content-Length"), equalTo(false))
         assertThat(whole.data.readBytes().decodeToString(), equalTo("0123456789"))
 
-        assertThat(CardPage.mediaFile(media, "clip.mp3", range = "bytes=20-")!!.statusCode, equalTo(416))
         assertThat(CardPage.mediaFile(media, "../outside.mp3"), equalTo(null))
     }
 
