@@ -204,7 +204,7 @@ Mobile principles that guide every item:
 | 🟡 | Translations | Android screens in Brazilian Portuguese, Croatian and Simplified Chinese (Croatian and Chinese with desktop's own terms from upstream's catalogs, AnkiDroid's for cards and grades); upstream's messages follow the app's language at startup as desktop's do (Incremento's language setting, or the app's when auto). Upstream has no Portuguese, so its messages stay English in pt-BR. Machine-made: a native speaker should review each language |
 | ⬜ | Getting Started guide (first run) | |
 | ➖ | Dependency installer [13] | Desktop tools (FFmpeg, OCR) |
-| 🟡 | Startup time: Python cold start about 20 s on the first launch, about 3 s after warm-up | Warm-up runs on app start |
+| 🟡 | Startup time | Measured on the tablet (Nov 2026): Python warms up in 1.6–1.8 s on app start and Incremento is ready 2–4 s after launch, while AnkiDroid's own deck list takes about 7 s to show; nothing waits on it at launch. The very first launch after a fresh install also unpacks Python (about 20 s, last measured earlier); not re-measured, since that needs the app's data cleared |
 | ✅ | Tests: Python tests against the real backend, reviewer Robolectric tests, on-device smoke test, UI tests of the learning loop | The session bar under Robolectric on a phone-sized screen: a topic's Next / Sooner / Later and their ratings, its Topic menu, an item revealed then graded, and the topic bar on a narrow phone in Portuguese (`./gradlew :ankrimento:testDebugUnitTest`) |
 | 🟡 | Tablet layout: works full screen | Two-pane library plus reader to consider |
 
