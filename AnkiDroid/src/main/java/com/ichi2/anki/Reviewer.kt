@@ -1192,51 +1192,8 @@ open class Reviewer :
         callback: ActionMode.Callback,
         type: Int,
     ): ActionMode.Callback {
-        val cardId = currentCard?.id
-        if (type != ActionMode.TYPE_FLOATING || cardId == null || !Ankrimento.isStarted) return callback
-        return object : ActionMode.Callback2() {
-            override fun onCreateActionMode(
-                mode: ActionMode,
-                menu: Menu,
-            ): Boolean {
-                val created = callback.onCreateActionMode(mode, menu)
-                menu.add(Menu.NONE, EXTRACT_SELECTION_ID, 0, com.ichi2.anki.ankrimento.R.string.ankrimento_epub_extract)
-                return created
-            }
-
-            override fun onPrepareActionMode(
-                mode: ActionMode,
-                menu: Menu,
-            ) = callback.onPrepareActionMode(mode, menu)
-
-            override fun onActionItemClicked(
-                mode: ActionMode,
-                item: MenuItem,
-            ): Boolean {
-                if (item.itemId != EXTRACT_SELECTION_ID) return callback.onActionItemClicked(mode, item)
-                extractSelection(cardId)
-                mode.finish()
-                return true
-            }
-
-            override fun onDestroyActionMode(mode: ActionMode) = callback.onDestroyActionMode(mode)
-
-            override fun onGetContentRect(
-                mode: ActionMode,
-                view: View,
-                outRect: android.graphics.Rect,
-            ) {
-                if (callback is ActionMode.Callback2) {
-                    callback.onGetContentRect(
-                        mode,
-                        view,
-                        outRect,
-                    )
-                } else {
-                    super.onGetContentRect(mode, view, outRect)
-                }
-            }
-        }
+        val cardId = currentCard?.id ?: return callback
+        return IncrementoSelection.wrap(callback, type) { extractSelection(cardId) }
     }
 
     /** An Incremento link in the card ([INCREMENTO_PYCMD_JS]) opens its source in a reader. */
@@ -1248,7 +1205,7 @@ open class Reviewer :
 
     /** The selected text becomes the extract's front, then the extract sheet opens. */
     private fun extractSelection(cardId: CardId) {
-        webView?.evaluateJavascript("String(window.getSelection ? window.getSelection() : '')") { result ->
+        webView?.evaluateJavascript(IncrementoSelection.SELECTION_JS) { result ->
             val text = kotlin.runCatching { org.json.JSONArray("[$result]").getString(0) }.getOrDefault("")
             launchCatchingTask {
                 if (withCol { Ankrimento.webExtract(cardId, text) }) {
@@ -2238,7 +2195,6 @@ open class Reviewer :
         private const val INCREMENTO_PYCMD_JS =
             "window.pycmd = function (message) { window.location.href = '$INCREMENTO_PYCMD_SCHEME'" +
                 " + encodeURIComponent(String(message)); return false; };"
-        private const val EXTRACT_SELECTION_ID = 0x416b72 // "Akr": an id no other selection item uses
 
         /**
          * Bundle key for the deck id to review.

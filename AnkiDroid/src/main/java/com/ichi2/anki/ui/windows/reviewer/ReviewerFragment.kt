@@ -39,11 +39,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.CollectionManager
+import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.CommonString
 import com.ichi2.anki.DispatchKeyEventListener
 import com.ichi2.anki.Flag
+import com.ichi2.anki.IncrementoSelection
 import com.ichi2.anki.R
 import com.ichi2.anki.android.AnkiShakeDetector
+import com.ichi2.anki.ankrimento.Ankrimento
+import com.ichi2.anki.ankrimento.ExtractActivity
 import com.ichi2.anki.ankrimento.ReaderActivity
 import com.ichi2.anki.cardviewer.Gesture
 import com.ichi2.anki.common.annotations.NeedsTest
@@ -174,6 +178,26 @@ class ReviewerFragment :
         tagsDialogFactory = TagsDialogFactory(this).attachToActivity<TagsDialogFactory>(requireActivity())
     }
 
+    /** Desktop's extract from the reviewer card, as on the classic study screen: Extract on the selected text's toolbar. */
+    private fun setupIncrementoExtract() {
+        webViewLayout.selectionActionModeCallback = { callback, type ->
+            IncrementoSelection.wrap(callback, type) { extractSelection() }
+        }
+    }
+
+    /** The selected text becomes the extract's front, then the extract sheet opens. */
+    private fun extractSelection() {
+        webViewLayout.evaluateJavascript(IncrementoSelection.SELECTION_JS) { result ->
+            val text = runCatching { org.json.JSONArray("[$result]").getString(0) }.getOrDefault("")
+            lifecycleScope.launch {
+                val cardId = viewModel.getCardId()
+                if (withCol { Ankrimento.webExtract(cardId, text) }) {
+                    startActivity(ExtractActivity.intent(requireContext(), cardId))
+                }
+            }
+        }
+    }
+
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?,
@@ -198,6 +222,8 @@ class ReviewerFragment :
         setupActions()
         setupWhiteboard()
         setupTimebox()
+
+        setupIncrementoExtract()
 
         viewModel.incrementoReaderFlow.collectIn(lifecycleScope) { (cardId, reader) ->
             ReaderActivity

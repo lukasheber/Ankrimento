@@ -5,6 +5,8 @@ package com.ichi2.anki.workarounds
 import android.content.Context
 import android.print.PrintDocumentAdapter
 import android.util.AttributeSet
+import android.view.ActionMode
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.ValueCallback
@@ -60,6 +62,18 @@ open class SafeWebViewLayout :
     }
 
     protected open fun createWebView() = WebView(context)
+
+    /**
+     * Wraps the callback of the text selection's toolbar started by the inner [WebView], to add an app's
+     * own items to it; `null` leaves the toolbar as it is. Applies to every WebView this layout creates.
+     */
+    var selectionActionModeCallback: ((ActionMode.Callback, Int) -> ActionMode.Callback)? = null
+
+    override fun startActionModeForChild(
+        originalView: View,
+        callback: ActionMode.Callback,
+        type: Int,
+    ): ActionMode? = super.startActionModeForChild(originalView, selectionActionModeCallback?.invoke(callback, type) ?: callback, type)
 
     init {
         addView(uncheckedWebView, webViewLayoutParams)
