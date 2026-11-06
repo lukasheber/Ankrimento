@@ -54,3 +54,23 @@ def test_image_occlusion_shows_its_header(rt, add):
 
 def test_plain_titles_are_unchanged(rt, add):
     assert facade.card_title(add("Basic", Front="Capital of France?", Back="Paris")) == "Capital of France?"
+
+
+
+def test_the_knowledge_tree_shows_titles_as_the_readers_do(rt, tmp_path):
+    import json
+
+    path = tmp_path / "Tree titles.md"
+    path.write_text("Spacing beats cramming.", encoding="utf8")
+    topic = facade.import_markdown(str(path), "Tree titles")
+    facade.extract_cloze(topic, "Spacing beats ", "cramming", ".")
+    draft = json.loads(facade.extract_draft(topic))
+    made = json.loads(facade.create_extract(topic, json.dumps(draft["fields"]), draft["note_type"], "item", 40.0))
+    try:
+        item = rt.col.get_note(made["note_id"]).card_ids()[0]
+        rows = {row["card_id"]: row for row in json.loads(facade.knowledge_tree())}
+        assert rows[item]["title"] == "Spacing beats [...]."
+        hits = [hit for hit in json.loads(facade.tree_search("cramming")) if hit["card_id"] == item]
+        assert hits and hits[0]["title"] == "Spacing beats [...]."
+    finally:
+        rt.col.remove_notes([made["note_id"], rt.col.get_card(topic).nid])

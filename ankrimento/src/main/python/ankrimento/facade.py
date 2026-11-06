@@ -154,7 +154,9 @@ def knowledge_tree() -> str:
 
     keys = ("card_id", "parent_card_id", "title", "node_kind", "priority")
     return _dumps(
-        [{**{key: row.get(key) for key in keys}, "depth": depth(int(row["card_id"]))} for row in snapshot.ordered_rows]
+        readable_titles(
+            [{**{key: row.get(key) for key in keys}, "depth": depth(int(row["card_id"]))} for row in snapshot.ordered_rows]
+        )
     )
 
 
@@ -162,7 +164,7 @@ def tree_search(query: str) -> str:
     """Knowledge tree nodes matching ``query`` in their title or note text, in tree order."""
     from ankrimento import tree
 
-    return _dumps(tree.search(query))
+    return _dumps(readable_titles(tree.search(query)))
 
 
 def tree_postpone_plan(root_card_id: int) -> str:
@@ -743,12 +745,20 @@ def library() -> str:
 def card_title(card_id: int) -> str:
     """The title the knowledge tree shows for this card (its first field, as text), made readable for
     the readers' top bar: a cloze hides its own answer, sound tags are left out, image occlusion shows its header."""
-    import re
-
     from incremento.backend.knowledge_tree import _card_title
 
     card = runtime.current().col.get_card(int(card_id))
-    title = str(_card_title(card))
+    return _readable_title(card, str(_card_title(card)))
+
+
+def _has_markup(title: str) -> bool:
+    return "{{c" in title or "[sound:" in title or "image-occlusion:" in title
+
+
+def _readable_title(card, title: str) -> str:
+    """``title`` without card markup (see ``card_title``)."""
+    import re
+
     if "image-occlusion:" in title:
         note = card.note()
         header = re.sub(r"<[^>]+>", "", note["Header"]).strip() if "Header" in note else ""
@@ -764,6 +774,16 @@ def card_title(card_id: int) -> str:
     readable = re.sub(r"\{\{c(\d+)::(.*?)(?:::([^}]*))?\}\}", cloze, title, flags=re.S)
     readable = re.sub(r"\[sound:[^\]]*\]", "", readable)
     return " ".join(readable.split()) or title
+
+
+def readable_titles(rows: list[dict]) -> list[dict]:
+    """``rows`` (with ``card_id`` and ``title``) with their titles readable; cards are loaded only for markup."""
+    col = runtime.current().col
+    for row in rows:
+        title = str(row.get("title") or "")
+        if _has_markup(title):
+            row["title"] = _readable_title(col.get_card(int(row["card_id"])), title)
+    return rows
 
 
 def video_extract(card_id: int, seconds: float) -> None:
