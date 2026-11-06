@@ -230,6 +230,25 @@
     <!-- Settings screen -->
     <string name="ankrimento_settings">Configurações do Incremento</string>
     <string name="ankrimento_settings_session">Sessão</string>
+    <string name="ankrimento_settings_session_summary">%1$d elementos · %2$d%% tópicos</string>
+    <string name="ankrimento_settings_topics_items">Tópicos e itens</string>
+    <string name="ankrimento_settings_topics_items_summary">Botões de resposta, como os tópicos voltam, sanguessugas</string>
+    <string name="ankrimento_settings_extraction_summary">O que são os novos extratos, destaques, etiquetas, ordem de prioridade</string>
+    <string name="ankrimento_settings_reading_writing">Leitura e escrita</string>
+    <string name="ankrimento_settings_reading_writing_summary">Cor e detalhes da página do PDF, cópias de segurança da escrita e contagem de palavras</string>
+    <string name="ankrimento_settings_backup_restore">Backup e restauração</string>
+    <string name="ankrimento_settings_backup_auto_on">Backups automáticos ligados</string>
+    <string name="ankrimento_settings_backup_auto_off">Backups automáticos desligados</string>
+    <string name="ankrimento_settings_device_summary">Perfil %1$s · %2$s</string>
+    <string name="ankrimento_settings_no_sync_folder">sem pasta de sincronização</string>
+    <string name="ankrimento_settings_maintenance">Manutenção</string>
+    <string name="ankrimento_settings_size_mix">Tamanho e mistura</string>
+    <string name="ankrimento_settings_which_cards">Quais cartões</string>
+    <string name="ankrimento_settings_answer_buttons">Botões de resposta</string>
+    <string name="ankrimento_settings_topic_pace">Como os tópicos voltam</string>
+    <string name="ankrimento_settings_postpone_leech">Adiamento e sanguessugas</string>
+    <string name="ankrimento_settings_sooner_help">Antes encurta o intervalo do tópico, e seu ritmo, nesta proporção.</string>
+    <string name="ankrimento_settings_later_help">Depois alonga o intervalo do tópico, e seu ritmo, nesta proporção.</string>
     <string name="ankrimento_settings_cards">Cartões por sessão</string>
     <string name="ankrimento_settings_topics">Tópicos (o resto são itens)</string>
     <string name="ankrimento_settings_documents">Documentos entre os tópicos</string>
@@ -240,8 +259,8 @@
     <string name="ankrimento_settings_auto_refill">Manter o baralho da sessão abastecido</string>
     <string name="ankrimento_settings_review">Revisão</string>
     <string name="ankrimento_settings_fail_pass">Errei / Acertei nos itens</string>
-    <string name="ankrimento_settings_more">Mais: mudança de intervalo e fator A</string>
-    <string name="ankrimento_settings_less">Menos: mudança de intervalo e fator A</string>
+    <string name="ankrimento_settings_more">Antes</string>
+    <string name="ankrimento_settings_less">Depois</string>
     <string name="ankrimento_settings_max_interval">Intervalo máximo dos tópicos (dias)</string>
     <string name="ankrimento_settings_done_tag">Etiqueta de concluído</string>
     <string name="ankrimento_settings_postpone">Adiamento de tópicos</string>

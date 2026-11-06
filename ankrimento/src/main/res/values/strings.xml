@@ -224,6 +224,25 @@
     <!-- Settings screen -->
     <string name="ankrimento_settings">Incremento settings</string>
     <string name="ankrimento_settings_session">Session</string>
+    <string name="ankrimento_settings_session_summary">%1$d elements · %2$d%% topics</string>
+    <string name="ankrimento_settings_topics_items">Topics and items</string>
+    <string name="ankrimento_settings_topics_items_summary">Answer buttons, how topics come back, leeches</string>
+    <string name="ankrimento_settings_extraction_summary">What new extracts are, highlights, tags, priority order</string>
+    <string name="ankrimento_settings_reading_writing">Reading and writing</string>
+    <string name="ankrimento_settings_reading_writing_summary">PDF page colour and details, writing backups and word count</string>
+    <string name="ankrimento_settings_backup_restore">Backup and restore</string>
+    <string name="ankrimento_settings_backup_auto_on">Automatic backups on</string>
+    <string name="ankrimento_settings_backup_auto_off">Automatic backups off</string>
+    <string name="ankrimento_settings_device_summary">Profile %1$s · %2$s</string>
+    <string name="ankrimento_settings_no_sync_folder">no sync folder</string>
+    <string name="ankrimento_settings_maintenance">Maintenance</string>
+    <string name="ankrimento_settings_size_mix">Size and mix</string>
+    <string name="ankrimento_settings_which_cards">Which cards</string>
+    <string name="ankrimento_settings_answer_buttons">Answer buttons</string>
+    <string name="ankrimento_settings_topic_pace">How topics come back</string>
+    <string name="ankrimento_settings_postpone_leech">Postponing and leeches</string>
+    <string name="ankrimento_settings_sooner_help">Sooner shortens the topic\'s interval, and its pace, by this much.</string>
+    <string name="ankrimento_settings_later_help">Later lengthens the topic\'s interval, and its pace, by this much.</string>
     <string name="ankrimento_settings_cards">Cards per session</string>
     <string name="ankrimento_settings_topics">Topics (the rest are items)</string>
     <string name="ankrimento_settings_documents">Documents within topics</string>
@@ -234,8 +253,8 @@
     <string name="ankrimento_settings_auto_refill">Keep the session deck topped up</string>
     <string name="ankrimento_settings_review" comment="Settings section about reviews">Review</string>
     <string name="ankrimento_settings_fail_pass">Fail / Pass on items</string>
-    <string name="ankrimento_settings_more">More: interval and A-factor change</string>
-    <string name="ankrimento_settings_less">Less: interval and A-factor change</string>
+    <string name="ankrimento_settings_more">Sooner</string>
+    <string name="ankrimento_settings_less">Later</string>
     <string name="ankrimento_settings_max_interval">Maximum topic interval (days)</string>
     <string name="ankrimento_settings_done_tag">Done tag</string>
     <string name="ankrimento_settings_postpone">Topic postponement</string>

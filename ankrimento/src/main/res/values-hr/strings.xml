@@ -230,6 +230,25 @@
     <!-- Settings screen -->
     <string name="ankrimento_settings">Incremento postavke</string>
     <string name="ankrimento_settings_session">Sesija</string>
+    <string name="ankrimento_settings_session_summary">%1$d elemenata · %2$d%% tema</string>
+    <string name="ankrimento_settings_topics_items">Teme i stavke</string>
+    <string name="ankrimento_settings_topics_items_summary">Gumbi za odgovor, kako se teme vraćaju, pijavice</string>
+    <string name="ankrimento_settings_extraction_summary">Što su novi izvadci, isticanja, oznake, redoslijed prioriteta</string>
+    <string name="ankrimento_settings_reading_writing">Čitanje i pisanje</string>
+    <string name="ankrimento_settings_reading_writing_summary">Boja i pojedinosti PDF stranice, sigurnosne kopije pisanja i brojanje riječi</string>
+    <string name="ankrimento_settings_backup_restore">Sigurnosna kopija i vraćanje</string>
+    <string name="ankrimento_settings_backup_auto_on">Automatske sigurnosne kopije uključene</string>
+    <string name="ankrimento_settings_backup_auto_off">Automatske sigurnosne kopije isključene</string>
+    <string name="ankrimento_settings_device_summary">Profil %1$s · %2$s</string>
+    <string name="ankrimento_settings_no_sync_folder">nema mape za sinkronizaciju</string>
+    <string name="ankrimento_settings_maintenance">Održavanje</string>
+    <string name="ankrimento_settings_size_mix">Veličina i omjer</string>
+    <string name="ankrimento_settings_which_cards">Koje kartice</string>
+    <string name="ankrimento_settings_answer_buttons">Gumbi za odgovor</string>
+    <string name="ankrimento_settings_topic_pace">Kako se teme vraćaju</string>
+    <string name="ankrimento_settings_postpone_leech">Odgađanje i pijavice</string>
+    <string name="ankrimento_settings_sooner_help">Ranije skraćuje razmak teme, i njezin tempo, za ovoliko.</string>
+    <string name="ankrimento_settings_later_help">Kasnije produljuje razmak teme, i njezin tempo, za ovoliko.</string>
     <string name="ankrimento_settings_cards">Karata po sesiji</string>
     <string name="ankrimento_settings_topics">Teme (ostalo su stavke)</string>
     <string name="ankrimento_settings_documents">Dokumenti unutar tema</string>
@@ -240,8 +259,8 @@
     <string name="ankrimento_settings_auto_refill">Drži špil sesije popunjenim</string>
     <string name="ankrimento_settings_review">Pregled</string>
     <string name="ankrimento_settings_fail_pass">Ne znam / Znam na stavkama</string>
-    <string name="ankrimento_settings_more">Više: promjena intervala i A-faktora</string>
-    <string name="ankrimento_settings_less">Manje: promjena intervala i A-faktora</string>
+    <string name="ankrimento_settings_more">Ranije</string>
+    <string name="ankrimento_settings_less">Kasnije</string>
     <string name="ankrimento_settings_max_interval">Najveći interval teme (dani)</string>
     <string name="ankrimento_settings_done_tag">Oznaka za gotovo</string>
     <string name="ankrimento_settings_postpone">Odgađanje tema</string>

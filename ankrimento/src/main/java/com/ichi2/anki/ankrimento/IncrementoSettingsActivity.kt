@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.DocumentsContract
 import android.text.format.DateUtils
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -50,6 +51,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -296,15 +298,35 @@ class IncrementoSettingsActivity : ComponentActivity() {
         }
     }
 
+    /** The settings' pages, as the home list shows them. */
+    private enum class Page(
+        val title: Int,
+        val icon: androidx.compose.ui.graphics.vector.ImageVector,
+    ) {
+        SESSION(R.string.ankrimento_settings_session, IncrementoIcons.Tune),
+        TOPICS(R.string.ankrimento_settings_topics_items, IncrementoIcons.Check),
+        EXTRACTS(R.string.ankrimento_settings_extraction, IncrementoIcons.Add),
+        READING(R.string.ankrimento_settings_reading_writing, IncrementoIcons.Book),
+        BACKUP(R.string.ankrimento_settings_backup_restore, IncrementoIcons.Document),
+        DEVICE(R.string.ankrimento_settings_device, IncrementoIcons.Sync),
+        UPKEEP(R.string.ankrimento_settings_maintenance, IncrementoIcons.Settings),
+    }
+
+    /**
+     * Desktop's many settings, kept apart: a home list of seven pages, each saying what it holds now
+     * (the session's size, whether backups run, the sync folder), and a page per group.
+     */
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun Settings() {
+        var page by rememberSaveable { mutableStateOf<Page?>(null) }
+        BackHandler(enabled = page != null) { page = null }
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(R.string.ankrimento_settings)) },
+                    title = { Text(stringResource(page?.title ?: R.string.ankrimento_settings)) },
                     navigationIcon = {
-                        IconButton(onClick = ::finish) {
+                        IconButton(onClick = { if (page != null) page = null else finish() }) {
                             Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_navigate_up))
                         }
                     },
@@ -318,16 +340,20 @@ class IncrementoSettingsActivity : ComponentActivity() {
                     .navigationBarsPadding()
                     .padding(bottom = 24.dp),
             ) {
-                session?.let { SessionSection(it) }
-                values?.let { settings ->
-                    ReviewSection(settings)
-                    ExtractionSection(settings)
-                    ReadingSection(settings)
-                    WritingSection(settings)
+                when (page) {
+                    null -> Home { page = it }
+                    Page.SESSION -> session?.let { SessionSection(it) }
+                    Page.TOPICS -> values?.let { ReviewSection(it) }
+                    Page.EXTRACTS -> values?.let { ExtractionSection(it) }
+                    Page.READING ->
+                        values?.let { settings ->
+                            ReadingSection(settings)
+                            WritingSection(settings)
+                        }
+                    Page.BACKUP -> BackupSection()
+                    Page.DEVICE -> DeviceSection()
+                    Page.UPKEEP -> UpkeepSection()
                 }
-                DeviceSection()
-                BackupSection()
-                UpkeepSection()
             }
         }
         if (confirmingFormats) ConfirmFormatUpdates()
@@ -499,7 +525,6 @@ class IncrementoSettingsActivity : ComponentActivity() {
 
     @Composable
     private fun BackupSection() {
-        Header(R.string.ankrimento_settings_backup)
         ListItem(
             headlineContent = { Text(stringResource(R.string.ankrimento_backup_export)) },
             supportingContent = { Text(stringResource(R.string.ankrimento_backup_export_summary)) },
@@ -604,8 +629,56 @@ class IncrementoSettingsActivity : ComponentActivity() {
     }
 
     @Composable
+    private fun Home(open: (Page) -> Unit) {
+        Page.entries.forEach { page ->
+            ListItem(
+                headlineContent = { Text(stringResource(page.title)) },
+                supportingContent = { Text(summary(page), maxLines = 2) },
+                leadingContent = { Icon(page.icon, contentDescription = null) },
+                modifier = Modifier.clickable { open(page) },
+            )
+        }
+    }
+
+    /** What a page holds now, in a line. */
+    @Composable
+    private fun summary(page: Page): String =
+        when (page) {
+            Page.SESSION ->
+                session
+                    ?.let { s ->
+                        val size = stringResource(R.string.ankrimento_settings_session_summary, s.cardCount, s.topicsPercent)
+                        presets?.selected?.let { "$it · $size" } ?: size
+                    }.orEmpty()
+            Page.TOPICS -> stringResource(R.string.ankrimento_settings_topics_items_summary)
+            Page.EXTRACTS -> stringResource(R.string.ankrimento_settings_extraction_summary)
+            Page.READING -> stringResource(R.string.ankrimento_settings_reading_writing_summary)
+            Page.BACKUP ->
+                stringResource(
+                    if (automaticBackups.enabled) {
+                        R.string.ankrimento_settings_backup_auto_on
+                    } else {
+                        R.string.ankrimento_settings_backup_auto_off
+                    },
+                )
+            Page.DEVICE ->
+                stringResource(
+                    R.string.ankrimento_settings_device_summary,
+                    profile,
+                    syncFolder?.let(::folderName) ?: stringResource(R.string.ankrimento_settings_no_sync_folder),
+                )
+            Page.UPKEEP ->
+                formatUpdates?.let { updates ->
+                    if (updates.isEmpty()) {
+                        stringResource(R.string.ankrimento_card_formats_current)
+                    } else {
+                        stringResource(R.string.ankrimento_card_formats_pending, updates.joinToString { it.first })
+                    }
+                } ?: stringResource(R.string.ankrimento_card_formats)
+        }
+
+    @Composable
     private fun SessionSection(s: Ankrimento.SessionSettings) {
-        Header(R.string.ankrimento_settings_session)
         presets?.let { current ->
             ListItem(
                 headlineContent = { Text(stringResource(R.string.ankrimento_preset)) },
@@ -614,10 +687,12 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 modifier = Modifier.clickable { choosingPreset = true },
             )
         }
+        Header(R.string.ankrimento_settings_size_mix)
         PercentSlider(R.string.ankrimento_settings_cards, s.cardCount, 10..300, suffix = "") { saveSession(s.copy(cardCount = it)) }
         PercentSlider(R.string.ankrimento_settings_topics, s.topicsPercent, 0..100) { saveSession(s.copy(topicsPercent = it)) }
         PercentSlider(R.string.ankrimento_settings_documents, s.documentsPercent, 0..100) { saveSession(s.copy(documentsPercent = it)) }
         PercentSlider(R.string.ankrimento_settings_random, s.randomPercent, 0..100) { saveSession(s.copy(randomPercent = it)) }
+        Header(R.string.ankrimento_settings_which_cards)
         Toggle(R.string.ankrimento_settings_include_new, s.includeNew) { saveSession(s.copy(includeNew = it)) }
         Toggle(R.string.ankrimento_settings_include_learning, s.includeLearning) { saveSession(s.copy(includeLearning = it)) }
         Toggle(R.string.ankrimento_settings_include_due, s.includeDue) { saveSession(s.copy(includeDue = it)) }
@@ -631,7 +706,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
 
     @Composable
     private fun ReviewSection(v: JSONObject) {
-        Header(R.string.ankrimento_settings_review)
+        Header(R.string.ankrimento_settings_answer_buttons, first = true)
         reviewButtons?.let { buttons ->
             Toggle(R.string.ankrimento_settings_review_buttons, buttons.optBoolean("group", true)) { setReviewButton("group", it) }
             if (buttons.optBoolean("group", true)) {
@@ -644,16 +719,24 @@ class IncrementoSettingsActivity : ComponentActivity() {
             }
         }
         Toggle(R.string.ankrimento_settings_fail_pass, v.optBoolean("use_fail_pass_on_items")) { set("use_fail_pass_on_items", it) }
-        PercentSlider(R.string.ankrimento_settings_more, v.optDouble("topic_more_adjustment_percent", 10.0).roundToInt(), 0..100) {
-            set("topic_more_adjustment_percent", it.toDouble())
-        }
-        PercentSlider(R.string.ankrimento_settings_less, v.optDouble("topic_less_adjustment_percent", 10.0).roundToInt(), 0..100) {
-            set("topic_less_adjustment_percent", it.toDouble())
-        }
+        TextRow(R.string.ankrimento_settings_done_tag, v.optString("topic_done_tag")) { set("topic_done_tag", it) }
+        Header(R.string.ankrimento_settings_topic_pace)
+        PercentSlider(
+            R.string.ankrimento_settings_more,
+            v.optDouble("topic_more_adjustment_percent", 10.0).roundToInt(),
+            0..100,
+            help = R.string.ankrimento_settings_sooner_help,
+        ) { set("topic_more_adjustment_percent", it.toDouble()) }
+        PercentSlider(
+            R.string.ankrimento_settings_less,
+            v.optDouble("topic_less_adjustment_percent", 10.0).roundToInt(),
+            0..100,
+            help = R.string.ankrimento_settings_later_help,
+        ) { set("topic_less_adjustment_percent", it.toDouble()) }
         NumberRow(R.string.ankrimento_settings_max_interval, v.optInt("topic_maximum_interval_days", 36500)) {
             set("topic_maximum_interval_days", it)
         }
-        TextRow(R.string.ankrimento_settings_done_tag, v.optString("topic_done_tag")) { set("topic_done_tag", it) }
+        Header(R.string.ankrimento_settings_postpone_leech)
         Toggle(R.string.ankrimento_settings_postpone, v.optBoolean("topic_postpone_enabled")) { set("topic_postpone_enabled", it) }
         if (v.optBoolean("topic_postpone_enabled")) {
             NumberRow(
@@ -673,7 +756,6 @@ class IncrementoSettingsActivity : ComponentActivity() {
 
     @Composable
     private fun ExtractionSection(v: JSONObject) {
-        Header(R.string.ankrimento_settings_extraction)
         Choice(
             R.string.ankrimento_settings_extract_type,
             listOf("item" to R.string.ankrimento_extract_item, "topic" to R.string.ankrimento_extract_as_topic),
@@ -690,7 +772,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
 
     @Composable
     private fun ReadingSection(v: JSONObject) {
-        Header(R.string.ankrimento_settings_reading)
+        Header(R.string.ankrimento_settings_reading, first = true)
         Choice(
             R.string.ankrimento_settings_pdf_appearance,
             listOf(
@@ -769,7 +851,6 @@ class IncrementoSettingsActivity : ComponentActivity() {
     /** Desktop's Tools: card format updates and the support bundle. */
     @Composable
     private fun UpkeepSection() {
-        Header(R.string.ankrimento_settings_upkeep)
         val pending = formatUpdates.orEmpty()
         ListItem(
             headlineContent = { Text(stringResource(R.string.ankrimento_card_formats)) },
@@ -847,7 +928,6 @@ class IncrementoSettingsActivity : ComponentActivity() {
 
     @Composable
     private fun DeviceSection() {
-        Header(R.string.ankrimento_settings_device)
         TextRow(R.string.ankrimento_profile, profile, R.string.ankrimento_profile_message) {
             device.profile = it
             profile = device.profile
@@ -868,9 +948,13 @@ class IncrementoSettingsActivity : ComponentActivity() {
             ?.let { id -> id.substringAfter(':').ifEmpty { id } }
             ?: folder.toString()
 
+    /** A group's title on a page; the first on a page goes without the line above it. */
     @Composable
-    private fun Header(label: Int) {
-        HorizontalDivider(Modifier.padding(top = 8.dp))
+    private fun Header(
+        label: Int,
+        first: Boolean = false,
+    ) {
+        if (!first) HorizontalDivider(Modifier.padding(top = 8.dp))
         Text(
             stringResource(label),
             style = MaterialTheme.typography.titleSmall,
@@ -899,6 +983,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
         value: Int,
         range: IntRange,
         suffix: String = "%",
+        help: Int? = null,
         onChange: (Int) -> Unit,
     ) {
         var shown by remember(value) { mutableFloatStateOf(value.toFloat()) }
@@ -910,6 +995,9 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 onValueChangeFinished = { if (shown.roundToInt() != value) onChange(shown.roundToInt()) },
                 valueRange = range.first.toFloat()..range.last.toFloat(),
             )
+            help?.let {
+                Text(stringResource(it), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
         }
     }
 

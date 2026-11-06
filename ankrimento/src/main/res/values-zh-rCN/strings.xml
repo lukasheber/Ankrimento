@@ -218,6 +218,25 @@
     <!-- Settings screen -->
     <string name="ankrimento_settings">Incremento 设置</string>
     <string name="ankrimento_settings_session">会话</string>
+    <string name="ankrimento_settings_session_summary">%1$d 个元素 · %2$d%% 主题</string>
+    <string name="ankrimento_settings_topics_items">主题和条目</string>
+    <string name="ankrimento_settings_topics_items_summary">回答按钮、主题如何回来、难记卡</string>
+    <string name="ankrimento_settings_extraction_summary">新摘录的类型、高亮、标签、优先级顺序</string>
+    <string name="ankrimento_settings_reading_writing">阅读和写作</string>
+    <string name="ankrimento_settings_reading_writing_summary">PDF 页面颜色和细节、写作备份和字数统计</string>
+    <string name="ankrimento_settings_backup_restore">备份和恢复</string>
+    <string name="ankrimento_settings_backup_auto_on">自动备份已开启</string>
+    <string name="ankrimento_settings_backup_auto_off">自动备份已关闭</string>
+    <string name="ankrimento_settings_device_summary">配置文件 %1$s · %2$s</string>
+    <string name="ankrimento_settings_no_sync_folder">未设置同步文件夹</string>
+    <string name="ankrimento_settings_maintenance">维护</string>
+    <string name="ankrimento_settings_size_mix">数量和比例</string>
+    <string name="ankrimento_settings_which_cards">哪些卡片</string>
+    <string name="ankrimento_settings_answer_buttons">回答按钮</string>
+    <string name="ankrimento_settings_topic_pace">主题如何回来</string>
+    <string name="ankrimento_settings_postpone_leech">推迟和难记卡</string>
+    <string name="ankrimento_settings_sooner_help">“提前”按此比例缩短主题的间隔及其节奏。</string>
+    <string name="ankrimento_settings_later_help">“推后”按此比例延长主题的间隔及其节奏。</string>
     <string name="ankrimento_settings_cards">每次会话的卡片数</string>
     <string name="ankrimento_settings_topics">主题（其余为条目）</string>
     <string name="ankrimento_settings_documents">主题中的文档</string>
@@ -228,8 +247,8 @@
     <string name="ankrimento_settings_auto_refill">自动补满会话牌组</string>
     <string name="ankrimento_settings_review">复习</string>
     <string name="ankrimento_settings_fail_pass">条目使用“不会 / 会”</string>
-    <string name="ankrimento_settings_more">更多：间隔与 A 因子变化</string>
-    <string name="ankrimento_settings_less">更少：间隔与 A 因子变化</string>
+    <string name="ankrimento_settings_more">提前</string>
+    <string name="ankrimento_settings_less">推后</string>
     <string name="ankrimento_settings_max_interval">主题最大间隔（天）</string>
     <string name="ankrimento_settings_done_tag">完成标签</string>
     <string name="ankrimento_settings_postpone">主题推迟</string>
