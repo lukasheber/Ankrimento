@@ -2,7 +2,6 @@
 
 package com.ichi2.anki.ankrimento
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -93,6 +92,7 @@ class KnowledgeTreeActivity : ComponentActivity() {
     private var hits by mutableStateOf<List<Ankrimento.TreeHit>?>(null)
     private var searchJob: Job? = null
     private var postponing by mutableStateOf<Pair<Ankrimento.TreeNode, Ankrimento.PostponePlan>?>(null)
+    private var emptyBranch by mutableStateOf<String?>(null)
 
     /** A branch session was asked for: its outcome comes as an event. */
     private var branchStarting = false
@@ -257,13 +257,24 @@ class KnowledgeTreeActivity : ComponentActivity() {
     /** Upstream found nothing to study in the branch: say so, with the settings that decide it. */
     private fun explainEmptyBranch(message: String) {
         branchStarting = false
-        AlertDialog
-            .Builder(this, android.R.style.Theme_Material_Dialog_Alert)
-            .setTitle(R.string.ankrimento_session_empty_title)
-            .setMessage(message)
-            .setPositiveButton(R.string.ankrimento_settings) { _, _ -> startActivity(IncrementoSettingsActivity.intent(this)) }
-            .setNegativeButton(android.R.string.ok, null)
-            .show()
+        emptyBranch = message
+    }
+
+    /** Why the branch has nothing to study now, as the session's dialog says it. */
+    @Composable
+    private fun EmptyBranchDialog(message: String) {
+        AlertDialog(
+            onDismissRequest = { emptyBranch = null },
+            title = { Text(stringResource(R.string.ankrimento_session_empty_title)) },
+            text = { Text(message) },
+            confirmButton = { TextButton(onClick = { emptyBranch = null }) { Text(stringResource(android.R.string.ok)) } },
+            dismissButton = {
+                TextButton(onClick = {
+                    emptyBranch = null
+                    startActivity(IncrementoSettingsActivity.intent(this))
+                }) { Text(stringResource(R.string.ankrimento_settings)) }
+            },
+        )
     }
 
     private fun toast(text: String) {
@@ -374,6 +385,7 @@ class KnowledgeTreeActivity : ComponentActivity() {
         }
         chosen?.let { NodeSheet(it) }
         postponing?.let { (node, plan) -> PostponeDialog(node, plan) }
+        emptyBranch?.let { EmptyBranchDialog(it) }
         editingPriority?.let { node ->
             PriorityDialog(node.priority ?: DEFAULT_PRIORITY, onDismiss = { editingPriority = null }) { priority ->
                 editingPriority = null
