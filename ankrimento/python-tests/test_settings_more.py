@@ -56,3 +56,18 @@ def test_the_writing_backup_schedule_is_desktops_set_of_intervals(rt):
             settings.set_value("writing_backup_tiers", "1h")
     finally:
         mw.addonManager.writeConfig("incremento", saved)
+
+
+def test_the_postpone_mode_is_desktops_and_drives_the_phones_postpone(rt):
+    # What the phone's Postpone does: back after the set minutes, or at the end of the session.
+    from aqt import mw
+    from incremento.backend.topic_postpone import configured_topic_postpone_mode
+
+    saved = copy.deepcopy(mw.addonManager.getConfig("incremento"))
+    try:
+        assert json.loads(facade.set_setting("topic_postpone_mode", json.dumps("session"))) == "session"
+        assert configured_topic_postpone_mode(mw.addonManager.getConfig("incremento")) == "session"
+        with pytest.raises(ValueError):
+            facade.set_setting("topic_postpone_mode", json.dumps("forever"))
+    finally:
+        mw.addonManager.writeConfig("incremento", saved)

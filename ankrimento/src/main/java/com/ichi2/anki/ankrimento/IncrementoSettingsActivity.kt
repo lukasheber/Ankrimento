@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,6 +43,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
@@ -304,12 +307,12 @@ class IncrementoSettingsActivity : ComponentActivity() {
         val icon: androidx.compose.ui.graphics.vector.ImageVector,
     ) {
         SESSION(R.string.ankrimento_settings_session, IncrementoIcons.Tune),
-        TOPICS(R.string.ankrimento_settings_topics_items, IncrementoIcons.Check),
-        EXTRACTS(R.string.ankrimento_settings_extraction, IncrementoIcons.Add),
+        TOPICS(R.string.ankrimento_settings_topics_items, IncrementoIcons.School),
+        EXTRACTS(R.string.ankrimento_settings_extraction, IncrementoIcons.Quote),
         READING(R.string.ankrimento_settings_reading_writing, IncrementoIcons.Book),
-        BACKUP(R.string.ankrimento_settings_backup_restore, IncrementoIcons.Document),
-        DEVICE(R.string.ankrimento_settings_device, IncrementoIcons.Sync),
-        UPKEEP(R.string.ankrimento_settings_maintenance, IncrementoIcons.Settings),
+        BACKUP(R.string.ankrimento_settings_backup_restore, IncrementoIcons.Backup),
+        DEVICE(R.string.ankrimento_settings_device, IncrementoIcons.Phone),
+        UPKEEP(R.string.ankrimento_settings_maintenance, IncrementoIcons.Build),
     }
 
     /**
@@ -677,6 +680,29 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 } ?: stringResource(R.string.ankrimento_card_formats)
         }
 
+    /** What the session's percentages make: so many topics (so many from documents) and items, picked how. */
+    @Composable
+    private fun MixSummary(s: Ankrimento.SessionSettings) {
+        val topics = (s.cardCount * s.topicsPercent / 100.0).roundToInt()
+        val documents = (topics * s.documentsPercent / 100.0).roundToInt()
+        Surface(
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        ) {
+            Column(Modifier.padding(12.dp)) {
+                Text(
+                    stringResource(R.string.ankrimento_settings_mix_summary, s.cardCount, topics, documents, s.cardCount - topics),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    stringResource(R.string.ankrimento_settings_pick_summary, s.randomPercent, 100 - s.randomPercent),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        }
+    }
+
     @Composable
     private fun SessionSection(s: Ankrimento.SessionSettings) {
         presets?.let { current ->
@@ -692,14 +718,18 @@ class IncrementoSettingsActivity : ComponentActivity() {
         PercentSlider(R.string.ankrimento_settings_topics, s.topicsPercent, 0..100) { saveSession(s.copy(topicsPercent = it)) }
         PercentSlider(R.string.ankrimento_settings_documents, s.documentsPercent, 0..100) { saveSession(s.copy(documentsPercent = it)) }
         PercentSlider(R.string.ankrimento_settings_random, s.randomPercent, 0..100) { saveSession(s.copy(randomPercent = it)) }
+        MixSummary(s)
         Header(R.string.ankrimento_settings_which_cards)
         Toggle(R.string.ankrimento_settings_include_new, s.includeNew) { saveSession(s.copy(includeNew = it)) }
         Toggle(R.string.ankrimento_settings_include_learning, s.includeLearning) { saveSession(s.copy(includeLearning = it)) }
         Toggle(R.string.ankrimento_settings_include_due, s.includeDue) { saveSession(s.copy(includeDue = it)) }
-        Toggle(R.string.ankrimento_settings_auto_refill, s.autoRefill) { saveSession(s.copy(autoRefill = it)) }
+        Toggle(R.string.ankrimento_settings_auto_refill, s.autoRefill, R.string.ankrimento_settings_auto_refill_help) {
+            saveSession(s.copy(autoRefill = it))
+        }
         ListItem(
             headlineContent = { Text(stringResource(R.string.ankrimento_options_title)) },
             supportingContent = { Text(stringResource(R.string.ankrimento_options_summary)) },
+            trailingContent = { Icon(IncrementoIcons.Next, contentDescription = null) },
             modifier = Modifier.clickable { startActivity(SessionOptionsActivity.intent(this)) },
         )
     }
@@ -708,17 +738,30 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private fun ReviewSection(v: JSONObject) {
         Header(R.string.ankrimento_settings_answer_buttons, first = true)
         reviewButtons?.let { buttons ->
-            Toggle(R.string.ankrimento_settings_review_buttons, buttons.optBoolean("group", true)) { setReviewButton("group", it) }
+            Toggle(
+                R.string.ankrimento_settings_review_buttons,
+                buttons.optBoolean("group", true),
+                R.string.ankrimento_settings_review_buttons_help,
+            ) { setReviewButton("group", it) }
             if (buttons.optBoolean("group", true)) {
-                Toggle(R.string.ankrimento_settings_button_done, buttons.optBoolean("done", true)) { setReviewButton("done", it) }
-                Toggle(
-                    R.string.ankrimento_settings_button_postpone,
-                    buttons.optBoolean("postpone", true),
-                ) { setReviewButton("postpone", it) }
-                Toggle(R.string.ankrimento_settings_button_extract, buttons.optBoolean("extract", true)) { setReviewButton("extract", it) }
+                Toggle(R.string.ankrimento_settings_button_done, buttons.optBoolean("done", true), indent = true) {
+                    setReviewButton("done", it)
+                }
+                Toggle(R.string.ankrimento_settings_button_postpone, buttons.optBoolean("postpone", true), indent = true) {
+                    setReviewButton("postpone", it)
+                }
+                Toggle(R.string.ankrimento_settings_button_extract, buttons.optBoolean("extract", true), indent = true) {
+                    setReviewButton("extract", it)
+                }
             }
         }
-        Toggle(R.string.ankrimento_settings_fail_pass, v.optBoolean("use_fail_pass_on_items")) { set("use_fail_pass_on_items", it) }
+        Toggle(
+            R.string.ankrimento_settings_fail_pass,
+            v.optBoolean("use_fail_pass_on_items"),
+            R.string.ankrimento_settings_fail_pass_help,
+        ) {
+            set("use_fail_pass_on_items", it)
+        }
         TextRow(R.string.ankrimento_settings_done_tag, v.optString("topic_done_tag")) { set("topic_done_tag", it) }
         Header(R.string.ankrimento_settings_topic_pace)
         PercentSlider(
@@ -733,18 +776,32 @@ class IncrementoSettingsActivity : ComponentActivity() {
             0..100,
             help = R.string.ankrimento_settings_later_help,
         ) { set("topic_less_adjustment_percent", it.toDouble()) }
-        NumberRow(R.string.ankrimento_settings_max_interval, v.optInt("topic_maximum_interval_days", 36500)) {
-            set("topic_maximum_interval_days", it)
-        }
+        val maxDays = v.optInt("topic_maximum_interval_days", 36500)
+        NumberRow(
+            R.string.ankrimento_settings_max_interval,
+            maxDays,
+            shown =
+                if (maxDays >= DAYS_PER_YEAR * 2) {
+                    stringResource(R.string.ankrimento_settings_days_years, "%,d".format(maxDays), maxDays / DAYS_PER_YEAR)
+                } else {
+                    null
+                },
+        ) { set("topic_maximum_interval_days", it) }
         Header(R.string.ankrimento_settings_postpone_leech)
-        Toggle(R.string.ankrimento_settings_postpone, v.optBoolean("topic_postpone_enabled")) { set("topic_postpone_enabled", it) }
-        if (v.optBoolean("topic_postpone_enabled")) {
+        Choice(
+            R.string.ankrimento_settings_postpone_mode,
+            listOf("timed" to R.string.ankrimento_settings_postpone_timed, "session" to R.string.ankrimento_settings_postpone_session),
+            v.optString("topic_postpone_mode", "timed"),
+        ) { set("topic_postpone_mode", it) }
+        if (v.optString("topic_postpone_mode", "timed") == "timed") {
             NumberRow(
                 R.string.ankrimento_settings_postpone_minutes,
                 v.optInt("topic_postpone_minutes", 30),
             ) { set("topic_postpone_minutes", it) }
         }
-        Toggle(R.string.ankrimento_settings_leech, v.optBoolean("learning_leech_enabled")) { set("learning_leech_enabled", it) }
+        Toggle(R.string.ankrimento_settings_leech, v.optBoolean("learning_leech_enabled"), R.string.ankrimento_settings_leech_help) {
+            set("learning_leech_enabled", it)
+        }
         if (v.optBoolean("learning_leech_enabled")) {
             NumberRow(
                 R.string.ankrimento_settings_leech_threshold,
@@ -761,11 +818,25 @@ class IncrementoSettingsActivity : ComponentActivity() {
             listOf("item" to R.string.ankrimento_extract_item, "topic" to R.string.ankrimento_extract_as_topic),
             v.optString("extract_default_type", "item"),
         ) { set("extract_default_type", it) }
-        Toggle(R.string.ankrimento_settings_highlight_extract, v.optBoolean("highlight_when_extracting", true)) {
+        Toggle(
+            R.string.ankrimento_settings_highlight_extract,
+            v.optBoolean("highlight_when_extracting", true),
+            R.string.ankrimento_settings_highlight_extract_help,
+        ) {
             set("highlight_when_extracting", it)
         }
-        Toggle(R.string.ankrimento_settings_copy_tags, v.optBoolean("extract_copy_source_tags")) { set("extract_copy_source_tags", it) }
-        Toggle(R.string.ankrimento_settings_lower_priority, v.optBoolean("priority_lower_is_more_important", true)) {
+        Toggle(
+            R.string.ankrimento_settings_copy_tags,
+            v.optBoolean("extract_copy_source_tags"),
+            R.string.ankrimento_settings_copy_tags_help,
+        ) {
+            set("extract_copy_source_tags", it)
+        }
+        Toggle(
+            R.string.ankrimento_settings_lower_priority,
+            v.optBoolean("priority_lower_is_more_important", true),
+            R.string.ankrimento_settings_lower_priority_help,
+        ) {
             set("priority_lower_is_more_important", it)
         }
     }
@@ -782,7 +853,11 @@ class IncrementoSettingsActivity : ComponentActivity() {
             ),
             v.optString("pdf_default_appearance", "original"),
         ) { set("pdf_default_appearance", it) }
-        Toggle(R.string.ankrimento_settings_pdf_force, v.optBoolean("pdf_force_default_appearance")) {
+        Toggle(
+            R.string.ankrimento_settings_pdf_force,
+            v.optBoolean("pdf_force_default_appearance"),
+            R.string.ankrimento_settings_pdf_force_help,
+        ) {
             set("pdf_force_default_appearance", it)
         }
         Toggle(R.string.ankrimento_settings_pdf_delete_buttons, v.optBoolean("pdf_show_highlight_delete_buttons", true)) {
@@ -967,12 +1042,19 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private fun Toggle(
         label: Int,
         checked: Boolean,
+        description: Int? = null,
+        indent: Boolean = false,
         onChange: (Boolean) -> Unit,
     ) {
         ListItem(
             headlineContent = { Text(stringResource(label)) },
-            trailingContent = { Switch(checked = checked, onCheckedChange = onChange) },
-            modifier = Modifier.clickable { onChange(!checked) },
+            supportingContent = description?.let { { Text(stringResource(it)) } },
+            trailingContent = { Switch(checked = checked, onCheckedChange = null) },
+            // Depending on the switch above, shown under it.
+            modifier =
+                Modifier
+                    .toggleable(value = checked, role = Role.Switch, onValueChange = onChange)
+                    .padding(start = if (indent) INDENT else 0.dp),
         )
     }
 
@@ -1027,9 +1109,10 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private fun NumberRow(
         label: Int,
         value: Int,
+        shown: String? = null,
         onChange: (Int) -> Unit,
     ) {
-        TextRow(label, value.toString(), numeric = true) { text -> text.toIntOrNull()?.let(onChange) }
+        TextRow(label, value.toString(), numeric = true, shown = shown) { text -> text.toIntOrNull()?.let(onChange) }
     }
 
     /** A value shown in its row and edited in a dialog. */
@@ -1039,12 +1122,13 @@ class IncrementoSettingsActivity : ComponentActivity() {
         value: String,
         message: Int? = null,
         numeric: Boolean = false,
+        shown: String? = null,
         onChange: (String) -> Unit,
     ) {
         var editing by remember { mutableStateOf(false) }
         ListItem(
             headlineContent = { Text(stringResource(label)) },
-            supportingContent = { Text(value) },
+            supportingContent = { Text(shown ?: value) },
             modifier = Modifier.clickable { editing = true },
         )
         if (!editing) return
@@ -1080,6 +1164,10 @@ class IncrementoSettingsActivity : ComponentActivity() {
     }
 
     companion object {
+        /** How far a switch that depends on the one above sits in. */
+        private val INDENT = 24.dp
+        private const val DAYS_PER_YEAR = 365
+
         /** Desktop's writing backup intervals (writing_manager._BACKUP_SLOTS), in its order. */
         private val BACKUP_INTERVALS = listOf("1m", "5m", "15m", "30m", "1h", "6h", "1d", "7d")
 

@@ -22,7 +22,7 @@ SETTINGS: dict[str, Any] = {
     "topic_less_adjustment_percent": "number",
     "topic_maximum_interval_days": "int",
     "topic_done_tag": "text",
-    "topic_postpone_enabled": "bool",
+    "topic_postpone_mode": ("timed", "session"),
     "topic_postpone_minutes": "int",
     "learning_leech_enabled": "bool",
     "learning_leech_threshold": "int",

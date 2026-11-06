@@ -36,7 +36,7 @@
     <string name="ankrimento_extract_queue_title">Extracts to add</string>
     <string name="ankrimento_extract_queue_hint">They are added together here, or when you leave this document.</string>
     <string name="ankrimento_extract_queue_add_all">Add all</string>
-    <string name="ankrimento_extract_queue_remove">Remove</string>
+    <string name="ankrimento_extract_queue_remove" comment="Extract queue: removes one extract from the queue">Remove</string>
     <plurals name="ankrimento_extract_queued">
         <item quantity="one">%d to add</item>
         <item quantity="other">%d to add</item>
@@ -164,7 +164,7 @@
     <string name="ankrimento_postpone">Postpone</string>
     <string name="ankrimento_revisit">Revisit</string>
     <string name="ankrimento_topic_next">Next topic</string>
-    <string name="ankrimento_topic_sooner">Sooner</string>
+    <string name="ankrimento_topic_sooner" comment="Topic answer bar: the topic comes back sooner">Sooner</string>
     <string name="ankrimento_topic_later" comment="Topic session button: bring the topic back less often (desktop's Less)">Later</string>
     <string name="ankrimento_topic_returns">Read again in %s</string>
     <string name="ankrimento_topic_menu" comment="Session bar menu with a topic's actions (Done, Postpone, Revisit)">Topic</string>
@@ -201,7 +201,7 @@
     <string name="ankrimento_subtitle_reference">Reference language</string>
     <string name="ankrimento_subtitle_none">None</string>
     <string name="ankrimento_subtitle_add">Add file</string>
-    <string name="ankrimento_subtitle_remove">Remove</string>
+    <string name="ankrimento_subtitle_remove" comment="Video subtitles: removes the attached subtitle file">Remove</string>
     <string name="ankrimento_video_back_10">Back 10 seconds</string>
     <!-- Library -->
     <string name="ankrimento_library">Library</string>
@@ -241,6 +241,17 @@
     <string name="ankrimento_settings_answer_buttons">Answer buttons</string>
     <string name="ankrimento_settings_topic_pace">How topics come back</string>
     <string name="ankrimento_settings_postpone_leech">Postponing and leeches</string>
+    <string name="ankrimento_settings_mix_summary">Of %1$d elements: about %2$d topics (%3$d from documents) and %4$d items.</string>
+    <string name="ankrimento_settings_pick_summary">Picked %1$d%% at random, %2$d%% by priority.</string>
+    <string name="ankrimento_settings_days_years">%1$s days · about %2$d years</string>
+    <string name="ankrimento_settings_review_buttons_help">Done, Postpone and Extract next to the answers</string>
+    <string name="ankrimento_settings_fail_pass_help">Items get two answers, Fail and Pass, instead of four</string>
+    <string name="ankrimento_settings_auto_refill_help">Elements are added as you study, so the session does not run dry</string>
+    <string name="ankrimento_settings_highlight_extract_help">The words you extract stay highlighted in the document</string>
+    <string name="ankrimento_settings_copy_tags_help">Extracts get the tags of the document they come from</string>
+    <string name="ankrimento_settings_lower_priority_help">On: priority 10 comes before 90. Off: 90 comes before 10</string>
+    <string name="ankrimento_settings_pdf_force_help">Every PDF opens in this page colour, even one set otherwise</string>
+    <string name="ankrimento_settings_leech_help">Tags the items you keep failing, so you can find and fix them</string>
     <string name="ankrimento_settings_sooner_help">Sooner shortens the topic\'s interval, and its pace, by this much.</string>
     <string name="ankrimento_settings_later_help">Later lengthens the topic\'s interval, and its pace, by this much.</string>
     <string name="ankrimento_settings_cards">Cards per session</string>
@@ -253,12 +264,14 @@
     <string name="ankrimento_settings_auto_refill">Keep the session deck topped up</string>
     <string name="ankrimento_settings_review" comment="Settings section about reviews">Review</string>
     <string name="ankrimento_settings_fail_pass">Fail / Pass on items</string>
-    <string name="ankrimento_settings_more">Sooner</string>
-    <string name="ankrimento_settings_less">Later</string>
+    <string name="ankrimento_settings_more" comment="Settings: slider for how much Sooner shortens a topic's interval">Sooner</string>
+    <string name="ankrimento_settings_less" comment="Settings: slider for how much Later lengthens a topic's interval">Later</string>
     <string name="ankrimento_settings_max_interval">Maximum topic interval (days)</string>
     <string name="ankrimento_settings_done_tag">Done tag</string>
-    <string name="ankrimento_settings_postpone">Topic postponement</string>
     <string name="ankrimento_settings_postpone_minutes">Postpone for (minutes)</string>
+    <string name="ankrimento_settings_postpone_mode">Postpone brings a topic back</string>
+    <string name="ankrimento_settings_postpone_timed">After a set time</string>
+    <string name="ankrimento_settings_postpone_session">At the session\'s end</string>
     <string name="ankrimento_settings_leech">Learning leech tags</string>
     <string name="ankrimento_settings_leech_threshold">Learning leech threshold</string>
     <string name="ankrimento_settings_leech_tag">Learning leech tag</string>
