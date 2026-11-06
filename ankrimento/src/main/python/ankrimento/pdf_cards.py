@@ -106,7 +106,6 @@ def highlight_card(card_id: int, highlight_id: str) -> dict[str, Any]:
     page = int(highlight.get("page", 1) or 1)
     html = external_plain_text_to_anki_html(excerpt)
     citation = pdf_reader._citation(int(card_id), page, excerpt, highlight_id) if extract.source_link_on("pdf") else ""
-    extract.discard(int(card_id))
     extract.add_html_to_draft(
         int(card_id), index, html + ("<br>" + citation if citation else ""), page=page, highlight_id=highlight_id
     )

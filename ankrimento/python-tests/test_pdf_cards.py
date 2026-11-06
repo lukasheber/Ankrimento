@@ -122,3 +122,17 @@ def test_add_card_starts_an_empty_card_from_the_page_being_read(rt, pdf):
     facade.pdf_highlight_card(pdf, "h1")
     facade.pdf_new_card(pdf)
     assert json.loads(facade.extract_draft(pdf))["fields"][0].startswith("Kept words")
+
+
+def test_a_highlights_card_button_keeps_the_card_being_made(rt, pdf):
+    # Desktop fills the highlight's field of the Add Card dock and leaves the rest of the card alone.
+    from ankrimento import extract
+
+    _highlight(pdf, "h1", 1, "Highlighted words")
+    extract.add_html_to_draft(pdf, 1, "An answer already written", page=1)
+
+    facade.pdf_highlight_card(pdf, "h1")
+
+    fields = json.loads(facade.extract_draft(pdf))["fields"]
+    assert fields[0].startswith("Highlighted words")
+    assert fields[1] == "An answer already written"
