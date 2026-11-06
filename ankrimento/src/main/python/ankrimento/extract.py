@@ -167,8 +167,13 @@ DOCUMENT_NOTE_TYPES = frozenset(
 
 
 def card_note_types(names) -> list[str]:
-    """The note types a card can be made with, sorted: all but Incremento's document ones."""
-    return sorted(str(name) for name in names if str(name) not in DOCUMENT_NOTE_TYPES)
+    """The note types a card can be made with, sorted: all but Incremento's document ones, and image
+    occlusion (its Occlusion field holds shapes drawn in AnkiDroid's occlusion editor, not text)."""
+    models = runtime.current().col.models
+    occlusion = {
+        str(model["name"]) for model in models.all() if "Occlusion" in [field["name"] for field in model["flds"]]
+    }
+    return sorted(str(name) for name in names if str(name) not in DOCUMENT_NOTE_TYPES and str(name) not in occlusion)
 
 
 def draft(source_card_id: int) -> dict[str, Any]:

@@ -51,3 +51,22 @@ def test_incrementos_document_note_types_are_not_offered_for_cards(rt, tmp_path)
             assert not set(offered) & documents
     finally:
         rt.col.remove_notes([rt.col.get_card(topic).nid])
+
+
+def test_image_occlusion_is_not_offered_for_text_cards(rt):
+    # Its Occlusion field holds shapes drawn in AnkiDroid's occlusion editor, not text.
+    import json as _json
+
+    from anki.stdmodels import get_stock_notetypes
+
+    def occlusion(model) -> bool:
+        return "Occlusion" in [field["name"] for field in model["flds"]]
+
+    if not any(occlusion(model) for model in rt.col.models.all()):
+        for _name, make in get_stock_notetypes(rt.col):
+            note_type = make(rt.col)
+            if occlusion(note_type):
+                rt.col.models.add(note_type)
+    names = {model["name"] for model in rt.col.models.all() if occlusion(model)}
+    assert names
+    assert not set(_json.loads(facade.new_card_defaults())["note_types"]) & names
