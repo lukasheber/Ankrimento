@@ -6,9 +6,9 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.core.graphics.createBitmap
 import anki.scheduler.CardAnswer.Rating
 import com.chaquo.python.Python
 import com.ichi2.anki.CollectionManager
@@ -19,6 +19,7 @@ import com.ichi2.anki.ankrimento.PdfReaderActivity
 import com.ichi2.anki.ankrimento.ReaderActivity
 import com.ichi2.anki.ankrimento.VideoReaderActivity
 import com.ichi2.anki.ankrimento.WebReaderActivity
+import com.ichi2.anki.common.time.TimeManager
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import timber.log.Timber
 import java.io.File
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -163,8 +165,8 @@ class AnkrimentoSmokeTestActivity : Activity() {
             result
                 .onSuccess { log("PASSED") }
                 .onFailure { error ->
-                    Log.e(TAG, "FAILED", error)
-                    log("FAILED: ${Log.getStackTraceString(error)}")
+                    Timber.tag(TAG).e(error, "FAILED")
+                    log("FAILED: ${error.stackTraceToString()}")
                 }
         }
     }
@@ -179,9 +181,9 @@ class AnkrimentoSmokeTestActivity : Activity() {
         ensureNotes(col, "Default", "item")
         log("notes ready: ${topics.size} topic cards")
 
-        val startedAt = System.currentTimeMillis()
+        val startedAt = TimeManager.time.intTimeMS()
         Ankrimento.start(this, col)
-        log("python started in ${System.currentTimeMillis() - startedAt} ms")
+        log("python started in ${TimeManager.time.intTimeMS() - startedAt} ms")
 
         val selected = Ankrimento.selectSession()
         log("selected ${selected.size} cards")
@@ -284,18 +286,20 @@ class AnkrimentoSmokeTestActivity : Activity() {
 
     private fun seedOcclusion(col: Collection) {
         val image = File(cacheDir, "ankrimento-occlusion.png")
-        val bitmap = Bitmap.createBitmap(600, 400, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.rgb(120, 170, 220)) }
+        val bitmap = createBitmap(600, 400).apply { eraseColor(Color.rgb(120, 170, 220)) }
         image.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
         col.addImageOcclusionNoteType()
         val occlusion = col.notetypes.byName("Image Occlusion")!!
-        col.addImageOcclusionNote(
-            occlusion.id,
-            image.path,
-            "{{c1::image-occlusion:rect:left=.1:top=.1:width=.3:height=.3}}<br>{{c2::image-occlusion:rect:left=.5:top=.5:width=.3:height=.3}}<br>",
-            "Occlusion header",
-            "",
-            listOf(SMOKE_TAG),
-        )
+        val added =
+            col.addImageOcclusionNote(
+                occlusion.id,
+                image.path,
+                "{{c1::image-occlusion:rect:left=.1:top=.1:width=.3:height=.3}}<br>{{c2::image-occlusion:rect:left=.5:top=.5:width=.3:height=.3}}<br>",
+                "Occlusion header",
+                "",
+                listOf(SMOKE_TAG),
+            )
+        log("seeded occlusion (cards changed: ${added.card})")
     }
 
     /** Two seconds of a tone, as 8 kHz 8-bit PCM. */
@@ -319,7 +323,7 @@ class AnkrimentoSmokeTestActivity : Activity() {
     }
 
     private fun log(message: String) {
-        Log.i(TAG, message)
+        Timber.tag(TAG).i("%s", message)
         runOnUiThread { output.append("$message\n") }
     }
 

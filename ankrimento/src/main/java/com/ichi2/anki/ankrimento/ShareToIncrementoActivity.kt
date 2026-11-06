@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+// The platform dialog: this screen has a platform translucent theme, under which AppCompat's would crash.
+@file:SuppressLint("AvoidAlertDialogUsage")
+
 package com.ichi2.anki.ankrimento
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
@@ -25,7 +28,7 @@ class ShareToIncrementoActivity : ComponentActivity() {
         val text = intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
         val url = Patterns.WEB_URL.matcher(text).let { if (it.find()) it.group() else null }
         if (url == null || !Ankrimento.isSupported) {
-            Toast.makeText(this, R.string.ankrimento_share_no_link, Toast.LENGTH_LONG).show()
+            showToast(R.string.ankrimento_share_no_link)
             finish()
             return
         }
@@ -52,11 +55,11 @@ class ShareToIncrementoActivity : ComponentActivity() {
                     Ankrimento.cardTitle(import())
                 }
             }.onSuccess { added ->
-                Toast.makeText(this@ShareToIncrementoActivity, getString(R.string.ankrimento_pdf_added, added), Toast.LENGTH_LONG).show()
+                this@ShareToIncrementoActivity.showToast(getString(R.string.ankrimento_pdf_added, added))
             }.onFailure { error ->
                 Timber.w(error, "Adding a shared page failed")
                 val message = getString(R.string.ankrimento_pdf_add_failed, error.message ?: error.javaClass.simpleName)
-                Toast.makeText(this@ShareToIncrementoActivity, message, Toast.LENGTH_LONG).show()
+                this@ShareToIncrementoActivity.showToast(message)
             }
             finish()
         }

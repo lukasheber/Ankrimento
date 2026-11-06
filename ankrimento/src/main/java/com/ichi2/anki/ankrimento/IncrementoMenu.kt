@@ -3,11 +3,10 @@
 package com.ichi2.anki.ankrimento
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -273,6 +272,6 @@ class IncrementoMenu(
     }
 
     private fun toast(text: String) {
-        Toast.makeText(activity, text, Toast.LENGTH_LONG).show()
+        activity.showToast(text)
     }
 }

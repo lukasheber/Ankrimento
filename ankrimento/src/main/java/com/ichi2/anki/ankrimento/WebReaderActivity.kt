@@ -10,7 +10,6 @@ import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
@@ -122,7 +121,7 @@ class WebReaderActivity : ReaderActivity() {
         val url = webView.url.orEmpty()
         lifecycleScope.launch {
             val started = withCol { Ankrimento.webExtract(cardId, text, url) }
-            if (!started) Toast.makeText(this@WebReaderActivity, R.string.ankrimento_web_select_first, Toast.LENGTH_SHORT).show()
+            if (!started) this@WebReaderActivity.showToast(R.string.ankrimento_web_select_first, long = false)
         }
     }
 

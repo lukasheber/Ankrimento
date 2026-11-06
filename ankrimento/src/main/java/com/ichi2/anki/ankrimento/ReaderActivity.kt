@@ -5,11 +5,9 @@ package com.ichi2.anki.ankrimento
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
@@ -22,10 +20,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -132,7 +132,7 @@ abstract class ReaderActivity : ComponentActivity() {
     private var reviewChoices = emptyMap<String, String>()
 
     /** Extracts set aside with Add later, added together (or on leaving this document). */
-    private var queuedExtracts by mutableStateOf(0)
+    private var queuedExtracts by mutableIntStateOf(0)
 
     /** Desktop's review buttons shown: Done, Postpone (topic actions) and Extract (the extract tool). */
     private var reviewButtons by mutableStateOf(setOf("done", "postpone", "extract"))
@@ -666,7 +666,7 @@ abstract class ReaderActivity : ComponentActivity() {
     }
 
     protected fun openUrl(url: String) {
-        val uri = Uri.parse(url)
+        val uri = url.toUri()
         if (uri.scheme !in setOf("http", "https")) return
         try {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
@@ -723,7 +723,7 @@ abstract class ReaderActivity : ComponentActivity() {
     }
 
     protected fun toast(text: String) {
-        if (text.isNotEmpty()) Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+        if (text.isNotEmpty()) showToast(text)
     }
 
     companion object {

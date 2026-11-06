@@ -17,6 +17,7 @@ import com.chaquo.python.android.AndroidPlatform
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.ankrimento.ui.MarkBookmark
 import com.ichi2.anki.ankrimento.ui.MarkHighlight
+import com.ichi2.anki.common.time.TimeManager
 import com.ichi2.anki.libanki.Collection
 import com.ichi2.anki.observability.ChangeManager
 import kotlinx.coroutines.CoroutineScope
@@ -106,10 +107,10 @@ object Ankrimento {
     @WorkerThread
     fun warmUp(context: Context) {
         if (!isSupported || facade != null || !AnkrimentoSettings(context).hasStarted) return
-        val startedAt = System.currentTimeMillis()
+        val startedAt = TimeManager.time.intTimeMS()
         startPython(context)
         Python.getInstance().getModule("ankrimento.android").callAttr("warm_up")
-        Timber.i("Ankrimento warmed up in %d ms", System.currentTimeMillis() - startedAt)
+        Timber.i("Ankrimento warmed up in %d ms", TimeManager.time.intTimeMS() - startedAt)
     }
 
     @Synchronized

@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
@@ -70,7 +69,7 @@ class ItemReaderActivity : ReaderActivity() {
                     val text = runCatching { org.json.JSONArray("[$result]").getString(0) }.getOrDefault("")
                     lifecycleScope.launch {
                         if (!withCol { Ankrimento.webExtract(cardId, text) }) {
-                            Toast.makeText(this@ItemReaderActivity, R.string.ankrimento_web_select_first, Toast.LENGTH_SHORT).show()
+                            this@ItemReaderActivity.showToast(R.string.ankrimento_web_select_first, long = false)
                         }
                     }
                 },
@@ -99,7 +98,7 @@ class ItemReaderActivity : ReaderActivity() {
                 withCol { media.dir }
             }.getOrElse { error ->
                 Timber.w(error, "Rendering an item failed")
-                Toast.makeText(this, error.message ?: error.javaClass.simpleName, Toast.LENGTH_LONG).show()
+                showToast(error.message ?: error.javaClass.simpleName)
                 finish()
                 return
             }.canonicalFile
@@ -107,7 +106,7 @@ class ItemReaderActivity : ReaderActivity() {
             display!!.player(
                 this,
                 evaluate = { script -> runOnUiThread { webView.evaluateJavascript(script, null) } },
-                onError = { message -> runOnUiThread { Toast.makeText(this, message, Toast.LENGTH_LONG).show() } },
+                onError = { message -> runOnUiThread { showToast(message) } },
             )
         webView.webViewClient = client(media)
         if (!inSession) {
@@ -146,8 +145,8 @@ class ItemReaderActivity : ReaderActivity() {
             ) {
                 // The text reader's size and page colour; the card keeps its template's alignment.
                 val stored = getSharedPreferences(TextReaderActivity.PREFERENCES, MODE_PRIVATE)
-                val scale = stored.getFloat(TextReaderActivity.KEY_SCALE, 1f).toDouble()
-                val appearance = stored.getString(TextReaderActivity.KEY_APPEARANCE, null) ?: "original"
+                val scale = stored.getFloat(TextReaderActivity.PREF_SCALE, 1f).toDouble()
+                val appearance = stored.getString(TextReaderActivity.PREF_APPEARANCE, null) ?: "original"
                 view.evaluateJavascript(CardPage.pageScript(scale, appearance, alignStart = false), null)
                 val side = pendingAutoplay ?: return
                 pendingAutoplay = null

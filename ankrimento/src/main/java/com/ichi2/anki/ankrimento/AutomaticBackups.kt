@@ -10,6 +10,7 @@ import android.provider.DocumentsContract.Document
 import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.common.time.TimeManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -54,12 +55,12 @@ object AutomaticBackups {
     fun load(context: Context): Policy {
         val prefs = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
         return Policy(
-            enabled = prefs.getBoolean(KEY_ENABLED, false),
-            folder = prefs.getString(KEY_FOLDER, null)?.toUri(),
-            onOpen = prefs.getBoolean(KEY_ON_OPEN, true),
-            intervalHours = prefs.getInt(KEY_INTERVAL, DEFAULT_INTERVAL_HOURS),
-            versions = prefs.getInt(KEY_VERSIONS, DEFAULT_VERSIONS).coerceIn(1, MAX_VERSIONS),
-            lastSuccess = prefs.getLong(KEY_LAST_SUCCESS, 0L),
+            enabled = prefs.getBoolean(PREF_ENABLED, false),
+            folder = prefs.getString(PREF_FOLDER, null)?.toUri(),
+            onOpen = prefs.getBoolean(PREF_ON_OPEN, true),
+            intervalHours = prefs.getInt(PREF_INTERVAL, DEFAULT_INTERVAL_HOURS),
+            versions = prefs.getInt(PREF_VERSIONS, DEFAULT_VERSIONS).coerceIn(1, MAX_VERSIONS),
+            lastSuccess = prefs.getLong(PREF_LAST_SUCCESS, 0L),
         )
     }
 
@@ -68,12 +69,12 @@ object AutomaticBackups {
         policy: Policy,
     ) {
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE).edit {
-            putBoolean(KEY_ENABLED, policy.enabled)
-            putString(KEY_FOLDER, policy.folder?.toString())
-            putBoolean(KEY_ON_OPEN, policy.onOpen)
-            putInt(KEY_INTERVAL, policy.intervalHours)
-            putInt(KEY_VERSIONS, policy.versions.coerceIn(1, MAX_VERSIONS))
-            putLong(KEY_LAST_SUCCESS, policy.lastSuccess)
+            putBoolean(PREF_ENABLED, policy.enabled)
+            putString(PREF_FOLDER, policy.folder?.toString())
+            putBoolean(PREF_ON_OPEN, policy.onOpen)
+            putInt(PREF_INTERVAL, policy.intervalHours)
+            putInt(PREF_VERSIONS, policy.versions.coerceIn(1, MAX_VERSIONS))
+            putLong(PREF_LAST_SUCCESS, policy.lastSuccess)
         }
     }
 
@@ -99,7 +100,7 @@ object AutomaticBackups {
             if (openedThisProcess) return false
             openedThisProcess = true
         }
-        if (!load(context).isDue(trigger, System.currentTimeMillis())) return false
+        if (!load(context).isDue(trigger, TimeManager.time.intTimeMS())) return false
         return runCatching { backUp(context) }
             .onFailure { Timber.w(it, "Automatic backup failed") }
             .getOrNull() != null
@@ -125,7 +126,7 @@ object AutomaticBackups {
                     temp.delete()
                     write
                 }
-            save(context, load(context).copy(lastSuccess = System.currentTimeMillis()))
+            save(context, load(context).copy(lastSuccess = TimeManager.time.intTimeMS()))
             return written
         } finally {
             running.set(false)
@@ -192,10 +193,10 @@ object AutomaticBackups {
     private const val DEFAULT_INTERVAL_HOURS = 24
     private const val HOUR_MS = 3_600_000L
     private const val PREFERENCES = "ankrimento_automatic_backups"
-    private const val KEY_ENABLED = "enabled"
-    private const val KEY_FOLDER = "folder"
-    private const val KEY_ON_OPEN = "on_open"
-    private const val KEY_INTERVAL = "interval_hours"
-    private const val KEY_VERSIONS = "versions"
-    private const val KEY_LAST_SUCCESS = "last_success"
+    private const val PREF_ENABLED = "enabled"
+    private const val PREF_FOLDER = "folder"
+    private const val PREF_ON_OPEN = "on_open"
+    private const val PREF_INTERVAL = "interval_hours"
+    private const val PREF_VERSIONS = "versions"
+    private const val PREF_LAST_SUCCESS = "last_success"
 }

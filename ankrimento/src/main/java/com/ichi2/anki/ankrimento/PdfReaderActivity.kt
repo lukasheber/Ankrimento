@@ -10,7 +10,6 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import android.widget.Toast
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
@@ -121,7 +121,7 @@ class PdfReaderActivity : ReaderActivity() {
         lifecycleScope.launch {
             val path = withCol { Ankrimento.pdfPath(cardId) }
             if (path.isEmpty()) {
-                Toast.makeText(this@PdfReaderActivity, R.string.ankrimento_pdf_missing, Toast.LENGTH_LONG).show()
+                this@PdfReaderActivity.showToast(R.string.ankrimento_pdf_missing)
                 finish()
                 return@launch
             }
@@ -479,17 +479,16 @@ class PdfReaderActivity : ReaderActivity() {
         }
     }
 
-    private fun textRead(): Set<String> = getSharedPreferences(TEXT_PREFERENCES, MODE_PRIVATE).getStringSet(KEY_TEXT_READ, null).orEmpty()
+    private fun textRead(): Set<String> = getSharedPreferences(TEXT_PREFERENCES, MODE_PRIVATE).getStringSet(PREF_TEXT_READ, null).orEmpty()
 
     private fun indexText() {
         val pages = synchronized(textPages) { textPages.values.toList() }
         lifecycleScope.launch {
             runCatching { withCol { Ankrimento.pdfIndexPages(cardId, pages) } }
                 .onSuccess {
-                    getSharedPreferences(TEXT_PREFERENCES, MODE_PRIVATE)
-                        .edit()
-                        .putStringSet(KEY_TEXT_READ, textRead() + cardId.toString())
-                        .apply()
+                    getSharedPreferences(TEXT_PREFERENCES, MODE_PRIVATE).edit {
+                        putStringSet(PREF_TEXT_READ, textRead() + cardId.toString())
+                    }
                 }.onFailure { Timber.w(it, "Indexing the PDF's text failed") }
             readingText = false
             if (findQuery.isNotEmpty() && findIndex < 0) search(findQuery)
@@ -942,7 +941,7 @@ class PdfReaderActivity : ReaderActivity() {
 
         /** The PDFs whose text this device read itself (upstream records them as "empty" otherwise). */
         private const val TEXT_PREFERENCES = "ankrimento_pdf_text"
-        private const val KEY_TEXT_READ = "read"
+        private const val PREF_TEXT_READ = "read"
 
         /** The viewer's request to show its outline, as desktop's contents popup gets it. */
         private const val CONTENTS_PREFIX = "incremento_pdf_contents:"

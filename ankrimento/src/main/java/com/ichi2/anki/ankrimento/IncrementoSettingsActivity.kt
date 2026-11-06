@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.DocumentsContract
 import android.text.format.DateUtils
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -198,7 +197,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
         }
     }
 
-    private fun toast(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    private fun toast(text: String) = showToast(text)
 
     private fun setReviewButton(
         name: String,

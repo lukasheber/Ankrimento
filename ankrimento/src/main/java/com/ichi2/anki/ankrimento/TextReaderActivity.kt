@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
@@ -41,8 +40,8 @@ class TextReaderActivity : ReaderActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val stored = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
-        textScale = stored.getFloat(KEY_SCALE, 1f).toDouble()
-        appearance = stored.getString(KEY_APPEARANCE, null) ?: "original"
+        textScale = stored.getFloat(PREF_SCALE, 1f).toDouble()
+        appearance = stored.getString(PREF_APPEARANCE, null) ?: "original"
         preferences = ReadingPreferences.load(this)
         webView =
             ReaderWebView(this).apply {
@@ -89,7 +88,7 @@ class TextReaderActivity : ReaderActivity() {
                 }
             }.getOrElse { error ->
                 Timber.w(error, "Rendering a topic failed")
-                Toast.makeText(this, error.message ?: error.javaClass.simpleName, Toast.LENGTH_LONG).show()
+                showToast(error.message ?: error.javaClass.simpleName)
                 finish()
                 return
             }
@@ -158,8 +157,8 @@ class TextReaderActivity : ReaderActivity() {
 
     private fun store() {
         getSharedPreferences(PREFERENCES, MODE_PRIVATE).edit {
-            putFloat(KEY_SCALE, textScale.toFloat())
-            putString(KEY_APPEARANCE, appearance)
+            putFloat(PREF_SCALE, textScale.toFloat())
+            putString(PREF_APPEARANCE, appearance)
         }
         applyReading()
     }
@@ -168,7 +167,7 @@ class TextReaderActivity : ReaderActivity() {
         lifecycleScope.launch {
             // Upstream's extraction from any card: the extract joins the topic in the knowledge tree.
             val started = withCol { Ankrimento.webExtract(cardId, text) }
-            if (!started) Toast.makeText(this@TextReaderActivity, R.string.ankrimento_web_select_first, Toast.LENGTH_SHORT).show()
+            if (!started) this@TextReaderActivity.showToast(R.string.ankrimento_web_select_first, long = false)
         }
     }
 
@@ -180,8 +179,8 @@ class TextReaderActivity : ReaderActivity() {
 
         /** Shared with the item reader, which shows cards in the same text size and page colour. */
         internal const val PREFERENCES = "ankrimento_text_reader"
-        internal const val KEY_SCALE = "text_scale"
-        internal const val KEY_APPEARANCE = "appearance"
+        internal const val PREF_SCALE = "text_scale"
+        internal const val PREF_APPEARANCE = "appearance"
 
         /** The EPUB reader's limits (upstream's). */
         private const val MIN_SCALE = 0.7

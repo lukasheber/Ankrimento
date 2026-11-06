@@ -3,7 +3,6 @@
 package com.ichi2.anki.ankrimento.ui
 
 import android.text.Html
-import android.text.TextUtils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.text.htmlEncode
 import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.R
 import kotlin.math.roundToInt
@@ -215,7 +215,7 @@ internal fun fieldHtml(
 ): String {
     val text = edited.trim()
 
-    fun plain(value: String) = TextUtils.htmlEncode(value).replace("\n", "<br>")
+    fun plain(value: String) = value.htmlEncode().replace("\n", "<br>")
     return when {
         text == originalText -> originalHtml
         originalText.isNotEmpty() && text.startsWith(originalText) -> originalHtml + plain(text.removePrefix(originalText))

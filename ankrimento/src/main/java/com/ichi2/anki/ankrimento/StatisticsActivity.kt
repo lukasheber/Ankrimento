@@ -5,7 +5,6 @@ package com.ichi2.anki.ankrimento
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -90,14 +89,14 @@ class StatisticsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        savedInstanceState?.getString(KEY_SCOPE)?.let { scope = it }
+        savedInstanceState?.getString(STATE_SCOPE)?.let { scope = it }
         setContent { IncrementoTheme { Statistics() } }
         load(scope)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(KEY_SCOPE, scope)
+        outState.putString(STATE_SCOPE, scope)
     }
 
     private fun load(key: String) {
@@ -111,7 +110,7 @@ class StatisticsActivity : ComponentActivity() {
             }.onSuccess { views[key] = it }
                 .onFailure { error ->
                     Timber.w(error, "Loading statistics failed")
-                    Toast.makeText(this@StatisticsActivity, error.message ?: error.javaClass.simpleName, Toast.LENGTH_LONG).show()
+                    this@StatisticsActivity.showToast(error.message ?: error.javaClass.simpleName)
                 }
         }
     }
@@ -465,7 +464,7 @@ class StatisticsActivity : ComponentActivity() {
 
     companion object {
         private const val FIRST_SCOPE = "daily"
-        private const val KEY_SCOPE = "scope"
+        private const val STATE_SCOPE = "scope"
 
         /** Activity levels 1–4 (desktop's heatmap), one hue from light to full. */
         private val INTENSITY_ALPHA = floatArrayOf(0.3f, 0.5f, 0.75f, 1f)

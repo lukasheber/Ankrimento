@@ -2,14 +2,13 @@
 
 package com.ichi2.anki.ankrimento
 
-import android.app.AlertDialog
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
@@ -103,6 +102,6 @@ class IncrementoReviewerMenu(
     }
 
     private fun toast(text: String) {
-        Toast.makeText(activity, text, Toast.LENGTH_SHORT).show()
+        activity.showToast(text, long = false)
     }
 }

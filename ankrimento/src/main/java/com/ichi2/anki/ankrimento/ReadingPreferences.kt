@@ -84,19 +84,19 @@ data class ReadingPreferences(
 
     fun save(context: Context) {
         context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE).edit {
-            putString(KEY_TYPEFACE, typeface.name)
-            putString(KEY_SPACING, spacing.name)
-            putString(KEY_MARGINS, margins.name)
-            putString(KEY_TURNING, turning.name)
+            putString(PREF_TYPEFACE, typeface.name)
+            putString(PREF_SPACING, spacing.name)
+            putString(PREF_MARGINS, margins.name)
+            putString(PREF_TURNING, turning.name)
         }
     }
 
     companion object {
         private const val PREFERENCES = "ankrimento_reading"
-        private const val KEY_TYPEFACE = "typeface"
-        private const val KEY_SPACING = "spacing"
-        private const val KEY_MARGINS = "margins"
-        private const val KEY_TURNING = "turning"
+        private const val PREF_TYPEFACE = "typeface"
+        private const val PREF_SPACING = "spacing"
+        private const val PREF_MARGINS = "margins"
+        private const val PREF_TURNING = "turning"
 
         fun load(context: Context): ReadingPreferences {
             val preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
@@ -107,10 +107,10 @@ data class ReadingPreferences(
                 default: T,
             ): T = values.firstOrNull { it.name == preferences.getString(key, null) } ?: default
             return ReadingPreferences(
-                typeface = read(KEY_TYPEFACE, Typeface.entries.toTypedArray(), Typeface.ORIGINAL),
-                spacing = read(KEY_SPACING, Spacing.entries.toTypedArray(), Spacing.NORMAL),
-                margins = read(KEY_MARGINS, Margins.entries.toTypedArray(), Margins.NORMAL),
-                turning = read(KEY_TURNING, Turning.entries.toTypedArray(), Turning.SCROLL),
+                typeface = read(PREF_TYPEFACE, Typeface.entries.toTypedArray(), Typeface.ORIGINAL),
+                spacing = read(PREF_SPACING, Spacing.entries.toTypedArray(), Spacing.NORMAL),
+                margins = read(PREF_MARGINS, Margins.entries.toTypedArray(), Margins.NORMAL),
+                turning = read(PREF_TURNING, Turning.entries.toTypedArray(), Turning.SCROLL),
             )
         }
     }

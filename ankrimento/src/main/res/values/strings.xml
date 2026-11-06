@@ -7,28 +7,28 @@
     <string name="ankrimento_share_label">Add to Incremento</string>
     <string name="ankrimento_share_no_link">Share a web link to add it to Incremento</string>
     <string name="ankrimento_new_writing">New Incremento writing…</string>
-    <string name="ankrimento_new_writing_title">Title</string>
+    <string name="ankrimento_new_writing_title" comment="Label of the field for a new writing document's title">Title</string>
     <plurals name="ankrimento_writing_words">
         <item quantity="one">%d word</item>
         <item quantity="other">%d words</item>
     </plurals>
-    <string name="ankrimento_web_back">Previous page</string>
+    <string name="ankrimento_web_back" comment="Web reader tool: go back to the previous web page">Previous page</string>
     <string name="ankrimento_web_select_first">Select some text first</string>
     <string name="ankrimento_epub_missing">This card\'s EPUB file is not on this device</string>
     <string name="ankrimento_epub_previous">Previous chapter</string>
     <string name="ankrimento_epub_next">Next chapter</string>
     <string name="ankrimento_epub_extract">Extract</string>
-    <string name="ankrimento_epub_highlight">Highlight</string>
+    <string name="ankrimento_epub_highlight" comment="Text selection menu action: highlight the selected text">Highlight</string>
     <string name="ankrimento_epub_read_here">Mark read to here</string>
-    <string name="ankrimento_new_card">New card</string>
-    <string name="ankrimento_new_card_title">New card</string>
+    <string name="ankrimento_new_card" comment="Library Add sheet option: make a card from scratch">New card</string>
+    <string name="ankrimento_new_card_title" comment="Title of the sheet that makes a card from scratch">New card</string>
     <string name="ankrimento_new_card_deck">Deck</string>
     <string name="ankrimento_extract_title">New card from extract</string>
     <string name="ankrimento_extract_front">Front</string>
-    <string name="ankrimento_extract_back">Back</string>
+    <string name="ankrimento_extract_back" comment="Label of a card's back field in the new-card sheet">Back</string>
     <string name="ankrimento_extract_note_type">Note type</string>
     <string name="ankrimento_extract_item">Item</string>
-    <string name="ankrimento_extract_as_topic">Topic</string>
+    <string name="ankrimento_extract_as_topic" comment="New-card sheet choice: make the card a topic (vs an item)">Topic</string>
     <string name="ankrimento_extract_priority_value">Priority %d</string>
     <string name="ankrimento_extract_add">Add card</string>
     <string name="ankrimento_extract_keep">Select more text</string>
@@ -91,18 +91,18 @@
     <string name="ankrimento_profile">Incremento profile</string>
     <string name="ankrimento_profile_message">The Anki profile name used on your computer (for syncing). Takes effect after restarting AnkiDroid.</string>
     <!-- Reader screen -->
-    <string name="ankrimento_navigate_up">Back</string>
+    <string name="ankrimento_navigate_up" comment="Accessibility label of the top bar's back arrow">Back</string>
     <string name="ankrimento_more_options">More options</string>
     <string name="ankrimento_show_card">Show card</string>
     <string name="ankrimento_open_reader">Open document</string>
     <string name="ankrimento_revisit_in">Revisit in %s</string>
-    <string name="ankrimento_priority_title">Priority</string>
+    <string name="ankrimento_priority_title" comment="Title of the dialog that changes an element's priority">Priority</string>
     <string name="ankrimento_extract_selection">Extract selection</string>
     <string name="ankrimento_highlight_selection">Highlight selection</string>
     <string name="ankrimento_pdf_page">Page %d</string>
     <string name="ankrimento_pdf_find">Find in document</string>
     <string name="ankrimento_pdf_mark_read">Mark read to this page</string>
-    <string name="ankrimento_pdf_previous">Previous page</string>
+    <string name="ankrimento_pdf_previous" comment="PDF reader button: go to the previous page">Previous page</string>
     <string name="ankrimento_pdf_next">Next page</string>
     <string name="ankrimento_pdf_show_controls">Show reader controls</string>
     <string name="ankrimento_pdf_hide_controls">Hide reader controls</string>
@@ -121,17 +121,17 @@
     <string name="ankrimento_typeface_sans">Sans</string>
     <string name="ankrimento_line_spacing">Line spacing</string>
     <string name="ankrimento_spacing_compact">Compact</string>
-    <string name="ankrimento_spacing_normal">Normal</string>
+    <string name="ankrimento_spacing_normal" comment="Reading settings: normal line spacing">Normal</string>
     <string name="ankrimento_spacing_relaxed">Relaxed</string>
     <string name="ankrimento_margins">Margins</string>
     <string name="ankrimento_margins_narrow">Narrow</string>
-    <string name="ankrimento_margins_normal">Normal</string>
+    <string name="ankrimento_margins_normal" comment="Reading settings: normal page margins">Normal</string>
     <string name="ankrimento_margins_wide">Wide</string>
     <string name="ankrimento_page_turning">Page turning</string>
     <string name="ankrimento_turning_scroll">Scroll</string>
     <string name="ankrimento_turning_pages">Pages</string>
     <string name="ankrimento_contents">Contents</string>
-    <string name="ankrimento_chapter_number">Chapter %d</string>
+    <string name="ankrimento_chapter_number" comment="An EPUB chapter without a title, by number (contents list)">Chapter %d</string>
     <string name="ankrimento_reading_now">Reading now</string>
     <string name="ankrimento_book_progress">%d%%</string>
     <!-- PDF view -->
@@ -158,16 +158,16 @@
     <string name="ankrimento_session_preview_hint">Starting now uses exactly these cards, unless the settings change first.</string>
     <string name="ankrimento_session_preview_start">Start this session</string>
     <string name="ankrimento_session_continue">Continue</string>
-    <string name="ankrimento_session_start">Start</string>
+    <string name="ankrimento_session_start" comment="Button that starts a study session">Start</string>
     <!-- Topic actions in the review bar -->
     <string name="ankrimento_done">Done</string>
     <string name="ankrimento_postpone">Postpone</string>
     <string name="ankrimento_revisit">Revisit</string>
     <string name="ankrimento_topic_next">Next topic</string>
     <string name="ankrimento_topic_sooner">Sooner</string>
-    <string name="ankrimento_topic_later">Later</string>
+    <string name="ankrimento_topic_later" comment="Topic session button: bring the topic back less often (desktop's Less)">Later</string>
     <string name="ankrimento_topic_returns">Read again in %s</string>
-    <string name="ankrimento_topic_menu">Topic</string>
+    <string name="ankrimento_topic_menu" comment="Session bar menu with a topic's actions (Done, Postpone, Revisit)">Topic</string>
     <string name="ankrimento_done_hint">Stop reviewing it; its extracts keep going</string>
     <string name="ankrimento_postpone_hint">Not now: it comes back later</string>
     <string name="ankrimento_revisit_hint">Put it aside until then</string>
@@ -206,12 +206,12 @@
     <string name="ankrimento_add_epub_file">EPUB book</string>
     <string name="ankrimento_add_link">Web page or video, as it is</string>
     <string name="ankrimento_link_hint">https://…</string>
-    <string name="ankrimento_kind_all">All</string>
+    <string name="ankrimento_kind_all" comment="Library filter: documents of every kind">All</string>
     <string name="ankrimento_kind_pdf">PDF</string>
     <string name="ankrimento_kind_epub">EPUB</string>
     <string name="ankrimento_kind_web">Web</string>
     <string name="ankrimento_kind_video">Video</string>
-    <string name="ankrimento_kind_writing">Writing</string>
+    <string name="ankrimento_kind_writing" comment="Library filter: writing documents">Writing</string>
     <string name="ankrimento_add_article">Web article, read as text</string>
     <string name="ankrimento_add_live_page">Web page, as it is</string>
     <!-- Settings screen -->
@@ -225,7 +225,7 @@
     <string name="ankrimento_settings_include_learning">Include learning cards</string>
     <string name="ankrimento_settings_include_due">Include due cards</string>
     <string name="ankrimento_settings_auto_refill">Keep the session deck topped up</string>
-    <string name="ankrimento_settings_review">Review</string>
+    <string name="ankrimento_settings_review" comment="Settings section about reviews">Review</string>
     <string name="ankrimento_settings_fail_pass">Fail / Pass on items</string>
     <string name="ankrimento_settings_more">More: interval and A-factor change</string>
     <string name="ankrimento_settings_less">Less: interval and A-factor change</string>
@@ -256,7 +256,7 @@
         <item quantity="other">%1$d cards (%2$d topics, %3$d items)</item>
     </plurals>
     <string name="ankrimento_document_review_none">No cards match these choices.</string>
-    <string name="ankrimento_document_review_start">Review</string>
+    <string name="ankrimento_document_review_start" comment="Button that starts reviewing a document's cards">Review</string>
     <string name="ankrimento_tree_show">Show in knowledge tree</string>
     <string name="ankrimento_tree_search_hint">Search the tree</string>
     <string name="ankrimento_tree_go_to_parent">Go to parent</string>
@@ -278,14 +278,14 @@
     <string name="ankrimento_timer_title">Focus timer</string>
     <string name="ankrimento_timer_minutes">%d min</string>
     <string name="ankrimento_timer_counts">While it runs, the cards you answer and the PDF and EPUB pages you read are counted.</string>
-    <string name="ankrimento_timer_start">Start</string>
+    <string name="ankrimento_timer_start" comment="Button that starts the focus timer">Start</string>
     <string name="ankrimento_timer_pause">Pause</string>
     <string name="ankrimento_timer_resume">Resume</string>
     <string name="ankrimento_timer_reset">Reset</string>
     <string name="ankrimento_timer_complete">%d-minute focus timer complete</string>
     <string name="ankrimento_timer_this">This focus timer</string>
     <string name="ankrimento_timer_empty">No cards or pages tracked for this timer run.</string>
-    <string name="ankrimento_timer_today">Today</string>
+    <string name="ankrimento_timer_today" comment="Focus timer summary: time studied today">Today</string>
     <string name="ankrimento_timer_today_summary">%1$s and %2$s so far today.</string>
     <plurals name="ankrimento_timer_cards">
         <item quantity="one">%d card reviewed</item>
@@ -305,8 +305,8 @@
     </plurals>
     <string name="ankrimento_library_search">Search titles</string>
     <string name="ankrimento_library_sort">Sort</string>
-    <string name="ankrimento_library_sort_priority">Priority</string>
-    <string name="ankrimento_library_sort_title">Title</string>
+    <string name="ankrimento_library_sort_priority" comment="Library sort order: by priority">Priority</string>
+    <string name="ankrimento_library_sort_title" comment="Library sort order: by title">Title</string>
     <string name="ankrimento_library_sort_recent">Recently read</string>
     <!-- Search ALL -->
     <string name="ankrimento_search_all">Search ALL</string>
@@ -326,7 +326,7 @@
     <string name="ankrimento_epub_find">Find in book</string>
     <string name="ankrimento_epub_go_to_note">Go to note</string>
     <string name="ankrimento_epub_link_back">Back to where you were</string>
-    <string name="ankrimento_epub_chapter_short">Chapter %d</string>
+    <string name="ankrimento_epub_chapter_short" comment="Where an EPUB highlight is: its chapter number (highlights list)">Chapter %d</string>
     <!-- PDF bookmarks and highlights -->
     <string name="ankrimento_marks">Bookmarks and highlights</string>
     <string name="ankrimento_marks_bookmarks">Bookmarks</string>
@@ -336,7 +336,7 @@
     <string name="ankrimento_marks_no_highlights">No highlights yet. Select text and choose Highlight, or extract it.</string>
     <string name="ankrimento_marks_delete_bookmark">Delete bookmark</string>
     <string name="ankrimento_marks_edit_highlight">Colour, note or delete</string>
-    <string name="ankrimento_style_highlight">Highlight</string>
+    <string name="ankrimento_style_highlight" comment="Annotation style name: a filled highlight (vs underline, squiggly...)">Highlight</string>
     <string name="ankrimento_style_underline">Underline</string>
     <string name="ankrimento_style_squiggly">Squiggly</string>
     <string name="ankrimento_style_dashed">Dashed</string>
@@ -385,7 +385,7 @@
     <string name="ankrimento_options_filters_help">Optional Anki searches that further narrow the cards a session picks from. Leave empty to include every topic or item.</string>
     <string name="ankrimento_options_topics_filter">Topics filter</string>
     <string name="ankrimento_options_items_filter">Items filter</string>
-    <string name="ankrimento_options_filter_none">All</string>
+    <string name="ankrimento_options_filter_none" comment="Session options: shown when a topics or items filter is empty (all cards)">All</string>
     <string name="ankrimento_options_filter_hint">For example deck:Physics tag:exam</string>
     <string name="ankrimento_options_tags">Tag quotas</string>
     <string name="ankrimento_options_tags_help">Each tag gets a target share of the session. With strict enforcement the share is filled in full; otherwise the tag is picked more while it is under its share.</string>
@@ -405,7 +405,7 @@
     <string name="ankrimento_options_phases">Phase order</string>
     <string name="ankrimento_options_phases_help">The parts a session fills, first to last. With strict enforcement, a phase turned off is skipped.</string>
     <string name="ankrimento_options_phase_up">Earlier</string>
-    <string name="ankrimento_options_phase_down">Later</string>
+    <string name="ankrimento_options_phase_down" comment="Session options: accessibility label of the button that moves a phase down (later) in the order">Later</string>
     <string name="ankrimento_options_order">Order values</string>
     <string name="ankrimento_options_order_help">Tags and content types with an Order are scheduled first, lowest number first, as desktop\'s priority order does.</string>
     <string name="ankrimento_options_order_none">Order: none</string>
@@ -417,7 +417,7 @@
     <string name="ankrimento_options_scope">Balance over</string>
     <string name="ankrimento_options_scope_help">How far back the scheduler looks when balancing card types and tags.</string>
     <string name="ankrimento_options_scope_session">This session</string>
-    <string name="ankrimento_options_scope_today">Today</string>
+    <string name="ankrimento_options_scope_today" comment="Session options: the balancing scope covering today (vs this session, all time)">Today</string>
     <string name="ankrimento_options_scope_all_time">All time</string>
     <!-- Full backup -->
     <string name="ankrimento_settings_backup">Backup</string>
@@ -481,7 +481,7 @@
     <string name="ankrimento_settings_pdf_force">Always force this appearance for every PDF</string>
     <string name="ankrimento_settings_pdf_delete_buttons">Show delete X on PDF highlights</string>
     <string name="ankrimento_settings_pdf_scroll_top">Scroll to top when going to the next PDF page</string>
-    <string name="ankrimento_settings_writing">Writing</string>
+    <string name="ankrimento_settings_writing" comment="Settings section about writing documents">Writing</string>
     <string name="ankrimento_settings_writing_backups">Create automatic writing backups</string>
     <string name="ankrimento_settings_word_count">Word counting mode</string>
     <string name="ankrimento_settings_word_simple">Simple whitespace</string>

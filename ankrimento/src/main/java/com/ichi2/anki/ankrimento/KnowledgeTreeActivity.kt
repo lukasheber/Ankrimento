@@ -5,7 +5,6 @@ package com.ichi2.anki.ankrimento
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -278,7 +277,7 @@ class KnowledgeTreeActivity : ComponentActivity() {
     }
 
     private fun toast(text: String) {
-        if (text.isNotEmpty()) Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+        if (text.isNotEmpty()) showToast(text)
     }
 
     @OptIn(ExperimentalMaterial3Api::class)

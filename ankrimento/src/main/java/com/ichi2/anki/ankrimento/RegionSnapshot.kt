@@ -11,6 +11,7 @@ import android.util.Base64
 import android.view.PixelCopy
 import android.view.View
 import androidx.compose.ui.geometry.Rect
+import androidx.core.graphics.createBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -39,7 +40,7 @@ internal object RegionSnapshot {
         val bottom = box.bottom.toInt().coerceIn(0, view.height)
         if (right - left < MIN_PX || bottom - top < MIN_PX) return null
         delay(SETTLE_MS)
-        val region = Bitmap.createBitmap(right - left, bottom - top, Bitmap.Config.ARGB_8888)
+        val region = createBitmap(right - left, bottom - top)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             // PixelCopy of a window needs Android 8: the view draws itself instead (text and images; a page
             // the GPU draws, as a PDF's canvas, may come out blank).

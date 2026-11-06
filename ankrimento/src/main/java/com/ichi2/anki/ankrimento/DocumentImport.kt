@@ -5,7 +5,9 @@ package com.ichi2.anki.ankrimento
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import androidx.core.content.edit
 import com.ichi2.anki.CollectionManager
+import com.ichi2.anki.common.time.TimeManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -63,13 +65,15 @@ internal object RecentDocuments {
         cardId: Long,
     ) {
         val preferences = context.getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE)
-        val editor = preferences.edit().putLong(cardId.toString(), System.currentTimeMillis())
         // Keep the list short: drop the oldest entries.
-        preferences.all.entries
-            .sortedByDescending { it.value as? Long ?: 0L }
-            .drop(KEEP - 1)
-            .forEach { editor.remove(it.key) }
-        editor.apply()
+        val oldest =
+            preferences.all.entries
+                .sortedByDescending { it.value as? Long ?: 0L }
+                .drop(KEEP - 1)
+        preferences.edit {
+            putLong(cardId.toString(), TimeManager.time.intTimeMS())
+            oldest.forEach { remove(it.key) }
+        }
     }
 
     /** Card ids, most recently opened first. */

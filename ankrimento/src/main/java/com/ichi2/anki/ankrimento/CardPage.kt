@@ -5,6 +5,7 @@ package com.ichi2.anki.ankrimento
 import android.content.Context
 import android.webkit.WebResourceResponse
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.ichi2.anki.libanki.Collection
 import com.ichi2.anki.libanki.stripAvRefs
 import org.json.JSONObject
@@ -145,11 +146,7 @@ object CardPage {
         request: android.webkit.WebResourceRequest,
     ): WebResourceResponse? {
         val url = request.url
-        if (url.host !=
-            android.net.Uri
-                .parse(BASE_URL)
-                .host
-        ) {
+        if (url.host != BASE_URL.toUri().host) {
             return null
         }
         val path = url.path?.takeIf { it.startsWith(MEDIA_PATH) }?.removePrefix(MEDIA_PATH) ?: return null

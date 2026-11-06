@@ -13,9 +13,9 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.MediaController
-import android.widget.Toast
 import android.widget.VideoView
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
@@ -64,7 +64,7 @@ class VideoReaderActivity : ReaderActivity() {
             var video =
                 runCatching { withCol { Ankrimento.videoOpen(cardId) } }.getOrElse { error ->
                     Timber.w(error, "Opening a video topic failed")
-                    Toast.makeText(this@VideoReaderActivity, error.message ?: error.javaClass.simpleName, Toast.LENGTH_LONG).show()
+                    this@VideoReaderActivity.showToast(error.message ?: error.javaClass.simpleName)
                     finish()
                     return@launch
                 }
@@ -348,9 +348,9 @@ class VideoReaderActivity : ReaderActivity() {
     private fun openExternally(url: String) {
         if (url.isEmpty()) return
         try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
         } catch (e: ActivityNotFoundException) {
-            Toast.makeText(this, url, Toast.LENGTH_LONG).show()
+            showToast(url)
         }
     }
 

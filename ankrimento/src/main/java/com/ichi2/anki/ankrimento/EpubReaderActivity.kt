@@ -13,7 +13,6 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -495,7 +494,7 @@ class EpubReaderActivity : ReaderActivity() {
         val opened =
             runCatching { withCol { Ankrimento.epubOpen(cardId, index) } }.getOrElse { error ->
                 Timber.w(error, "Opening an EPUB chapter failed")
-                Toast.makeText(this, R.string.ankrimento_epub_missing, Toast.LENGTH_LONG).show()
+                showToast(R.string.ankrimento_epub_missing)
                 finish()
                 return
             }

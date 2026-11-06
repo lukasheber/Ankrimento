@@ -5,7 +5,6 @@ package com.ichi2.anki.ankrimento
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -103,7 +102,7 @@ class SessionOptionsActivity : ComponentActivity() {
         value: Any,
     ) = change(JSONObject().put(key, value))
 
-    private fun toast(text: String) = Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    private fun toast(text: String) = showToast(text)
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
