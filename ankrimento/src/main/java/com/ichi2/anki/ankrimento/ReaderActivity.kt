@@ -301,8 +301,8 @@ abstract class ReaderActivity : ComponentActivity() {
     /** The pending extract from this document, in the extract sheet. */
     private fun showExtractSheet() {
         lifecycleScope.launch {
-            val (loaded, labels) =
-                runCatching { withCol { Ankrimento.extractDraft(cardId) to Ankrimento.extractBatchLabels() } }
+            val (loaded, labels, mediaDir) =
+                runCatching { withCol { Triple(Ankrimento.extractDraft(cardId), Ankrimento.extractBatchLabels(), media.dir) } }
                     .getOrElse { error ->
                         Timber.w(error, "Loading the extract failed")
                         return@launch
@@ -310,6 +310,7 @@ abstract class ReaderActivity : ComponentActivity() {
             val draft = ExtractNoteTypes.choose(this@ReaderActivity, readerKind, loaded)
             sheet = {
                 ExtractSheet(
+                    mediaDir = mediaDir,
                     batchLabel = labels["button"],
                     onBatch = { choice, text -> showBatchSheet(labels, choice, text) },
                     draft = draft,

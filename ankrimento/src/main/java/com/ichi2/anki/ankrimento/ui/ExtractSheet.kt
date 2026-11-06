@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ichi2.anki.ankrimento.Ankrimento
@@ -71,8 +73,27 @@ internal fun ExtractSheet(
     onDiscard: () -> Unit,
     batchLabel: String? = null,
     onBatch: (ExtractChoice, String) -> Unit = { _, _ -> },
+    mediaDir: java.io.File? = null,
 ) {
-    val originals = remember(draft) { draft.fields.map { Html.fromHtml(it, Html.FROM_HTML_MODE_COMPACT).toString().trim() } }
+    // An image (a PDF snapshot) shows above its field; its stand-in character stays out of the text.
+    val originals =
+        remember(
+            draft,
+        ) {
+            draft.fields.map {
+                Html
+                    .fromHtml(it, Html.FROM_HTML_MODE_COMPACT)
+                    .toString()
+                    .replace(OBJECT_CHARACTER, "")
+                    .trim()
+            }
+        }
+    val images =
+        remember(draft) {
+            draft.fields.map { html ->
+                IMAGE_SOURCE.findAll(html).map { Html.fromHtml(it.groupValues[1], 0).toString() }.toList()
+            }
+        }
     var texts by remember(draft) { mutableStateOf(originals) }
     var isTopic by remember(draft) { mutableStateOf(draft.isTopic) }
     var noteType by remember(draft) { mutableStateOf(draft.noteType) }
@@ -111,6 +132,7 @@ internal fun ExtractSheet(
             }
 
             texts.forEachIndexed { index, text ->
+                if (mediaDir != null) images.getOrNull(index)?.forEach { name -> FieldImage(java.io.File(mediaDir, name)) }
                 OutlinedTextField(
                     value = text,
                     onValueChange = { changed -> texts = texts.toMutableList().also { it[index] = changed } },
@@ -147,7 +169,7 @@ internal fun ExtractSheet(
                 val fields = draft.fields.mapIndexed { index, html -> fieldHtml(html, originals[index], texts[index]) }
                 return ExtractChoice(fields, noteType, isTopic, priority.roundToInt().toDouble(), deck)
             }
-            val ready = texts.firstOrNull()?.isNotBlank() == true
+            val ready = texts.firstOrNull()?.isNotBlank() == true || images.firstOrNull()?.isNotEmpty() == true
             // The main action first; the other two say what they do, so nothing seems lost.
             Button(onClick = { onAdd(choice()) }, enabled = ready, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.ankrimento_extract_add))
@@ -248,3 +270,36 @@ private fun Chooser(
         }
     }
 }
+
+private const val OBJECT_CHARACTER = "\uFFFC"
+private val IMAGE_SOURCE = Regex("""<img[^>]*\ssrc="([^"]+)"""")
+
+/** A field's image from the collection's media, scaled down to the sheet. */
+@Composable
+private fun FieldImage(file: java.io.File) {
+    val bitmap =
+        remember(file) {
+            runCatching {
+                val bounds =
+                    android.graphics.BitmapFactory
+                        .Options()
+                        .apply { inJustDecodeBounds = true }
+                android.graphics.BitmapFactory.decodeFile(file.path, bounds)
+                var sample = 1
+                while (bounds.outWidth / sample > MAX_IMAGE_PX || bounds.outHeight / sample > MAX_IMAGE_PX) sample *= 2
+                android.graphics.BitmapFactory.decodeFile(
+                    file.path,
+                    android.graphics.BitmapFactory
+                        .Options()
+                        .apply { inSampleSize = sample },
+                )
+            }.getOrNull()
+        } ?: return
+    androidx.compose.foundation.Image(
+        bitmap = bitmap.asImageBitmap(),
+        contentDescription = null,
+        modifier = Modifier.heightIn(max = 160.dp),
+    )
+}
+
+private const val MAX_IMAGE_PX = 1024

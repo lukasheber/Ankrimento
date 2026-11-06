@@ -37,6 +37,9 @@ MSG_FILL_FIELD = "incremento_fill_field:"
 MSG_OPEN_LINK = "incremento_pdf_open_link:"
 MSG_GET_PAGE_CARDS = "incremento_get_page_cards:"
 MSG_PAGE_LINKS = "incremento_pdf_page_links:"
+MSG_SNAPSHOT = "incremento_pdf_snapshot:"
+# frontend/pdf_dock.py: _MAX_PDF_SNAPSHOT_BYTES
+_MAX_SNAPSHOT_BYTES = 8 * 1024 * 1024
 MSG_LINK_PREVIEW_SIZE = "incremento_pdf_link_preview_size:"
 MSG_LINK_PREVIEW_ZOOM = "incremento_pdf_link_preview_zoom:"
 
@@ -395,6 +398,9 @@ def handle(card_id: int, msg: str) -> list[str]:
         if int(data.get("cardId", 0) or 0) == card_id:
             mw.notify_host("open_url", url=str(data.get("url") or ""))
         return []
+    if msg.startswith(MSG_SNAPSHOT):
+        _snapshot(card_id, msg)
+        return []
     if msg.startswith(MSG_PAGE_LINKS):
         from ankrimento import pdf_links
 
@@ -405,6 +411,46 @@ def handle(card_id: int, msg: str) -> list[str]:
     # Desktop-only features (annotation sync, snapshots, due-card review from
     # the reader) are not handled yet.
     return []
+
+
+def _snapshot(card_id: int, msg: str) -> None:
+    """Mirrors ``_handle_pdf_snapshot``: the region's image saved as media and put in the extract, with
+    desktop's link back to the page after it. Desktop asks which field takes it; the phone puts it in the
+    front, as the extract sheet edits the fields after."""
+    import base64
+    import tempfile
+    from html import escape
+
+    from incremento.backend.i18n import t
+
+    from ankrimento import extract
+
+    try:
+        data = json.loads(msg[len(MSG_SNAPSHOT):])
+        if int(data.get("cardId", 0) or 0) != card_id:
+            return
+        image = str(data.get("image") or "")
+        if "," in image:
+            image = image.split(",", 1)[1]
+        if not image or len(image) > ((_MAX_SNAPSHOT_BYTES * 4) // 3) + 8:
+            raise ValueError(t("reader_pdf_snapshot_too_large"))
+        raw = base64.b64decode(image, validate=True)
+        if not raw or len(raw) > _MAX_SNAPSHOT_BYTES:
+            raise ValueError(t("reader_pdf_snapshot_empty_or_large"))
+        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as file:
+            file.write(raw)
+            path = file.name
+        try:
+            name = runtime.current().col.media.add_file(path)
+        finally:
+            os.unlink(path)
+        page = int(data.get("page", 0) or 0) or 1
+        html = f'<img src="{escape(name, quote=True)}">'
+        citation = _citation(card_id, page, "", "") if extract.source_link_on("pdf") else ""
+        extract.add_html_to_draft(card_id, 0, html + ("<br>" + citation if citation else ""), page=page)
+        mw.notify_host("extract_draft", card_id=card_id)
+    except Exception as error:  # noqa: BLE001 - shown, as desktop's showInfo does
+        mw.notify_host("message", kind="info", text=t("reader_pdf_snapshot_failed", error=error))
 
 
 def _save_link_preview(card_id: int, msg: str) -> None:

@@ -493,4 +493,6 @@
     <string name="ankrimento_support_bundle">Izradi paket za podršku</string>
     <string name="ankrimento_support_bundle_summary">Incrementove postavke bez osobnih podataka i nedavna dijagnostika, za prijavu pogreške: bez teksta kartica, imena i datoteka</string>
     <string name="ankrimento_support_bundle_failed">Izrada paketa za podršku nije uspjela: %1$s</string>
+    <string name="ankrimento_pdf_snapshot">Snimka područja</string>
+    <string name="ankrimento_pdf_snapshot_hint">Povucite okvir preko dijela stranice koji želite spremiti kao sliku</string>
 </resources>

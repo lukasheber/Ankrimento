@@ -480,4 +480,6 @@
     <string name="ankrimento_support_bundle">Create a support bundle</string>
     <string name="ankrimento_support_bundle_summary">Incremento\'s settings without personal data and its recent diagnostics, to attach to a bug report: no card text, names or files</string>
     <string name="ankrimento_support_bundle_failed">Creating the support bundle failed: %1$s</string>
+    <string name="ankrimento_pdf_snapshot">Snapshot of a region</string>
+    <string name="ankrimento_pdf_snapshot_hint">Drag a box over the part of the page to keep as an image</string>
 </resources>

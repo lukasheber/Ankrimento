@@ -467,4 +467,6 @@
     <string name="ankrimento_support_bundle">创建支持包</string>
     <string name="ankrimento_support_bundle_summary">Incremento 去除个人信息的设置和近期诊断，可附在错误报告中：不含卡片文本、名称或文件</string>
     <string name="ankrimento_support_bundle_failed">创建支持包失败：%1$s</string>
+    <string name="ankrimento_pdf_snapshot">区域截图</string>
+    <string name="ankrimento_pdf_snapshot_hint">在页面上拖出一个框，框内部分将保存为图片</string>
 </resources>

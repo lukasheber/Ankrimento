@@ -493,4 +493,6 @@
     <string name="ankrimento_support_bundle">Criar um pacote de suporte</string>
     <string name="ankrimento_support_bundle_summary">As configurações do Incremento sem dados pessoais e seus diagnósticos recentes, para anexar a um relato de erro: sem texto de cartões, nomes nem arquivos</string>
     <string name="ankrimento_support_bundle_failed">Não foi possível criar o pacote de suporte: %1$s</string>
+    <string name="ankrimento_pdf_snapshot">Captura de uma área</string>
+    <string name="ankrimento_pdf_snapshot_hint">Arraste um retângulo sobre a parte da página a guardar como imagem</string>
 </resources>

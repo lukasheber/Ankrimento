@@ -154,7 +154,7 @@ Mobile principles that guide every item:
 | 🟡 | Extract card from the current reviewer card [11] | AnkiDroid's reviewer: Extract on the selected text's toolbar opens the extract sheet with the card as its source (priority from it, a child of it in the knowledge tree); checked on the tablet. Items in the learning screen have the same Extract on their selection (not yet tried on a device). Not yet in AnkiDroid's new study screen |
 | ✅ | Add Card dock / card from scratch with priority [11] | Library → Add → New card: Item/Topic, front/back, note type, deck (upstream's defaults) and priority (50, desktop's scratch priority); no source and no place in the tree, as on desktop. Made without Incremento's metadata fields, which would change the note type and force a full sync |
 | ✅ | Batch Q/A cards [11] | Batch Q/A… on the extract sheet (readers, reviewer extracts, new card): the text as alternating lines or Q:/A: blocks, previewed as desktop's parser reads it, then one card per valid pair with the sheet's type, note type and priority, under the source (or in the chosen deck). Desktop's labels and summary. Checked on the tablet |
-| ⬜ | PDF snapshot previews on cards [13] | Mobile already shows snapshots created on desktop |
+| ✅ | PDF snapshot previews on cards [13] | PDF reader ⋮ → Snapshot of a region: drag a box over the page; it is copied from the screen and handed to Incremento as the viewer's own snapshot message, so it is kept as desktop keeps it (media, then the extract's front with desktop's link to the page). The extract sheet shows the image above its field. Desktop asks which field takes it; the phone uses the front. Checked on the tablet. Snapshots made on desktop show on cards as before |
 
 ## 5. Statistics and focus [10]
 
@@ -260,7 +260,7 @@ Things desktop has:
 Upkeep and rarely used:
 
 36. ~~Support bundle, card-format update notice~~ (done). Clean-up of unused data stays on desktop.
-37. Batch Q/A cards, PDF snapshot previews.
+37. ~~Batch Q/A cards, PDF snapshot previews~~ (done).
 38. DjVu documents. Implement only if there is a readly available library to read DjVu files.
 39. PDF reflow, only if extracts and highlights map back to the PDF exactly.
 
