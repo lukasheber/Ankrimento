@@ -130,6 +130,11 @@ class PdfReaderActivity : ReaderActivity() {
             for (message in messages) {
                 if (!isDestroyed) followViewer(message)
                 if (choosingDestination && DESTINATION_KEEPS_NOTHING.any { message.startsWith(it) }) continue
+                if (message.startsWith(HIGHLIGHT_NOTE_PREFIX)) {
+                    val id = runCatching { JSONObject(message.removePrefix(HIGHLIGHT_NOTE_PREFIX)).optString("id") }.getOrDefault("")
+                    if (!isDestroyed) runOnUiThread { changeMarks(openHighlight = id.ifBlank { null }) { "" } }
+                    continue
+                }
                 if (message.startsWith(CONTENTS_PREFIX)) {
                     if (!isDestroyed) showContents(message.removePrefix(CONTENTS_PREFIX))
                     continue
@@ -187,7 +192,10 @@ class PdfReaderActivity : ReaderActivity() {
         changeMarks { "" }
     }
 
-    private fun changeMarks(change: () -> String) {
+    private fun changeMarks(
+        openHighlight: String? = null,
+        change: () -> String,
+    ) {
         lifecycleScope.launch {
             runCatching {
                 withCol {
@@ -213,6 +221,7 @@ class PdfReaderActivity : ReaderActivity() {
                         onBookmarkComment = { id, comment -> changeMarks { Ankrimento.pdfBookmarkComment(cardId, id, comment) } },
                         onDeleteHighlight = { id -> changeMarks { Ankrimento.pdfDeleteHighlight(cardId, id) } },
                         onDismiss = { sheet = null },
+                        openHighlight = openHighlight,
                     )
                 }
             }.onFailure { error ->
@@ -836,6 +845,9 @@ class PdfReaderActivity : ReaderActivity() {
 
         /** The viewer's request to show its outline, as desktop's contents popup gets it. */
         private const val CONTENTS_PREFIX = "incremento_pdf_contents:"
+
+        /** The viewer's note button on a highlight: the phone's highlight dialog answers it. */
+        private const val HIGHLIGHT_NOTE_PREFIX = "incremento_pdf_hl_note:"
 
         /** Marks the page while upstream's control panel is hidden. */
         private const val COMPACT_CLASS = "ankrimento-compact"

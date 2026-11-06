@@ -119,9 +119,11 @@ internal fun MarksSheet(
     placeOf: @Composable (MarkBookmark) -> String = { stringResource(R.string.ankrimento_page_short, it.page) },
     addLabel: String? = null,
     canAdd: Boolean = page > 0,
+    openHighlight: String? = null,
 ) {
-    var tab by rememberSaveable { mutableIntStateOf(if (bookmarks == null) 1 else 0) }
-    var chosen by remember { mutableStateOf<String?>(null) }
+    // The viewer's own note button opens the sheet on that highlight's dialog.
+    var tab by rememberSaveable { mutableIntStateOf(if (bookmarks == null || openHighlight != null) 1 else 0) }
+    var chosen by remember { mutableStateOf(openHighlight) }
     var commenting by remember { mutableStateOf<MarkBookmark?>(null) }
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(Modifier.navigationBarsPadding().padding(bottom = 8.dp)) {

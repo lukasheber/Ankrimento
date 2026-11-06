@@ -57,8 +57,6 @@ NOT_ANSWERED = {
     "incremento_pdf_due_review": "PDF reader menu -> Review cards from this document",
     # Known gaps: desktop dialogs the viewer opens that the phone does not have yet (UPSTREAM.md).
     "incremento_pdf_hl_color": "GAP: desktop's highlight colour chooser",
-    "incremento_pdf_hl_note": "GAP: desktop's highlight note dialog (the phone's Bookmarks and highlights sheet edits notes)",
-    "incremento_epub_hl_note": "GAP: desktop's highlight note dialog (the phone's Bookmarks and highlights sheet edits notes)",
     "incremento_pdf_hl_card": "GAP: a card from one highlight",
     "incremento_pdf_hl_bulk_cards": "GAP: cards from many highlights",
     "incremento_open_card": "GAP: opening a card listed on the page",

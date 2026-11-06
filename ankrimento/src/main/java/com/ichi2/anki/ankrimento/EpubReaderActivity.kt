@@ -141,6 +141,11 @@ class EpubReaderActivity : ReaderActivity() {
         Ankrimento.readerScope.launch {
             for (message in messages) {
                 val current = section ?: continue
+                if (message.startsWith(HIGHLIGHT_NOTE_PREFIX)) {
+                    val id = runCatching { JSONObject(message.removePrefix(HIGHLIGHT_NOTE_PREFIX)).optString("id") }.getOrDefault("")
+                    if (!isDestroyed) runOnUiThread { changeHighlights(openHighlight = id.ifBlank { null }) { "" } }
+                    continue
+                }
                 if (!isDestroyed) showProgress(current, message)
                 runCatching { withCol { Ankrimento.epubMessage(cardId, current.index, message) } }
                     .onSuccess { action -> if (!isDestroyed) action?.let { act(current, it) } }
@@ -249,7 +254,10 @@ class EpubReaderActivity : ReaderActivity() {
     }
 
     /** The book's highlights; each change is applied, then the page and the sheet follow. */
-    private fun changeHighlights(change: () -> String) {
+    private fun changeHighlights(
+        openHighlight: String? = null,
+        change: () -> String,
+    ) {
         lifecycleScope.launch {
             runCatching {
                 withCol {
@@ -292,6 +300,7 @@ class EpubReaderActivity : ReaderActivity() {
                             changeHighlights { Ankrimento.epubDeleteHighlight(cardId, id, shown) }
                         },
                         onDismiss = { sheet = null },
+                        openHighlight = openHighlight,
                     )
                 }
             }.onFailure { error ->
@@ -510,6 +519,9 @@ class EpubReaderActivity : ReaderActivity() {
 
         /** Upstream's _PYCMD_BRIDGE; each message is prefix + nonce + ":" + message. */
         private const val MESSAGE_PREFIX = "__incremento_epub__:"
+
+        /** The page's note button on a highlight: the phone's highlight dialog answers it. */
+        private const val HIGHLIGHT_NOTE_PREFIX = "incremento_epub_hl_note:"
         private const val PROGRESS_PREFIX = "incremento_epub_progress:"
 
         /**
