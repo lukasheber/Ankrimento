@@ -84,7 +84,7 @@ Mobile principles that guide every item:
 | ✅ | Bookmarks, annotations, highlight notes, colours | Bookmarks and highlights sheet (⋮): bookmark the page, open or delete bookmarks; highlights by page with their colour (upstream's eight) and note, each opened, recoloured, noted or deleted; Highlight on the selection menu; upstream's six annotation styles (highlight, underline, squiggly, dashed, dotted, strikethrough) in each highlight's dialog, drawn by the viewer; a comment on each bookmark |
 | ✅ | Review all cards attached to the document [6] | PDF and EPUB readers' ⋮ → Review cards from this document: desktop's choices (all or due, topics/items, whole document or up to here, order) with a live count, selected by upstream's media review; Review builds desktop's PDF/EPUB review deck and opens AnkiDroid's reviewer. Checked on the tablet |
 | ✅ | Cross-references and page links [6] | The PDF's own links (to a figure, a citation, another page) are the viewer's: they jump, keep a way back and preview; the preview's size and zoom are kept per profile as on desktop. Page links (desktop's connections between PDF pages): ⋮ → Page links lists the page's links from either end, each opened (at its page, the other PDF's reader) or removed; Link this page… picks a PDF from the library, which opens only to choose the place (nothing it does is saved for that PDF), then Link to this page. The viewer's own Page links panel, when its controls are shown, uses the same links. Desktop's daily page limit bounds where links point. Checked on the tablet. Not here: desktop's reference window beside the reader (the phone opens the other reader) and recordings linked to a page |
-| ⬜ | DjVu documents [6] | |
+| ➖ | DjVu documents [6] | Not built: desktop converts DjVu to PDF with DjVuLibre's tools (ddjvu, djvutxt) and PyMuPDF, none of which the phone has, and no ready Android library does it. A DjVu imported on desktop arrives as a PDF |
 | ✅ | Searchable PDF text / OCR status [6, 13] | The device reads each PDF's text for Find and Search ALL; a PDF without a text layer is named as such in Find, which says Incremento on a computer can add one with OCR when importing (Tesseract is desktop's) |
 | ✅ | Pinch zoom: the page follows the fingers, then upstream's zoom applies (saved per document); Fit to width is always exactly 100% | |
 | ⬜ | **Reflow** for small screens: the page's text re-flowed to the screen width, EPUB-style | Only if extracts, highlights and annotations made in reflow map back to their exact places in the original PDF layout (and show there on desktop); otherwise not done |
@@ -261,8 +261,8 @@ Upkeep and rarely used:
 
 36. ~~Support bundle, card-format update notice~~ (done). Clean-up of unused data stays on desktop.
 37. ~~Batch Q/A cards, PDF snapshot previews~~ (done).
-38. DjVu documents. Implement only if there is a readly available library to read DjVu files.
-39. PDF reflow, only if extracts and highlights map back to the PDF exactly.
+38. ~~DjVu documents~~ (not built: no ready library on the phone; desktop's import makes them PDFs).
+39. PDF reflow: not built. pdf.js offers no reflowed layout whose selections map back exactly to the PDF's text positions, so extracts and highlights made in it could not land in place on desktop.
 
 To check rather than build: the empty-session dialog, the leech notice and the
 automatic backup folder picker on a device; native review of each translation;
