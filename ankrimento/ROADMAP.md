@@ -270,7 +270,7 @@ To check rather than build: the empty-session dialog, the leech notice and the
 automatic backup folder picker on a device; native review of each translation;
 UI/UX tests for the learning loop for incremental reading/studying, and improvements, think how mobile users use the features and how buttons and itens are shown. Think about about an incremental reading learning loop like the one in supermemo. user see topic, edit topics easily, make cloze to generate itens, etc.
 
-Create procedure to implement upstream changes to guard compatibility with desktop Incremento. tracking parity check, parity feature check, tests, etc. 
+~~Create procedure to implement upstream changes to guard compatibility with desktop Incremento~~ (done: `UPSTREAM.md`, and `tools/parity_check.py`, also run by the Python tests, which lists desktop messages, compiled names, translation keys, shipped files and mirrored functions the phone relies on, and the known gaps).
 
 Deferred: sync add-on and other sync work (until agreed with upstream's
 author), SuperMemo import, Webpage to PDF.
