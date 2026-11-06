@@ -741,10 +741,29 @@ def library() -> str:
 
 
 def card_title(card_id: int) -> str:
-    """The title the knowledge tree shows for this card (its first field, as text)."""
+    """The title the knowledge tree shows for this card (its first field, as text), made readable for
+    the readers' top bar: a cloze hides its own answer, sound tags are left out, image occlusion shows its header."""
+    import re
+
     from incremento.backend.knowledge_tree import _card_title
 
-    return _card_title(runtime.current().col.get_card(int(card_id)))
+    card = runtime.current().col.get_card(int(card_id))
+    title = str(_card_title(card))
+    if "image-occlusion:" in title:
+        note = card.note()
+        header = re.sub(r"<[^>]+>", "", note["Header"]).strip() if "Header" in note else ""
+        return header or str(note.note_type()["name"])
+    # As the card's question shows it: this card's own deletion hidden ("[hint]" or "[...]"), the others shown.
+    own = card.ord + 1
+
+    def cloze(match: re.Match) -> str:
+        if int(match.group(1)) != own:
+            return match.group(2)
+        return f"[{match.group(3) or '...'}]"
+
+    readable = re.sub(r"\{\{c(\d+)::(.*?)(?:::([^}]*))?\}\}", cloze, title, flags=re.S)
+    readable = re.sub(r"\[sound:[^\]]*\]", "", readable)
+    return " ".join(readable.split()) or title
 
 
 def video_extract(card_id: int, seconds: float) -> None:

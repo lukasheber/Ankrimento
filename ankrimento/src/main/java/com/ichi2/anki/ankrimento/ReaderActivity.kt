@@ -86,6 +86,9 @@ abstract class ReaderActivity : ComponentActivity() {
     /** Where in the document the reader is, under the title ("Page 4"). */
     protected var subtitle by mutableStateOf<String?>(null)
 
+    /** In a session, what this element is and how many are left, shown when the reader has no subtitle of its own. */
+    private var sessionLine by mutableStateOf<String?>(null)
+
     /** The reader's own tools, most used first. */
     protected var tools by mutableStateOf<List<ReaderTool>>(emptyList())
 
@@ -143,7 +146,7 @@ abstract class ReaderActivity : ComponentActivity() {
                 val finishedRun by FocusTimer.finished.collectAsState()
                 ReaderScaffold(
                     title = title,
-                    subtitle = subtitle,
+                    subtitle = subtitle ?: sessionLine,
                     // Desktop's Extract review button hidden: so is the extract tool (the selection menu keeps it).
                     tools =
                         if ("extract" in
@@ -232,6 +235,20 @@ abstract class ReaderActivity : ComponentActivity() {
                         } else {
                             emptySet()
                         }
+                    if (inSession) {
+                        val left = SessionDeck.remaining(this, Ankrimento.sessionDeckName()).second
+                        val kind =
+                            getString(
+                                if (readerKind ==
+                                    "item"
+                                ) {
+                                    R.string.ankrimento_extract_item
+                                } else {
+                                    R.string.ankrimento_extract_as_topic
+                                },
+                            )
+                        sessionLine = kind + " · " + resources.getQuantityString(R.plurals.ankrimento_session_remaining, left, left)
+                    }
                     Ankrimento.cardTitle(cardId) to if (inSession) answerButtonsFor(this) else null
                 }
             }.onSuccess { (cardTitle, buttons) ->
