@@ -87,7 +87,7 @@ Mobile principles that guide every item:
 | ➖ | DjVu documents [6] | Not built: desktop converts DjVu to PDF with DjVuLibre's tools (ddjvu, djvutxt) and PyMuPDF, none of which the phone has, and no ready Android library does it. A DjVu imported on desktop arrives as a PDF |
 | ✅ | Searchable PDF text / OCR status [6, 13] | The device reads each PDF's text for Find and Search ALL; a PDF without a text layer is named as such in Find, which says Incremento on a computer can add one with OCR when importing (Tesseract is desktop's) |
 | ✅ | Pinch zoom: the page follows the fingers, then upstream's zoom applies (saved per document); Fit to width is always exactly 100% | |
-| ⬜ | **Reflow** for small screens: the page's text re-flowed to the screen width, EPUB-style | Only if extracts, highlights and annotations made in reflow map back to their exact places in the original PDF layout (and show there on desktop); otherwise not done |
+| ➖ | **Reflow** for small screens: the page's text re-flowed to the screen width, EPUB-style | Not done: extracts, highlights and annotations made in a reflow would not map back to their exact places in the PDF (pdf.js has no such mapping), so they could not show there on desktop |
 | ✅ | Swipe sideways to turn pages (while the page fits the width) | |
 | ✅ | Pull past the end of a page for the next one, past its top for the previous ("Release for the next page") | Through upstream's page turns, so its daily limit applies |
 
