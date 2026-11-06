@@ -113,6 +113,16 @@ class AnkrimentoSmokeTestActivity : Activity() {
                             pdf?.let { log("imported PDF card $it") }
                             epub?.let { log("imported EPUB card $it") }
                             val cardId = intent.getLongExtra(EXTRA_OPEN, 0L).takeIf { it > 0 } ?: epub ?: pdf
+                            // A video's subtitles from files on the device (the picker is a system screen).
+                            cardId?.let { video ->
+                                intent
+                                    .getStringExtra(
+                                        EXTRA_SUBTITLE,
+                                    )?.let { Ankrimento.videoAttachSubtitle(video, "target", it, File(it).name) }
+                                intent.getStringExtra(EXTRA_SUBTITLE_REFERENCE)?.let {
+                                    Ankrimento.videoAttachSubtitle(video, "reference", it, File(it).name)
+                                }
+                            }
                             cardId?.let { it to Ankrimento.cardReader(it) }
                         }
                     }
@@ -342,6 +352,8 @@ class AnkrimentoSmokeTestActivity : Activity() {
         const val EXTRA_MARKDOWN = "markdown"
         const val EXTRA_AUDIO = "audio"
         const val EXTRA_LOCAL_VIDEO = "localvideo"
+        const val EXTRA_SUBTITLE = "subtitle"
+        const val EXTRA_SUBTITLE_REFERENCE = "subtitleref"
         const val EXTRA_ITEM = "item"
         const val TYPED_NOTE_TYPE = "Typed test"
         const val TTS_NOTE_TYPE = "TTS test"

@@ -189,6 +189,13 @@
     <string name="ankrimento_video_clip_cut">剪切</string>
     <string name="ankrimento_video_clip_cutting">正在剪切片段…</string>
     <string name="ankrimento_video_clip_format">手机无法剪切这种格式的视频（MP4 可以）；桌面版的 Create Mobile Clip 可以。</string>
+    <string name="ankrimento_video_subtitles">字幕</string>
+    <string name="ankrimento_subtitles_hint">同时显示两种语言，与桌面版相同：上面是你学习的语言，下面是你熟悉的语言。支持 SRT 或 WebVTT 文件；视频自带的字幕轨在桌面版下载。</string>
+    <string name="ankrimento_subtitle_target">目标语言</string>
+    <string name="ankrimento_subtitle_reference">参考语言</string>
+    <string name="ankrimento_subtitle_none">无</string>
+    <string name="ankrimento_subtitle_add">添加文件</string>
+    <string name="ankrimento_subtitle_remove">移除</string>
     <string name="ankrimento_video_back_10">后退 10 秒</string>
     <!-- Library -->
     <string name="ankrimento_library">书库</string>

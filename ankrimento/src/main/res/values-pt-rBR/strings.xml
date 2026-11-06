@@ -201,6 +201,13 @@
     <string name="ankrimento_video_clip_cut">Cortar</string>
     <string name="ankrimento_video_clip_cutting">Cortando o clipe…</string>
     <string name="ankrimento_video_clip_format">O formato deste vídeo não pode ser cortado no celular (um MP4 pode); o Create Mobile Clip do desktop consegue.</string>
+    <string name="ankrimento_video_subtitles">Legendas</string>
+    <string name="ankrimento_subtitles_hint">Dois idiomas ao mesmo tempo, como no desktop: o que você aprende e, abaixo, um que você conhece. Arquivos SRT ou WebVTT; as faixas do próprio vídeo são baixadas no desktop.</string>
+    <string name="ankrimento_subtitle_target">Idioma estudado</string>
+    <string name="ankrimento_subtitle_reference">Idioma de referência</string>
+    <string name="ankrimento_subtitle_none">Nenhuma</string>
+    <string name="ankrimento_subtitle_add">Adicionar arquivo</string>
+    <string name="ankrimento_subtitle_remove">Remover</string>
     <string name="ankrimento_video_back_10">Voltar 10 segundos</string>
     <!-- Library -->
     <string name="ankrimento_library">Biblioteca</string>

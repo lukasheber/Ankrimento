@@ -201,6 +201,13 @@
     <string name="ankrimento_video_clip_cut">Izreži</string>
     <string name="ankrimento_video_clip_cutting">Izrezivanje isječka…</string>
     <string name="ankrimento_video_clip_format">Format ovog videa ne može se izrezati na telefonu (MP4 može); Create Mobile Clip na računalu može.</string>
+    <string name="ankrimento_video_subtitles">Titlovi</string>
+    <string name="ankrimento_subtitles_hint">Dva jezika odjednom, kao na računalu: onaj koji učiš i ispod njega onaj koji znaš. SRT ili WebVTT datoteke; vlastiti zapisi videa preuzimaju se na računalu.</string>
+    <string name="ankrimento_subtitle_target">Ciljni jezik</string>
+    <string name="ankrimento_subtitle_reference">Referentni jezik</string>
+    <string name="ankrimento_subtitle_none">Nema</string>
+    <string name="ankrimento_subtitle_add">Dodaj datoteku</string>
+    <string name="ankrimento_subtitle_remove">Ukloni</string>
     <string name="ankrimento_video_back_10">10 sekundi natrag</string>
     <!-- Library -->
     <string name="ankrimento_library">Knjižnica</string>

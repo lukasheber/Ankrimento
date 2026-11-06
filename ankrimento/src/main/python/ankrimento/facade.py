@@ -1408,3 +1408,22 @@ def import_local_video(path: str, title: str, deck_name: str = "Topics", priorit
     from ankrimento import video_reader
 
     return video_reader.import_local(str(path), str(title), str(deck_name), float(priority))
+
+
+def video_subtitles(card_id: int) -> str:
+    """The video's target and reference subtitles: label and cues (see ``video_reader.subtitles``)."""
+    from ankrimento import video_reader
+
+    return _dumps(video_reader.subtitles(int(card_id)))
+
+
+def video_attach_subtitle(card_id: int, slot: str, path: str, label: str) -> None:
+    from ankrimento import video_reader
+
+    video_reader.attach_subtitle(int(card_id), str(slot), str(path), str(label))
+
+
+def video_clear_subtitle(card_id: int, slot: str) -> None:
+    from ankrimento import video_reader
+
+    video_reader.clear_subtitle(int(card_id), str(slot))

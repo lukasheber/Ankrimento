@@ -199,3 +199,53 @@ def import_local(path: str, title: str, deck_name: str = "Topics", priority: flo
         raise
     set_priority(addon_dir, profile, card_id, float(priority))
     return card_id
+
+
+_SUBTITLE_SLOTS = ("target", "reference")
+
+
+def subtitles(card_id: int) -> dict[str, dict[str, Any]]:
+    """The video's paired subtitles, as desktop's player shows them: each slot's label and cues
+    (``load_subtitle_cues``: start and end in seconds, and the text)."""
+    from incremento.backend.video_manager import get_video_note_media, load_subtitle_cues
+
+    addon_dir, profile = _context()
+    media = get_video_note_media(runtime.current().col.get_card(int(card_id)).note())
+    return {
+        slot: {
+            "label": str(media.get(f"{slot}_subtitle_label") or ""),
+            "cues": load_subtitle_cues(addon_dir, profile, str(media.get(f"{slot}_subtitle_file") or "")),
+        }
+        for slot in _SUBTITLE_SLOTS
+    }
+
+
+def _set_slot(card_id: int, slot: str, relpath: str, label: str) -> None:
+    """Mirrors ``frontend/video_dock.py:_apply_slot`` (and ``_persist_current_video_note_media``)."""
+    from incremento.backend.video_manager import update_video_note_media
+
+    if slot not in _SUBTITLE_SLOTS:
+        raise ValueError(f"no subtitle slot {slot!r}")
+    col = runtime.current().col
+    note = col.get_card(int(card_id)).note()
+    if update_video_note_media(note, **{f"{slot}_subtitle_file": relpath, f"{slot}_subtitle_label": label}):
+        col.update_note(note)
+
+
+def attach_subtitle(card_id: int, slot: str, path: str, label: str) -> None:
+    """A subtitle file (SRT or WebVTT) for a slot. Mirrors ``frontend/video_dock.py``'s
+    ``_import_manual``: copied into the profile's videos as "<title>-<slot>", labelled by its file name."""
+    from incremento.backend.video_manager import import_local_subtitle_file
+
+    if slot not in _SUBTITLE_SLOTS:
+        raise ValueError(f"no subtitle slot {slot!r}")
+    addon_dir, profile = _context()
+    note = runtime.current().col.get_card(int(card_id)).note()
+    title = str(note["Title"] or "").strip() if "Title" in note else ""
+    relpath = import_local_subtitle_file(addon_dir, profile, str(path), preferred_stem=f"{title or 'video'}-{slot}")
+    _set_slot(card_id, slot, relpath, str(label or os.path.basename(path)))
+
+
+def clear_subtitle(card_id: int, slot: str) -> None:
+    """Mirrors ``frontend/video_dock.py:_clear_slot``."""
+    _set_slot(card_id, slot, "", "")

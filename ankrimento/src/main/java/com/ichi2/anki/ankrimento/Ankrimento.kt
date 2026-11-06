@@ -1094,6 +1094,63 @@ object Ankrimento {
         }
     }
 
+    /** A subtitle cue: from [start] to [end] seconds. */
+    data class Cue(
+        val start: Double,
+        val end: Double,
+        val text: String,
+    )
+
+    /** One of a video's subtitle slots: its label (the file's name) and cues; empty when there is none. */
+    data class SubtitleTrack(
+        val label: String,
+        val cues: List<Cue>,
+    )
+
+    /** Desktop's paired subtitles: the language learnt ([target]) and one known ([reference]). */
+    data class Subtitles(
+        val target: SubtitleTrack,
+        val reference: SubtitleTrack,
+    ) {
+        val isEmpty get() = target.cues.isEmpty() && reference.cues.isEmpty()
+    }
+
+    @WorkerThread
+    fun videoSubtitles(cardId: Long): Subtitles {
+        val data = JSONObject(requireFacade().callAttr("video_subtitles", cardId).toString())
+
+        fun track(slot: String): SubtitleTrack {
+            val json = data.getJSONObject(slot)
+            val cues = json.getJSONArray("cues")
+            return SubtitleTrack(
+                json.optString("label"),
+                List(cues.length()) { index ->
+                    cues.getJSONObject(index).let { Cue(it.getDouble("start"), it.getDouble("end"), it.optString("text")) }
+                },
+            )
+        }
+        return Subtitles(track("target"), track("reference"))
+    }
+
+    /** A subtitle file (SRT or WebVTT) at [path] for [slot] ("target" or "reference"), labelled [label]. */
+    @WorkerThread
+    fun videoAttachSubtitle(
+        cardId: Long,
+        slot: String,
+        path: String,
+        label: String,
+    ) {
+        requireFacade().callAttr("video_attach_subtitle", cardId, slot, path, label)
+    }
+
+    @WorkerThread
+    fun videoClearSubtitle(
+        cardId: Long,
+        slot: String,
+    ) {
+        requireFacade().callAttr("video_clear_subtitle", cardId, slot)
+    }
+
     /** What a video topic plays: [kind] "local" ([path]), "youtube" ([videoId]), "vimeo" (its player page, [url]) or "none" ([url]). */
     data class Video(
         val kind: String,

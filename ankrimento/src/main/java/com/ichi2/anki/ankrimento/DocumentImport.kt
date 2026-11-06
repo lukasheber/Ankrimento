@@ -46,7 +46,7 @@ internal object DocumentImport {
         }
     }
 
-    private fun displayName(
+    internal fun displayName(
         context: Context,
         uri: Uri,
     ): String? =

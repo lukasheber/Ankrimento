@@ -195,6 +195,13 @@
     <string name="ankrimento_video_clip_cut">Cut</string>
     <string name="ankrimento_video_clip_cutting">Cutting the clip…</string>
     <string name="ankrimento_video_clip_format">This video\'s format cannot be cut on the phone (an MP4 can); desktop\'s Create Mobile Clip can cut it.</string>
+    <string name="ankrimento_video_subtitles">Subtitles</string>
+    <string name="ankrimento_subtitles_hint">Two languages at once, as on desktop: the one you learn, and one you know under it. SRT or WebVTT files; a video\'s own tracks are downloaded on desktop.</string>
+    <string name="ankrimento_subtitle_target">Target language</string>
+    <string name="ankrimento_subtitle_reference">Reference language</string>
+    <string name="ankrimento_subtitle_none">None</string>
+    <string name="ankrimento_subtitle_add">Add file</string>
+    <string name="ankrimento_subtitle_remove">Remove</string>
     <string name="ankrimento_video_back_10">Back 10 seconds</string>
     <!-- Library -->
     <string name="ankrimento_library">Library</string>

@@ -14,17 +14,25 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.MediaController
 import android.widget.VideoView
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.CaptionOverlay
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.MarkBookmark
 import com.ichi2.anki.ankrimento.ui.MarksSheet
 import com.ichi2.anki.ankrimento.ui.ReaderTool
+import com.ichi2.anki.ankrimento.ui.SubtitlesSheet
 import com.ichi2.anki.ankrimento.ui.VideoClipDialog
+import com.ichi2.anki.ankrimento.ui.textAt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,6 +60,18 @@ class VideoReaderActivity : ReaderActivity() {
 
     /** Moves playback to [seconds]. */
     private var seekTo: ((Double) -> Unit)? = null
+
+    /** Desktop's paired subtitles and whether each is shown; the captions follow the playing time. */
+    private var subtitles by mutableStateOf<Ankrimento.Subtitles?>(null)
+    private var showTarget by mutableStateOf(true)
+    private var showReference by mutableStateOf(true)
+    private var captionTime by mutableDoubleStateOf(-1.0)
+
+    /** The slot a picked subtitle file goes into. */
+    private var pickingSlot = "target"
+
+    private val pickSubtitle =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> if (uri != null) attachSubtitle(pickingSlot, uri) }
 
     /** Plays at a speed (1.0 is normal). */
     private var setSpeed: ((Float) -> Unit)? = null
@@ -82,6 +102,8 @@ class VideoReaderActivity : ReaderActivity() {
                     return@launch
                 }
             }
+            loadSubtitles()
+            launch { followCaptions() }
             trackProgress()
         }
     }
@@ -115,6 +137,7 @@ class VideoReaderActivity : ReaderActivity() {
             listOfNotNull(
                 ReaderTool(getString(R.string.ankrimento_video_extract), IncrementoIcons.Add, onClick = ::extractHere),
                 ReaderTool(getString(R.string.ankrimento_marks_bookmarks), IncrementoIcons.Bookmark, onClick = ::showBookmarks),
+                ReaderTool(getString(R.string.ankrimento_video_subtitles), onClick = ::showSubtitles),
                 // Desktop's Create Mobile Clip cuts a local copy; the phone has one only for a downloaded video.
                 ReaderTool(getString(R.string.ankrimento_video_clip), onClick = ::chooseClip).takeIf { localVideo != null },
                 ReaderTool(getString(R.string.ankrimento_video_back_10)) { seekBy?.invoke(-10.0) },
@@ -308,6 +331,89 @@ class VideoReaderActivity : ReaderActivity() {
     }
 
     /** Every few seconds, save the position and the playback observed since the last check. */
+    private suspend fun loadSubtitles() {
+        subtitles =
+            runCatching { withCol { Ankrimento.videoSubtitles(cardId) } }
+                .onFailure { Timber.w(it, "Loading the video's subtitles failed") }
+                .getOrNull()
+        val shown = subtitles?.takeUnless { it.isEmpty }
+        overlay =
+            shown?.let {
+                {
+                    val time = captionTime
+                    val current = subtitles
+                    CaptionOverlay(
+                        target = if (showTarget) current?.target?.textAt(time) else null,
+                        reference = if (showReference) current?.reference?.textAt(time) else null,
+                    )
+                }
+            }
+    }
+
+    /** The playing time, often enough for captions, while the video has subtitles. */
+    private suspend fun followCaptions() {
+        while (true) {
+            delay(CAPTION_INTERVAL_MS)
+            if (subtitles?.isEmpty != false) continue
+            readPlayer?.invoke()?.let { (position, _) -> captionTime = position }
+        }
+    }
+
+    /** Desktop's subtitle dialog: each slot from a file, shown or hidden, or removed. */
+    private fun showSubtitles() {
+        val current = subtitles ?: return
+        sheet = {
+            SubtitlesSheet(
+                subtitles = current,
+                showTarget = showTarget,
+                showReference = showReference,
+                onShow = { slot, show ->
+                    if (slot == "target") showTarget = show else showReference = show
+                    showSubtitles()
+                },
+                onAdd = { slot ->
+                    pickingSlot = slot
+                    // File managers name subtitles' types in many ways: any file; the backend checks it.
+                    pickSubtitle.launch(arrayOf("*/*"))
+                },
+                onRemove = { slot -> changeSubtitles { Ankrimento.videoClearSubtitle(cardId, slot) } },
+                onDismiss = { sheet = null },
+            )
+        }
+    }
+
+    private fun attachSubtitle(
+        slot: String,
+        uri: android.net.Uri,
+    ) {
+        lifecycleScope.launch {
+            val name = DocumentImport.displayName(this@VideoReaderActivity, uri) ?: "subtitle.srt"
+            val staged = File(cacheDir, "subtitles").apply { mkdirs() }.resolve(File(name).name)
+            runCatching {
+                withContext(Dispatchers.IO) {
+                    contentResolver.openInputStreamSafely(uri).use { input ->
+                        checkNotNull(input) { "cannot read $uri" }
+                        staged.outputStream().use { input.copyTo(it) }
+                    }
+                }
+                changeSubtitles { Ankrimento.videoAttachSubtitle(cardId, slot, staged.path, name) }
+            }.onFailure { error ->
+                Timber.w(error, "Adding a subtitle file failed")
+                toast(error.message ?: error.javaClass.simpleName)
+            }
+            staged.delete()
+        }
+    }
+
+    private fun changeSubtitles(change: com.ichi2.anki.libanki.Collection.() -> Unit) {
+        lifecycleScope.launch {
+            runCatching { withCol { change() } }
+                .onFailure { error -> toast(error.message ?: error.javaClass.simpleName) }
+            loadSubtitles()
+            if (sheet != null) showSubtitles()
+        }
+    }
+
     private suspend fun trackProgress() {
         var lastCheck = SystemClock.elapsedRealtime()
         while (true) {
@@ -357,6 +463,9 @@ class VideoReaderActivity : ReaderActivity() {
     companion object {
         private const val EXTRA_START = "start"
         private const val PLAYER_URL = "https://appassets.androidplatform.net/assets/ankrimento/web/video_player.html"
+
+        /** Captions follow the playing time this often. */
+        private const val CAPTION_INTERVAL_MS = 250L
         private const val PROGRESS_INTERVAL_MS = 5_000L
         private const val YOUTUBE_PLAYING = 1
 
