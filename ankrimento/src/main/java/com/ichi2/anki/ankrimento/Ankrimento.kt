@@ -657,6 +657,17 @@ object Ankrimento {
         title: String,
     ): Long = requireFacade().callAttr("import_audio", path, title).toLong()
 
+    /** A cloze from the reader's selection: [selected] hidden in its sentence ([before], [after]); the extract sheet follows. */
+    @WorkerThread
+    fun extractCloze(
+        cardId: Long,
+        before: String,
+        selected: String,
+        after: String,
+    ) {
+        requireFacade().callAttr("extract_cloze", cardId, before, selected, after)
+    }
+
     /** A Markdown file as a study document, read in the EPUB reader (desktop's Markdown import). */
     @WorkerThread
     fun importMarkdown(

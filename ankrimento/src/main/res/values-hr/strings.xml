@@ -495,4 +495,6 @@
     <string name="ankrimento_support_bundle_failed">Izrada paketa za podršku nije uspjela: %1$s</string>
     <string name="ankrimento_pdf_snapshot">Snimka područja</string>
     <string name="ankrimento_pdf_snapshot_hint">Povucite okvir preko dijela stranice koji želite spremiti kao sliku</string>
+    <string name="ankrimento_cloze">Cloze</string>
+    <string name="ankrimento_edit_topic">Uredi temu</string>
 </resources>

@@ -495,4 +495,6 @@
     <string name="ankrimento_support_bundle_failed">Não foi possível criar o pacote de suporte: %1$s</string>
     <string name="ankrimento_pdf_snapshot">Captura de uma área</string>
     <string name="ankrimento_pdf_snapshot_hint">Arraste um retângulo sobre a parte da página a guardar como imagem</string>
+    <string name="ankrimento_cloze">Lacuna</string>
+    <string name="ankrimento_edit_topic">Editar tópico</string>
 </resources>

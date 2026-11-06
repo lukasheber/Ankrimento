@@ -482,4 +482,6 @@
     <string name="ankrimento_support_bundle_failed">Creating the support bundle failed: %1$s</string>
     <string name="ankrimento_pdf_snapshot">Snapshot of a region</string>
     <string name="ankrimento_pdf_snapshot_hint">Drag a box over the part of the page to keep as an image</string>
+    <string name="ankrimento_cloze">Cloze</string>
+    <string name="ankrimento_edit_topic">Edit topic</string>
 </resources>

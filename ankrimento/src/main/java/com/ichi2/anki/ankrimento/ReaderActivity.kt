@@ -316,7 +316,8 @@ abstract class ReaderActivity : ComponentActivity() {
                     draft = draft,
                     onAdd = { choice ->
                         sheet = null
-                        addExtract(choice)
+                        // A cloze's note type is chosen for it: the document's usual one stays remembered.
+                        addExtract(choice, rememberType = !draft.noteTypeConfigured)
                     },
                     onLater = { choice ->
                         sheet = null
@@ -426,8 +427,11 @@ abstract class ReaderActivity : ComponentActivity() {
         }
     }
 
-    private fun addExtract(choice: ExtractChoice) {
-        ExtractNoteTypes.remember(this, readerKind, choice.noteType)
+    private fun addExtract(
+        choice: ExtractChoice,
+        rememberType: Boolean = true,
+    ) {
+        if (rememberType) ExtractNoteTypes.remember(this, readerKind, choice.noteType)
         lifecycleScope.launch {
             runCatching {
                 withCol { Ankrimento.createExtract(cardId, choice.fields, choice.noteType, choice.isTopic, choice.priority) }

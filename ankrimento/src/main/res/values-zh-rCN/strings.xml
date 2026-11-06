@@ -469,4 +469,6 @@
     <string name="ankrimento_support_bundle_failed">创建支持包失败：%1$s</string>
     <string name="ankrimento_pdf_snapshot">区域截图</string>
     <string name="ankrimento_pdf_snapshot_hint">在页面上拖出一个框，框内部分将保存为图片</string>
+    <string name="ankrimento_cloze">完形填空</string>
+    <string name="ankrimento_edit_topic">编辑主题</string>
 </resources>

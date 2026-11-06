@@ -1060,6 +1060,16 @@ def pdf_message(card_id: int, message: str) -> str:
     return "\n".join(pdf_reader.handle(int(card_id), message))
 
 
+def extract_cloze(source_card_id: int, before: str, selected: str, after: str) -> None:
+    """A cloze from the reader's selection (see ``extract.cloze``); the host shows the extract sheet."""
+    from aqt import mw
+
+    from ankrimento import extract
+
+    extract.cloze(int(source_card_id), str(before), str(selected), str(after))
+    mw.notify_host("extract_draft", card_id=int(source_card_id))
+
+
 def extract_draft(source_card_id: int) -> str:
     """The pending extract from a document, with the dialog's defaults."""
     from ankrimento import extract

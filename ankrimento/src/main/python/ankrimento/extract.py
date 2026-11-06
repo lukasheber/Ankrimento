@@ -37,6 +37,8 @@ class Draft:
     fields: dict[int, str] = field(default_factory=dict)
     page: int = 0
     highlight_id: str = ""
+    # A cloze made from the reader (``cloze``): an item of Anki's cloze note type.
+    cloze: bool = False
 
 
 @dataclass
@@ -94,6 +96,8 @@ def field_html(payload: dict) -> str:
 
 def add_to_draft(source_card_id: int, index: int, payload: dict, *, page: int, highlight_id: str) -> None:
     draft = _drafts.setdefault(int(source_card_id), Draft())
+    if int(index) == 0:
+        draft.cloze = False
     draft.fields[int(index)] = field_html(payload)
     draft.page = int(page)
     if highlight_id:
@@ -103,6 +107,8 @@ def add_to_draft(source_card_id: int, index: int, payload: dict, *, page: int, h
 def add_html_to_draft(source_card_id: int, index: int, html: str, *, page: int, highlight_id: str = "") -> None:
     """A field the reader composed itself (e.g. a video link), stored as given."""
     draft = _drafts.setdefault(int(source_card_id), Draft())
+    if int(index) == 0:
+        draft.cloze = False
     draft.fields[int(index)] = str(html)
     draft.page = int(page)
     if highlight_id:
@@ -167,15 +173,60 @@ def draft(source_card_id: int) -> dict[str, Any]:
     configured = note_type in note_types
     if not configured:
         note_type = "Basic" if "Basic" in note_types else note_types[0]
+    kind = configured_extract_default_type(cfg)
+    cloze_type = _cloze_note_type() if current.cloze else None
+    if cloze_type:
+        # A cloze is an item of a cloze note type, whatever is set for extracts.
+        note_type, configured, kind = cloze_type, True, "item"
     return {
         "fields": [current.fields.get(index, "") for index in range(2)],
         "page": current.page,
         "note_types": note_types,
         "note_type": note_type,
         "note_type_configured": configured,
-        "kind": configured_extract_default_type(cfg),
+        "kind": kind,
         "priority": round(calculate_priority(source_card_id, cfg), 2),
     }
+
+
+def _cloze_note_type() -> str | None:
+    """Anki's "Cloze" note type, another plain cloze one when it was renamed, or Anki's own added
+    when there is none. Image occlusion is a cloze-type note type too, but never a text cloze."""
+    from anki.models import MODEL_CLOZE
+    from anki.stdmodels import get_stock_notetypes
+
+    col = runtime.current().col
+
+    def plain_cloze(model) -> bool:
+        # By its fields: the dict's originalStockKind does not number kinds as StockNotetypeKind does.
+        occlusion = any(field.get("name") == "Occlusion" for field in model.get("flds", []))
+        return model["type"] == MODEL_CLOZE and not occlusion
+
+    standard = col.models.by_name("Cloze")
+    if standard is not None and plain_cloze(standard):
+        return "Cloze"
+    found = next((model["name"] for model in col.models.all() if plain_cloze(model)), None)
+    if found:
+        return found
+    # A new note type, not a change to one: no full sync follows.
+    for _name, make in get_stock_notetypes(col):
+        note_type = make(col)
+        if plain_cloze(note_type):
+            col.models.add(note_type)
+            return str(note_type["name"])
+    return None
+
+
+def cloze(source_card_id: int, before: str, selected: str, after: str) -> None:
+    """SuperMemo's cloze from the reader: the sentence around the selection, the selection hidden
+    as Anki's ``{{c1::…}}``, as a new extract draft (an item, linked to its source like any extract)."""
+    from html import escape
+
+    if not str(selected or "").strip():
+        raise ValueError("nothing selected for the cloze")
+    text = escape(str(before).lstrip()) + "{{c1::" + escape(str(selected).strip()) + "}}" + escape(str(after).rstrip())
+    discard(source_card_id)
+    _drafts[int(source_card_id)] = Draft(fields={0: text}, cloze=True)
 
 
 def _apply_classification(note, kind: str) -> None:
