@@ -508,4 +508,9 @@
     <string name="ankrimento_edit_card">Editar cartão</string>
     <string name="ankrimento_highlight_colour">Cor do destaque</string>
     <string name="ankrimento_default_highlight_colour">Cor padrão do destaque</string>
+    <string name="ankrimento_highlight_cards_title">Cartões a partir dos destaques</string>
+    <plurals name="ankrimento_highlight_cards_create">
+        <item quantity="one">Criar %d cartão</item>
+        <item quantity="other">Criar %d cartões</item>
+    </plurals>
 </resources>

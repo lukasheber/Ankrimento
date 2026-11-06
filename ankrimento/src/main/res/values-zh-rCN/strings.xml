@@ -482,4 +482,8 @@
     <string name="ankrimento_edit_card">编辑卡片</string>
     <string name="ankrimento_highlight_colour">高亮颜色</string>
     <string name="ankrimento_default_highlight_colour">默认高亮颜色</string>
+    <string name="ankrimento_highlight_cards_title">从高亮创建卡片</string>
+    <plurals name="ankrimento_highlight_cards_create">
+        <item quantity="other">创建 %d 张卡片</item>
+    </plurals>
 </resources>

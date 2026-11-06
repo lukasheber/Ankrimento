@@ -1311,3 +1311,79 @@ def pdf_choose_color(card_id: int, data_json: str, selected: str) -> str:
     from ankrimento import pdf_reader
 
     return pdf_reader.choose_color(int(card_id), json.loads(str(data_json) or "{}"), str(selected or ""))
+
+
+def pdf_highlight_card(card_id: int, highlight_id: str) -> str:
+    """The viewer's card button on a highlight (see ``pdf_cards.highlight_card``); a draft is shown by the host."""
+    from aqt import mw
+
+    from ankrimento import pdf_cards
+
+    result = pdf_cards.highlight_card(int(card_id), str(highlight_id))
+    if result.get("draft"):
+        mw.notify_host("extract_draft", card_id=int(card_id))
+    return _dumps(result)
+
+
+def pdf_document_cards(card_id: int) -> str:
+    """The browser search for the cards made from this PDF, or desktop's message when there are none."""
+    from ankrimento import pdf_cards
+
+    return _dumps(pdf_cards.cards_search(pdf_cards.document_note_ids(int(card_id)), "reader_pdf_no_cards"))
+
+
+def pdf_note_cards(note_ids_json: str, scope: str) -> str:
+    """The browser search for notes the viewer lists (a page's cards), or desktop's message."""
+    from ankrimento import pdf_cards
+
+    try:
+        note_ids = json.loads(str(note_ids_json or "[]"))
+    except ValueError:
+        note_ids = []
+    empty = "reader_pdf_no_page_cards" if scope == "page" else "reader_pdf_no_cards"
+    return _dumps(pdf_cards.cards_search(note_ids if isinstance(note_ids, list) else [], empty))
+
+
+def note_first_card(note_id: int) -> int:
+    """The first card of a note, or 0 when the note is gone."""
+    from ankrimento import pdf_cards
+
+    return pdf_cards.first_card(int(note_id))
+
+
+def pdf_highlight_cards_plan(card_id: int) -> str:
+    """The viewer's "cards from highlights" button: what desktop's dialog would offer (``pdf_cards.bulk_plan``)."""
+    from ankrimento import pdf_cards
+
+    return _dumps(pdf_cards.bulk_plan(int(card_id)))
+
+
+def pdf_highlight_cards_create(card_id: int, highlight_ids_json: str, note_type: str, kind: str) -> str:
+    """One card per chosen highlight (``pdf_cards.bulk_create``); the summary desktop shows."""
+    from ankrimento import pdf_cards
+
+    ids = [str(h) for h in json.loads(str(highlight_ids_json or "[]"))]
+    return _dumps(pdf_cards.bulk_create(int(card_id), ids, str(note_type), str(kind)))
+
+
+def pdf_limit_settings(card_id: int) -> str:
+    """The viewer's page limit button: desktop's dialog as data (``pdf_reader.limit_settings``)."""
+    from ankrimento import pdf_reader
+
+    return _dumps(pdf_reader.limit_settings(int(card_id)))
+
+
+def pdf_save_limit(card_id: int, enabled: bool, daily_page_limit: int, mode: str) -> str:
+    from ankrimento import pdf_reader
+
+    return _dumps(pdf_reader.save_limit(int(card_id), bool(enabled), int(daily_page_limit), str(mode)))
+
+
+def pdf_new_card(card_id: int) -> None:
+    """The viewer's Add Card button (see ``pdf_cards.new_card``); the host shows the extract sheet."""
+    from aqt import mw
+
+    from ankrimento import pdf_cards
+
+    pdf_cards.new_card(int(card_id))
+    mw.notify_host("extract_draft", card_id=int(card_id))

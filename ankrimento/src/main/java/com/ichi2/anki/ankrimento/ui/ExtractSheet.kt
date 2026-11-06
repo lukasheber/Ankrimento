@@ -225,7 +225,7 @@ internal fun fieldHtml(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NoteTypeChooser(
+internal fun NoteTypeChooser(
     noteTypes: List<String>,
     selected: String,
     onSelect: (String) -> Unit,

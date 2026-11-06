@@ -33,15 +33,20 @@ import com.ichi2.anki.ankrimento.ui.ContentsSheet
 import com.ichi2.anki.ankrimento.ui.FindBar
 import com.ichi2.anki.ankrimento.ui.FindHit
 import com.ichi2.anki.ankrimento.ui.FindSheet
+import com.ichi2.anki.ankrimento.ui.HighlightCardsSheet
 import com.ichi2.anki.ankrimento.ui.HighlightColorDialog
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.LinkTargetSheet
 import com.ichi2.anki.ankrimento.ui.MarksSheet
+import com.ichi2.anki.ankrimento.ui.PageLimitDialog
 import com.ichi2.anki.ankrimento.ui.PageLinksSheet
 import com.ichi2.anki.ankrimento.ui.PdfViewSheet
 import com.ichi2.anki.ankrimento.ui.ReaderPager
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.SnapshotLayer
+import com.ichi2.anki.common.destinations.BrowserDestination
+import com.ichi2.anki.common.destinations.DeferredNavigation
+import com.ichi2.anki.common.destinations.toIntent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -136,6 +141,7 @@ class PdfReaderActivity : ReaderActivity() {
                     if (!isDestroyed) runOnUiThread { changeMarks(openHighlight = id.ifBlank { null }) { "" } }
                     continue
                 }
+                if (!isDestroyed && cardButton(message)) continue
                 if (message.startsWith(HIGHLIGHT_COLOR_PREFIX)) {
                     val data = message.removePrefix(HIGHLIGHT_COLOR_PREFIX)
                     if (!isDestroyed) runOnUiThread { chooseColor(data) }
@@ -234,6 +240,107 @@ class PdfReaderActivity : ReaderActivity() {
                 Timber.w(error, "Changing PDF bookmarks or highlights failed")
                 toast(error.message ?: error.javaClass.simpleName)
             }
+        }
+    }
+
+    /**
+     * The viewer's card buttons, answered as desktop answers them with the phone's screens: a highlight's
+     * card (or the sheet to make it), cards from many highlights, a card listed on the page, the page's or
+     * the document's cards in AnkiDroid's browser, Add Card, and the daily page limit.
+     */
+    private fun cardButton(message: String): Boolean {
+        val payload = message.substringAfter(':', "")
+        when {
+            message.startsWith(HIGHLIGHT_CARD_PREFIX) -> {
+                val id = runCatching { JSONObject(payload).optString("id") }.getOrDefault("")
+                withPdf({ Ankrimento.pdfHighlightCard(cardId, id) }) { result ->
+                    when {
+                        result.has("card_id") -> openCard(result.getLong("card_id"))
+                        result.has("message") -> toast(result.getString("message"))
+                        // A draft: the extract sheet follows its event.
+                    }
+                }
+            }
+            message == HIGHLIGHT_CARDS -> withPdf({ Ankrimento.pdfHighlightCardsPlan(cardId) }, ::showHighlightCards)
+            message.startsWith(OPEN_CARD_PREFIX) ->
+                payload.toLongOrNull()?.let { noteId ->
+                    withPdf({ Ankrimento.noteFirstCard(noteId) }) { card -> if (card > 0) openCard(card) }
+                }
+            message.startsWith(PAGE_CARDS_PREFIX) -> withPdf({ Ankrimento.pdfNoteCards(payload, "page") }, ::browse)
+            message.startsWith(ALL_CARDS_PREFIX) -> withPdf({ Ankrimento.pdfDocumentCards(cardId) }, ::browse)
+            message == ADD_CARD -> withPdf({ Ankrimento.pdfNewCard(cardId) }) {}
+            message.startsWith(LIMIT_SETTINGS_PREFIX) -> withPdf({ Ankrimento.pdfLimitSettings(cardId) }, ::showPageLimit)
+            else -> return false
+        }
+        return true
+    }
+
+    private fun <T> withPdf(
+        call: com.ichi2.anki.libanki.Collection.() -> T,
+        then: (T) -> Unit,
+    ) {
+        lifecycleScope.launch {
+            runCatching { withCol { call() } }
+                .onSuccess(then)
+                .onFailure { error ->
+                    Timber.w(error, "PDF viewer card button failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
+        }
+    }
+
+    /** A card to look at, in the reader that shows it (as the knowledge tree opens one). */
+    private fun openCard(card: Long) {
+        lifecycleScope.launch {
+            val reader = withCol { Ankrimento.cardReader(card) }
+            ReaderActivity.intent(this@PdfReaderActivity, reader.ifEmpty { "item" }, card, session = false)?.let(::startActivity)
+        }
+    }
+
+    /** AnkiDroid's browser on the search, or desktop's message when there is nothing to show. */
+    private fun browse(result: JSONObject) {
+        val query = result.optString("query")
+        if (query.isEmpty()) {
+            toast(result.optString("message"))
+            return
+        }
+        startActivity(with(DeferredNavigation) { BrowserDestination.Search(query, allDecks = true).toIntent() })
+    }
+
+    private fun showHighlightCards(plan: Ankrimento.HighlightCardsPlan) {
+        if (plan.rows.isEmpty()) {
+            toast(plan.message)
+            return
+        }
+        sheet = {
+            HighlightCardsSheet(
+                plan = plan,
+                onCreate = { ids, noteType, isTopic ->
+                    sheet = null
+                    withPdf({ Ankrimento.pdfHighlightCardsCreate(cardId, ids, noteType, isTopic) }) { (summary, script) ->
+                        toast(summary)
+                        // The viewer shows which highlights now have a card.
+                        webView.evaluateJavascript(script, null)
+                    }
+                },
+                onDismiss = { sheet = null },
+            )
+        }
+    }
+
+    private fun showPageLimit(limit: Ankrimento.PageLimit) {
+        sheet = {
+            PageLimitDialog(
+                limit = limit,
+                onSave = { enabled, pages, mode ->
+                    sheet = null
+                    withPdf({ Ankrimento.pdfSaveLimit(cardId, enabled, pages, mode) }) { (script, saved) ->
+                        webView.evaluateJavascript(script, null)
+                        toast(saved)
+                    }
+                },
+                onDismiss = { sheet = null },
+            )
         }
     }
 
@@ -875,6 +982,15 @@ class PdfReaderActivity : ReaderActivity() {
 
         /** The viewer's note button on a highlight: the phone's highlight dialog answers it. */
         private const val HIGHLIGHT_NOTE_PREFIX = "incremento_pdf_hl_note:"
+
+        // The viewer's card buttons (see cardButton).
+        private const val HIGHLIGHT_CARD_PREFIX = "incremento_pdf_hl_card:"
+        private const val HIGHLIGHT_CARDS = "incremento_pdf_hl_bulk_cards"
+        private const val OPEN_CARD_PREFIX = "incremento_open_card:"
+        private const val PAGE_CARDS_PREFIX = "incremento_open_page_cards:"
+        private const val ALL_CARDS_PREFIX = "incremento_open_all_pdf_cards:"
+        private const val ADD_CARD = "incremento_open_add_card"
+        private const val LIMIT_SETTINGS_PREFIX = "incremento_pdf_limit_settings:"
 
         /** The viewer's colour button (a highlight's, the next highlight's or the default colour). */
         private const val HIGHLIGHT_COLOR_PREFIX = "incremento_pdf_hl_color:"

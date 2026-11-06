@@ -759,3 +759,55 @@ def choose_color(card_id: int, data: dict, selected: str) -> str:
         color = save_reader_default_highlight_color(mw.addonManager, _ADDON_PKG, runtime.current().profile, color)
         script = f"window.incrementoSetDefaultHighlightColor?.({json.dumps(color)});"
     return script + f"window.incrementoPickPdfHighlightColor && window.incrementoPickPdfHighlightColor({json.dumps(color)});"
+
+
+_LIMIT_MODES = ("warning", "soft_lock", "hard_stop")
+_LIMIT_MODE_KEYS = {"warning": "reader_warning_only", "soft_lock": "reader_soft_lock_override", "hard_stop": "reader_hard_stop"}
+
+
+def limit_settings(card_id: int) -> dict[str, Any]:
+    """Desktop's reading limit dialog (``_PdfReadingLimitDialog``), as data with its words."""
+    from incremento.backend.i18n import t
+    from incremento.backend.pdf_manager import get_pdf_daily_limit_settings
+
+    rt = runtime.current()
+    settings = get_pdf_daily_limit_settings(str(rt.addon_dir), rt.profile, int(card_id))
+    return {
+        "enabled": bool(settings.get("enabled")),
+        # As the dialog's spin box: at least 1, 10 when there is no limit yet.
+        "daily_page_limit": max(1, int(settings.get("daily_page_limit", 10) or 10)),
+        "enforcement_mode": str(settings.get("enforcement_mode") or "warning"),
+        "modes": [{"key": mode, "label": t(_LIMIT_MODE_KEYS[mode])} for mode in _LIMIT_MODES],
+        "labels": {
+            "title": t("reader_pdf_limit_title"),
+            "enabled": t("reader_pdf_limit_enabled"),
+            "limit": t("reader_limit"),
+            "hint": t("reader_day_end_hint"),
+        },
+    }
+
+
+def save_limit(card_id: int, enabled: bool, daily_page_limit: int, mode: str) -> dict[str, str]:
+    """Mirrors ``frontend/pdf_dock.py:_open_pdf_limit_dialog`` once accepted: saves, tells the viewer
+    (the script) and says what was saved (the message)."""
+    from incremento.backend.i18n import t
+    from incremento.backend.pdf_manager import get_page, save_pdf_daily_limit_settings
+
+    rt = runtime.current()
+    addon_dir, profile = str(rt.addon_dir), rt.profile
+    mode = mode if mode in _LIMIT_MODES else "warning"
+    limit = max(1, min(5000, int(daily_page_limit or 1)))
+    save_pdf_daily_limit_settings(
+        addon_dir, profile, int(card_id), enabled=bool(enabled), daily_page_limit=limit, enforcement_mode=mode
+    )
+    status = _limit_status(int(card_id), current_page=get_page(addon_dir, profile, int(card_id)))
+    if status.get("enabled"):
+        saved_mode = status.get("enforcement_mode")
+        message = t(
+            "reader_pdf_limit_saved",
+            count=status["daily_page_limit"],
+            mode=t(f"reader_limit_{saved_mode}") if saved_mode in _LIMIT_MODES else t("reader_limit_warning"),
+        )
+    else:
+        message = t("reader_pdf_limit_disabled")
+    return {"script": _js_call("incrementoReceivePdfLimitStatus", status), "message": message}

@@ -31,3 +31,23 @@ def test_a_card_from_scratch_gets_its_priority_kind_and_deck_but_no_tree_place(r
     assert set(configured_item_tags()) <= {tag.casefold() for tag in note.tags}
     assert card_id not in {row["card_id"] for row in json.loads(facade.knowledge_tree())}
     rt.col.remove_notes([note_id])
+
+
+def test_incrementos_document_note_types_are_not_offered_for_cards(rt, tmp_path):
+    # A card of one would open as a broken document (desktop's readers open these note types).
+    import json as _json
+
+    path = tmp_path / "Offered.md"
+    path.write_text("Words.", encoding="utf8")
+    topic = facade.import_markdown(str(path), "Offered")
+    try:
+        documents = {"Incremento PDF", "Incremento EPUB", "Incremento Web", "Incremento Video", "Incremento Writing"}
+        present = {m["name"] for m in rt.col.models.all()} & documents
+        assert present, "importing made at least one of Incremento's document note types"
+        for offered in (
+            _json.loads(facade.extract_draft(topic))["note_types"],
+            _json.loads(facade.new_card_defaults())["note_types"],
+        ):
+            assert not set(offered) & documents
+    finally:
+        rt.col.remove_notes([rt.col.get_card(topic).nid])

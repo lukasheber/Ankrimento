@@ -159,6 +159,18 @@ def calculate_priority(source_card_id: int, cfg: dict[str, Any]) -> float:
     return max(0.0, min(100.0, source * multiplier))
 
 
+# Incremento's own document note types: desktop's readers open their cards as documents, so a card
+# made with one opens as a broken document. Desktop lists them in its Add Card dock; the phone does not.
+DOCUMENT_NOTE_TYPES = frozenset(
+    {"Incremento PDF", "Incremento EPUB", "Incremento Web", "Incremento Video", "Incremento Writing"}
+)
+
+
+def card_note_types(names) -> list[str]:
+    """The note types a card can be made with, sorted: all but Incremento's document ones."""
+    return sorted(str(name) for name in names if str(name) not in DOCUMENT_NOTE_TYPES)
+
+
 def draft(source_card_id: int) -> dict[str, Any]:
     """What the "new card" dialog shows for the current draft."""
     from incremento.backend.config_service import configured_extract_default_type
@@ -166,7 +178,7 @@ def draft(source_card_id: int) -> dict[str, Any]:
     col = runtime.current().col
     cfg = _config()
     current = _drafts.get(int(source_card_id), Draft())
-    note_types = sorted(nt.name for nt in col.models.all_names_and_ids())
+    note_types = card_note_types(nt.name for nt in col.models.all_names_and_ids())
     note_type = str(cfg.get("extract_notetype") or "").strip()
     # Desktop's extract note type setting; without it desktop keeps the Add Card window's last type,
     # which the phone remembers per kind of document.
@@ -280,7 +292,7 @@ def scratch_defaults() -> dict[str, Any]:
 
     return {
         "fields": ["", ""],
-        "note_types": sorted(available_note_type_names()),
+        "note_types": card_note_types(available_note_type_names()),
         "field_names": _field_names(),
         "note_type": default_note_type_name(None),
         "decks": sorted(available_deck_names()),

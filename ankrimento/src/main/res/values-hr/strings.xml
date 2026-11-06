@@ -508,4 +508,10 @@
     <string name="ankrimento_edit_card">Uredi karticu</string>
     <string name="ankrimento_highlight_colour">Boja isticanja</string>
     <string name="ankrimento_default_highlight_colour">Zadana boja isticanja</string>
+    <string name="ankrimento_highlight_cards_title">Kartice iz isticanja</string>
+    <plurals name="ankrimento_highlight_cards_create">
+        <item quantity="one">Stvori %d karticu</item>
+        <item quantity="few">Stvori %d kartice</item>
+        <item quantity="other">Stvori %d kartica</item>
+    </plurals>
 </resources>

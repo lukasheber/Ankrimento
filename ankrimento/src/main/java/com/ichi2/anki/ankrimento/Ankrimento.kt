@@ -422,6 +422,122 @@ object Ankrimento {
         color: String,
     ): String = requireFacade().callAttr("pdf_highlight_color", cardId, highlightId, color).toString()
 
+    /** The viewer's card button on a highlight: its card, or a draft (the sheet follows), or desktop's message. */
+    @WorkerThread
+    fun pdfHighlightCard(
+        cardId: Long,
+        highlightId: String,
+    ): JSONObject = JSONObject(requireFacade().callAttr("pdf_highlight_card", cardId, highlightId).toString())
+
+    /** The browser search for the cards made from this PDF; its "message" when there are none. */
+    @WorkerThread
+    fun pdfDocumentCards(cardId: Long): JSONObject = JSONObject(requireFacade().callAttr("pdf_document_cards", cardId).toString())
+
+    /** The browser search for notes the viewer lists ([scope] "page"); its "message" when there are none. */
+    @WorkerThread
+    fun pdfNoteCards(
+        noteIds: String,
+        scope: String,
+    ): JSONObject = JSONObject(requireFacade().callAttr("pdf_note_cards", noteIds, scope).toString())
+
+    @WorkerThread
+    fun noteFirstCard(noteId: Long): Long = requireFacade().callAttr("note_first_card", noteId).toLong()
+
+    /** The viewer's Add Card: the extract sheet for this PDF, from the page being read. */
+    @WorkerThread
+    fun pdfNewCard(cardId: Long) {
+        requireFacade().callAttr("pdf_new_card", cardId)
+    }
+
+    /** The highlights without a card, for desktop's "cards from highlights". */
+    @WorkerThread
+    fun pdfHighlightCardsPlan(cardId: Long): HighlightCardsPlan {
+        val plan = JSONObject(requireFacade().callAttr("pdf_highlight_cards_plan", cardId).toString())
+        val rows = plan.getJSONArray("rows")
+        val types = plan.getJSONArray("note_types")
+        return HighlightCardsPlan(
+            rows =
+                List(rows.length()) { index ->
+                    rows.getJSONObject(index).let { HighlightRow(it.getString("id"), it.optInt("page"), it.optString("text")) }
+                },
+            message = plan.optString("message"),
+            noteTypes = List(types.length()) { types.getString(it) },
+            noteType = plan.optString("note_type"),
+            isTopic = plan.optString("kind") == "topic",
+        )
+    }
+
+    /** One card per highlight in [highlightIds]; returns desktop's summary line and the viewer's refresh script. */
+    @WorkerThread
+    fun pdfHighlightCardsCreate(
+        cardId: Long,
+        highlightIds: List<String>,
+        noteType: String,
+        isTopic: Boolean,
+    ): Pair<String, String> {
+        val ids = org.json.JSONArray(highlightIds).toString()
+        val kind = if (isTopic) "topic" else "item"
+        val summary = JSONObject(requireFacade().callAttr("pdf_highlight_cards_create", cardId, ids, noteType, kind).toString())
+        return summary.optString("message") to summary.optString("script")
+    }
+
+    /** Desktop's reading limit dialog for this PDF, with its words. */
+    @WorkerThread
+    fun pdfLimitSettings(cardId: Long): PageLimit {
+        val data = JSONObject(requireFacade().callAttr("pdf_limit_settings", cardId).toString())
+        val labels = data.getJSONObject("labels")
+        val modes = data.getJSONArray("modes")
+        return PageLimit(
+            enabled = data.optBoolean("enabled"),
+            pages = data.optInt("daily_page_limit", 10),
+            mode = data.optString("enforcement_mode", "warning"),
+            modes = List(modes.length()) { modes.getJSONObject(it).let { m -> m.getString("key") to m.getString("label") } },
+            title = labels.optString("title"),
+            enabledLabel = labels.optString("enabled"),
+            limitLabel = labels.optString("limit"),
+            hint = labels.optString("hint"),
+        )
+    }
+
+    /** Saves the limit; returns the viewer's script and desktop's message. */
+    @WorkerThread
+    fun pdfSaveLimit(
+        cardId: Long,
+        enabled: Boolean,
+        pages: Int,
+        mode: String,
+    ): Pair<String, String> {
+        val saved = JSONObject(requireFacade().callAttr("pdf_save_limit", cardId, enabled, pages, mode).toString())
+        return saved.optString("script") to saved.optString("message")
+    }
+
+    /** A highlight without a card, offered by "cards from highlights". */
+    data class HighlightRow(
+        val id: String,
+        val page: Int,
+        val text: String,
+    )
+
+    data class HighlightCardsPlan(
+        val rows: List<HighlightRow>,
+        val message: String,
+        val noteTypes: List<String>,
+        val noteType: String,
+        val isTopic: Boolean,
+    )
+
+    /** A PDF's reading limit and the dialog's words (desktop's). */
+    data class PageLimit(
+        val enabled: Boolean,
+        val pages: Int,
+        val mode: String,
+        val modes: List<Pair<String, String>>,
+        val title: String,
+        val enabledLabel: String,
+        val limitLabel: String,
+        val hint: String,
+    )
+
     /** Answers the PDF viewer's colour button with [selected] ("" for none); returns the viewer's script. */
     @WorkerThread
     fun pdfChooseColor(
