@@ -125,9 +125,17 @@ internal class ReaderWebView(
     private companion object {
         const val FIRST_ITEM_ID = 0x1e00
 
-        /** Whether the page point under view coordinates (x, y) is plain content rather than a control. */
+        /**
+         * Whether the page point under view coordinates (x, y) is plain content rather than a control. A PDF
+         * highlight is drawn under the text and lets touches through, so its box is checked by position: a tap
+         * on it shows the highlight's buttons, not the reader's bars.
+         */
         const val PLAIN_TAP_JS =
-            "function (x, y) { var e = document.elementFromPoint(x / devicePixelRatio, y / devicePixelRatio);" +
+            "function (x, y) { var px = x / devicePixelRatio, py = y / devicePixelRatio;" +
+                " var marks = document.querySelectorAll('[data-annotation-style]');" +
+                " for (var i = 0; i < marks.length; i++) { var r = marks[i].getBoundingClientRect();" +
+                " if (px >= r.left && px <= r.right && py >= r.top && py <= r.bottom) return false; }" +
+                " var e = document.elementFromPoint(px, py);" +
                 " if (!e || !e.closest) return true; if (window.getSelection && String(window.getSelection())) return false;" +
                 " return !e.closest('a, button, input, textarea, select, label, summary, [contenteditable], [onclick]," +
                 " [role=button], [role=menu], [role=menuitem], [role=dialog], [role=slider], [role=checkbox], [role=radio]," +
