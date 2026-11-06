@@ -40,10 +40,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -278,6 +279,42 @@ private fun Swatch(
     )
 }
 
+/**
+ * The PDF viewer's colour button: a highlight's colour, the colour for the next highlight, or
+ * ([forDefault]) the default one. [onChoose] gets the colour's name, or "" when closed without one.
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+internal fun HighlightColorDialog(
+    current: String,
+    forDefault: Boolean,
+    onChoose: (String) -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = { onChoose("") },
+        title = {
+            Text(stringResource(if (forDefault) R.string.ankrimento_default_highlight_colour else R.string.ankrimento_highlight_colour))
+        },
+        text = {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                HIGHLIGHT_COLORS.forEach { (name, color) ->
+                    Swatch(
+                        color,
+                        selected = current == name,
+                        size = SWATCH_SIZE,
+                        modifier = Modifier.clickable { onChoose(name) }.semantics { contentDescription = name },
+                    )
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = { TextButton(onClick = { onChoose("") }) { Text(stringResource(android.R.string.cancel)) } },
+    )
+}
+
+/** A colour to tap: Android's 48dp touch target. */
+private const val SWATCH_SIZE = 48
+
 /** A highlight's colour, note and deletion, as desktop's highlight menu offers them. */
 @OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
@@ -296,9 +333,14 @@ private fun HighlightDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(highlight.text, maxLines = 4, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyMedium)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     HIGHLIGHT_COLORS.forEach { (name, color) ->
-                        Swatch(color, selected = highlight.color == name, size = 28, modifier = Modifier.clickable { onColor(name) })
+                        Swatch(
+                            color,
+                            selected = highlight.color == name,
+                            size = SWATCH_SIZE,
+                            modifier = Modifier.clickable { onColor(name) }.semantics { contentDescription = name },
+                        )
                     }
                 }
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

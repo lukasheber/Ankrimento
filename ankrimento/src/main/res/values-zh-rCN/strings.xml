@@ -480,4 +480,6 @@
     <string name="ankrimento_cloze">完形填空</string>
     <string name="ankrimento_edit_topic">编辑主题</string>
     <string name="ankrimento_edit_card">编辑卡片</string>
+    <string name="ankrimento_highlight_colour">高亮颜色</string>
+    <string name="ankrimento_default_highlight_colour">默认高亮颜色</string>
 </resources>

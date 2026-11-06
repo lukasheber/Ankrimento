@@ -422,6 +422,14 @@ object Ankrimento {
         color: String,
     ): String = requireFacade().callAttr("pdf_highlight_color", cardId, highlightId, color).toString()
 
+    /** Answers the PDF viewer's colour button with [selected] ("" for none); returns the viewer's script. */
+    @WorkerThread
+    fun pdfChooseColor(
+        cardId: Long,
+        data: String,
+        selected: String,
+    ): String = requireFacade().callAttr("pdf_choose_color", cardId, data, selected).toString()
+
     @WorkerThread
     fun pdfHighlightNote(
         cardId: Long,

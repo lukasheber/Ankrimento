@@ -33,6 +33,7 @@ import com.ichi2.anki.ankrimento.ui.ContentsSheet
 import com.ichi2.anki.ankrimento.ui.FindBar
 import com.ichi2.anki.ankrimento.ui.FindHit
 import com.ichi2.anki.ankrimento.ui.FindSheet
+import com.ichi2.anki.ankrimento.ui.HighlightColorDialog
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.LinkTargetSheet
 import com.ichi2.anki.ankrimento.ui.MarksSheet
@@ -135,6 +136,11 @@ class PdfReaderActivity : ReaderActivity() {
                     if (!isDestroyed) runOnUiThread { changeMarks(openHighlight = id.ifBlank { null }) { "" } }
                     continue
                 }
+                if (message.startsWith(HIGHLIGHT_COLOR_PREFIX)) {
+                    val data = message.removePrefix(HIGHLIGHT_COLOR_PREFIX)
+                    if (!isDestroyed) runOnUiThread { chooseColor(data) }
+                    continue
+                }
                 if (message.startsWith(CONTENTS_PREFIX)) {
                     if (!isDestroyed) showContents(message.removePrefix(CONTENTS_PREFIX))
                     continue
@@ -227,6 +233,27 @@ class PdfReaderActivity : ReaderActivity() {
             }.onFailure { error ->
                 Timber.w(error, "Changing PDF bookmarks or highlights failed")
                 toast(error.message ?: error.javaClass.simpleName)
+            }
+        }
+    }
+
+    /** The viewer's colour button, answered with the phone's colours; the viewer waits for the reply. */
+    private fun chooseColor(data: String) {
+        val request = runCatching { JSONObject(data) }.getOrNull() ?: JSONObject()
+        sheet = {
+            HighlightColorDialog(
+                current = request.optString("currentColor"),
+                forDefault = request.optBoolean("defaultColor"),
+            ) { chosen ->
+                sheet = null
+                lifecycleScope.launch {
+                    runCatching { withCol { Ankrimento.pdfChooseColor(cardId, data, chosen) } }
+                        .onSuccess { webView.evaluateJavascript(it, null) }
+                        .onFailure { error ->
+                            Timber.w(error, "Choosing a highlight colour failed")
+                            toast(error.message ?: error.javaClass.simpleName)
+                        }
+                }
             }
         }
     }
@@ -849,12 +876,27 @@ class PdfReaderActivity : ReaderActivity() {
         /** The viewer's note button on a highlight: the phone's highlight dialog answers it. */
         private const val HIGHLIGHT_NOTE_PREFIX = "incremento_pdf_hl_note:"
 
+        /** The viewer's colour button (a highlight's, the next highlight's or the default colour). */
+        private const val HIGHLIGHT_COLOR_PREFIX = "incremento_pdf_hl_color:"
+
         /** Marks the page while upstream's control panel is hidden. */
         private const val COMPACT_CLASS = "ankrimento-compact"
         private const val COMPACT_STYLE_JS =
             "(function () { if (document.getElementById('ankrimento-style')) return;" +
                 " var style = document.createElement('style'); style.id = 'ankrimento-style';" +
-                " style.textContent = 'body.$COMPACT_CLASS #pdf-controls { display: none !important; }';" +
+                " style.textContent = 'body.$COMPACT_CLASS #pdf-controls { display: none !important; }' +" +
+                // A highlight's own buttons (colour, note, resize, remove) sized for a finger: 32px, each
+                // reaching 48px around it, spaced apart and lifted clear of the highlighted words.
+                // The viewer fades the buttons, not their row, so each carries its own dark ring against the text.
+                " ' .incremento-pdf-highlight-actions { gap: 16px !important; transform: translateY(-30px); }' +" +
+                " ' .incremento-pdf-highlight-actions > button { box-shadow: 0 0 0 5px rgba(32, 33, 36, 0.96)," +
+                " 0 2px 8px 5px rgba(0, 0, 0, 0.45) !important; }' +" +
+                " ' .incremento-pdf-highlight-actions > button:not(.incremento-pdf-color-action)" +
+                " { background: #3c4043 !important; color: #e8eaed !important; }' +" +
+                " ' .incremento-pdf-highlight-actions > button { width: 32px !important; height: 32px !important;" +
+                " font-size: 18px !important; line-height: 32px !important; position: relative; }' +" +
+                " ' .incremento-pdf-highlight-actions > button::after { content: \"\"; position: absolute; inset: -8px; }' +" +
+                " ' .incremento-pdf-highlight-actions > button svg { width: 20px !important; height: 20px !important; }';" +
                 " document.head.appendChild(style); })();"
 
         /** The viewer's page and zoom, its appearance, and the page count from its "page / pages" indicator. */

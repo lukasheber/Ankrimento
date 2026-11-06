@@ -506,4 +506,6 @@
     <string name="ankrimento_cloze">Cloze</string>
     <string name="ankrimento_edit_topic">Uredi temu</string>
     <string name="ankrimento_edit_card">Uredi karticu</string>
+    <string name="ankrimento_highlight_colour">Boja isticanja</string>
+    <string name="ankrimento_default_highlight_colour">Zadana boja isticanja</string>
 </resources>

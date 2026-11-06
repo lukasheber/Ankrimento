@@ -506,4 +506,6 @@
     <string name="ankrimento_cloze">Lacuna</string>
     <string name="ankrimento_edit_topic">Editar tópico</string>
     <string name="ankrimento_edit_card">Editar cartão</string>
+    <string name="ankrimento_highlight_colour">Cor do destaque</string>
+    <string name="ankrimento_default_highlight_colour">Cor padrão do destaque</string>
 </resources>

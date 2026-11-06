@@ -741,3 +741,21 @@ def delete_highlight(card_id: int, highlight_id: str) -> str:
     """Mirrors the _MSG_HL_DEL branch, then sends the viewer the remaining highlights."""
     handle(card_id, MSG_HL_DEL + json.dumps({"cardId": int(card_id), "id": str(highlight_id)}))
     return _highlights_script(card_id)
+
+
+def choose_color(card_id: int, data: dict, selected: str) -> str:
+    """The script answering the viewer's colour button once the phone's chooser closed with
+    ``selected`` ("" when nothing was chosen). Mirrors ``frontend/pdf_dock.py:_choose_pdf_highlight_color``
+    after its dialog: the default colour is saved for the profile and the viewer told of it."""
+    from incremento.backend.config_service import save_reader_default_highlight_color
+    from incremento.backend.highlight_colors import normalize_highlight_color
+
+    try:
+        color: str | None = normalize_highlight_color(selected) if selected else None
+    except ValueError:
+        color = None
+    script = ""
+    if isinstance(data, dict) and data.get("defaultColor") is True and color is not None:
+        color = save_reader_default_highlight_color(mw.addonManager, _ADDON_PKG, runtime.current().profile, color)
+        script = f"window.incrementoSetDefaultHighlightColor?.({json.dumps(color)});"
+    return script + f"window.incrementoPickPdfHighlightColor && window.incrementoPickPdfHighlightColor({json.dumps(color)});"

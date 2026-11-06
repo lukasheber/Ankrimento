@@ -1284,3 +1284,10 @@ def set_priority(card_id: int, priority: float) -> None:
 
     rt = runtime.current()
     _set_priority(str(rt.addon_dir), rt.profile, int(card_id), float(priority))
+
+
+def pdf_choose_color(card_id: int, data_json: str, selected: str) -> str:
+    """Answers the PDF viewer's colour button with the phone's choice (see ``pdf_reader.choose_color``)."""
+    from ankrimento import pdf_reader
+
+    return pdf_reader.choose_color(int(card_id), json.loads(str(data_json) or "{}"), str(selected or ""))
