@@ -193,6 +193,10 @@ tasks.configureEach {
 
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs.nio)
+    // The learning loop's screens under Robolectric, as note-editor tests its Compose screens.
+    testImplementation(libs.robolectric)
+    testImplementation(libs.junit.vintage.engine)
+    testRuntimeOnly(libs.junit.platform.launcher)
     implementation(project(":anki-common"))
     implementation(project(":common"))
     implementation(project(":libanki"))

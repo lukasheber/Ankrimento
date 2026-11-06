@@ -205,7 +205,7 @@ Mobile principles that guide every item:
 | ⬜ | Getting Started guide (first run) | |
 | ➖ | Dependency installer [13] | Desktop tools (FFmpeg, OCR) |
 | 🟡 | Startup time: Python cold start about 20 s on the first launch, about 3 s after warm-up | Warm-up runs on app start |
-| 🟡 | Tests: Python tests against the real backend, reviewer Robolectric tests, on-device smoke test | Add UI tests for the learning loop |
+| ✅ | Tests: Python tests against the real backend, reviewer Robolectric tests, on-device smoke test, UI tests of the learning loop | The session bar under Robolectric on a phone-sized screen: a topic's Next / Sooner / Later and their ratings, its Topic menu, an item revealed then graded, and the topic bar on a narrow phone in Portuguese (`./gradlew :ankrimento:testDebugUnitTest`) |
 | 🟡 | Tablet layout: works full screen | Two-pane library plus reader to consider |
 
 ---
