@@ -442,7 +442,8 @@ The author wants to avoid *operating* a service, so the plan never involves an I
 - 2026-11-06:
   - Replied on #16.
   - Cloned upstream `master` (`e6e0f0c`, schema 24) into `C:\Users\lucas\incremento-sync`, branch `sync-design`.
-  - Design note written there: `docs/architecture/shared-folder-sync.md`, commit `568f398`, local only.
+  - Design note written there: `docs/architecture/shared-folder-sync.md`, commit `568f398`.
+  - Opened as PR [BaskovicP/Incremento#19](https://github.com/BaskovicP/Incremento/pull/19) from the fork `lukasheber/Incremento`. Waiting for the author's review.
 - **Spike 1c finding:** `_content_digest` excludes annotations. So a document version = blob + `content_digest` + `document_id` + interchange baseline, and annotations travel as records. Shipping a managed PDF without its baseline would bring back annotations deleted elsewhere.
 - **Spike 1d** (source reading): usn semantics, card conflict rule and full-sync hooks confirmed. A two-device AnkiWeb run is still to do.
 - **Upstream already has a C4 context diagram** for this MVP: `docs/architecture/shared-folder-sync-c1.svg`.
