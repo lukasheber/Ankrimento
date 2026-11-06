@@ -225,7 +225,9 @@ Every revision that derives from Anki state names the Anki state it belongs to.
 **Both devices review the same topic offline:**
 - AnkiWeb keeps both revlog rows and keeps the card state with the newer modification.
 - The engine then sees two concurrent `topic_schedule` revisions, each with a different review anchor.
-- The engine resolves it **in the same direction as Anki**: the revision whose anchor produced the card's current state wins. The other stays in history.
+- The engine resolves it **in the same direction as Anki**: the revision whose anchor produced the card's current state wins, and the other stays in history.
+  - Anki keeps the card with the newer *modification* time (`add_or_update_card_if_newer` in `rslib/src/sync/collection/chunks.rs`). That isn't always the later review, because a later flag change can make the earlier review's card win.
+  - So each schedule revision also records the card's resulting due date and interval, and the engine picks the revision that matches the card Anki kept.
 - No conflict dialog is needed, and the two channels can't disagree.
 
 This anchor approach is offered to the author as an alternative to the `customData`-reference experiment, or as a complement to it. It costs nothing from the 100-byte budget, because the revlog row already exists in both channels. Needs verifying:
@@ -243,7 +245,12 @@ The rule (Anki's update sequence numbers are exact, so no clocks are involved):
 - If `uploaded_usn = null`, the receiver waits until the sender's published sync usn shows it has uploaded.
 - As a safety net, anything pending longer than 30 days appears in the status screen with a "Discard" action.
 
-(Anki's usn semantics are to be confirmed against the Rust sync code in the stage-1 spike before anything depends on them.)
+Confirmed in Anki's Rust sync code (`start.rs`, `chunks.rs`, `finish.rs`):
+- Pending objects carry `usn = -1`.
+- On upload they take the server usn of that sync.
+- After a sync, the collection's usn is that server usn + 1.
+
+A real two-device run is still needed.
 
 ### 6.4 Full syncs
 Sometimes AnkiWeb requires a one-way full sync, which replaces one side's whole collection. Causes include:
@@ -253,7 +260,10 @@ Sometimes AnkiWeb requires a one-way full sync, which replaces one side's whole 
 
 The other side's Incremento state may then refer to cards and revlog rows that no longer exist.
 
-- **Detect it:** before and after each AnkiWeb sync, record a collection fingerprint: creation time, schema-modified time, usn, and the card count. A change in creation or schema time means a full sync or a schema change happened.
+- **Detect it:**
+  - Desktop Anki fires `collection_will_temporarily_close` around every full upload or download, and reopens with `after_full_sync=True` (`qt/aqt/sync.py`).
+  - The re-anchor pass is idempotent, so it doesn't need to know which direction the full sync went.
+  - On the phone, Ankrimento needs the equivalent signal from AnkiDroid's full-sync path.
 - **After a full download:** run a re-anchor pass. Records whose cards vanished become `orphaned_by_full_sync`:
   - they're not deleted, not published as deletions, and not cleaned up by reconciliation;
   - they're kept for 30 days and shown with the device that last had them.
@@ -428,7 +438,16 @@ The author wants to avoid *operating* a service, so the plan never involves an I
 6. **Upstream is moving:** `master` is 8 commits ahead of our vendored copy (`e6e0f0c` vs `ab88266`). Rebase onto it before stage 0 and keep each PR small, so it rebases cleanly.
 7. **AnkiDroid's AI policy** applies only to AnkiDroid's own repository; Incremento's contribution terms are the author's. Say openly how the code is produced, so the author can judge it with that in mind.
 
-## 13. What to do first
+## 13. Progress
+- 2026-11-06:
+  - Replied on #16.
+  - Cloned upstream `master` (`e6e0f0c`, schema 24) into `C:\Users\lucas\incremento-sync`, branch `sync-design`.
+  - Design note written there: `docs/architecture/shared-folder-sync.md`, commit `568f398`, local only.
+- **Spike 1c finding:** `_content_digest` excludes annotations. So a document version = blob + `content_digest` + `document_id` + interchange baseline, and annotations travel as records. Shipping a managed PDF without its baseline would bring back annotations deleted elsewhere.
+- **Spike 1d** (source reading): usn semantics, card conflict rule and full-sync hooks confirmed. A two-device AnkiWeb run is still to do.
+- **Upstream already has a C4 context diagram** for this MVP: `docs/architecture/shared-folder-sync-c1.svg`.
+
+## 14. What to do first
 1. Reply on #16: thank the author, accept the scope, and say a design note will come first (stage 0) with the document spike.
 2. Update the vendored upstream to `origin/master`.
 3. Write `docs/SYNC_DESIGN.md` (stage 0) and the spike in parallel. Open the doc PR, and wait for the author's review before stage 1 code.
