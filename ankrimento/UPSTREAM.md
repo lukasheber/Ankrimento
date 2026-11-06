@@ -26,6 +26,7 @@ It fails (exit 1) on what a new version can break silently:
 | A compiled desktop name is gone | A function or constant the phone compiles from a Qt file (`ast`) was renamed or removed | Find its new name or replacement in desktop's file; update the list in the phone module (`epub_reader.py`, `statistics_view.py`, `writing.py`) |
 | A translation key is gone | The phone shows a desktop text (`t("…")`) that desktop dropped or renamed | Use desktop's new key |
 | A shipped entry is missing | A file listed in `addon.py` `SHIPPED_ENTRIES` (and `build.gradle.kts`) moved | Update both lists |
+| A mirrored function changed, or was never recorded | Desktop changed a function the phone copies (step 3) | Update the copy, then `--record` |
 
 It also warns when a desktop function the phone mirrors ("Mirrors ``name``" in the
 phone's Python) cannot be found. A warning means: open the phone's copy and desktop's
@@ -33,12 +34,25 @@ current code side by side, and bring the copy up to date.
 
 ## 3. Compare the mirrored code
 
-The check finds renamed or removed functions, not changed ones. For each phone module
-with "Mirrors" notes, diff the desktop functions it names between the old and the new
-release (`git diff` of `vendor/incremento` before committing it shows them). Where
-desktop changed its logic, change the copy the same way. The modules with copies:
-`pdf_reader.py`, `epub_reader.py`, `extract.py`, `writing.py`, `video_reader.py`,
-`statistics_view.py`, `pdf_links.py`, `document_review.py`, `upkeep.py`.
+`tools/mirrors.json` keeps a fingerprint of the source of each desktop function the
+phone copies ("Mirrors ``name``" in the phone's Python). The check lists:
+
+- **changed since copied**: desktop changed that function. Open its diff (`git diff` of
+  `vendor/incremento` before committing shows it) and the phone's copy (search the
+  phone's Python for its name), and change the copy the same way;
+- **never recorded**: a new copy. Compare it with desktop's function once.
+
+When every listed copy matches desktop again, record the fingerprints and commit
+`mirrors.json` with the rest:
+
+```
+ankrimento/.venv/Scripts/python ankrimento/tools/parity_check.py --record
+```
+
+A new copy on the phone gets a "Mirrors ``name``" note (the desktop function's name,
+optionally `path.py:name`), so the check finds it. The modules with copies:
+`pdf_reader.py`, `pdf_cards.py`, `epub_reader.py`, `extract.py`, `writing.py`,
+`video_reader.py`, `statistics_view.py`, `pdf_links.py`, `document_review.py`, `upkeep.py`.
 
 ## 4. Run the tests
 

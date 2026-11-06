@@ -16,11 +16,19 @@ any test noticing:
 
 It warns about the desktop functions the phone mirrors ("Mirrors ``name``")
 that it can no longer find, so their copies can be checked against desktop.
+
+It also fails when a mirrored desktop function changed since its copy was last
+compared: ``tools/mirrors.json`` keeps a fingerprint of each one's source. After
+bringing the copies up to date, record the new fingerprints::
+
+    ankrimento/.venv/Scripts/python ankrimento/tools/parity_check.py --record
 """
 
 from __future__ import annotations
 
 import ast
+import hashlib
+import json
 import re
 import sys
 from pathlib import Path
@@ -74,7 +82,8 @@ _MIRROR = re.compile(r"[Mm]irrors\s+``(?:[\w/.]+\.py:)?([A-Za-z_][\w.]*)``")
 
 
 def _read(path: Path) -> str:
-    return path.read_text(encoding="utf8", errors="ignore")
+    # Line endings as stored, whatever the checkout made of them: fingerprints match on every machine.
+    return path.read_text(encoding="utf8", errors="ignore").replace("\r\n", "\n")
 
 
 def _phone_text() -> str:
@@ -170,13 +179,71 @@ def lost_mirrors() -> list[str]:
     return lost
 
 
+MIRRORS_FILE = Path(__file__).resolve().parent / "mirrors.json"
+
+
+def _desktop_sources() -> dict[str, list[str]]:
+    """Each top-level function or class name in desktop's Python, with its source (all definitions of it)."""
+    sources: dict[str, list[str]] = {}
+    for path in sorted(UPSTREAM.rglob("*.py")):
+        if "tests" in path.parts:
+            continue
+        text = _read(path)
+        try:
+            tree = ast.parse(text, filename=str(path))
+        except SyntaxError:
+            continue
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                segment = ast.get_source_segment(text, node) or ""
+                sources.setdefault(node.name, []).append(f"{path.relative_to(UPSTREAM).as_posix()}\n{segment}")
+    return sources
+
+
+def mirror_fingerprints() -> dict[str, str]:
+    """A fingerprint of the desktop source behind each mirrored name (the name's last part)."""
+    sources = _desktop_sources()
+    prints = {}
+    for name, _module in mirrored_names():
+        found = sources.get(name.split(".")[-1])
+        if found:
+            prints[name] = hashlib.sha256("\n".join(sorted(found)).encode("utf8")).hexdigest()[:16]
+    return prints
+
+
+def _recorded() -> dict[str, str]:
+    return json.loads(MIRRORS_FILE.read_text(encoding="utf8")) if MIRRORS_FILE.exists() else {}
+
+
+def unrecorded_mirrors() -> list[str]:
+    """Mirrored names without a recorded fingerprint (a new copy: record it once compared)."""
+    recorded = _recorded()
+    return sorted(name for name in mirror_fingerprints() if name not in recorded)
+
+
+def changed_mirrors() -> list[str]:
+    """Mirrored desktop functions whose source changed since the copies were last compared."""
+    recorded = _recorded()
+    return sorted(name for name, value in mirror_fingerprints().items() if name in recorded and recorded[name] != value)
+
+
+def record_mirrors() -> None:
+    MIRRORS_FILE.write_text(json.dumps(mirror_fingerprints(), indent=2, sort_keys=True) + "\n", encoding="utf8")
+
+
 def main() -> int:
+    if "--record" in sys.argv[1:]:
+        record_mirrors()
+        print(f"Recorded {len(_recorded())} mirrored desktop functions in {MIRRORS_FILE.name}.")
+        return 0
     new, known = unanswered_messages()
     failures = {
         "Desktop messages the phone does not answer (new: bring over, or list in NOT_ANSWERED)": new,
         "Desktop names compiled by the phone that are gone": missing_compiled(),
         "Translation keys the phone uses that desktop no longer has": missing_keys(),
         "Shipped entries missing from the add-on": missing_shipped(),
+        "Mirrored desktop functions changed since copied (compare, update the copy, then --record)": changed_mirrors(),
+        "Mirrored desktop functions never recorded (compare, then --record)": unrecorded_mirrors(),
     }
     for title, items in failures.items():
         print(f"{title}: {'none' if not items else ''}")
