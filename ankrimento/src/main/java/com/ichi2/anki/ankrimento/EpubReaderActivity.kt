@@ -535,6 +535,7 @@ class EpubReaderActivity : ReaderActivity() {
                         webView.evaluateJavascript(TOUCH_SELECTION_JS, null)
                         webView.evaluateJavascript(HIDE_READ_MARKER_JS, null)
                         webView.evaluateJavascript(script, null)
+                        webView.evaluateJavascript(DARK_HIGHLIGHT_TEXT_JS, null)
                         webView.evaluateJavascript(preferences.script(), null)
                         webView.evaluateJavascript(
                             PageGestures.script(
@@ -573,6 +574,17 @@ class EpubReaderActivity : ReaderActivity() {
 
         /** The page's note button on a highlight: the phone's highlight dialog answers it. */
         private const val HIGHLIGHT_NOTE_PREFIX = "incremento_epub_hl_note:"
+
+        /**
+         * Highlighted words readable on the dark page colours: desktop's tints over its night page leave
+         * its cream text near 2:1; near-white text over the same tints reads at 5:1 or more. Display only,
+         * following desktop's own appearance style while it is there.
+         */
+        private const val DARK_HIGHLIGHT_TEXT_JS =
+            "(function () { if (document.getElementById('ankrimento-dark-highlights')) return;" +
+                " var style = document.createElement('style'); style.id = 'ankrimento-dark-highlights';" +
+                " style.textContent = ':root:has(#incremento-epub-appearance) span.incremento-epub-highlight" +
+                " { color: #fffaf0 !important; }'; document.head.appendChild(style); })();"
 
         /** The page's snapshot of the selection (desktop grabs that box of its view). */
         private const val SNAPSHOT_PREFIX = "incremento_epub_snapshot:"
