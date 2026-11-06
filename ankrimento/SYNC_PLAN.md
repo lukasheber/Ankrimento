@@ -446,6 +446,17 @@ The author wants to avoid *operating* a service, so the plan never involves an I
   - Opened as PR [BaskovicP/Incremento#19](https://github.com/BaskovicP/Incremento/pull/19) from the fork `lukasheber/Incremento`. Waiting for the author's review.
 - **Spike 1c finding:** `_content_digest` excludes annotations. So a document version = blob + `content_digest` + `document_id` + interchange baseline, and annotations travel as records. Shipping a managed PDF without its baseline would bring back annotations deleted elsewhere.
 - **Spike 1d** (source reading): usn semantics, card conflict rule and full-sync hooks confirmed. A two-device AnkiWeb run is still to do.
+- **Code, branch `sync-foundations`** (local, in `C:\Users\lucas\Incremento`):
+  - capture, exchange, apply, AnkiWeb usn plus scm guard;
+  - bookmarks, positions, highlights, documents;
+  - the service, the dialog and the root wiring.
+
+  176+ unit and integration tests. Separate branch `fix-windows-fsync` for upstream's Windows PDF interchange bug.
+- **End-to-end tests against real AnkiWeb** (throwaway account), 2026-11-06:
+  - Two collections on Windows: 15/15 scenarios. These cover data before its card, a card deleted (obsolete), a conflict and its resolution, a real PDF with a highlight, position and bookmark, and full syncs.
+  - Windows plus Linux (WSL): 9/9.
+  - Finding: AnkiWeb continues usn numbering across later full uploads; only the first upload to a fresh account starts at 0. An scm guard was added anyway.
+  - Harnesses (not in the repo yet): scratchpad `e2e_two_devices.py`, `e2e_cross_platform.py`, `e2e_b_step.py`. Credentials only via the `INC_E2E_USER`/`INC_E2E_PASS` environment variables.
 - **Upstream already has a C4 context diagram** for this MVP: `docs/architecture/shared-folder-sync-c1.svg`.
 
 ## 14. What to do first
