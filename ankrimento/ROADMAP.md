@@ -134,7 +134,9 @@ Mobile principles that guide every item:
 | ✅ | Open an extract's link back to its source, on mobile | Extracts made on the phone carry desktop's link back, as desktop's fill adds it (unless the extract source links setting turns a kind off): web page, PDF page (with the excerpt found and highlighted), EPUB chapter and place, video moment. The links open their reader from cards in the readers and in AnkiDroid's reviewer. Checked on the tablet for web, PDF and EPUB. The EPUB place is the scroll position; desktop also focuses the selection by its offset |
 | ✅ | Video bookmarks | Desktop's video bookmarks: keep the moment playing, open one (playback moves there), comment or delete it; desktop's labels (0:19). Checked on the tablet |
 | 🟡 | Captions (target/reference) | YouTube's and Vimeo's own captions show in their players. Desktop's paired subtitle files (target and reference language) are not shown yet: they reach the phone only with Incremento's sync, which is deferred |
-| ➖ | Create Mobile Clip, Download Local Copy | Need FFmpeg/yt-dlp; desktop makes clips that sync as media |
+| ✅ | Create Mobile Clip (local videos) | Video reader ⋮ → Create clip: desktop's start/end (the moment playing, 30 s on), its 10-minute limit, media name and card (the clip's player and the link back). Desktop re-encodes with FFmpeg; the phone copies the MP4's own samples (no re-encoding), so a clip starts at the key frame before the start, and a format an MP4 cannot hold (WebM) is explained. Checked on the tablet |
+| ✅ | Add Video from a file | Library → Add → Video file: desktop's import with "Original quality (no re-encoding)", the mode without FFmpeg |
+| ➖ | Download Local Copy, clips of streamed videos | Need yt-dlp (and FFmpeg to re-encode); desktop downloads them |
 | ✅ | Audio cards | Ordinary Anki sound plays through AnkiDroid's own player, in its reviewer and in the learning screen (checked on the tablet). Desktop's audio topics play in their card's own player, which seeks (media is served in ranges) and resumes where listening stopped |
 
 ### Writing, Markdown and local files [5, 8]
@@ -258,7 +260,7 @@ Things desktop has:
 30. ~~PDF cross-references and page links; OCR status~~ (done).
 31. ~~Markdown documents (import) and the writing formatting toolbar~~ (done).
 32. ~~Audio import; check audio cards~~ (done).
-33. ~~Video bookmarks, Vimeo, fuller playback controls~~ (done). Captions: the providers' own; desktop's subtitle files wait for sync. Extract at a moment works (its card links back to that second); desktop's Create Mobile Clip cuts the video with FFmpeg, which the phone lacks.
+33. ~~Video bookmarks, Vimeo, fuller playback controls~~ (done). Captions: the providers' own; desktop's subtitle files wait for sync. Extract at a moment works (its card links back to that second); Create Mobile Clip works for local videos (cut without re-encoding); videos can be added from a file. Clips of streamed videos need desktop's yt-dlp.
 34. ~~More of upstream's settings (writing, PDF details)~~ (done).
 35. Getting Started guide. (Deferred)
 

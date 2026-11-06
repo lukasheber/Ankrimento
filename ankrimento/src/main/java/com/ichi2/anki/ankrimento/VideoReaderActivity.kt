@@ -24,9 +24,12 @@ import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.MarkBookmark
 import com.ichi2.anki.ankrimento.ui.MarksSheet
 import com.ichi2.anki.ankrimento.ui.ReaderTool
+import com.ichi2.anki.ankrimento.ui.VideoClipDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import timber.log.Timber
 import java.io.File
@@ -99,6 +102,9 @@ class VideoReaderActivity : ReaderActivity() {
                 if (!playing) player.pause()
             }
         }
+        localVideo = File(video.path)
+        localDuration = { player.duration / 1000.0 }
+        showTools() // with Create clip, now that there is a local copy
         readPlayer = { player.currentPosition / 1000.0 to player.isPlaying }
         seekBy = { seconds -> player.seekTo((player.currentPosition + seconds * 1000).toInt().coerceAtLeast(0)) }
         seekTo = { seconds -> player.seekTo((seconds * 1000).toInt().coerceAtLeast(0)) }
@@ -106,9 +112,11 @@ class VideoReaderActivity : ReaderActivity() {
 
     private fun showTools() {
         tools =
-            listOf(
+            listOfNotNull(
                 ReaderTool(getString(R.string.ankrimento_video_extract), IncrementoIcons.Add, onClick = ::extractHere),
                 ReaderTool(getString(R.string.ankrimento_marks_bookmarks), IncrementoIcons.Bookmark, onClick = ::showBookmarks),
+                // Desktop's Create Mobile Clip cuts a local copy; the phone has one only for a downloaded video.
+                ReaderTool(getString(R.string.ankrimento_video_clip), onClick = ::chooseClip).takeIf { localVideo != null },
                 ReaderTool(getString(R.string.ankrimento_video_back_10)) { seekBy?.invoke(-10.0) },
                 ReaderTool(getString(R.string.ankrimento_video_forward_10)) { seekBy?.invoke(10.0) },
                 ReaderTool(getString(R.string.ankrimento_video_speed, speedLabel(speed))) {
@@ -192,6 +200,56 @@ class VideoReaderActivity : ReaderActivity() {
             { seconds -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.currentTime = Math.max(0, v.currentTime + $seconds);", null) }
         seekTo = { seconds -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.currentTime = Math.max(0, $seconds);", null) }
         setSpeed = { rate -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.playbackRate = $rate;", null) }
+    }
+
+    /** The local video and its length, for clips (null for a streamed video). */
+    private var localVideo: File? = null
+    private var localDuration: (() -> Double)? = null
+
+    /** Desktop's "Create Mobile Clip": a segment cut into an MP4 that plays on any device, as a new card. */
+    private fun chooseClip() {
+        lifecycleScope.launch { showClipDialog(readPlayer?.invoke()?.first ?: lastPosition) }
+    }
+
+    private fun showClipDialog(now: Double) {
+        val duration = localDuration?.invoke()?.takeIf { it > 0 } ?: 0.0
+        sheet = {
+            VideoClipDialog(
+                now = now,
+                duration = duration,
+                onCut = { start, end ->
+                    sheet = null
+                    cutClip(start, end, duration)
+                },
+                onDismiss = { sheet = null },
+            )
+        }
+    }
+
+    private fun cutClip(
+        start: Double,
+        end: Double,
+        duration: Double,
+    ) {
+        val source = localVideo ?: return
+        toast(getString(R.string.ankrimento_video_clip_cutting))
+        lifecycleScope.launch {
+            val clip = File(cacheDir, "clips").apply { mkdirs() }.resolve("clip.mp4")
+            runCatching {
+                val realStart = withContext(Dispatchers.IO) { VideoClipper.cut(source, clip, start, end) }
+                withCol { Ankrimento.videoClip(cardId, realStart, end, clip, duration) }
+            }.onFailure { error ->
+                Timber.w(error, "Cutting a video clip failed")
+                toast(
+                    if (error is VideoClipper.UnsupportedFormat) {
+                        getString(R.string.ankrimento_video_clip_format)
+                    } else {
+                        error.message ?: error.javaClass.simpleName
+                    },
+                )
+            }
+            clip.delete()
+        }
     }
 
     /** Desktop's "Add Card at this point": an extract whose front links back to this moment. */

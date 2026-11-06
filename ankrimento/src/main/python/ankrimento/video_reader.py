@@ -8,6 +8,7 @@ the position with ``set_video_position`` and observed playback with
 
 from __future__ import annotations
 
+import html
 import os
 from typing import Any
 
@@ -139,3 +140,62 @@ def bookmark_comment(card_id: int, bookmark_id: str, comment: str) -> list[dict[
     addon_dir, profile = _context()
     update_reader_bookmark_comment(addon_dir, profile, int(card_id), "video", str(bookmark_id), str(comment or ""))
     return bookmarks(card_id)
+
+
+def clip(card_id: int, start: float, end: float, clip_path: str, duration: float) -> None:
+    """A segment of the video, cut on the device into ``clip_path`` (an MP4), as a new card. Mirrors
+    ``frontend/video_dock.py:_create_mobile_video_clip`` after its rendering: desktop's range limits, its
+    media name, and ``_fill_mobile_video_clip_card``'s front (the clip's player and the link back)."""
+    from aqt import mw
+    from incremento.backend.video_manager import (
+        add_mobile_video_clip_to_anki_media,
+        fmt_time,
+        mobile_video_clip_html,
+        validate_mobile_video_clip_range,
+    )
+
+    from ankrimento import extract
+
+    card_id = int(card_id)
+    start, end = validate_mobile_video_clip_range(float(start), float(end), float(duration) if duration > 0 else None)
+    note = runtime.current().col.get_card(card_id).note()
+    title = note.fields[0].strip() if note.fields else ""
+    name = add_mobile_video_clip_to_anki_media(
+        runtime.current().col, clip_path, source_title=title, start_sec=start, end_sec=end
+    )
+    player = mobile_video_clip_html(name, start_sec=start, end_sec=end, source_title=title)
+    label = f"&#9654; {fmt_time(start)}" + (f" – {html.escape(title[:60])}" if title else "")
+    link = f"<a href=\"#\" onclick=\"pycmd('incremento_open_video:{card_id}:{float(start)}')\" style=\"color:#4a90d9;\">{label}</a>"
+    extract.add_html_to_draft(card_id, 0, f"{player}<br>{link}", page=int(start))
+    mw.notify_host("extract_draft", card_id=card_id)
+
+
+def import_local(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0) -> int:
+    """A video file from the device as an Incremento Video topic. Mirrors desktop's Add Video from a file
+    (``__init__.py``, ``source_mode == "local"``) with "Original quality (no re-encoding)", the one mode
+    without FFmpeg: the file is copied into the profile's videos, the topic made, the import journaled."""
+    from incremento.backend.note_metadata import build_incremento_metadata
+    from incremento.backend.operation_journal import ImportOperation
+    from incremento.backend.priority_manager import set_priority
+    from incremento.backend.video_manager import add_video_card, import_local_video_file
+
+    rt = runtime.current()
+    addon_dir, profile = _context()
+    operation = ImportOperation(addon_dir, profile, "video")
+    try:
+        relpath = import_local_video_file(
+            addon_dir, profile, str(path), encode_mode="original", created_relpath_cb=operation.track_created_relpath
+        )
+        metadata = build_incremento_metadata(
+            source_type="Video", source_title=title, source_link=relpath, content_id=operation.content_id
+        )
+        card_id = int(
+            add_video_card(rt.col, "", title, deck_name=deck_name, local_video_file=relpath, metadata=metadata)
+        )
+        operation.bind_anki(card_id=card_id, note_id=int(rt.col.get_card(card_id).nid))
+        operation.commit(storage_key=relpath)
+    except Exception as error:
+        operation.rollback(error_code=type(error).__name__)
+        raise
+    set_priority(addon_dir, profile, card_id, float(priority))
+    return card_id

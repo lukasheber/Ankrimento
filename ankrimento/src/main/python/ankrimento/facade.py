@@ -1394,3 +1394,17 @@ def epub_snapshot(card_id: int, section_index: int, image: str) -> None:
     from ankrimento import epub_reader
 
     epub_reader.snapshot(int(card_id), int(section_index), str(image))
+
+
+def video_clip(card_id: int, start: float, end: float, clip_path: str, duration: float) -> None:
+    """A segment of a local video, cut on the device, as a new card (see ``video_reader.clip``)."""
+    from ankrimento import video_reader
+
+    video_reader.clip(int(card_id), float(start), float(end), str(clip_path), float(duration))
+
+
+def import_local_video(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0) -> int:
+    """A video file from the device as a video topic, kept as it is (see ``video_reader.import_local``)."""
+    from ankrimento import video_reader
+
+    return video_reader.import_local(str(path), str(title), str(deck_name), float(priority))

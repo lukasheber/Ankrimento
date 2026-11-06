@@ -194,6 +194,13 @@
     <string name="ankrimento_release_next_chapter">Solte para o próximo capítulo</string>
     <string name="ankrimento_release_previous_chapter">Solte para o capítulo anterior</string>
     <string name="ankrimento_video_extract">Extrair neste momento</string>
+    <string name="ankrimento_video_clip">Criar clipe</string>
+    <string name="ankrimento_video_clip_intro">Corta este trecho do vídeo em um novo cartão que toca em qualquer aparelho (até 10 minutos). Ele começa no quadro-chave logo antes do início.</string>
+    <string name="ankrimento_video_clip_start">Início (m:ss)</string>
+    <string name="ankrimento_video_clip_end">Fim (m:ss)</string>
+    <string name="ankrimento_video_clip_cut">Cortar</string>
+    <string name="ankrimento_video_clip_cutting">Cortando o clipe…</string>
+    <string name="ankrimento_video_clip_format">O formato deste vídeo não pode ser cortado no celular (um MP4 pode); o Create Mobile Clip do desktop consegue.</string>
     <string name="ankrimento_video_back_10">Voltar 10 segundos</string>
     <!-- Library -->
     <string name="ankrimento_library">Biblioteca</string>
@@ -480,6 +487,7 @@
     <string name="ankrimento_writing_preview">Pré-visualizar</string>
     <string name="ankrimento_writing_edit">Editar</string>
     <string name="ankrimento_add_audio_file">Arquivo de áudio</string>
+    <string name="ankrimento_add_video_file">Arquivo de vídeo</string>
     <string name="ankrimento_video_forward_10">Avançar 10 segundos</string>
     <string name="ankrimento_video_speed">Velocidade: %1$s</string>
     <string name="ankrimento_video_bookmark_here">Marcar este momento (%1$s)</string>

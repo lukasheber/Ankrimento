@@ -182,6 +182,13 @@
     <string name="ankrimento_release_next_chapter">松开进入下一章</string>
     <string name="ankrimento_release_previous_chapter">松开返回上一章</string>
     <string name="ankrimento_video_extract">在此时刻摘录</string>
+    <string name="ankrimento_video_clip">创建片段</string>
+    <string name="ankrimento_video_clip_intro">把这段视频剪成一张可在任何设备上播放的新卡片（最长 10 分钟）。片段从起点之前最近的关键帧开始。</string>
+    <string name="ankrimento_video_clip_start">开始 (m:ss)</string>
+    <string name="ankrimento_video_clip_end">结束 (m:ss)</string>
+    <string name="ankrimento_video_clip_cut">剪切</string>
+    <string name="ankrimento_video_clip_cutting">正在剪切片段…</string>
+    <string name="ankrimento_video_clip_format">手机无法剪切这种格式的视频（MP4 可以）；桌面版的 Create Mobile Clip 可以。</string>
     <string name="ankrimento_video_back_10">后退 10 秒</string>
     <!-- Library -->
     <string name="ankrimento_library">书库</string>
@@ -454,6 +461,7 @@
     <string name="ankrimento_writing_preview">预览</string>
     <string name="ankrimento_writing_edit">编辑</string>
     <string name="ankrimento_add_audio_file">音频文件</string>
+    <string name="ankrimento_add_video_file">视频文件</string>
     <string name="ankrimento_video_forward_10">前进 10 秒</string>
     <string name="ankrimento_video_speed">速度：%1$s</string>
     <string name="ankrimento_video_bookmark_here">为此时刻添加书签（%1$s）</string>

@@ -188,6 +188,13 @@
     <string name="ankrimento_release_next_chapter">Release for the next chapter</string>
     <string name="ankrimento_release_previous_chapter">Release for the previous chapter</string>
     <string name="ankrimento_video_extract">Extract at this moment</string>
+    <string name="ankrimento_video_clip">Create clip</string>
+    <string name="ankrimento_video_clip_intro">Cuts this part of the video into a new card that plays on any device (up to 10 minutes). It starts at the key frame just before the start.</string>
+    <string name="ankrimento_video_clip_start">Start (m:ss)</string>
+    <string name="ankrimento_video_clip_end">End (m:ss)</string>
+    <string name="ankrimento_video_clip_cut">Cut</string>
+    <string name="ankrimento_video_clip_cutting">Cutting the clip…</string>
+    <string name="ankrimento_video_clip_format">This video\'s format cannot be cut on the phone (an MP4 can); desktop\'s Create Mobile Clip can cut it.</string>
     <string name="ankrimento_video_back_10">Back 10 seconds</string>
     <!-- Library -->
     <string name="ankrimento_library">Library</string>
@@ -467,6 +474,7 @@
     <string name="ankrimento_writing_preview">Preview</string>
     <string name="ankrimento_writing_edit">Edit</string>
     <string name="ankrimento_add_audio_file">Audio file</string>
+    <string name="ankrimento_add_video_file">Video file</string>
     <string name="ankrimento_video_forward_10">Forward 10 seconds</string>
     <string name="ankrimento_video_speed">Speed: %1$s</string>
     <string name="ankrimento_video_bookmark_here">Bookmark this moment (%1$s)</string>

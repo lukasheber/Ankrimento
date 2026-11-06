@@ -774,6 +774,13 @@ object Ankrimento {
         title: String,
     ): Long = requireFacade().callAttr("import_epub", path, title).toLong()
 
+    /** A video file from the device as desktop's Incremento Video topic, kept as it is (no re-encoding). */
+    @WorkerThread
+    fun importLocalVideo(
+        path: String,
+        title: String,
+    ): Long = requireFacade().callAttr("import_local_video", path, title).toLong()
+
     /** An audio file as desktop's Incremento Audio topic (MP3, M4A, AAC or WAV), played by its card's own player. */
     @WorkerThread
     fun importAudio(
@@ -916,6 +923,18 @@ object Ankrimento {
             val hit = hits.getJSONObject(index)
             EpubSearchHit(hit.getInt("section"), hit.optString("title"), hit.optString("snippet"))
         }
+    }
+
+    /** A segment of a local video, cut into [clip], as a new card; the extract sheet follows. */
+    @WorkerThread
+    fun videoClip(
+        cardId: Long,
+        start: Double,
+        end: Double,
+        clip: java.io.File,
+        duration: Double,
+    ) {
+        requireFacade().callAttr("video_clip", cardId, start, end, clip.path, duration)
     }
 
     /** A region of the chapter as a new card's image; the extract sheet follows. */
