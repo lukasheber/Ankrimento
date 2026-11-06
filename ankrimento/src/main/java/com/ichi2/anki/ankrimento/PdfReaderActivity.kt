@@ -5,9 +5,7 @@ package com.ichi2.anki.ankrimento
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Base64
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -47,11 +45,8 @@ import com.ichi2.anki.ankrimento.ui.SnapshotLayer
 import com.ichi2.anki.common.destinations.BrowserDestination
 import com.ichi2.anki.common.destinations.DeferredNavigation
 import com.ichi2.anki.common.destinations.toIntent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
@@ -838,40 +833,12 @@ class PdfReaderActivity : ReaderActivity() {
     }
 
     private fun takeSnapshot(box: androidx.compose.ui.geometry.Rect) {
-        val left = box.left.toInt().coerceIn(0, webView.width)
-        val top = box.top.toInt().coerceIn(0, webView.height)
-        val right = box.right.toInt().coerceIn(0, webView.width)
-        val bottom = box.bottom.toInt().coerceIn(0, webView.height)
-        // The viewer's own minimum (5 pixels).
-        if (right - left < SNAPSHOT_MIN_PX || bottom - top < SNAPSHOT_MIN_PX) return
         lifecycleScope.launch {
-            // The page as shown, once the layer over it has gone: the page's canvas is drawn by the GPU,
-            // so it is copied from the screen rather than redrawn.
-            delay(SNAPSHOT_SETTLE_MS)
-            val origin = IntArray(2).also { webView.getLocationInWindow(it) }
-            val region = Bitmap.createBitmap(right - left, bottom - top, Bitmap.Config.ARGB_8888)
-            val source = android.graphics.Rect(origin[0] + left, origin[1] + top, origin[0] + right, origin[1] + bottom)
-            val copied =
-                kotlinx.coroutines.suspendCancellableCoroutine { done ->
-                    android.view.PixelCopy.request(window, source, region, { result ->
-                        done.resumeWith(Result.success(result == android.view.PixelCopy.SUCCESS))
-                    }, android.os.Handler(mainLooper))
-                }
-            if (!copied) {
-                region.recycle()
+            val image = RegionSnapshot.capture(this@PdfReaderActivity, webView, box)
+            if (image == null) {
                 toast(getString(R.string.ankrimento_extract_failed, "PixelCopy"))
                 return@launch
             }
-            val image =
-                withContext(Dispatchers.Default) {
-                    val bytes =
-                        java.io.ByteArrayOutputStream().use { out ->
-                            region.compress(Bitmap.CompressFormat.PNG, 100, out)
-                            out.toByteArray()
-                        }
-                    region.recycle()
-                    "data:image/png;base64," + Base64.encodeToString(bytes, Base64.NO_WRAP)
-                }
             val snapshot = JSONObject().put("cardId", cardId).put("page", page.coerceAtLeast(1)).put("image", image)
             messages.trySend("incremento_pdf_snapshot:$snapshot")
         }
@@ -1039,9 +1006,6 @@ class PdfReaderActivity : ReaderActivity() {
             context: Context,
             cardId: Long,
         ): Intent = ReaderActivity.intent(context, "pdf", cardId, session = false)!!
-
-        private const val SNAPSHOT_MIN_PX = 5
-        private const val SNAPSHOT_SETTLE_MS = 150L
 
         private const val EXTRA_LINK_FROM = "link_from"
         private const val EXTRA_LINK_PAGE = "link_page"

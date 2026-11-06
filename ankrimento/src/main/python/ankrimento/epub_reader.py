@@ -519,3 +519,25 @@ def delete_highlight(card_id: int, highlight_id: str, section_index: int) -> str
     remove_highlight(addon_dir, profile, int(card_id), str(highlight_id))
     rows = load_highlights(addon_dir, profile, int(card_id), section_index=int(section_index))
     return _js_call("incrementoReplaceEpubHighlights", rows)
+
+
+def snapshot(card_id: int, section_index: int, image: str) -> None:
+    """Mirrors ``frontend/epub_dock.py:_handle_epub_snapshot``: the region's image saved as media and put
+    in a new card with the link back to its chapter. Desktop asks which field takes it; the phone puts it
+    in the front, as the extract sheet edits the fields after (as its PDF snapshots do)."""
+    from html import escape
+
+    from aqt import mw
+    from incremento.backend.i18n import t
+
+    from ankrimento import extract
+    from ankrimento.pdf_reader import snapshot_media
+
+    try:
+        name = snapshot_media(str(image or ""))
+        html = f'<img src="{escape(name, quote=True)}">'
+        citation = _citation(int(card_id), int(section_index), -1) if extract.source_link_on("epub") else ""
+        extract.add_html_to_draft(int(card_id), 0, html + ("<br>" + citation if citation else ""), page=int(section_index))
+        mw.notify_host("extract_draft", card_id=int(card_id))
+    except Exception as error:  # noqa: BLE001 - shown, as desktop's showInfo does
+        mw.notify_host("message", kind="info", text=t("reader_epub_snapshot_failed", error=error))

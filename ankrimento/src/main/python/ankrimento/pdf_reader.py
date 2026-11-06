@@ -413,12 +413,34 @@ def handle(card_id: int, msg: str) -> list[str]:
     return []
 
 
+def snapshot_media(image: str) -> str:
+    """A snapshot's PNG (a data URL or base64) saved in the collection's media; returns its file name.
+    Desktop's size limit and messages."""
+    import base64
+    import tempfile
+
+    from incremento.backend.i18n import t
+
+    if "," in image:
+        image = image.split(",", 1)[1]
+    if not image or len(image) > ((_MAX_SNAPSHOT_BYTES * 4) // 3) + 8:
+        raise ValueError(t("reader_pdf_snapshot_too_large"))
+    raw = base64.b64decode(image, validate=True)
+    if not raw or len(raw) > _MAX_SNAPSHOT_BYTES:
+        raise ValueError(t("reader_pdf_snapshot_empty_or_large"))
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as file:
+        file.write(raw)
+        path = file.name
+    try:
+        return runtime.current().col.media.add_file(path)
+    finally:
+        os.unlink(path)
+
+
 def _snapshot(card_id: int, msg: str) -> None:
     """Mirrors ``_handle_pdf_snapshot``: the region's image saved as media and put in the extract, with
     desktop's link back to the page after it. Desktop asks which field takes it; the phone puts it in the
     front, as the extract sheet edits the fields after."""
-    import base64
-    import tempfile
     from html import escape
 
     from incremento.backend.i18n import t
@@ -429,21 +451,7 @@ def _snapshot(card_id: int, msg: str) -> None:
         data = json.loads(msg[len(MSG_SNAPSHOT):])
         if int(data.get("cardId", 0) or 0) != card_id:
             return
-        image = str(data.get("image") or "")
-        if "," in image:
-            image = image.split(",", 1)[1]
-        if not image or len(image) > ((_MAX_SNAPSHOT_BYTES * 4) // 3) + 8:
-            raise ValueError(t("reader_pdf_snapshot_too_large"))
-        raw = base64.b64decode(image, validate=True)
-        if not raw or len(raw) > _MAX_SNAPSHOT_BYTES:
-            raise ValueError(t("reader_pdf_snapshot_empty_or_large"))
-        with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as file:
-            file.write(raw)
-            path = file.name
-        try:
-            name = runtime.current().col.media.add_file(path)
-        finally:
-            os.unlink(path)
+        name = snapshot_media(str(data.get("image") or ""))
         page = int(data.get("page", 0) or 0) or 1
         html = f'<img src="{escape(name, quote=True)}">'
         citation = _citation(card_id, page, "", "") if extract.source_link_on("pdf") else ""

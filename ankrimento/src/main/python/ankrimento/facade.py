@@ -1387,3 +1387,10 @@ def pdf_new_card(card_id: int) -> None:
 
     pdf_cards.new_card(int(card_id))
     mw.notify_host("extract_draft", card_id=int(card_id))
+
+
+def epub_snapshot(card_id: int, section_index: int, image: str) -> None:
+    """A region of the chapter as a new card's image (see ``epub_reader.snapshot``)."""
+    from ankrimento import epub_reader
+
+    epub_reader.snapshot(int(card_id), int(section_index), str(image))

@@ -56,7 +56,6 @@ NOT_ANSWERED = {
     "incremento_pdf_review_all": "PDF reader menu -> Review cards from this document",
     "incremento_pdf_due_review": "PDF reader menu -> Review cards from this document",
     # Known gaps: desktop dialogs the viewer opens that the phone does not have yet (UPSTREAM.md).
-    "incremento_epub_snapshot": "GAP: EPUB snapshots",
 }
 
 # Desktop names the phone compiles from desktop's Qt files: (phone module, variable, desktop file).

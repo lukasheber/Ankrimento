@@ -33,6 +33,7 @@ import com.ichi2.anki.ankrimento.ui.NoteSheet
 import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReadingSettingsSheet
+import com.ichi2.anki.ankrimento.ui.SnapshotLayer
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -126,6 +127,7 @@ class EpubReaderActivity : ReaderActivity() {
                 ReaderTool(getString(R.string.ankrimento_epub_next)) { turnChapter(1) },
                 ReaderTool(getString(R.string.ankrimento_extract_selection)) { runScript(EXTRACT_JS) },
                 ReaderTool(getString(R.string.ankrimento_highlight_selection)) { runScript(HIGHLIGHT_JS) },
+                ReaderTool(getString(R.string.ankrimento_pdf_snapshot), onClick = ::startSnapshot),
             )
         lifecycleScope.launch {
             reading =
@@ -142,6 +144,24 @@ class EpubReaderActivity : ReaderActivity() {
         Ankrimento.readerScope.launch {
             for (message in messages) {
                 val current = section ?: continue
+                if (message.startsWith(SNAPSHOT_PREFIX)) {
+                    // The page's own snapshot of the selection: its box, in the page's CSS pixels.
+                    val rect = runCatching { JSONObject(message.removePrefix(SNAPSHOT_PREFIX)).getJSONObject("rect") }.getOrNull()
+                    if (rect != null && !isDestroyed) {
+                        val scale = resources.displayMetrics.density
+                        val left = rect.optDouble("x").toFloat() * scale
+                        val top = rect.optDouble("y").toFloat() * scale
+                        val box =
+                            androidx.compose.ui.geometry.Rect(
+                                left,
+                                top,
+                                left + rect.optDouble("width").toFloat() * scale,
+                                top + rect.optDouble("height").toFloat() * scale,
+                            )
+                        runOnUiThread { takeSnapshot(current.index, box) }
+                    }
+                    continue
+                }
                 if (message.startsWith(HIGHLIGHT_NOTE_PREFIX)) {
                     val id = runCatching { JSONObject(message.removePrefix(HIGHLIGHT_NOTE_PREFIX)).optString("id") }.getOrDefault("")
                     if (!isDestroyed) runOnUiThread { changeHighlights(openHighlight = id.ifBlank { null }) { "" } }
@@ -252,6 +272,36 @@ class EpubReaderActivity : ReaderActivity() {
     ) {
         val fraction = (current.index + chapterRatio.coerceIn(0.0, 1.0)) / current.count.coerceAtLeast(1)
         progress = ReaderProgress(fraction.toFloat(), getString(R.string.ankrimento_epub_chapter, current.index + 1, current.count))
+    }
+
+    /** Desktop's snapshot: a box dragged over the chapter becomes a new card's image. */
+    private fun startSnapshot() {
+        val shown = section?.index ?: return
+        toast(getString(R.string.ankrimento_pdf_snapshot_hint))
+        overlay = {
+            SnapshotLayer(
+                onBox = { box ->
+                    overlay = null
+                    takeSnapshot(shown, box)
+                },
+                onCancel = { overlay = null },
+            )
+        }
+    }
+
+    private fun takeSnapshot(
+        sectionIndex: Int,
+        box: androidx.compose.ui.geometry.Rect,
+    ) {
+        lifecycleScope.launch {
+            val image = RegionSnapshot.capture(this@EpubReaderActivity, webView, box)
+            if (image == null) {
+                toast(getString(R.string.ankrimento_extract_failed, "PixelCopy"))
+                return@launch
+            }
+            runCatching { withCol { Ankrimento.epubSnapshot(cardId, sectionIndex, image) } }
+                .onFailure { error -> toast(error.message ?: error.javaClass.simpleName) }
+        }
     }
 
     /** The book's highlights; each change is applied, then the page and the sheet follow. */
@@ -523,6 +573,9 @@ class EpubReaderActivity : ReaderActivity() {
 
         /** The page's note button on a highlight: the phone's highlight dialog answers it. */
         private const val HIGHLIGHT_NOTE_PREFIX = "incremento_epub_hl_note:"
+
+        /** The page's snapshot of the selection (desktop grabs that box of its view). */
+        private const val SNAPSHOT_PREFIX = "incremento_epub_snapshot:"
         private const val PROGRESS_PREFIX = "incremento_epub_progress:"
 
         /**

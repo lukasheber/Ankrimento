@@ -918,6 +918,16 @@ object Ankrimento {
         }
     }
 
+    /** A region of the chapter as a new card's image; the extract sheet follows. */
+    @WorkerThread
+    fun epubSnapshot(
+        cardId: Long,
+        sectionIndex: Int,
+        image: String,
+    ) {
+        requireFacade().callAttr("epub_snapshot", cardId, sectionIndex, image)
+    }
+
     /** Apply a page-script message; returns the chapter to load next and its scroll ratio, if any. */
     @WorkerThread
     fun epubMessage(
