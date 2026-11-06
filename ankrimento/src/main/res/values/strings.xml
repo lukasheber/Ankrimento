@@ -492,4 +492,5 @@
     <string name="ankrimento_pdf_snapshot_hint">Drag a box over the part of the page to keep as an image</string>
     <string name="ankrimento_cloze">Cloze</string>
     <string name="ankrimento_edit_topic">Edit topic</string>
+    <string name="ankrimento_edit_card">Edit card</string>
 </resources>

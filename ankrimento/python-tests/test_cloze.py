@@ -37,6 +37,10 @@ def test_the_cloze_becomes_an_item_under_its_topic(rt, topic):
     note = rt.col.get_note(result["note_id"])
     try:
         assert note.note_type()["type"] == 1 and len(note.card_ids()) == 1
+        # The cloze is a new item under the topic; the topic itself stays a topic, unchanged.
+        assert facade.is_topic(topic)
+        assert facade.is_topic(note.card_ids()[0]) is False
+        assert "{{c1::" not in rt.col.get_card(topic).note().fields[0]
         # A plain extract afterwards is no cloze: the usual note type, not a cloze one.
         facade.web_extract(topic, "Plain words")
         plain = json.loads(facade.extract_draft(topic))

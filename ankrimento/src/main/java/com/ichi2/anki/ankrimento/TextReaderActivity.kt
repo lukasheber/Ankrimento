@@ -17,9 +17,6 @@ import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReadingSettingsSheet
-import com.ichi2.anki.common.destinations.DeferredNavigation
-import com.ichi2.anki.common.destinations.NoteEditorDestination
-import com.ichi2.anki.common.destinations.toIntent
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import timber.log.Timber
@@ -71,27 +68,13 @@ class TextReaderActivity : ReaderActivity() {
                 ReaderTool(getString(R.string.ankrimento_extract_selection)) {
                     webView.evaluateJavascript(SELECTION_JS) { extract(decodeJsString(it)) }
                 },
-                ReaderTool(getString(R.string.ankrimento_edit_topic), IncrementoIcons.Edit, onClick = ::editTopic),
+                ReaderTool(getString(R.string.ankrimento_edit_topic), IncrementoIcons.Edit, onClick = ::editNote),
             )
         lifecycleScope.launch { load() }
     }
 
-    /** The topic's note in AnkiDroid's editor; the page shows the edit on return. */
-    private var editing = false
-
-    private fun editTopic() {
-        editing = true
-        startActivity(
-            with(DeferredNavigation) { NoteEditorDestination.EditNoteFromPreviewer(cardId).toIntent() },
-        )
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (editing) {
-            editing = false
-            lifecycleScope.launch { load() }
-        }
+    override fun onNoteEdited() {
+        lifecycleScope.launch { load() }
     }
 
     private suspend fun load() {

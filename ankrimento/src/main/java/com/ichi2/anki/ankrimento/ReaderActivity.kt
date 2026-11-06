@@ -54,6 +54,7 @@ import com.ichi2.anki.ankrimento.ui.TimerChip
 import com.ichi2.anki.ankrimento.ui.TimerSheet
 import com.ichi2.anki.ankrimento.ui.TimerSummaryDialog
 import com.ichi2.anki.common.destinations.DeferredNavigation
+import com.ichi2.anki.common.destinations.NoteEditorDestination
 import com.ichi2.anki.common.destinations.ReviewDeckDestination
 import com.ichi2.anki.common.destinations.toIntent
 import com.ichi2.anki.libanki.Collection
@@ -697,6 +698,27 @@ abstract class ReaderActivity : ComponentActivity() {
                 Timber.w(error, "Making a cloze failed")
                 toast(error.message ?: error.javaClass.simpleName)
             }
+        }
+    }
+
+    /** The card's note in AnkiDroid's editor; [onNoteEdited] shows the edit on return. */
+    private var editingNote = false
+
+    protected fun editNote() {
+        editingNote = true
+        startActivity(
+            with(DeferredNavigation) { NoteEditorDestination.EditNoteFromPreviewer(cardId).toIntent() },
+        )
+    }
+
+    /** Back from AnkiDroid's note editor: show the card as edited. */
+    protected open fun onNoteEdited() {}
+
+    override fun onResume() {
+        super.onResume()
+        if (editingNote) {
+            editingNote = false
+            onNoteEdited()
         }
     }
 

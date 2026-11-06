@@ -13,6 +13,8 @@ import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.libanki.Card
 import com.ichi2.anki.libanki.Collection
 import kotlinx.coroutines.launch
@@ -73,6 +75,12 @@ class ItemReaderActivity : ReaderActivity() {
                     }
                 },
             )
+        // Fix a typo or reword the item where it is studied, as AnkiDroid's study screen allows.
+        tools = listOf(ReaderTool(getString(R.string.ankrimento_edit_card), IncrementoIcons.Edit, onClick = ::editNote))
+        lifecycleScope.launch { load() }
+    }
+
+    override fun onNoteEdited() {
         lifecycleScope.launch { load() }
     }
 
