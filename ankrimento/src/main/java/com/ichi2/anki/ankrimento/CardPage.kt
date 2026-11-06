@@ -23,6 +23,7 @@ object CardPage {
     private const val OCCLUSION = "image-occlusion"
 
     /** Anki's review styles: play buttons, the typed comparison's colours, image occlusion. */
+    private const val ROOT_VARS_CSS = "<link rel=\"stylesheet\" href=\"/_anki/css/root-vars.css\">"
     private const val REVIEWER_CSS = "<link rel=\"stylesheet\" href=\"/_anki/css/reviewer.css\">"
 
     /** Draws image occlusion: the note type's template calls `anki.imageOcclusion.setup()`. */
@@ -59,23 +60,30 @@ object CardPage {
         }
     }
 
-    /** The page for [body] (its sound and video left out: a topic is read as text), with [head] added to its head. */
+    /**
+     * The page for [body] (its sound and video left out: a topic is read as text), with [head] added to its head.
+     * With [look], it is dressed as AnkiDroid's study screen dresses cards (night mode included).
+     */
     fun html(
         css: String,
         body: String,
         head: String = "",
+        look: AnkrimentoApp.PageLook? = null,
     ): String {
         val occlusion = OCCLUSION in body
-        val reviewerStyles = occlusion || "replay-button" in body || "id=\"typeans\"" in body || "id=typeans" in body
-        return "<!doctype html><html><head><meta charset=\"utf-8\">" +
+        val reviewerStyles = look != null || occlusion || "replay-button" in body || "id=\"typeans\"" in body || "id=typeans" in body
+        val htmlClass = look?.htmlClass.orEmpty()
+        val bodyClass = look?.bodyClass ?: "card"
+        return "<!doctype html><html class=\"$htmlClass\"><head><meta charset=\"utf-8\">" +
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">" +
+            (if (look != null) ROOT_VARS_CSS + "<style>${look.css}</style>" else "") +
             (if (reviewerStyles) REVIEWER_CSS else "") +
             "<style>$css</style><script>$PYCMD</script>" +
             (if (occlusion) REVIEWER_JS else "") +
             (if (MATH.any { it in body }) MATHJAX else "") +
             head +
             "</head>" +
-            "<body class=\"card\"><div id=\"qa\">${stripAvRefs(body)}</div></body></html>"
+            "<body class=\"$bodyClass\"><div id=\"qa\">${stripAvRefs(body)}</div></body></html>"
     }
 
     /**

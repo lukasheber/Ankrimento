@@ -33,6 +33,9 @@ class ItemReaderActivity : ReaderActivity() {
     private lateinit var webView: ReaderWebView
     private var question = ""
     private var answer = ""
+
+    /** AnkiDroid's look for the card (night mode, card classes). */
+    private var look: AnkrimentoApp.PageLook? = null
     private var card: Card? = null
     private var player: AnkrimentoApp.CardPlayer? = null
 
@@ -81,8 +84,9 @@ class ItemReaderActivity : ReaderActivity() {
                 val shown = withCol { getCard(cardId) }
                 val questionBody = display.question(shown)
                 asksTypedAnswer = TYPED_BOX in questionBody
-                question = CardPage.html("", questionBody, TYPED_ENTER)
-                answer = CardPage.html("", display.answer(shown, ""))
+                look = display.look(this@ItemReaderActivity, shown)
+                question = CardPage.html("", questionBody, TYPED_ENTER, look)
+                answer = CardPage.html("", display.answer(shown, ""), look = look)
                 card = shown
                 withCol { media.dir }
             }.getOrElse { error ->
@@ -166,7 +170,8 @@ class ItemReaderActivity : ReaderActivity() {
             getSystemService(android.view.inputmethod.InputMethodManager::class.java)
                 ?.hideSoftInputFromWindow(webView.windowToken, 0)
             lifecycleScope.launch {
-                answer = runCatching { CardPage.html("", AnkrimentoApp.cardDisplay!!.answer(shown, typed)) }.getOrDefault(answer)
+                answer =
+                    runCatching { CardPage.html("", AnkrimentoApp.cardDisplay!!.answer(shown, typed), look = look) }.getOrDefault(answer)
                 showAnswer()
             }
         }

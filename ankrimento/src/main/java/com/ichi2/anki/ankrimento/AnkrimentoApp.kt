@@ -32,6 +32,12 @@ object AnkrimentoApp {
             typed: String,
         ): String
 
+        /** How AnkiDroid's study screen dresses [card]'s page: its theme (night mode) and card classes. */
+        fun look(
+            context: Context,
+            card: Card,
+        ): PageLook
+
         /** AnkiDroid's player of a card's sound, video and text to speech; [evaluate] runs script in the card's page. */
         fun player(
             context: Context,
@@ -39,6 +45,13 @@ object AnkrimentoApp {
             onError: (String) -> Unit,
         ): CardPlayer
     }
+
+    /** A card page's classes ([htmlClass] on `<html>`, [bodyClass] on `<body>`) and the theme's colours as [css]. */
+    data class PageLook(
+        val htmlClass: String,
+        val bodyClass: String,
+        val css: String,
+    )
 
     interface CardPlayer : Closeable {
         /** Plays the shown side by itself when the deck's options say so. */

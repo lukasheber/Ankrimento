@@ -98,8 +98,11 @@ class TextReaderActivity : ReaderActivity() {
         val (html, mediaDir) =
             runCatching {
                 withCol {
-                    val output = getCard(cardId).renderOutput(this, reload = true)
-                    CardPage.html(output.css, output.answerText) to media.dir
+                    val card = getCard(cardId)
+                    val output = card.renderOutput(this, reload = true)
+                    // In AnkiDroid's look (night mode); the page colour setting still overrides it.
+                    val look = AnkrimentoApp.cardDisplay?.look(this@TextReaderActivity, card)
+                    CardPage.html(output.css, output.answerText, look = look) to media.dir
                 }
             }.getOrElse { error ->
                 Timber.w(error, "Rendering a topic failed")
