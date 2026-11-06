@@ -228,7 +228,7 @@ def changed_mirrors() -> list[str]:
 
 
 def record_mirrors() -> None:
-    MIRRORS_FILE.write_text(json.dumps(mirror_fingerprints(), indent=2, sort_keys=True) + "\n", encoding="utf8")
+    MIRRORS_FILE.write_text(json.dumps(mirror_fingerprints(), indent=4, sort_keys=True) + "\n", encoding="utf8")
 
 
 def main() -> int:
