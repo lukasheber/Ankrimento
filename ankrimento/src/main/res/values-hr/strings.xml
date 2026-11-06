@@ -503,6 +503,23 @@
     <string name="ankrimento_settings_pdf_scroll_top">Pomakni na vrh pri prelasku na sljedeću stranicu PDF-a</string>
     <string name="ankrimento_settings_writing">Pisanje</string>
     <string name="ankrimento_settings_writing_backups">Stvaraj automatske sigurnosne kopije pisanja</string>
+    <string name="ankrimento_settings_writing_backup_every">Čuvaj kopiju od prije</string>
+    <string name="ankrimento_settings_writing_backup_hint">Svaki odabrani razmak čuva po jednu kopiju svakog pisanja, koja se s vremenom zamjenjuje.</string>
+    <plurals name="ankrimento_minutes_ago">
+        <item quantity="one">%d minute</item>
+        <item quantity="few">%d minute</item>
+        <item quantity="other">%d minuta</item>
+    </plurals>
+    <plurals name="ankrimento_hours_ago">
+        <item quantity="one">%d sata</item>
+        <item quantity="few">%d sata</item>
+        <item quantity="other">%d sati</item>
+    </plurals>
+    <plurals name="ankrimento_days_ago">
+        <item quantity="one">%d dana</item>
+        <item quantity="few">%d dana</item>
+        <item quantity="other">%d dana</item>
+    </plurals>
     <string name="ankrimento_settings_word_count">Način brojanja riječi</string>
     <string name="ankrimento_settings_word_simple">Jednostavno, prema razmacima</string>
     <string name="ankrimento_settings_word_like">Poput Worda</string>

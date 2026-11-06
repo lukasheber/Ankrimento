@@ -13,7 +13,8 @@ from aqt import mw
 
 _ADDON = "incremento"
 
-# key -> type: "bool", "number", "int", "text", or a tuple of allowed choices.
+# key -> type: "bool", "number", "int", "text", a tuple of allowed choices, or "set": several of a
+# list of choices (see ``choices``).
 SETTINGS: dict[str, Any] = {
     # Review
     "use_fail_pass_on_items": "bool",
@@ -39,6 +40,7 @@ SETTINGS: dict[str, Any] = {
     # Writing
     "writing_backups_enabled": "bool",
     "writing_word_count_mode": ("simple", "word_like"),
+    "writing_backup_tiers": "set",
     # Focus timer
     "timer_completion_beep": "bool",
 }
@@ -50,9 +52,23 @@ def _config() -> dict[str, Any]:
     return load_addon_config(mw.addonManager, _ADDON)
 
 
+def choices(key: str) -> list[str]:
+    """A "set" setting's choices, in desktop's order: the writing backup intervals of its writing backups."""
+    from incremento.backend import writing_manager
+
+    if key != "writing_backup_tiers":
+        raise ValueError(f"{key} has no set of choices")
+    return [tier for tier, _seconds, _label in writing_manager._BACKUP_SLOTS]
+
+
 def values() -> dict[str, Any]:
+    from incremento.backend.writing_manager import normalize_writing_backup_tiers
+
     config = _config()
-    return {key: config.get(key) for key in SETTINGS}
+    found = {key: config.get(key) for key in SETTINGS}
+    # Desktop's default intervals when none were chosen, as its writing backups use them.
+    found["writing_backup_tiers"] = list(normalize_writing_backup_tiers(config.get("writing_backup_tiers")))
+    return found
 
 
 def _checked(key: str, value: Any) -> Any:
@@ -69,6 +85,12 @@ def _checked(key: str, value: Any) -> Any:
         return int(value) if kind == "int" else float(value)
     if kind == "text" and isinstance(value, str):
         return value
+    if kind == "set" and isinstance(value, list) and all(isinstance(item, str) for item in value):
+        allowed = choices(key)
+        if any(item not in allowed for item in value):
+            raise ValueError(f"{key} takes only {allowed}")
+        # Desktop's dialog lists the checked boxes in its own order.
+        return [item for item in allowed if item in value]
     raise ValueError(f"{key} must be {kind}")
 
 

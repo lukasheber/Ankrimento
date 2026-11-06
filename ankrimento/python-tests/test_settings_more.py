@@ -34,3 +34,25 @@ def test_each_setting_is_saved_in_desktops_config(rt, key, value):
 def test_the_word_count_mode_is_one_of_desktops(rt):
     with pytest.raises(ValueError):
         facade.set_setting("writing_word_count_mode", json.dumps("characters"))
+
+
+def test_the_writing_backup_schedule_is_desktops_set_of_intervals(rt):
+    import copy
+
+    from aqt import mw
+
+    from ankrimento import settings
+
+    saved = copy.deepcopy(mw.addonManager.getConfig("incremento"))
+    try:
+        # Desktop's choices, from its writing backups, and its default when none is set.
+        assert settings.choices("writing_backup_tiers") == ["1m", "5m", "15m", "30m", "1h", "6h", "1d", "7d"]
+        assert settings.values()["writing_backup_tiers"] == ["1m", "30m", "1d"]
+        assert settings.set_value("writing_backup_tiers", ["7d", "1h", "1h"]) == ["1h", "7d"]
+        assert mw.addonManager.getConfig("incremento")["writing_backup_tiers"] == ["1h", "7d"]
+        with pytest.raises(ValueError):
+            settings.set_value("writing_backup_tiers", ["2w"])
+        with pytest.raises(ValueError):
+            settings.set_value("writing_backup_tiers", "1h")
+    finally:
+        mw.addonManager.writeConfig("incremento", saved)

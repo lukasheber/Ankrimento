@@ -490,6 +490,20 @@
     <string name="ankrimento_settings_pdf_scroll_top">Scroll to top when going to the next PDF page</string>
     <string name="ankrimento_settings_writing" comment="Settings section about writing documents">Writing</string>
     <string name="ankrimento_settings_writing_backups">Create automatic writing backups</string>
+    <string name="ankrimento_settings_writing_backup_every">Keep a copy from</string>
+    <string name="ankrimento_settings_writing_backup_hint">Each chosen interval keeps one copy of each writing, replaced as time passes.</string>
+    <plurals name="ankrimento_minutes_ago">
+        <item quantity="one">%d minute ago</item>
+        <item quantity="other">%d minutes ago</item>
+    </plurals>
+    <plurals name="ankrimento_hours_ago">
+        <item quantity="one">%d hour ago</item>
+        <item quantity="other">%d hours ago</item>
+    </plurals>
+    <plurals name="ankrimento_days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
     <string name="ankrimento_settings_word_count">Word counting mode</string>
     <string name="ankrimento_settings_word_simple">Simple whitespace</string>
     <string name="ankrimento_settings_word_like">Word-like</string>

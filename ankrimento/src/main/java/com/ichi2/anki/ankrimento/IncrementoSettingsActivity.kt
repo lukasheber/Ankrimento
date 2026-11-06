@@ -15,6 +15,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -51,6 +53,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
@@ -714,11 +717,53 @@ class IncrementoSettingsActivity : ComponentActivity() {
         Toggle(R.string.ankrimento_settings_writing_backups, v.optBoolean("writing_backups_enabled", true)) {
             set("writing_backups_enabled", it)
         }
+        if (v.optBoolean("writing_backups_enabled", true)) BackupIntervals(v)
         Choice(
             R.string.ankrimento_settings_word_count,
             listOf("simple" to R.string.ankrimento_settings_word_simple, "word_like" to R.string.ankrimento_settings_word_like),
             v.optString("writing_word_count_mode", "simple"),
         ) { set("writing_word_count_mode", it) }
+    }
+
+    /** Desktop's writing backup intervals: each chosen one keeps a rolling copy of each writing. */
+    @OptIn(ExperimentalLayoutApi::class)
+    @Composable
+    private fun BackupIntervals(v: JSONObject) {
+        val chosen = v.optJSONArray("writing_backup_tiers")?.let { array -> List(array.length()) { array.getString(it) } }.orEmpty()
+        Column(Modifier.padding(horizontal = 16.dp, vertical = 4.dp)) {
+            Text(stringResource(R.string.ankrimento_settings_writing_backup_every), style = MaterialTheme.typography.bodyLarge)
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                BACKUP_INTERVALS.forEach { tier ->
+                    val selected = tier in chosen
+                    FilterChip(
+                        selected = selected,
+                        onClick = {
+                            val next = if (selected) chosen - tier else chosen + tier
+                            set("writing_backup_tiers", org.json.JSONArray(next))
+                        },
+                        label = { Text(intervalLabel(tier)) },
+                    )
+                }
+            }
+            Text(
+                stringResource(R.string.ankrimento_settings_writing_backup_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+
+    /** "5m", "6h", "7d" as the phone's language says them. */
+    @Composable
+    private fun intervalLabel(tier: String): String {
+        val count = tier.dropLast(1).toIntOrNull() ?: return tier
+        val plural =
+            when (tier.last()) {
+                'm' -> R.plurals.ankrimento_minutes_ago
+                'h' -> R.plurals.ankrimento_hours_ago
+                else -> R.plurals.ankrimento_days_ago
+            }
+        return pluralStringResource(plural, count, count)
     }
 
     /** Desktop's Tools: card format updates and the support bundle. */
@@ -947,6 +992,9 @@ class IncrementoSettingsActivity : ComponentActivity() {
     }
 
     companion object {
+        /** Desktop's writing backup intervals (writing_manager._BACKUP_SLOTS), in its order. */
+        private val BACKUP_INTERVALS = listOf("1m", "5m", "15m", "30m", "1h", "6h", "1d", "7d")
+
         /** Desktop's interval in hours (0: off), as the phone offers it. */
         private val AUTO_BACKUP_INTERVALS =
             listOf(

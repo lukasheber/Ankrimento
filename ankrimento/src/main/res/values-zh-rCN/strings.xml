@@ -477,6 +477,17 @@
     <string name="ankrimento_settings_pdf_scroll_top">翻到 PDF 下一页时滚动到顶部</string>
     <string name="ankrimento_settings_writing">写作</string>
     <string name="ankrimento_settings_writing_backups">自动创建写作备份</string>
+    <string name="ankrimento_settings_writing_backup_every">保留以下时间点的副本</string>
+    <string name="ankrimento_settings_writing_backup_hint">每个选中的间隔为每篇写作保留一份副本，随时间推移被替换。</string>
+    <plurals name="ankrimento_minutes_ago">
+        <item quantity="other">%d 分钟前</item>
+    </plurals>
+    <plurals name="ankrimento_hours_ago">
+        <item quantity="other">%d 小时前</item>
+    </plurals>
+    <plurals name="ankrimento_days_ago">
+        <item quantity="other">%d 天前</item>
+    </plurals>
     <string name="ankrimento_settings_word_count">字数统计方式</string>
     <string name="ankrimento_settings_word_simple">按空白分隔计数</string>
     <string name="ankrimento_settings_word_like">类似 Word</string>

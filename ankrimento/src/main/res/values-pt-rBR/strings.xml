@@ -503,6 +503,20 @@
     <string name="ankrimento_settings_pdf_scroll_top">Rolar para o topo ao ir para a próxima página do PDF</string>
     <string name="ankrimento_settings_writing">Escrita</string>
     <string name="ankrimento_settings_writing_backups">Criar backups automáticos dos textos</string>
+    <string name="ankrimento_settings_writing_backup_every">Guardar uma cópia de</string>
+    <string name="ankrimento_settings_writing_backup_hint">Cada intervalo escolhido guarda uma cópia de cada escrita, substituída com o passar do tempo.</string>
+    <plurals name="ankrimento_minutes_ago">
+        <item quantity="one">%d minuto atrás</item>
+        <item quantity="other">%d minutos atrás</item>
+    </plurals>
+    <plurals name="ankrimento_hours_ago">
+        <item quantity="one">%d hora atrás</item>
+        <item quantity="other">%d horas atrás</item>
+    </plurals>
+    <plurals name="ankrimento_days_ago">
+        <item quantity="one">%d dia atrás</item>
+        <item quantity="other">%d dias atrás</item>
+    </plurals>
     <string name="ankrimento_settings_word_count">Modo de contagem de palavras</string>
     <string name="ankrimento_settings_word_simple">Simples, por espaços</string>
     <string name="ankrimento_settings_word_like">Como no Word</string>
