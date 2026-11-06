@@ -133,7 +133,7 @@ Revision {
 | 6 | Ancestry, conflicts, deletion | Heads and parents, tombstones as revisions; edit vs delete is a conflict that keeps the edit visible; a missing package never means deletion | Concurrent priority edits produce a conflict; resolving it creates a merge revision. Delete vs edit. Remove a pack from the folder: nothing is deleted. |
 | 7 | Identity, setup, restore, retention | Library, device and epoch IDs; Anki refs with GUIDs; joining a library turns existing local data into revisions with no parents, so identical values merge and different ones conflict; restore raises the epoch, and restored values matching a known revision adopt it as baseline, so they can't overwrite newer work; retention in 7 | Join with existing work on both sides. Restore an old backup on one device: newer work elsewhere survives. |
 | 8 | PDF/EPUB consistency | A document version holds (file blob hash, annotation set hash, interchange state) as one revision. Capture runs through upstream's existing `pdf_annotations` locking. Concurrent versions are both kept (the second as a sibling version). Linked-original paths stay local | **Spike in stage 1**: annotate the same PDF on two devices; crash between the PDF write and the SQLite baseline |
-| 9 | Anki arrival | A record whose card or GUID is missing stays `pending_anki`. It is re-checked after each Anki sync and on profile open. Apply never goes through `recover_interrupted_imports`, and journal rows carry the device and a sync origin | Deliver Incremento data before AnkiWeb delivers the card; run interrupted-import recovery; the record is kept and applied after the Anki sync |
+| 9 | Anki arrival | Section 6: one owner per fact; card and review anchors; `pending_anki` re-checked after each AnkiWeb sync; usn rule for "deleted, not late"; full-sync re-anchoring; staged files that recovery never sees; sync-aware reconciliation | Incremento data before the card; a card deleted on one device; a topic reviewed offline on both devices; a forced full sync; interrupted-import recovery while a record is pending |
 | 10 | Profile lifecycle, validation | Each worker captures (profile, library, generation) and drops callbacks from an old generation; packs have a size limit; JSON is checked against per-family schemas; blobs are named only by hash (no paths from packages); format versions are explicit; the allowlist also governs setup snapshots | Switch profiles mid-sync. Fuzz packs: oversized, path traversal, wrong format, unknown family. |
 
 ## 4. The exchange layout (shared folder transport)
@@ -162,10 +162,151 @@ Revision {
 - **Tombstones**: delete vs edit is a conflict that keeps the edit visible.
 - **Records of deleted Anki cards** are not tombstoned. Each device's own reconciliation cleans them up when AnkiWeb deletes the card.
 
-## 6. When sync runs
-- Scan and publish: on profile close, after an AnkiWeb sync, after reader close, and on a quiet timer. All of it runs on a captured-profile worker, never on Qt's main thread. Families keep a cheap digest so an unchanged family is skipped.
-- Fetch and apply: on profile open (after AnkiWeb sync finishes), after each AnkiWeb sync, and on the timer. Whatever is pending is re-checked each time.
-- Nothing runs while an import is in progress. Records from in-flight imports are not exported until their journal entry has committed.
+## 6. Working with AnkiWeb: one contract for two syncs
+
+Incremento's data is split across two channels that neither know nor wait for each other:
+- **AnkiWeb** syncs the collection.
+- **The engine** syncs Incremento's own state.
+
+Several user actions write to both channels at once:
+- answering a topic
+- importing a document
+- deleting a card
+- building a session
+
+So the engine can't treat AnkiWeb as a black box. It needs explicit rules for who owns each fact, how the two halves of one action are tied together, and what to do when AnkiWeb does something drastic (a full sync).
+
+What the code does today (vendored `ab88266`):
+- **Topic answers:**
+  - The topic interval is applied to the post-answer card inside Anki's Answer Card undo step (`answer_schedule.py`). That leaves an answer row in Anki's `revlog`.
+  - Incremento stores that row's id in `topic_review_history.anki_revlog_id`.
+  - `answer_revlog_snapshot()` already reads a card's latest answer revlog.
+- **Revisit dates** live in card `customData` (`topic_review_actions.py`).
+- **Sessions** are built as filtered decks (`session.py`).
+- **Note-type updates** already know that some schema changes force a full sync, and run on `sync_did_finish`.
+
+### 6.1 One fact, one channel
+
+| Owned by the Anki collection (travels via AnkiWeb) | Owned by Incremento (travels via the engine) |
+|---|---|
+| notes, fields, tags (including the Done tag), decks, note types | priority |
+| card due, interval, queue, suspension, filtered-deck membership | topic A-factor and precise interval (`topic_schedule`) |
+| revlog (every answer, including topic answers) | reading positions, bookmarks, highlights |
+| card `customData` (revisit day) | managed files and `content_items` |
+
+**Rules:**
+1. **The engine never carries a value that AnkiWeb already syncs.** If two channels carried the same fact, each would resolve conflicts its own way and they would disagree.
+2. **Incremento changes Anki-owned data only through Anki operations**, so AnkiWeb carries them with Anki's semantics (per object, the newer modification wins).
+3. **An action that writes to both channels ties its Incremento half to its Anki half with an anchor** (6.2).
+
+### 6.2 Anchors: tying the two halves of an action together
+Every revision that derives from Anki state names the Anki state it belongs to.
+
+**Card anchor (every card-scoped record):**
+- `card_id`, `note_id` and the note GUID.
+- `uploaded_usn`: the AnkiWeb update sequence number at which the card reached the server, or `null` if it hasn't been uploaded yet (`usn = -1` locally).
+
+**Review anchor (topic scheduling, stage 6):** the answer revlog id the state was computed from. Incremento already stores it.
+
+**The receiver acts on anchors as follows:**
+
+| Situation on the receiving device | What happens |
+|---|---|
+| Card or GUID not in the collection | `pending_anki`; retried after each AnkiWeb sync |
+| Review anchor's revlog row not in the collection yet | `pending_anki`. Applying it early would pair a new A-factor with the card's old schedule |
+| Card has a *newer* answer revlog than the incoming state's anchor | The incoming state is older than what Anki shows; kept in history, not used as the scheduling input |
+| Anchor matches the card's latest answer revlog | Applied |
+
+**Before a device schedules a topic answer**, it checks that `topic_schedule`'s anchor equals the card's latest answer revlog (using the existing `answer_revlog_snapshot()`).
+- If Anki is ahead (a review from another device arrived by AnkiWeb, but its Incremento half hasn't come yet), Incremento never silently computes from a stale A-factor.
+- Instead the topic says "Incremento data for this card is still on its way from *laptop*" and uses Anki's own interval for that one answer.
+- The answer records that it ran in this degraded mode, and the late state merges in when it arrives.
+
+**Both devices review the same topic offline:**
+- AnkiWeb keeps both revlog rows and keeps the card state with the newer modification.
+- The engine then sees two concurrent `topic_schedule` revisions, each with a different review anchor.
+- The engine resolves it **in the same direction as Anki**: the revision whose anchor produced the card's current state wins. The other stays in history.
+- No conflict dialog is needed, and the two channels can't disagree.
+
+This anchor approach is offered to the author as an alternative to the `customData`-reference experiment, or as a complement to it. It costs nothing from the 100-byte budget, because the revlog row already exists in both channels. Needs verifying:
+- Undo and Redo.
+- Manual rescheduling.
+- Reviews from clients without Incremento.
+
+### 6.3 "Not arrived yet" or "deleted"?
+An Incremento record whose card doesn't exist could mean the card hasn't arrived through AnkiWeb yet, or that it was deleted. Without a way to tell them apart, a deleted card's records would stay pending forever.
+
+The rule (Anki's update sequence numbers are exact, so no clocks are involved):
+- Every device publishes in `device.json` the server usn of its last completed AnkiWeb sync.
+- A record with `uploaded_usn = U` means the card was already on AnkiWeb at usn U.
+- If this device's own last sync has pulled past U and the card is still absent, the card was **deleted**. The record is closed as "card deleted", is not applied, and is not tombstoned.
+- If `uploaded_usn = null`, the receiver waits until the sender's published sync usn shows it has uploaded.
+- As a safety net, anything pending longer than 30 days appears in the status screen with a "Discard" action.
+
+(Anki's usn semantics are to be confirmed against the Rust sync code in the stage-1 spike before anything depends on them.)
+
+### 6.4 Full syncs
+Sometimes AnkiWeb requires a one-way full sync, which replaces one side's whole collection. Causes include:
+- note-type schema changes, which Incremento's own note-type updates can trigger;
+- a first sync;
+- the user's choice.
+
+The other side's Incremento state may then refer to cards and revlog rows that no longer exist.
+
+- **Detect it:** before and after each AnkiWeb sync, record a collection fingerprint: creation time, schema-modified time, usn, and the card count. A change in creation or schema time means a full sync or a schema change happened.
+- **After a full download:** run a re-anchor pass. Records whose cards vanished become `orphaned_by_full_sync`:
+  - they're not deleted, not published as deletions, and not cleaned up by reconciliation;
+  - they're kept for 30 days and shown with the device that last had them.
+
+  Local revisions that were never published are kept. Anchors are re-checked against the new collection.
+- **After a full upload:** nothing to do locally. The other devices will run the pass when they download.
+- **Incremento's own note-type updates:**
+  - Run them only right after a successful normal sync.
+  - Before running, say in the dialog that the other devices should sync first. Anki asks only about the full sync, not about Incremento data.
+
+### 6.5 Imports and new documents across the two channels
+An import on device A creates the note and card (AnkiWeb) and the managed file plus `content_items` (engine). On device B either half can arrive first.
+
+- **Card arrives first, content not yet:** the card shows "This document is still arriving from *A*" instead of an error. Reconciliation must not treat the card as broken.
+- **Content arrives first, card not yet:**
+  - The content stays `pending_anki`, with its files in the sync staging area, *not* in the managed folder.
+  - So `recover_interrupted_imports` and orphan-file cleanup never see them (the issue's point 4).
+- **Reconciliation becomes sync-aware:** it skips anything referenced by a pending inbox entry or by a known remote revision.
+- **On the sending side**, an import's content is captured only after its journal entry has committed (already in section 2).
+
+### 6.6 Session decks and other per-device collection state
+Filtered decks are part of the collection, so a session built on A reaches B through AnkiWeb. If B builds its own session, each card keeps whichever deck membership was modified last.
+
+- Treat session decks as one device's intent:
+  - After an AnkiWeb sync, if the session deck's cards changed underneath the device, rebuild the session (Incremento already knows how).
+  - Optionally, empty the session deck before the closing sync, so other devices don't receive cards stuck in someone else's session. That's a setting, on by default, to be agreed with the author.
+- **Revisit days in `customData`:** these follow Anki's own rule (the newer card modification wins). The engine doesn't duplicate them.
+- **Test:** study a session on both devices, sync both, and check that no card is lost from its home deck and that both sessions rebuild cleanly.
+
+### 6.7 Order of operations
+
+**Desktop**, using `gui_hooks.sync_will_start`/`sync_did_finish` and profile open/close:
+1. **Profile open:**
+   1. AnkiWeb sync.
+   2. Fingerprint check (6.4).
+   3. Fetch and apply Incremento changes (the cards are now present).
+   4. Retry `pending_anki`.
+   5. Start Incremento's services.
+2. **While AnkiWeb is syncing:** applying is paused. Changes that touch the collection wait; scanning `incremento.db` can continue.
+3. **After every AnkiWeb sync:**
+   - Publish the new sync usn (6.3).
+   - Retry `pending_anki`.
+   - Re-check topics shown as "still on its way" (6.2).
+   - Rebuild the session if needed (6.6).
+4. **Profile close:** capture and publish Incremento changes, then Anki's closing sync.
+5. **Reader close and a quiet timer:** capture and publish. This runs on a captured-profile worker, never on Qt's main thread. Each family keeps a cheap digest, so an unchanged family is skipped.
+6. **During an import:** nothing is captured from it until its journal entry has committed.
+
+**Phone (Ankrimento):**
+- Same order. AnkiDroid has no hook Ankrimento listens to yet, so we need one on AnkiDroid's sync completion.
+- The LAN job runs right after an AnkiDroid sync when it can.
+
+**One status line for both:** "AnkiWeb synced 2 min ago · Incremento synced · 3 waiting for AnkiWeb · 1 conflict". Users then see that the two syncs are related and which one they're waiting for.
 
 ## 7. Retention
 - Packs are deleted only by their own device, and only when every device in `devices/` has receipts covering them and a newer snapshot exists.
@@ -187,6 +328,12 @@ Each stage is a small upstream PR with tests. Merging is the author's call, and 
   - Tests: requirements 1 and 2.
   - A schema-coverage test: every column is classified.
 - **1c. Spike:** document consistency with `pdf_annotations`. Write-up only.
+- **1d. Spike: AnkiWeb semantics.** Using one throwaway AnkiWeb account, confirm:
+  - what the usn does on the server and on each device (6.3);
+  - how to detect a full sync (6.4);
+  - which card state wins when both devices reviewed it (6.2).
+
+  Write-up only; sections 6.2–6.4 are adjusted to what we find. Card anchors with `uploaded_usn` are part of 1b's record format from the start.
 
 **Stage 2: shared-folder transport (receive without applying)**
 - Pack format, blobs, the exchange layout and bounded validation (requirement 10).
@@ -205,13 +352,19 @@ Each stage is a small upstream PR with tests. Merging is the author's call, and 
 
 **Stage 4: reader families and documents**
 - Bookmarks, reading positions, then document units (built on the spike's findings).
-- Anki-arrival pending (requirement 9) gets real tests here, because these records follow imports.
+- AnkiWeb coordination (section 6) gets real tests here, because these records follow imports:
+  - `pending_anki`, and "deleted, not late";
+  - full-sync re-anchoring;
+  - "still arriving" documents;
+  - sync-aware reconciliation;
+  - the desktop's order of operations around `sync_did_finish`.
 
 **Stage 5: setup, restore, retention, settings UI**
 - Joining a library, restore epochs, retention, and a status line: "Last synced · 2 waiting for Anki sync · 1 conflict".
 
 **Stage 6: proposals that need the author's contracts first**
-- Topic scheduling. This includes the author's customData-reference experiment, which has a 100-byte budget shared with other data; it needs Undo/Redo, concurrent reviews and stale-reference tests.
+- Topic scheduling, tied to Anki by the revlog anchor (6.2), with the "still on its way" fallback and concurrent reviews resolved in Anki's direction. The author's customData-reference experiment is the alternative; it has a 100-byte budget shared with other data. Either needs Undo/Redo, concurrent-review and stale-reference tests.
+- Session decks across devices (6.6).
 - Knowledge tree, writing, presets.
 
 **Stage 7: more transports (separate discussion, after the folder works)**
@@ -260,6 +413,7 @@ The author wants to avoid *operating* a service, so the plan never involves an I
 - **Adopting the engine:**
   - Vendor upstream's `backend/sync/`. The parity check covers it like any other module.
   - Kotlin adds the settings UI, the QR scanner for pairing, NSD discovery and a WorkManager job.
+  - **A hook on AnkiDroid's sync completion.** None exists today. It runs the same post-sync steps as desktop (6.7) and records the collection fingerprint before and after (6.4).
 - **Readiness:** phone records must use the same Anki references. They already do, since the phone uses upstream's tables and the same collection through AnkiWeb.
 - **Release checklist:** item 2, "data shared with desktop", becomes "LAN or folder sync with the agreed engine". Until then, the phone stays phone-only, with the warning already in the checklist.
 
@@ -268,8 +422,11 @@ The author wants to avoid *operating* a service, so the plan never involves an I
 2. **The furthest-read rule** for reading positions: acceptable, or always a conflict?
 3. **Where the engine lives:** `backend/sync/` in the add-on (preferred), with the LAN server possibly in a companion add-on.
 4. **Scan cost** on large libraries (tens of thousands of highlights): family digests plus incremental hashing. Measure it in stage 1b against the performance audit's numbers.
-5. **Upstream is moving:** `master` is 8 commits ahead of our vendored copy (`e6e0f0c` vs `ab88266`). Rebase onto it before stage 0 and keep each PR small, so it rebases cleanly.
-6. **AnkiDroid's AI policy** applies only to AnkiDroid's own repository; Incremento's contribution terms are the author's. Say openly how the code is produced, so the author can judge it with that in mind.
+5. **AnkiWeb's internals:**
+   - The usn rule (6.3) and full-sync detection (6.4) rely on how Anki's sync behaves, not on a public contract. Spike 1d checks them, and a test should fail loudly if a future Anki changes them.
+   - The revlog anchor (6.2) has to survive Undo, manual rescheduling, and reviews from clients without Incremento.
+6. **Upstream is moving:** `master` is 8 commits ahead of our vendored copy (`e6e0f0c` vs `ab88266`). Rebase onto it before stage 0 and keep each PR small, so it rebases cleanly.
+7. **AnkiDroid's AI policy** applies only to AnkiDroid's own repository; Incremento's contribution terms are the author's. Say openly how the code is produced, so the author can judge it with that in mind.
 
 ## 13. What to do first
 1. Reply on #16: thank the author, accept the scope, and say a design note will come first (stage 0) with the document spike.
