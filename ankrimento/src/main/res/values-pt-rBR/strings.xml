@@ -70,6 +70,11 @@
     <string name="ankrimento_sync_done">Dados do Incremento sincronizados: %1$d enviados, %2$d recebidos</string>
     <string name="ankrimento_sync_conflicts">%1$d registros mudaram em dois aparelhos; o valor deste aparelho foi mantido</string>
     <string name="ankrimento_sync_problems">%1$d arquivos da pasta de sincronização foram ignorados</string>
+    <string name="ankrimento_sync_hub">Hub de sincronização</string>
+    <string name="ankrimento_sync_hub_none">Não definido. Um hub na sua rede sincroniza sem uma pasta na nuvem</string>
+    <string name="ankrimento_sync_hub_message">Cole o código de pareamento exibido por scripts/sync_hub.py na máquina que executa o hub. Deixe vazio para usar a pasta de sincronização.</string>
+    <string name="ankrimento_sync_hub_summary">%1$s em %2$s</string>
+    <string name="ankrimento_sync_hub_invalid">Código de pareamento inválido</string>
     <string name="ankrimento_statistics_title">Estatísticas do Incremento</string>
     <string name="ankrimento_stats_tag_rows">Cartões revisados por etiqueta: cada linha mostra os cartões e o tempo de estudo.</string>
     <string name="ankrimento_stats_today">Hoje (cartões · tempo)</string>

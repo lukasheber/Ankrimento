@@ -35,6 +35,13 @@ def sync_folder(kotlin_exchange: Any, label: str, publish_only: bool = False) ->
     return facade.engine_sync(KotlinStore(kotlin_exchange), label, publish_only)
 
 
+def sync_hub(code: str, publish_only: bool = False) -> str:
+    """Sync Incremento's data through the hub paired with ``code`` (see ``facade.engine_sync_hub``)."""
+    from ankrimento import facade
+
+    return facade.engine_sync_hub(code, publish_only)
+
+
 class _Closure(dynamic_proxy(Runnable)):  # type: ignore[misc]
     def __init__(self, closure: Callable[[], None]) -> None:
         super().__init__()

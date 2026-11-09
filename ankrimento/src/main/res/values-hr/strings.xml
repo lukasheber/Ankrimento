@@ -70,6 +70,11 @@
     <string name="ankrimento_sync_done">Incremento podaci sinkronizirani: %1$d poslano, %2$d primljeno</string>
     <string name="ankrimento_sync_conflicts">%1$d zapisa promijenjeno je na dva uređaja; zadržana je vrijednost ovog uređaja</string>
     <string name="ankrimento_sync_problems">%1$d datoteka u mapi za sinkronizaciju je preskočeno</string>
+    <string name="ankrimento_sync_hub">Središte za sinkronizaciju</string>
+    <string name="ankrimento_sync_hub_none">Nije postavljeno. Središte na vašoj mreži sinkronizira bez mape u oblaku</string>
+    <string name="ankrimento_sync_hub_message">Zalijepite kod za uparivanje koji ispisuje scripts/sync_hub.py na računalu na kojem radi središte. Ostavite prazno za korištenje mape za sinkronizaciju.</string>
+    <string name="ankrimento_sync_hub_summary">%1$s na %2$s</string>
+    <string name="ankrimento_sync_hub_invalid">Nije valjan kod za uparivanje</string>
     <string name="ankrimento_statistics_title">Incremento statistika</string>
     <string name="ankrimento_stats_tag_rows">Pregledane kartice po oznaci: svaki redak prikazuje kartice i vrijeme učenja.</string>
     <string name="ankrimento_stats_today">Danas (karte · vrijeme)</string>

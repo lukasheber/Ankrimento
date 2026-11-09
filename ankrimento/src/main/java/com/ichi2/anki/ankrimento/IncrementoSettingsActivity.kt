@@ -96,6 +96,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private val device by lazy { AnkrimentoSettings(this) }
     private var profile by mutableStateOf("")
     private var syncFolder by mutableStateOf<Uri?>(null)
+    private var syncHubCode by mutableStateOf("")
     private var backingUp by mutableStateOf(false)
     private var automaticBackups by mutableStateOf(AutomaticBackups.Policy())
 
@@ -141,6 +142,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         profile = device.profile
         syncFolder = device.syncFolder
+        syncHubCode = device.syncHubCode
         automaticBackups = AutomaticBackups.load(this)
         setContent { IncrementoTheme { Settings() } }
         lifecycleScope.launch {
@@ -668,7 +670,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 stringResource(
                     R.string.ankrimento_settings_device_summary,
                     profile,
-                    syncFolder?.let(::folderName) ?: stringResource(R.string.ankrimento_settings_no_sync_folder),
+                    hubSummary(syncHubCode) ?: syncFolder?.let(::folderName) ?: stringResource(R.string.ankrimento_settings_no_sync_folder),
                 )
             Page.UPKEEP ->
                 formatUpdates?.let { updates ->
@@ -1014,6 +1016,24 @@ class IncrementoSettingsActivity : ComponentActivity() {
             },
             modifier = Modifier.clickable { pickSyncFolder.launch(syncFolder) },
         )
+        TextRow(
+            label = R.string.ankrimento_sync_hub,
+            value = syncHubCode,
+            message = R.string.ankrimento_sync_hub_message,
+            shown = hubSummary(syncHubCode) ?: stringResource(R.string.ankrimento_sync_hub_none),
+        ) { code ->
+            Ankrimento.setSyncHub(this, code)
+            syncHubCode = device.syncHubCode
+        }
+    }
+
+    /** "phone on 192.168.1.20:8765" for a pairing code, "invalid" for one that is not; null when there is none. */
+    @Composable
+    private fun hubSummary(code: String): String? {
+        if (code.isEmpty()) return null
+        val parsed = runCatching { Ankrimento.describeHubCode(code) }.getOrNull()
+        return parsed?.let { stringResource(R.string.ankrimento_sync_hub_summary, it.first, it.second) }
+            ?: stringResource(R.string.ankrimento_sync_hub_invalid)
     }
 
     /** The picked folder as the user knows it: "Documents/Incremento" from "primary:Documents/Incremento". */

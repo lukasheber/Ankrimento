@@ -161,6 +161,7 @@ def phone_profile(rt):
     yield rt.profile
     # The profile is shared by the whole session: forget the library, the device and the local blobs.
     conn = db.get_connection(str(rt.addon_dir), rt.profile)
+    ensure_schema(conn)  # a test that failed early never made the tables
     with conn:
         for table in reversed(SYNC_TABLES):
             conn.execute(f"DELETE FROM {table}")
@@ -252,3 +253,74 @@ def test_publish_only_sends_this_devices_changes_without_receiving_the_others(rt
     assert phone.priority(first) is None  # not received yet
     assert desktop.priority(second) == 22.0
     db.close_connection()
+
+
+# --- Syncing through a hub on the network ---------------------------------------------------------------------------
+
+@pytest.fixture
+def running_hub(tmp_path):
+    """A hub on this machine, paired with the phone; the other device pairs with it too."""
+    import ssl
+
+    from incremento.backend.sync_http import Hub, KeyBook
+
+    if ssl.SSLContext.__module__ != "ssl":  # a developer environment that patches ssl (pip-system-certs)
+        from pip._vendor import truststore
+
+        truststore.extract_from_ssl()
+    book = KeyBook(tmp_path / "keys.json")
+    root = tmp_path / "HubFolder"
+    root.mkdir()
+    hub = Hub(root, book.as_mapping(), host="127.0.0.1", port=0)
+    hub.start()
+    yield hub, book
+    hub.stop()
+
+
+def test_the_facade_syncs_with_a_desktop_through_a_hub(rt, phone_profile, running_hub, tmp_path):
+    import json
+
+    from ankrimento import facade
+    from incremento.backend import db, sync_service
+    from incremento.backend.profile_startup import prepare_storage
+    from incremento.backend.sync_http import HttpStore, Pairing
+
+    hub, book = running_hub
+    phone_code = Pairing("127.0.0.1", hub.port, "phone", book.add("phone")).code()
+    desktop_pairing = Pairing("127.0.0.1", hub.port, "desktop", book.add("desktop"))
+    desktop_store = HttpStore.from_pairing(desktop_pairing)
+    phone = Device(rt.col, str(rt.addon_dir), rt.profile)
+    desktop = Device(rt.col, str(tmp_path / "desktop" / "addons21" / "incremento"), "Desktop hub")
+    prepare_storage(desktop.addon, desktop.profile)
+    sync_service.configure(desktop.addon, desktop.profile, "hub:desktop", query=rt.col.db.all, store=desktop_store)
+    card = _card(rt)
+
+    desktop.set_priority(card, 44.0)
+    desktop.sync(desktop_store)
+    first = json.loads(facade.engine_sync_hub(phone_code))
+    received = phone.priority(card)
+    phone.set_priority(card, 66.0)
+    json.loads(facade.engine_sync_hub(phone_code))
+    desktop.sync(desktop_store)
+
+    assert first["problems"] == [] and received == 44.0
+    assert desktop.priority(card) == 66.0
+    db.close_connection()
+
+
+def test_a_bad_pairing_code_is_a_clear_error(rt, phone_profile):
+    from ankrimento import facade
+
+    with pytest.raises(ValueError, match="pairing code"):
+        facade.engine_sync_hub("this is not a code")
+
+
+def test_a_hub_that_is_not_there_is_an_error_the_app_can_show(rt, phone_profile):
+    from ankrimento import facade
+    from incremento.backend.sync_http import Pairing, new_key
+    from incremento.backend.sync_store import StoreError
+
+    unreachable = Pairing("127.0.0.1", 9, "phone", new_key()).code()  # nothing listens on port 9
+
+    with pytest.raises(StoreError):
+        facade.engine_sync_hub(unreachable)

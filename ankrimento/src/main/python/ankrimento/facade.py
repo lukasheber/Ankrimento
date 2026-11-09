@@ -1278,6 +1278,26 @@ def engine_sync(store: Any, label: str, publish_only: bool = False) -> str:
     )
 
 
+def engine_sync_hub(code: str, publish_only: bool = False) -> str:
+    """Sync through a hub on the network, paired with ``code`` (see ``incremento.backend.sync_http``).
+
+    Raises ``ValueError`` for a code that is not a pairing code and ``StoreError`` when the hub cannot be reached or
+    does not accept this device. The folder label is the device's identity and a hash of its key, so it survives the
+    hub's address changing and changes when the device is paired with another hub.
+    """
+    import hashlib
+
+    from incremento.backend.sync_http import HttpStore, Pairing
+
+    pairing = Pairing.from_code(code)
+    label = f"hub:{pairing.identity}:{hashlib.sha256(pairing.key).hexdigest()[:8]}"
+    store = HttpStore.from_pairing(pairing)
+    try:
+        return engine_sync(store, label, publish_only)
+    finally:
+        store.close()
+
+
 def get_priority(card_id: int) -> float:
     from incremento.backend.priority_manager import get_priority as _get_priority
 

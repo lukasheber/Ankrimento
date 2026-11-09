@@ -29,6 +29,15 @@ class AnkrimentoSettings(
         get() = preferences.getString(PREF_SYNC_FOLDER, null)?.let(Uri::parse)
         set(value) = preferences.edit { putString(PREF_SYNC_FOLDER, value?.toString()) }
 
+    /**
+     * The pairing code of a hub on the network that Incremento data is synced through, or empty. It holds the
+     * device's key, so it is kept only here, in the app's private storage. When set, it is used instead of
+     * [syncFolder].
+     */
+    var syncHubCode: String
+        get() = preferences.getString(PREF_SYNC_HUB, null).orEmpty()
+        set(value) = preferences.edit { putString(PREF_SYNC_HUB, value.trim()) }
+
     /** Incremento has been used on this device (worth warming up at launch). */
     var hasStarted: Boolean
         get() = preferences.getBoolean(PREF_HAS_STARTED, false)
@@ -46,6 +55,7 @@ class AnkrimentoSettings(
     private companion object {
         const val PREF_PROFILE = "profile"
         const val PREF_SYNC_FOLDER = "sync_folder"
+        const val PREF_SYNC_HUB = "sync_hub"
         const val PREF_DEVICE_NAME = "device_name"
         const val PREF_HAS_STARTED = "has_started"
         const val PREF_SESSION_DECK = "session_deck"

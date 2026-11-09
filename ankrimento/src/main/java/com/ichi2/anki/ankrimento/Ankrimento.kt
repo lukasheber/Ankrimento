@@ -98,6 +98,7 @@ object Ankrimento {
 
     private var syncExchange: SafExchange? = null
     private var syncFolderLabel = ""
+    private var syncHubCode = ""
 
     /**
      * Starts Python and imports the slow, collection-independent modules, off
@@ -153,6 +154,7 @@ object Ankrimento {
         facade = python.getModule("ankrimento.facade")
         ChangeManager.subscribe(operationListener)
         settings.syncFolder?.let { useSyncFolder(context, it) }
+        syncHubCode = settings.syncHubCode
         Timber.i("Ankrimento started for profile '%s'", profile)
     }
 
@@ -244,7 +246,7 @@ object Ankrimento {
     )
 
     val isSyncConfigured: Boolean
-        get() = syncExchange != null
+        get() = syncHubCode.isNotEmpty() || syncExchange != null
 
     private fun useSyncFolder(
         context: Context,
@@ -266,14 +268,47 @@ object Ankrimento {
     }
 
     /**
-     * Sync with the sync folder through the sync engine; null when none is set. With [publishOnly] this device's
-     * changes are sent and nothing is received (quick, for a closing screen). Throws when the folder holds the
-     * library of another Anki collection.
+     * Use the hub paired with [code] (empty: no hub, back to the sync folder). The code is checked when it is
+     * used: [sync] throws for one that is not a pairing code.
+     */
+    fun setSyncHub(
+        context: Context,
+        code: String,
+    ) {
+        AnkrimentoSettings(context).syncHubCode = code
+        syncHubCode = code.trim()
+    }
+
+    /**
+     * The device name and address ("phone", "192.168.1.20:8765") a hub pairing code names, or null when it is not
+     * a pairing code. Only the code's structure is checked here; the key is never returned.
+     */
+    fun describeHubCode(code: String): Pair<String, String>? {
+        val parts = code.trim().split('-')
+        if (parts.size != 3 || parts[0] != "ihub1") return null
+        return runCatching {
+            val payload = String(android.util.Base64.decode(parts[1], android.util.Base64.URL_SAFE), Charsets.UTF_8)
+            val fields = org.json.JSONArray(payload)
+            if (fields.getInt(0) != 1) return null
+            fields.getString(3) to "${fields.getString(1)}:${fields.getInt(2)}"
+        }.getOrNull()
+    }
+
+    /**
+     * Sync with the hub on the network if one is paired, else with the sync folder, through the sync engine; null
+     * when neither is set. With [publishOnly] this device's changes are sent and nothing is received (quick, for a
+     * closing screen). Throws when the hub cannot be reached or the library there is another Anki collection's.
      */
     @WorkerThread
     fun sync(publishOnly: Boolean = false): SyncResult? {
-        val exchange = syncExchange ?: return null
-        val result = Python.getInstance().getModule("ankrimento.android").callAttr("sync_folder", exchange, syncFolderLabel, publishOnly)
+        val android = Python.getInstance().getModule("ankrimento.android")
+        val result =
+            if (syncHubCode.isNotEmpty()) {
+                android.callAttr("sync_hub", syncHubCode, publishOnly)
+            } else {
+                val exchange = syncExchange ?: return null
+                android.callAttr("sync_folder", exchange, syncFolderLabel, publishOnly)
+            }
         val json = JSONObject(result.toString())
         val problems = json.getJSONArray("problems")
         return SyncResult(

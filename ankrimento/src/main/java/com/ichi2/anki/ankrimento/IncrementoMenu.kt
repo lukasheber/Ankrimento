@@ -130,8 +130,8 @@ class IncrementoMenu(
             SessionCardAction(IncrementoIcons.Chart, R.string.ankrimento_statistics_menu) {
                 activity.startActivity(StatisticsActivity.intent(activity))
             },
-            // The folder is chosen in settings; a session start syncs too.
-            settings.syncFolder?.let {
+            // The folder or hub is chosen in settings; a session start syncs too.
+            (settings.syncFolder ?: settings.syncHubCode.takeIf { it.isNotEmpty() })?.let {
                 SessionCardAction(IncrementoIcons.Sync, R.string.ankrimento_sync_now) { activity.lifecycleScope.launch { syncNow() } }
             },
         )
@@ -191,8 +191,12 @@ class IncrementoMenu(
         Timber.i("Starting Incremento session")
         runCatching {
             CollectionManager.withCol { Ankrimento.start(activity, this) }
-            // Bring in other devices' reading before choosing cards.
-            sync(reportUpToDate = false)
+            // Bring in other devices' reading before choosing cards. A hub that is off, or a folder that cannot be
+            // reached, must not stop the session: say so and go on with what this device has.
+            runCatching { sync(reportUpToDate = false) }.onFailure { error ->
+                Timber.w(error, "Incremento sync before the session failed")
+                toast(activity.getString(R.string.ankrimento_sync_failed, error.message ?: error.javaClass.simpleName))
+            }
             sessionStarting = true
             withContext(Dispatchers.IO) { Ankrimento.startSession() }
         }.onFailure { error ->
