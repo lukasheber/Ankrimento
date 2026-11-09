@@ -329,3 +329,38 @@ def test_a_hub_that_is_not_there_is_an_error_the_app_can_show(rt, phone_profile)
 
     rt = runtime.current()
     assert sync_service.sync_identity(sync_service.get_connection(str(rt.addon_dir), rt.profile)) is None
+
+
+# --- A large first sync in slices -----------------------------------------------------------------------------------
+
+def test_the_facade_reports_when_a_budget_cut_the_sync_short_and_a_later_call_finishes_it(rt, phone_profile, tmp_path):
+    import json
+
+    from ankrimento import facade
+    from incremento.backend import db, paths, sync_service
+    from incremento.backend.sync_store import MemoryStore
+
+    store = MemoryStore()
+    cards = [_card(rt) for _ in range(5)]
+    for index, card in enumerate(cards):
+        pdf = paths.get_pdf_dir(str(rt.addon_dir), rt.profile) / f"slice{index}.pdf"
+        pdf.parent.mkdir(parents=True, exist_ok=True)
+        pdf.write_bytes(b"%PDF-1.7\n" + f"slice {index} ".encode() * 2000)
+        note = rt.col.get_card(card).nid
+        with db.get_connection(str(rt.addon_dir), rt.profile) as conn:
+            conn.execute("INSERT INTO content_items(content_id, kind, card_id, note_id, storage_key, created_at, "
+                         "updated_at) VALUES (?, 'pdf', ?, ?, ?, 1, 1)", (f"{index + 1:032x}", card, note, f"pdfs/slice{index}.pdf"))
+
+    reports = []
+    for _ in range(40):
+        reports.append(json.loads(facade.engine_sync(store, "saf:content://tree/slices", budget_seconds=0.0)))
+        if not reports[-1]["more"]:
+            break
+
+    assert len(reports) > 1 and reports[-1]["more"] is False
+    assert all(report["problems"] == [] for report in reports)
+    assert sum(report["sent"] for report in reports) >= 5
+    for index in range(5):
+        pdf = paths.get_pdf_dir(str(rt.addon_dir), rt.profile) / f"slice{index}.pdf"
+        pdf.unlink(missing_ok=True)
+    db.close_connection()

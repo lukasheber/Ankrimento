@@ -66,6 +66,7 @@
     <string name="ankrimento_sync_done">Incremento data synced: %1$d sent, %2$d received</string>
     <string name="ankrimento_sync_conflicts">%1$d records changed on two devices; this device\'s value was kept</string>
     <string name="ankrimento_sync_problems">%1$d files in the sync folder were skipped</string>
+    <string name="ankrimento_sync_working">Syncing Incremento data… %1$d sent, %2$d received so far</string>
     <string name="ankrimento_sync_hub">Sync hub</string>
     <string name="ankrimento_sync_hub_none">Not set. A hub on your network syncs without a cloud folder</string>
     <string name="ankrimento_sync_hub_message">Paste the pairing code printed by scripts/sync_hub.py on the machine that runs the hub. Leave it empty to use the sync folder instead.</string>

@@ -26,6 +26,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
@@ -41,6 +42,15 @@ import java.time.LocalDate
 object Ankrimento {
     /** Desktop's default profile; selects `user_files/<profile>/` as on desktop. */
     const val DEFAULT_PROFILE = "User 1"
+
+    /** Passed to [sync] for no time limit on file transfer. */
+    const val NO_BUDGET = -1.0
+
+    /** How long one slice of a large sync transfers files before other work on the collection gets a turn. */
+    private const val SLICE_SECONDS = 4.0
+
+    /** A sync that is still not done after this many slices stops and finishes at the next sync. */
+    private const val MAX_SLICES = 2000
 
     private val SUPPORTED_ABIS = setOf("arm64-v8a", "x86_64")
 
@@ -243,7 +253,19 @@ object Ankrimento {
         val conflicts: Int,
         /** Files in the folder that were skipped because they could not be trusted. */
         val problems: List<String>,
-    )
+        /** The time budget cut file transfer short: call again to continue. */
+        val more: Boolean = false,
+    ) {
+        operator fun plus(next: SyncResult) =
+            SyncResult(
+                sent + next.sent,
+                received + next.received,
+                applied + next.applied,
+                next.conflicts,
+                (problems + next.problems).distinct(),
+                next.more,
+            )
+    }
 
     val isSyncConfigured: Boolean
         get() = syncHubCode.isNotEmpty() || syncExchange != null
@@ -300,14 +322,17 @@ object Ankrimento {
      * closing screen). Throws when the hub cannot be reached or the library there is another Anki collection's.
      */
     @WorkerThread
-    fun sync(publishOnly: Boolean = false): SyncResult? {
+    fun sync(
+        publishOnly: Boolean = false,
+        budgetSeconds: Double = NO_BUDGET,
+    ): SyncResult? {
         val android = Python.getInstance().getModule("ankrimento.android")
         val result =
             if (syncHubCode.isNotEmpty()) {
-                android.callAttr("sync_hub", syncHubCode, publishOnly)
+                android.callAttr("sync_hub", syncHubCode, publishOnly, budgetSeconds)
             } else {
                 val exchange = syncExchange ?: return null
-                android.callAttr("sync_folder", exchange, syncFolderLabel, publishOnly)
+                android.callAttr("sync_folder", exchange, syncFolderLabel, publishOnly, budgetSeconds)
             }
         val json = JSONObject(result.toString())
         val problems = json.getJSONArray("problems")
@@ -317,7 +342,25 @@ object Ankrimento {
             applied = json.getInt("applied"),
             conflicts = json.getInt("conflicts"),
             problems = List(problems.length()) { problems.getString(it) },
+            more = json.optBoolean("more", false),
         )
+    }
+
+    /**
+     * Sync in slices of about [SLICE_SECONDS], giving other work on the collection a turn between them, so a large
+     * first sync (many documents) does not hold everything up. [onProgress] hears about each slice that left more to do,
+     * with the slice's number.
+     */
+    suspend fun syncInSlices(onProgress: (SyncResult, Int) -> Unit = { _, _ -> }): SyncResult? {
+        var total: SyncResult? = null
+        repeat(MAX_SLICES) { index ->
+            val slice = CollectionManager.withCol { sync(budgetSeconds = SLICE_SECONDS) } ?: return total
+            total = total?.plus(slice) ?: slice
+            if (!slice.more) return total
+            onProgress(total, index + 1)
+            yield()
+        }
+        return total
     }
 
     /**
@@ -738,7 +781,7 @@ object Ankrimento {
     fun collectionSynced() {
         if (!isStarted || !isSyncConfigured) return
         operationScope.launch {
-            runCatching { CollectionManager.withCol { sync() } }
+            runCatching { syncInSlices() }
                 .onSuccess { Timber.i("Incremento sync after the collection sync: %s", it) }
                 .onFailure { Timber.w(it, "Incremento sync after the collection sync failed") }
         }

@@ -238,7 +238,13 @@ class IncrementoMenu(
 
     /** Syncs with the sync folder, reporting what changed. Records changed on two devices keep this device's value. */
     private suspend fun sync(reportUpToDate: Boolean) {
-        val result = CollectionManager.withCol { Ankrimento.sync() } ?: return
+        val result =
+            Ankrimento.syncInSlices { progress, slice ->
+                // A large first sync: say it is working, at the start and every few slices after.
+                if (slice % 5 == 1) {
+                    toast(activity.getString(R.string.ankrimento_sync_working, progress.sent, progress.received))
+                }
+            } ?: return
         val changed = result.sent > 0 || result.received > 0 || result.applied > 0
         listOfNotNull(
             when {

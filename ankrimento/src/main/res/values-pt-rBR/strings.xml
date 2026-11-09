@@ -70,6 +70,7 @@
     <string name="ankrimento_sync_done">Dados do Incremento sincronizados: %1$d enviados, %2$d recebidos</string>
     <string name="ankrimento_sync_conflicts">%1$d registros mudaram em dois aparelhos; o valor deste aparelho foi mantido</string>
     <string name="ankrimento_sync_problems">%1$d arquivos da pasta de sincronização foram ignorados</string>
+    <string name="ankrimento_sync_working">Sincronizando os dados do Incremento… %1$d enviados, %2$d recebidos até agora</string>
     <string name="ankrimento_sync_hub">Hub de sincronização</string>
     <string name="ankrimento_sync_hub_none">Não definido. Um hub na sua rede sincroniza sem uma pasta na nuvem</string>
     <string name="ankrimento_sync_hub_message">Cole o código de pareamento exibido por scripts/sync_hub.py na máquina que executa o hub. Deixe vazio para usar a pasta de sincronização.</string>

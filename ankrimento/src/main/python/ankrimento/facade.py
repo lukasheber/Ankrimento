@@ -1249,14 +1249,15 @@ def restore_discard() -> None:
     backup.discard_restore()
 
 
-def engine_sync(store: Any, label: str, publish_only: bool = False) -> str:
+def engine_sync(store: Any, label: str, publish_only: bool = False, budget_seconds: float | None = None) -> str:
     """Sync Incremento's data with the sync folder ``store`` through the sync engine.
 
     ``label`` names the folder (its URI): the profile is set up for it the first time, or when the user picked
     another folder. Joining a library of another Anki collection raises ``SyncSetupError``. Returns the result as
     JSON: what was sent and received, how many records changed on two devices (this device's value is kept, both
     versions are saved), and files in the folder that were skipped. With ``publish_only`` this device's changes
-    are sent and nothing is received: quick, for a screen that is closing.
+    are sent and nothing is received: quick, for a screen that is closing. With ``budget_seconds`` a call transfers
+    files for about that long and reports ``more`` when it stopped early; calling again continues.
     """
     from incremento.backend import sync_service
 
@@ -1265,7 +1266,8 @@ def engine_sync(store: Any, label: str, publish_only: bool = False) -> str:
     status = sync_service.status(addon_dir, profile)
     if not status.configured or status.folder != label:
         sync_service.configure(addon_dir, profile, label, query=query, store=store)
-    report = sync_service.sync_now(addon_dir, profile, query, store=store, publish_only=publish_only)
+    report = sync_service.sync_now(addon_dir, profile, query, store=store, publish_only=publish_only,
+                                   budget_seconds=budget_seconds)
     return _dumps(
         {
             "sent": report.published,
@@ -1274,11 +1276,12 @@ def engine_sync(store: Any, label: str, publish_only: bool = False) -> str:
             "conflicts": sync_service.status(addon_dir, profile).conflicts,
             "problems": report.problems,
             "skipped": report.skipped,
+            "more": report.more,
         }
     )
 
 
-def engine_sync_hub(code: str, publish_only: bool = False) -> str:
+def engine_sync_hub(code: str, publish_only: bool = False, budget_seconds: float | None = None) -> str:
     """Sync through a hub on the network, paired with ``code`` (see ``incremento.backend.sync_http``).
 
     Raises ``ValueError`` for a code that is not a pairing code and ``StoreError`` when the hub cannot be reached or
@@ -1293,7 +1296,7 @@ def engine_sync_hub(code: str, publish_only: bool = False) -> str:
     label = f"hub:{pairing.identity}:{hashlib.sha256(pairing.key).hexdigest()[:8]}"
     store = HttpStore.from_pairing(pairing)
     try:
-        return engine_sync(store, label, publish_only)
+        return engine_sync(store, label, publish_only, budget_seconds)
     finally:
         store.close()
 
