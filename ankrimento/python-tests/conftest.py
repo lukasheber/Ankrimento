@@ -10,6 +10,7 @@ The runtime is a process-wide singleton, so one runtime serves the session.
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,7 @@ from anki._backend_generated import RustBackendGenerated
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INCREMENTO_SOURCE = REPO_ROOT / "vendor" / "incremento"
+ENGINE_DIR = REPO_ROOT / "ankrimento" / "engine"
 PROFILE = "User 1"
 
 
@@ -57,6 +59,24 @@ class DesktopHost:
             return None, bytes(error.args[0])
 
 
+def assemble_addon_source(destination: Path) -> Path:
+    """The add-on source the app is built from: the vendored release plus the engine overlay.
+
+    Mirrors the ``incrementoAddonSource`` Gradle task: ``engine/backend`` is merged into the add-on's ``backend``.
+    """
+    from ankrimento.addon import SHIPPED_ENTRIES
+
+    for name in SHIPPED_ENTRIES:
+        source = INCREMENTO_SOURCE / name
+        if source.is_dir():
+            shutil.copytree(source, destination / name, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "AGENTS.md"))
+        elif source.exists():
+            (destination / name).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination / name)
+    shutil.copytree(ENGINE_DIR / "backend", destination / "backend", dirs_exist_ok=True)
+    return destination
+
+
 @pytest.fixture(scope="session")
 def rt(tmp_path_factory):
     from ankrimento import runtime
@@ -69,6 +89,6 @@ def rt(tmp_path_factory):
         collection_path=str(collection_path),
         addons_dir=str(root / "addons21"),
         profile=PROFILE,
-        addon_source_dir=str(INCREMENTO_SOURCE),
+        addon_source_dir=str(assemble_addon_source(root / "addon_source")),
         build_id="test",
     )

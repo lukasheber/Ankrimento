@@ -83,3 +83,14 @@ version in the message.
 
 The parity check prints the messages marked `GAP:`: desktop features reached from the
 reader pages that the phone does not have yet. They are also in `ROADMAP.md`.
+
+## The sync engine overlay
+
+Incremento's sync engine (`backend/sync_*.py`, upstream issue 16) is not in a release yet, so it ships beside the
+vendored add-on from `ankrimento/engine/`. The `incrementoAddonSource` Gradle task and the test harness
+(`python-tests/conftest.py`, `assemble_addon_source`) merge `engine/backend` into the add-on's `backend/`; nothing in
+`vendor/incremento` is edited, and the engine creates its own tables (`sync_schema.py`), so the vendored schema is fine.
+
+Refresh it from an Incremento checkout with `python ankrimento/tools/update_engine.py <checkout>`. It records the
+commit and a hash per file in `engine/ENGINE.json`; `test_engine_sync.py` fails if a file was edited by hand. When an
+upstream release contains the engine, delete `engine/` and the `from("engine")` block in `build.gradle.kts`.

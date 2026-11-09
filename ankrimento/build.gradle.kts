@@ -119,6 +119,13 @@ val incrementoAddonSource =
             exclude("**/__pycache__/**", "**/AGENTS.md")
             into("ankrimento_addon_source/incremento")
         }
+        // The sync engine, not yet in the vendored release: merged into the add-on's backend/.
+        // Refresh it with tools/update_engine.py; see engine/ENGINE.json.
+        from("engine") {
+            include("backend/**")
+            exclude("**/__pycache__/**")
+            into("ankrimento_addon_source/incremento")
+        }
         into(layout.buildDirectory.dir("ankrimento/addon"))
     }
 
