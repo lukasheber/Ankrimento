@@ -1249,46 +1249,32 @@ def restore_discard() -> None:
     backup.discard_restore()
 
 
-def sync(store: Any, device_name: str, action: str = "sync") -> str:
-    """Sync Incremento's data with the sync folder ``store`` (its profile folder).
+def engine_sync(store: Any, label: str, publish_only: bool = False) -> str:
+    """Sync Incremento's data with the sync folder ``store`` through the sync engine.
 
-    ``action``: ``"status"``, ``"sync"`` (pull or push as needed, then hold the
-    lease), ``"keep_device"`` / ``"keep_folder"`` (resolve a conflict),
-    ``"release"`` (push if needed and release the lease, when closing).
-    Returns the resulting status.
+    ``label`` names the folder (its URI): the profile is set up for it the first time, or when the user picked
+    another folder. Joining a library of another Anki collection raises ``SyncSetupError``. Returns the result as
+    JSON: what was sent and received, how many records changed on two devices (this device's value is kept, both
+    versions are saved), and files in the folder that were skipped. With ``publish_only`` this device's changes
+    are sent and nothing is received: quick, for a screen that is closing.
     """
-    from aqt import mw
-    from incremento.backend.topic_scheduler import reset_topic_answer_runtime_state
-
-    from ankrimento.syncfolder import SyncFolder
+    from incremento.backend import sync_service
 
     rt = runtime.current()
-    folder = SyncFolder(
-        store,
-        rt.addon_dir,
-        rt.profile,
-        read_config=lambda: dict(mw.addonManager.addonMeta("incremento").get("config", {})),
-        write_config=lambda config: mw.addonManager.writeConfig("incremento", config),
-        device_name=device_name,
-    )
-    status = folder.status()
-    if action == "sync":
-        status = folder.sync()
-        if status.state in {"pull", "push"}:
-            folder.acquire_lease()
-    elif action == "keep_device":
-        folder.push(force=True)
-    elif action == "keep_folder":
-        folder.pull(force=True)
-    elif action == "release":
-        if status.state == "push":
-            folder.push(force=True)
-        folder.release_lease()
-    if action in {"sync", "keep_folder"} and status.state in {"pull", "conflict"}:
-        # Incremento's in-memory answer state referred to the replaced database.
-        reset_topic_answer_runtime_state()
+    addon_dir, profile, query = str(rt.addon_dir), rt.profile, rt.col.db.all
+    status = sync_service.status(addon_dir, profile)
+    if not status.configured or status.folder != label:
+        sync_service.configure(addon_dir, profile, label, query=query, store=store)
+    report = sync_service.sync_now(addon_dir, profile, query, store=store, publish_only=publish_only)
     return _dumps(
-        {"state": status.state, "remote_device": status.remote_device, "lease_holder": status.lease_holder}
+        {
+            "sent": report.published,
+            "received": report.received,
+            "applied": report.applied,
+            "conflicts": sync_service.status(addon_dir, profile).conflicts,
+            "problems": report.problems,
+            "skipped": report.skipped,
+        }
     )
 
 

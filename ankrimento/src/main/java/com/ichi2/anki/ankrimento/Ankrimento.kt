@@ -96,8 +96,8 @@ object Ankrimento {
     val isStarted: Boolean
         get() = facade != null
 
-    private var syncStore: SafStore? = null
-    private var deviceName = ""
+    private var syncExchange: SafExchange? = null
+    private var syncFolderLabel = ""
 
     /**
      * Starts Python and imports the slow, collection-independent modules, off
@@ -130,7 +130,6 @@ object Ankrimento {
         check(isSupported) { "Ankrimento needs a 64-bit device" }
         val settings = AnkrimentoSettings(context)
         val profile = settings.profile
-        deviceName = settings.deviceName
         settings.hasStarted = true
         startPython(context)
         val python = Python.getInstance()
@@ -153,7 +152,7 @@ object Ankrimento {
         )
         facade = python.getModule("ankrimento.facade")
         ChangeManager.subscribe(operationListener)
-        settings.syncFolder?.let { syncStore = SafStore(context.applicationContext, it, profileStorageName()) }
+        settings.syncFolder?.let { useSyncFolder(context, it) }
         Timber.i("Ankrimento started for profile '%s'", profile)
     }
 
@@ -233,15 +232,27 @@ object Ankrimento {
         return plan.getString("write") to List(remove.length()) { remove.getString(it) }
     }
 
-    /** What a sync did, or would do: see `ankrimento.syncfolder.Status`. */
+    /** What a sync did: see `facade.engine_sync`. */
     data class SyncResult(
-        val state: String,
-        val remoteDevice: String,
-        val leaseHolder: String,
+        val sent: Int,
+        val received: Int,
+        val applied: Int,
+        /** Records changed on two devices since they last synced; this device's value was kept. */
+        val conflicts: Int,
+        /** Files in the folder that were skipped because they could not be trusted. */
+        val problems: List<String>,
     )
 
     val isSyncConfigured: Boolean
-        get() = syncStore != null
+        get() = syncExchange != null
+
+    private fun useSyncFolder(
+        context: Context,
+        folder: Uri,
+    ) {
+        syncExchange = SafExchange(context.applicationContext, folder)
+        syncFolderLabel = "saf:$folder"
+    }
 
     /** Use [folder] (picked with ACTION_OPEN_DOCUMENT_TREE) to sync Incremento data. */
     fun setSyncFolder(
@@ -251,19 +262,27 @@ object Ankrimento {
         val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         context.contentResolver.takePersistableUriPermission(folder, flags)
         AnkrimentoSettings(context).syncFolder = folder
-        if (isStarted) syncStore = SafStore(context.applicationContext, folder, profileStorageName())
+        if (isStarted) useSyncFolder(context, folder)
     }
 
     /**
-     * Sync with the sync folder; null when none is set. [action] is "status",
-     * "sync", "keep_device", "keep_folder" or "release" (see `facade.sync`).
+     * Sync with the sync folder through the sync engine; null when none is set. With [publishOnly] this device's
+     * changes are sent and nothing is received (quick, for a closing screen). Throws when the folder holds the
+     * library of another Anki collection.
      */
     @WorkerThread
-    fun sync(action: String = "sync"): SyncResult? {
-        val store = syncStore ?: return null
-        val result = Python.getInstance().getModule("ankrimento.android").callAttr("sync", store, deviceName, action)
+    fun sync(publishOnly: Boolean = false): SyncResult? {
+        val exchange = syncExchange ?: return null
+        val result = Python.getInstance().getModule("ankrimento.android").callAttr("sync_folder", exchange, syncFolderLabel, publishOnly)
         val json = JSONObject(result.toString())
-        return SyncResult(json.getString("state"), json.getString("remote_device"), json.getString("lease_holder"))
+        val problems = json.getJSONArray("problems")
+        return SyncResult(
+            sent = json.getInt("sent"),
+            received = json.getInt("received"),
+            applied = json.getInt("applied"),
+            conflicts = json.getInt("conflicts"),
+            problems = List(problems.length()) { problems.getString(it) },
+        )
     }
 
     /**
@@ -671,7 +690,7 @@ object Ankrimento {
         operationScope.launch {
             runCatching { CollectionManager.withCol { requireFacade().callAttr("reviewer_closed") } }
                 .onFailure { Timber.w(it, "Incremento reviewer_closed failed") }
-            runCatching { CollectionManager.withCol { sync("release") } }
+            runCatching { CollectionManager.withCol { sync(publishOnly = true) } }
                 .onFailure { Timber.w(it, "Incremento sync on close failed") }
         }
     }

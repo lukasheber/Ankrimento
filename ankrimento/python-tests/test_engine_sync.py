@@ -146,3 +146,109 @@ def test_a_collection_without_the_libraries_cards_is_told_to_sync_with_ankiweb_f
     with pytest.raises(sync_service.SyncSetupError, match="AnkiWeb first"):
         sync_service.configure(empty, "Empty", "store:empty",
                                query=lambda sql, *args: [(0, 0)] if "usn, scm FROM col" in sql else [], store=store)
+
+
+# --- The facade the app calls --------------------------------------------------------------------------------------
+
+@pytest.fixture
+def phone_profile(rt):
+    """The runtime's own profile, as the app syncs it; its sync state is wiped afterwards."""
+    import shutil
+
+    from incremento.backend import db, sync_paths, sync_service
+    from incremento.backend.sync_schema import SYNC_TABLES, ensure_schema
+
+    yield rt.profile
+    # The profile is shared by the whole session: forget the library, the device and the local blobs.
+    conn = db.get_connection(str(rt.addon_dir), rt.profile)
+    with conn:
+        for table in reversed(SYNC_TABLES):
+            conn.execute(f"DELETE FROM {table}")
+    ensure_schema(conn)
+    shutil.rmtree(sync_paths.get_sync_dir(str(rt.addon_dir), rt.profile), ignore_errors=True)
+
+
+def test_the_facade_syncs_the_runtimes_profile_with_a_desktop_through_a_store(rt, phone_profile, tmp_path):
+    import json
+
+    from ankrimento import facade
+    from incremento.backend import db, sync_service
+    from incremento.backend.profile_startup import prepare_storage
+    from incremento.backend.sync_store import MemoryStore
+
+    store = MemoryStore()
+    phone = Device(rt.col, str(rt.addon_dir), rt.profile)
+    desktop = Device(rt.col, str(tmp_path / "desktop" / "addons21" / "incremento"), "Desktop facade")
+    prepare_storage(desktop.addon, desktop.profile)
+    sync_service.configure(desktop.addon, desktop.profile, "store:desktop", query=rt.col.db.all, store=store)
+    card = _card(rt)
+
+    desktop.set_priority(card, 33.0)
+    desktop.sync(store)
+    first = json.loads(facade.engine_sync(store, "saf:content://tree/one"))
+    phone.set_priority(card, 80.0)
+    second = json.loads(facade.engine_sync(store, "saf:content://tree/one"))
+    desktop.sync(store)
+
+    assert first["problems"] == [] and first["applied"] >= 1
+    assert phone.priority(card) == 80.0
+    assert second["sent"] >= 1 and second["conflicts"] == 0
+    assert desktop.priority(card) == 80.0
+    db.close_connection()
+
+
+def test_the_facade_refuses_a_folder_whose_library_is_not_this_profiles(rt, phone_profile, tmp_path):
+    from ankrimento import facade
+    from incremento.backend import sync_service
+    from incremento.backend.profile_startup import prepare_storage
+    from incremento.backend.sync_store import MemoryStore
+
+    store = MemoryStore()
+    stranger = str(tmp_path / "stranger" / "addons21" / "incremento")
+    prepare_storage(stranger, "Stranger")
+    card = _card(rt)
+    Device(rt.col, stranger, "Stranger").set_priority(card, 1.0)
+    sync_service.configure(stranger, "Stranger", "store:s", query=_other_guids(rt), store=store)
+    sync_service.sync_now(stranger, "Stranger", _other_guids(rt), store=store)
+
+    # Whether the profile is already bound to a library or joins this one, it is not this collection's.
+    with pytest.raises(sync_service.SyncSetupError):
+        facade.engine_sync(store, "saf:content://tree/two")
+
+
+def _other_guids(rt):
+    def query(sql, *args):  # the same cards under notes that are someone else's
+        rows = rt.col.db.all(sql, *args)
+        if "JOIN notes" in sql:
+            return [(c, n, "someone-else", u) for c, n, _guid, u in rows]
+        return rows
+
+    return query
+
+
+def test_publish_only_sends_this_devices_changes_without_receiving_the_others(rt, phone_profile, tmp_path):
+    import json
+
+    from ankrimento import facade
+    from incremento.backend import db, sync_service
+    from incremento.backend.profile_startup import prepare_storage
+    from incremento.backend.sync_store import MemoryStore
+
+    store = MemoryStore()
+    phone = Device(rt.col, str(rt.addon_dir), rt.profile)
+    desktop = Device(rt.col, str(tmp_path / "desktop" / "addons21" / "incremento"), "Desktop closing")
+    prepare_storage(desktop.addon, desktop.profile)
+    sync_service.configure(desktop.addon, desktop.profile, "store:desktop", query=rt.col.db.all, store=store)
+    facade.engine_sync(store, "saf:content://tree/closing")
+    first, second = _card(rt), _card(rt)
+
+    desktop.set_priority(first, 11.0)
+    desktop.sync(store)
+    phone.set_priority(second, 22.0)
+    closing = json.loads(facade.engine_sync(store, "saf:content://tree/closing", publish_only=True))
+    desktop.sync(store)
+
+    assert closing["sent"] >= 1 and closing["received"] == 0
+    assert phone.priority(first) is None  # not received yet
+    assert desktop.priority(second) == 22.0
+    db.close_connection()

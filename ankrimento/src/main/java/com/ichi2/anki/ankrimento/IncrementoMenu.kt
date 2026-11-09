@@ -192,7 +192,7 @@ class IncrementoMenu(
         runCatching {
             CollectionManager.withCol { Ankrimento.start(activity, this) }
             // Bring in other devices' reading before choosing cards.
-            if (!sync(reportUpToDate = false)) return
+            sync(reportUpToDate = false)
             sessionStarting = true
             withContext(Dispatchers.IO) { Ankrimento.startSession() }
         }.onFailure { error ->
@@ -232,43 +232,21 @@ class IncrementoMenu(
         }
     }
 
-    /**
-     * Syncs with the sync folder, reporting the outcome. Returns false when a
-     * conflict needs the user's choice first (a dialog asks for it).
-     */
-    private suspend fun sync(reportUpToDate: Boolean): Boolean {
-        val result = CollectionManager.withCol { Ankrimento.sync() } ?: return true
-        val message =
-            when (result.state) {
-                "pull" -> activity.getString(R.string.ankrimento_sync_pulled, result.remoteDevice)
-                "push" -> activity.getString(R.string.ankrimento_sync_pushed)
-                "remote_incomplete" -> activity.getString(R.string.ankrimento_sync_incomplete)
-                "conflict" -> {
-                    showConflict(result.remoteDevice)
-                    return false
-                }
-                else -> if (reportUpToDate) activity.getString(R.string.ankrimento_sync_up_to_date) else null
-            }
-        val lease = result.leaseHolder.takeIf { it.isNotEmpty() }?.let { activity.getString(R.string.ankrimento_sync_open_elsewhere, it) }
-        listOfNotNull(message, lease).joinToString("\n").takeIf { it.isNotEmpty() }?.let(::toast)
-        return true
-    }
-
-    private fun showConflict(remoteDevice: String) {
-        fun resolve(action: String) =
-            activity.lifecycleScope.launch {
-                runCatching { CollectionManager.withCol { Ankrimento.sync(action) } }
-                    .onSuccess { toast(activity.getString(R.string.ankrimento_sync_resolved)) }
-                    .onFailure { toast(activity.getString(R.string.ankrimento_sync_failed, it.message ?: it.javaClass.simpleName)) }
-            }
-        AlertDialog
-            .Builder(activity)
-            .setTitle(R.string.ankrimento_sync_conflict_title)
-            .setMessage(activity.getString(R.string.ankrimento_sync_conflict_message, remoteDevice))
-            .setPositiveButton(R.string.ankrimento_sync_keep_device) { _, _ -> resolve("keep_device") }
-            .setNegativeButton(R.string.ankrimento_sync_keep_folder) { _, _ -> resolve("keep_folder") }
-            .setNeutralButton(android.R.string.cancel, null)
-            .show()
+    /** Syncs with the sync folder, reporting what changed. Records changed on two devices keep this device's value. */
+    private suspend fun sync(reportUpToDate: Boolean) {
+        val result = CollectionManager.withCol { Ankrimento.sync() } ?: return
+        val changed = result.sent > 0 || result.received > 0 || result.applied > 0
+        listOfNotNull(
+            when {
+                changed -> activity.getString(R.string.ankrimento_sync_done, result.sent, result.received)
+                reportUpToDate -> activity.getString(R.string.ankrimento_sync_up_to_date)
+                else -> null
+            },
+            result.conflicts.takeIf { it > 0 }?.let { activity.getString(R.string.ankrimento_sync_conflicts, it) },
+            result.problems.size
+                .takeIf { it > 0 }
+                ?.let { activity.getString(R.string.ankrimento_sync_problems, it) },
+        ).takeIf { it.isNotEmpty() }?.joinToString("\n")?.let(::toast)
     }
 
     private fun toast(text: String) {

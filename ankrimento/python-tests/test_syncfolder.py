@@ -143,19 +143,6 @@ def test_push_waits_for_pending_imports(rt, devices):
             a.push()
 
 
-def test_facade_sync_holds_and_releases_the_lease(rt, tmp_path):
-    store = LocalStore(tmp_path / "folder" / rt.profile)
-    try:
-        assert json.loads(facade.sync(store, "Phone", "status"))["state"] == "push"
-        assert json.loads(facade.sync(store, "Phone", "sync"))["state"] == "push"
-        assert json.loads((store.root / "lease.json").read_text())["device_name"] == "Phone"
-        assert json.loads(facade.sync(store, "Phone", "status"))["state"] == "in_sync"
-        facade.sync(store, "Phone", "release")
-        assert not (store.root / "lease.json").exists()
-    finally:
-        (rt.addon_dir / "user_files" / rt.profile / ".ankrimento-sync.json").unlink(missing_ok=True)
-
-
 def test_a_device_without_settings_does_not_erase_anothers(rt, devices):
     """A fresh phone has no Incremento settings yet ({}); pushing must not wipe desktop's."""
     from incremento.backend.priority_manager import set_priority
