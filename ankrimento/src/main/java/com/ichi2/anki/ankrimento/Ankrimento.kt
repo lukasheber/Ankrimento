@@ -695,6 +695,20 @@ object Ankrimento {
         }
     }
 
+    /**
+     * AnkiDroid has just synced the collection with AnkiWeb. Incremento data for cards that were still unknown
+     * to this collection (or to AnkiWeb) waits for exactly that, so run the sync engine now. Quiet: the user did
+     * not ask for it, so a failure is only logged.
+     */
+    fun collectionSynced() {
+        if (!isStarted || !isSyncConfigured) return
+        operationScope.launch {
+            runCatching { CollectionManager.withCol { sync() } }
+                .onSuccess { Timber.i("Incremento sync after the collection sync: %s", it) }
+                .onFailure { Timber.w(it, "Incremento sync after the collection sync failed") }
+        }
+    }
+
     /** The reader for [cardId]: a document's ("pdf", "epub", …), "text" for any other topic, "" for an item. */
     @WorkerThread
     fun cardReader(cardId: Long): String = if (isStarted) requireFacade().callAttr("card_reader", cardId).toString() else ""
