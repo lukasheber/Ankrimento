@@ -317,10 +317,15 @@ def test_a_bad_pairing_code_is_a_clear_error(rt, phone_profile):
 
 def test_a_hub_that_is_not_there_is_an_error_the_app_can_show(rt, phone_profile):
     from ankrimento import facade
+    from incremento.backend import sync_service
     from incremento.backend.sync_http import Pairing, new_key
-    from incremento.backend.sync_store import StoreError
 
     unreachable = Pairing("127.0.0.1", 9, "phone", new_key()).code()  # nothing listens on port 9
 
-    with pytest.raises(StoreError):
+    with pytest.raises(sync_service.SyncSetupError, match="cannot be read"):
         facade.engine_sync_hub(unreachable)
+    # An unreachable hub is not an empty one: the profile did not invent a library for it.
+    from ankrimento import runtime
+
+    rt = runtime.current()
+    assert sync_service.sync_identity(sync_service.get_connection(str(rt.addon_dir), rt.profile)) is None
