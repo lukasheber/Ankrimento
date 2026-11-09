@@ -1,6 +1,6 @@
 {
     "source": "BaskovicP/Incremento (sync stack, issue #16)",
-    "commit": "d8c69be137a71cd4fcad75fb178eadf01d378ea0",
+    "commit": "9a0297f2d636e968f73dce96afb707aeac15be7e",
     "files": {
         "sync_anki.py": "e4a0214b6d3daeff6dec2491209e79049bb2795c3a3860d5a6fb6f8de3140d1b",
         "sync_apply.py": "3fefcb0e7576583fe3748a76ad926b26e44d89e8295a1f2ad09b5aa655346136",
@@ -8,7 +8,7 @@
         "sync_capture.py": "2b1a2d2193359f1914652a5ffde9f125b44043b07162829fa55772256623d90b",
         "sync_documents.py": "949e342820517160699d33d237fa7ef1d1acf8ca16dac41962222ebe74673028",
         "sync_exchange.py": "40d7c1d000308b97223bdea898251a279854afffbf2ce476eb77c61ccae2b8bb",
-        "sync_http.py": "3338eb0e455903de0dc242ed68b349d8cfa89bfee4a2e8b382d423b5b523b465",
+        "sync_http.py": "a9bbf4c82286f32a9822b33120307b93946453ac067c92d6a6a8a259bc631806",
         "sync_paths.py": "bde337ecc84be5ce2fef8cbe47ba6d1963282356db96f7e68f89fbf69a8738da",
         "sync_records.py": "2bb3d2122ce02a0dfadef12649364d4c7415777fdd960261b6f3b8ec56b87814",
         "sync_schema.py": "239866d59cd58c56ba8bf01450c33cfc0f8651f7f0d9892c02f9359ed61b8028",
