@@ -464,3 +464,11 @@ The author wants to avoid *operating* a service, so the plan never involves an I
 2. Update the vendored upstream to `origin/master`.
 3. Write `docs/SYNC_DESIGN.md` (stage 0) and the spike in parallel. Open the doc PR, and wait for the author's review before stage 1 code.
 4. Set up the two-computer test bed: two disposable Anki profiles synced to one throwaway AnkiWeb account, plus a shared test folder.
+
+## 15. Progress: the engine on the phone (2026-11-09)
+
+- The engine ships in `ankrimento/engine/` and runs on the phone's runtime and real collection (`UPSTREAM.md`, "The sync engine overlay").
+- Storage behind one interface: the picked folder (`SafExchange` + `KotlinStore`) and a hub on the network (`HttpStore`, TLS with a pre-shared key; settings, "This device", "Sync hub").
+- The old snapshot-and-lease flow is gone from the phone. The engine runs from the menu, at session start (a failure is reported, the session goes on), when the reviewer closes (publish only), and after AnkiDroid's own AnkiWeb sync.
+- Verified on a tablet (debug build): a folder through the Storage Access Framework, and a hub through `adb reverse`. A desktop engine joined both and applied the tablet's 99 revisions without conflicts, and desktop changes reached the tablet.
+- Open: topic scheduling family (revlog anchor), first-sync progress for large libraries, discovery of a hub by name, per-device write confinement on the hub, testing in a real Anki window, and removing `syncfolder.py` and the old desktop add-on once the desktop dialog is released.
