@@ -79,6 +79,8 @@ def entries() -> list[dict[str, Any]]:
         result.append(
             {
                 "card_id": int(card_id),
+                # Desktop's "Last added" sorts by note id, which encodes the creation time.
+                "note_id": int(card.nid),
                 "kind": kind,
                 "title": _card_title(card),
                 "priority": float(get_priority(addon_dir, profile, int(card_id))),

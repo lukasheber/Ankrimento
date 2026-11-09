@@ -100,10 +100,14 @@ class ReaderPager(
     val onPage: (Int) -> Unit,
 )
 
-/** Where the reader is in the document: [fraction] of it read, [label] for where ("Chapter 3 of 12"). */
+/**
+ * Where the reader is in the document: [fraction] of it read, [label] for where ("Chapter 3 of 12"), and under it
+ * [detail] when there is one (desktop's "Viewed 40% · Marked read 10%").
+ */
 class ReaderProgress(
     val fraction: Float,
     val label: String,
+    val detail: String? = null,
 )
 
 /** Icons shown in the top bar before the rest move to the overflow menu. */
@@ -242,13 +246,23 @@ private fun ProgressStrip(
                 gapSize = 0.dp,
             )
             Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
-                Text(
-                    progress.label,
-                    style = MaterialTheme.typography.labelMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
-                )
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        progress.label,
+                        style = MaterialTheme.typography.labelMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    progress.detail?.let {
+                        Text(
+                            it,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
                 Text(
                     stringResource(R.string.ankrimento_book_progress, (progress.fraction.coerceIn(0f, 1f) * 100).roundToInt()),
                     style = MaterialTheme.typography.labelMedium,

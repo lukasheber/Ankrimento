@@ -155,8 +155,8 @@ Mobile principles that guide every item:
 
 | Status | Feature | Mobile notes |
 |---|---|---|
-| ⬜ | **Viewed and Marked read figures**: reading that is not in order is counted by passage, not only by the furthest page [2026.11.04] | Best fit for a phone: it is passive and reading in short sessions jumps about. Upstream's `backend/reader_coverage.py` and the tables from migration 26 are in place and the data syncs; the EPUB page script that records it is switched off on the phone (`track_coverage=False` in `epub_reader.py`) until a screen exists. Next: turn it on, record the viewed pages of the PDF reader, show Viewed against Marked read in the reader's progress strip and in the Library (a thin second bar), mark a range read from the contents sheet. Priority: high |
-| ⬜ | Last added sort in the Library [2026.11.03] | Trivial and useful: the Library sorts by priority, title and recently read; desktop adds newest or oldest added (by note id, which encodes creation time, so it survives regenerated cards). Needs the note id in the Library entries, one chip and four strings. Priority: high, small |
+| 🟡 | **Viewed and Marked read figures**: reading that is not in order is counted by passage, not only by the furthest page [2026.11.04] | Built on desktop's own tracker (`frontend/reader_coverage.py`) so the figures and rows are desktop's and sync. Every PDF page and EPUB passage that comes into view is recorded as viewed; the reader shows desktop's label ("Viewed 40% · Marked read 10%") under the progress bar (EPUB) or in a strip under the page (PDF); ⋮ → Mark page read / Unmark page (PDF), Mark chapter read / Unmark chapter (EPUB). Not yet: the figures in the Library, marking a passage or a page range, the Document Bookshelf's second bar |
+| 🟡 | Last added sort in the Library [2026.11.03] | A fourth chip in the Library's Sort row (newest first, by note id as desktop does, so regenerated cards keep their place). To check on the tablet |
 | ⬜ | Parent context while reviewing: a read-only view of the card's original parent [2026.11.03] | Fits the learning loop: after an extract, see where it came from without leaving the card. A sheet from the card menu, opened by the Parent icon; the backend finds the parent from the extraction origin or the knowledge tree. Priority: medium |
 | ⬜ | Offline snapshots of web pages (website appearance or editable reading copy) [2026.11.04] | The phone's web import already makes a reading copy in Markdown; the website-appearance snapshot needs a page saved with its styles, wanted for reading on a train. Android's share sheet is the entry. Priority: medium, larger |
 | 🟡 | Passage links between PDF and EPUB, with Jump Back [2026.11.04] | The links are stored in the shared database, and the old page and section links work. The new passage status, the reveal of the matching passage and Jump Back are `GAP:` messages in the parity check. Needs the same screen work as coverage. Priority: low |
@@ -289,7 +289,7 @@ Upkeep and rarely used:
 
 From desktop v2026.11.04 + 23 (evaluated in "Reading progress and links between documents"):
 
-40. Reading coverage (Viewed against Marked read) in the readers and the Library; Last added sort in the Library.
+40. Reading coverage (Viewed against Marked read) in the readers; Last added sort in the Library (built; the Library's coverage figures remain).
 41. Parent context in the learning screen; send selected text to Writing; offline website snapshots.
 
 To check rather than build: the leech notice (it reuses AnkiDroid's own check; reaching it needs a card's seventh lapse) and the

@@ -358,6 +358,11 @@
     <string name="ankrimento_library_sort_priority">Prioridade</string>
     <string name="ankrimento_library_sort_title">Título</string>
     <string name="ankrimento_library_sort_recent">Lidos recentemente</string>
+    <string name="ankrimento_library_sort_added">Últimos adicionados</string>
+    <string name="ankrimento_mark_page_read">Marcar página como lida</string>
+    <string name="ankrimento_unmark_page">Desmarcar página</string>
+    <string name="ankrimento_mark_chapter_read">Marcar capítulo como lido</string>
+    <string name="ankrimento_unmark_chapter">Desmarcar capítulo</string>
     <!-- Search ALL -->
     <string name="ankrimento_search_all">Pesquisar TUDO</string>
     <string name="ankrimento_search_all_hint">Pesquisar destaques, documentos e cartões</string>

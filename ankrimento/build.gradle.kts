@@ -109,6 +109,7 @@ val incrementoAddonSource =
                 "manifest.json",
                 "frontend/epub_dock.py",
                 "frontend/epub_passages.py",
+                "frontend/reader_coverage.py",
                 "frontend/reader_links.py",
                 "frontend/search_all_results.py",
                 "frontend/stats_dashboard.py",

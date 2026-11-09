@@ -30,6 +30,7 @@ def test_addon_has_the_desktop_layout(rt):
     assert shipped == [
         "epub_dock.py",
         "epub_passages.py",
+        "reader_coverage.py",
         "reader_links.py",
         "search_all_results.py",
         "stats_dashboard.py",

@@ -40,6 +40,7 @@ MSG_PAGE_LINKS = "incremento_pdf_page_links:"
 MSG_SNAPSHOT = "incremento_pdf_snapshot:"
 # frontend/pdf_dock.py: _MAX_PDF_SNAPSHOT_BYTES
 _MAX_SNAPSHOT_BYTES = 8 * 1024 * 1024
+MSG_COVERAGE = "incremento_reader_coverage:"
 MSG_LINK_PREVIEW_SIZE = "incremento_pdf_link_preview_size:"
 MSG_LINK_PREVIEW_ZOOM = "incremento_pdf_link_preview_zoom:"
 
@@ -398,6 +399,12 @@ def handle(card_id: int, msg: str) -> list[str]:
         if int(data.get("cardId", 0) or 0) == card_id:
             mw.notify_host("open_url", url=str(data.get("url") or ""))
         return []
+    if msg.startswith(MSG_COVERAGE):
+        # The page now in view: desktop's tracker records it as viewed and the viewer shows the figures.
+        from ankrimento import coverage
+
+        figures = coverage.receive(card_id, payload(MSG_COVERAGE))
+        return [_js_call("incrementoReceiveCoverage", figures)] if figures else []
     if msg.startswith(MSG_SNAPSHOT):
         _snapshot(card_id, msg)
         return []

@@ -358,6 +358,11 @@
     <string name="ankrimento_library_sort_priority">Prioritet</string>
     <string name="ankrimento_library_sort_title">Naslov</string>
     <string name="ankrimento_library_sort_recent">Nedavno čitano</string>
+    <string name="ankrimento_library_sort_added">Zadnje dodano</string>
+    <string name="ankrimento_mark_page_read">Označi stranicu pročitanom</string>
+    <string name="ankrimento_unmark_page">Ukloni oznaku stranice</string>
+    <string name="ankrimento_mark_chapter_read">Označi poglavlje pročitanim</string>
+    <string name="ankrimento_unmark_chapter">Ukloni oznaku poglavlja</string>
     <!-- Search ALL -->
     <string name="ankrimento_search_all">Pretraži sve</string>
     <string name="ankrimento_search_all_hint">Pretraži istaknuto, dokumente i karte</string>

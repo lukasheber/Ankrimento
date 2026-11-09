@@ -34,6 +34,7 @@ MSG_PROGRESS = "incremento_epub_progress:"
 MSG_MARK_READ = "incremento_epub_mark_read:"
 MSG_SECTION_NAV = "incremento_epub_section_nav:"
 MSG_PAGE_JUMP = "incremento_epub_page_jump:"
+MSG_COVERAGE = "incremento_reader_coverage:"
 MSG_OPEN_LINK = "incremento_epub_open_link:"
 MSG_HL_COLOR = "incremento_epub_hl_color:"
 MSG_HL_STYLE = "incremento_epub_hl_style:"
@@ -198,8 +199,6 @@ def section_script(
         default_highlight_color=default_color,
         sections=metadata.get("sections") or [],
         appearance=get_appearance(addon_dir, profile, card_id),
-        # Reading coverage (viewed / marked read) is desktop's for now: the script would post messages nothing answers.
-        track_coverage=False,
     )
 
 
@@ -285,6 +284,12 @@ def handle(card_id: int, section_index: int, msg: str) -> dict[str, Any]:
             pages = max(1, int(data.get("sectionPages", 1) or 1))
             ratio = (max(1, int(data.get("sectionPage", 1) or 1)) - 1) / max(1, pages - 1) if pages > 1 else 0.0
             return {"navigate": {"section_index": int(data.get("sectionIndex", 0) or 0), "scroll_ratio": ratio}}
+    elif msg.startswith(MSG_COVERAGE):
+        # A passage of the open chapter came into view: desktop's tracker records it as viewed.
+        from ankrimento import coverage
+
+        figures = coverage.receive(card_id, payload(MSG_COVERAGE), section_index=section_index)
+        return {"coverage": figures} if figures else {}
     elif msg.startswith(MSG_FILL_FIELD):
         from ankrimento import extract
 

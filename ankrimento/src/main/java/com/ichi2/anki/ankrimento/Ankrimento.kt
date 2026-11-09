@@ -804,6 +804,8 @@ object Ankrimento {
         /** The PDF page or EPUB chapter reached (0: none), for [position] in the app's language. */
         val page: Int = 0,
         val chapter: Int = 0,
+        /** The note's id, which encodes when the document was added (desktop's "Last added" order). */
+        val noteId: Long = 0,
     )
 
     /** Desktop's review buttons (`group`, `done`, `postpone`, `extract`) and whether each is shown. */
@@ -854,6 +856,7 @@ object Ankrimento {
                 cover = entry.optString("cover"),
                 page = entry.optInt("page"),
                 chapter = entry.optInt("chapter"),
+                noteId = entry.optLong("note_id"),
             )
         }
     }
@@ -1068,6 +1071,7 @@ object Ankrimento {
     ): EpubAction? {
         val json = JSONObject(requireFacade().callAttr("epub_message", cardId, sectionIndex, message).toString())
         json.optJSONObject("navigate")?.let { return EpubAction.Navigate(it.getInt("section_index"), it.getDouble("scroll_ratio")) }
+        json.optJSONObject("coverage")?.let { figures -> return coverageOf(figures)?.let { EpubAction.Viewed(it) } }
         val link = json.optJSONObject("link") ?: return null
         return when (link.optString("kind")) {
             "external" -> EpubAction.OpenWeb(link.getString("url"))
@@ -1082,8 +1086,53 @@ object Ankrimento {
         }
     }
 
+    /** Reading coverage of a PDF or EPUB: desktop's label, "Viewed 40% · Marked read 10%". */
+    data class Coverage(
+        val label: String,
+        val viewedPercent: Double?,
+        val markedPercent: Double?,
+    )
+
+    private fun coverageOf(json: JSONObject): Coverage? =
+        if (json.optString("label").isEmpty()) {
+            null
+        } else {
+            Coverage(
+                json.getString("label"),
+                if (json.isNull("viewed_percent")) null else json.optDouble("viewed_percent"),
+                if (json.isNull("marked_percent")) null else json.optDouble("marked_percent"),
+            )
+        }
+
+    /** What was viewed and marked read of a PDF or EPUB, or null for any other document. */
+    @WorkerThread
+    fun coverage(cardId: Long): Coverage? = coverageOf(JSONObject(requireFacade().callAttr("coverage_summary", cardId).toString()))
+
+    /**
+     * Marks a PDF page range (0-based [start] up to [end], [position] 0) or an EPUB passage of chapter [position]
+     * read or unread; an EPUB [end] of 0 is the whole chapter. Returns the new figures.
+     */
+    @WorkerThread
+    fun markCoverage(
+        cardId: Long,
+        read: Boolean,
+        position: Int,
+        start: Int,
+        end: Int,
+    ): Coverage? =
+        coverageOf(
+            JSONObject(
+                requireFacade().callAttr("coverage_mark", cardId, if (read) "mark" else "unmark", position, start, end).toString(),
+            ),
+        )
+
     /** What the reader does after a page message: another chapter, or a tapped link. */
     sealed interface EpubAction {
+        /** The figures after a passage came into view. */
+        data class Viewed(
+            val coverage: Coverage,
+        ) : EpubAction
+
         data class Navigate(
             val section: Int,
             val scrollRatio: Double,

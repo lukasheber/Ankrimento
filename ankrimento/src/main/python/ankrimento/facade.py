@@ -956,6 +956,20 @@ def epub_message(card_id: int, section_index: int, message: str) -> str:
     return _dumps(epub_reader.handle(int(card_id), int(section_index), message))
 
 
+def coverage_summary(card_id: int) -> str:
+    """Viewed and marked read for a PDF or EPUB, with desktop's label (``{}`` for any other card)."""
+    from ankrimento import coverage
+
+    return _dumps(coverage.summary(int(card_id)))
+
+
+def coverage_mark(card_id: int, mode: str, position: int, start: int, end: int) -> str:
+    """Mark a page range or passage read ("mark") or unread ("unmark"); returns the new figures."""
+    from ankrimento import coverage
+
+    return _dumps(coverage.mark(int(card_id), str(mode), int(position), int(start), int(end)))
+
+
 def epub_reading(card_id: int) -> str:
     """Reading settings desktop keeps per book (text scale, appearance) and the chapter titles."""
     from ankrimento import epub_reader

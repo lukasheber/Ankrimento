@@ -336,6 +336,11 @@
     <string name="ankrimento_library_sort_priority">优先级</string>
     <string name="ankrimento_library_sort_title">标题</string>
     <string name="ankrimento_library_sort_recent">最近阅读</string>
+    <string name="ankrimento_library_sort_added">最新添加</string>
+    <string name="ankrimento_mark_page_read">标记此页已读</string>
+    <string name="ankrimento_unmark_page">取消标记此页</string>
+    <string name="ankrimento_mark_chapter_read">标记本章已读</string>
+    <string name="ankrimento_unmark_chapter">取消标记本章</string>
     <!-- Search ALL -->
     <string name="ankrimento_search_all">搜索全部</string>
     <string name="ankrimento_search_all_hint">搜索高亮、文档和卡片</string>

@@ -207,6 +207,7 @@ class IncrementoHubActivity : ComponentActivity() {
         val ordered =
             when (sort) {
                 SORT_TITLE -> alphabetical
+                SORT_ADDED -> alphabetical.sortedByDescending { it.noteId }
                 SORT_RECENT -> {
                     val rank = recentOrder.withIndex().associate { (index, id) -> id to index }
                     alphabetical.sortedBy { rank[it.cardId] ?: Int.MAX_VALUE }
@@ -374,6 +375,7 @@ class IncrementoHubActivity : ComponentActivity() {
                     SORT_PRIORITY to R.string.ankrimento_library_sort_priority,
                     SORT_TITLE to R.string.ankrimento_library_sort_title,
                     SORT_RECENT to R.string.ankrimento_library_sort_recent,
+                    SORT_ADDED to R.string.ankrimento_library_sort_added,
                 )) {
                     FilterChip(selected = sort == value, onClick = { sort = value }, label = { Text(stringResource(label)) })
                 }
@@ -552,6 +554,7 @@ class IncrementoHubActivity : ComponentActivity() {
         private const val SORT_PRIORITY = "priority"
         private const val SORT_TITLE = "title"
         private const val SORT_RECENT = "recent"
+        private const val SORT_ADDED = "added"
         private const val ROW_COVER_WIDTH = 40
         private const val RECENT_COVER_WIDTH = 64
 

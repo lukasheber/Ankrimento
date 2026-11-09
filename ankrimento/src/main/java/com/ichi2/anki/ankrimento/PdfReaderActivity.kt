@@ -40,6 +40,7 @@ import com.ichi2.anki.ankrimento.ui.PageLimitDialog
 import com.ichi2.anki.ankrimento.ui.PageLinksSheet
 import com.ichi2.anki.ankrimento.ui.PdfViewSheet
 import com.ichi2.anki.ankrimento.ui.ReaderPager
+import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.SnapshotLayer
 import com.ichi2.anki.common.destinations.BrowserDestination
@@ -79,6 +80,7 @@ class PdfReaderActivity : ReaderActivity() {
     private lateinit var webView: ReaderWebView
     private var viewerControlsShown = false
     private var page = 0
+    private var coverage: Ankrimento.Coverage? = null
 
     override val reviewKind = "pdf"
 
@@ -150,6 +152,9 @@ class PdfReaderActivity : ReaderActivity() {
                 script
                     .onSuccess { if (it.isNotEmpty() && !isDestroyed) webView.evaluateJavascript(it, null) }
                     .onFailure { Timber.w(it, "PDF viewer message failed: %s", message.substringBefore(':')) }
+                if (message.startsWith(COVERAGE_PREFIX) && script.isSuccess && !isDestroyed) {
+                    runCatching { withCol { Ankrimento.coverage(cardId) } }.getOrNull()?.let { runOnUiThread { showCoverage(it) } }
+                }
             }
         }
     }
@@ -182,6 +187,8 @@ class PdfReaderActivity : ReaderActivity() {
             listOf(
                 ReaderTool(getString(R.string.ankrimento_marks), IncrementoIcons.Bookmark, onClick = ::showMarks),
                 ReaderTool(getString(R.string.ankrimento_page_links), IncrementoIcons.Link, onClick = ::showPageLinks),
+                ReaderTool(getString(R.string.ankrimento_mark_page_read)) { markPage(read = true) },
+                ReaderTool(getString(R.string.ankrimento_unmark_page)) { markPage(read = false) },
                 ReaderTool(getString(R.string.ankrimento_pdf_mark_read)) {
                     webView.evaluateJavascript("window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();", null)
                     toast(getString(R.string.ankrimento_marked_read))
@@ -528,6 +535,29 @@ class PdfReaderActivity : ReaderActivity() {
         pages = total
         if (!choosingDestination) FocusTimer.pdfPageRead(cardId, current)
         pager = if (current > 0 && total > 0) ReaderPager(current, total, ::goToPage) else null
+    }
+
+    /** Desktop's figures, "Viewed 40% · Marked read 10%", in a strip under the page. */
+    private fun showCoverage(figures: Ankrimento.Coverage) {
+        coverage = figures
+        progress = ReaderProgress(if (pages > 0) page.toFloat() / pages else 0f, figures.label)
+    }
+
+    /** Marks the page in view read, or takes the mark off: desktop's "Mark this page read" and "Unmark this page". */
+    private fun markPage(read: Boolean) {
+        val shown = page
+        if (shown < 1) return
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.markCoverage(cardId, read, 0, shown - 1, shown) } }
+                .onSuccess { figures ->
+                    figures?.let {
+                        runOnUiThread {
+                            showCoverage(it)
+                            toast(it.label)
+                        }
+                    }
+                }.onFailure { Timber.w(it, "Marking the page failed") }
+        }
     }
 
     /** Turns pages as upstream's arrows do, so its daily page limit still applies. */
@@ -945,6 +975,7 @@ class PdfReaderActivity : ReaderActivity() {
 
         /** The viewer's request to show its outline, as desktop's contents popup gets it. */
         private const val CONTENTS_PREFIX = "incremento_pdf_contents:"
+        private const val COVERAGE_PREFIX = "incremento_reader_coverage:"
 
         /** The viewer's note button on a highlight: the phone's highlight dialog answers it. */
         private const val HIGHLIGHT_NOTE_PREFIX = "incremento_pdf_hl_note:"

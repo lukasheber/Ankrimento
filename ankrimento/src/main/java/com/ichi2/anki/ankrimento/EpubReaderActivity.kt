@@ -76,6 +76,7 @@ class EpubReaderActivity : ReaderActivity() {
             override fun handleOnBackPressed() = returnFromLink()
         }
     private var reading: Ankrimento.EpubReading? = null
+    private var coverage: Ankrimento.Coverage? = null
     private lateinit var preferences: ReadingPreferences
 
     /** Page-script messages, applied one at a time in the order sent. */
@@ -122,6 +123,8 @@ class EpubReaderActivity : ReaderActivity() {
                         if (placed == "true") toast(getString(R.string.ankrimento_marked_read))
                     }
                 },
+                ReaderTool(getString(R.string.ankrimento_mark_chapter_read)) { markChapter(read = true) },
+                ReaderTool(getString(R.string.ankrimento_unmark_chapter)) { markChapter(read = false) },
                 ReaderTool(getString(R.string.ankrimento_epub_previous)) { turnChapter(-1) },
                 ReaderTool(getString(R.string.ankrimento_epub_next)) { turnChapter(1) },
                 ReaderTool(getString(R.string.ankrimento_extract_selection)) { runScript(EXTRACT_JS) },
@@ -182,6 +185,7 @@ class EpubReaderActivity : ReaderActivity() {
             is Ankrimento.EpubAction.Navigate -> load(action.section, action.scrollRatio)
             is Ankrimento.EpubAction.OpenWeb -> runOnUiThread { openUrl(action.url) }
             is Ankrimento.EpubAction.Blocked -> runOnUiThread { toast(action.message) }
+            is Ankrimento.EpubAction.Viewed -> runOnUiThread { showCoverage(action.coverage) }
             is Ankrimento.EpubAction.FollowLink ->
                 runOnUiThread {
                     if (action.note.isEmpty()) {
@@ -270,7 +274,34 @@ class EpubReaderActivity : ReaderActivity() {
         chapterRatio: Double,
     ) {
         val fraction = (current.index + chapterRatio.coerceIn(0.0, 1.0)) / current.count.coerceAtLeast(1)
-        progress = ReaderProgress(fraction.toFloat(), getString(R.string.ankrimento_epub_chapter, current.index + 1, current.count))
+        progress =
+            ReaderProgress(
+                fraction.toFloat(),
+                getString(R.string.ankrimento_epub_chapter, current.index + 1, current.count),
+                coverage?.label,
+            )
+    }
+
+    /** Desktop's figures under the progress bar: what was viewed, and what was marked read. */
+    private fun showCoverage(figures: Ankrimento.Coverage) {
+        coverage = figures
+        progress?.let { progress = ReaderProgress(it.fraction, it.label, figures.label) }
+    }
+
+    /** Marks the open chapter read, or takes the mark off, as desktop's "Mark this section read". */
+    private fun markChapter(read: Boolean) {
+        val shown = section?.index ?: return
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.markCoverage(cardId, read, shown, 0, 0) } }
+                .onSuccess { figures ->
+                    figures?.let {
+                        runOnUiThread {
+                            showCoverage(it)
+                            toast(it.label)
+                        }
+                    }
+                }.onFailure { Timber.w(it, "Marking the chapter failed") }
+        }
     }
 
     /** Desktop's snapshot: a box dragged over the chapter becomes a new card's image. */
@@ -502,6 +533,7 @@ class EpubReaderActivity : ReaderActivity() {
         subtitle = reading?.contents?.getOrNull(opened.index)?.takeIf { it.isNotBlank() }
             ?: getString(R.string.ankrimento_epub_chapter, opened.index + 1, opened.count)
         showProgress(opened, scrollRatio ?: 0.0)
+        runCatching { withCol { Ankrimento.coverage(cardId) } }.getOrNull()?.let { runOnUiThread { showCoverage(it) } }
         pendingScrollRatio = scrollRatio
         // Canonical: Incremento may resolve /data/user/0 to /data/data, or not.
         val root = File(opened.root).canonicalFile

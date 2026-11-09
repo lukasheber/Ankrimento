@@ -27,6 +27,18 @@ def test_library_lists_documents_with_kind_title_priority_and_position(rt):
     assert {entry["kind"] for entry in entries.values()} <= {"pdf", "epub", "web", "video", "writing"}
 
 
+def test_an_entry_carries_its_note_id_so_the_library_can_sort_by_last_added(rt):
+    # Desktop's bookshelf sorts "Last added" by note id: Anki note ids encode the creation time,
+    # so the order holds even when a document's cards are regenerated.
+    first = json.loads(facade.import_link("https://example.org/added-first", "Added first"))["card_id"]
+    second = json.loads(facade.import_link("https://example.org/added-second", "Added second"))["card_id"]
+
+    entries = {entry["card_id"]: entry for entry in json.loads(facade.library())}
+
+    assert entries[first]["note_id"] == rt.col.get_card(first).nid
+    assert entries[second]["note_id"] > entries[first]["note_id"]
+
+
 def test_a_document_with_a_cover_image_gives_its_file(rt, tmp_path):
     from test_pdf import _MINIMAL_PDF
 
