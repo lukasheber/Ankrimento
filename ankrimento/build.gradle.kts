@@ -108,6 +108,7 @@ val incrementoAddonSource =
                 "config.json",
                 "manifest.json",
                 "frontend/epub_dock.py",
+                "frontend/epub_passages.py",
                 "frontend/reader_links.py",
                 "frontend/search_all_results.py",
                 "frontend/stats_dashboard.py",
@@ -176,6 +177,8 @@ chaquopy {
             install("typing-extensions")
             // Used by Incremento's backend.
             install("beautifulsoup4")
+            // Backs the QPdfDocument stand-in (page count, password check), which replaces PyMuPDF and Qt.
+            install("pypdf")
         }
         // Keep .py files so tracebacks from upstream code show source lines.
         pyc {

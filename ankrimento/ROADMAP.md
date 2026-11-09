@@ -144,9 +144,25 @@ Mobile principles that guide every item:
 | Status | Feature | Mobile notes |
 |---|---|---|
 | ✅ | Writing card editor with autosave and word count (upstream backups) | |
-| ✅ | Markdown preview / formatting toolbar | Desktop's formatting buttons (heading, bold, italic, lists, quote, code block, rule) in a row above the keyboard, with desktop's labels and its own rewriting of the selection; Preview shows desktop's rendering of the text. Checked on the tablet. Not here: desktop's font size, wrap, focus mode, marker, bookmarks and backups buttons |
+| ✅ | Markdown preview / formatting toolbar | Desktop's formatting buttons (headings 1 to 3, bold, italic, strikethrough, lists, quote, inline code, code block, rule, table) in a row above the keyboard, with desktop's labels and its own rewriting of the selection; Preview shows desktop's rendering of the text. Checked on the tablet. Not here: desktop's font size, wrap, focus mode, marker, bookmarks and backups buttons |
 | ✅ | Markdown documents (import, read as EPUB-like) [5] | Add → Markdown document: desktop's Markdown import makes a study document read in the EPUB reader (its headings become chapters). Checked on the tablet. Android's file picker hands over the file alone, so its pictures in nearby files are left as their alt text, as desktop's import does with any image it can't read |
 | ⬜ | Local file cards [8] | Open with another app |
+| ➖ | Writing tabs beside the readers (up to 32 drafts), compact toolbar with links and images, export of a draft [2026.11.03] | Desktop's workspace: a tabbed pane beside the reader. The phone edits one topic at a time, and a second pane does not fit a phone screen |
+| ✅ | Excerpt markers in writing | Desktop's "Send to Writing" leaves hidden markers in the text; the phone keeps them, does not count them as words, and writes them back as they were |
+| ⬜ | Send selected text to Writing with a link back to its source [2026.11.04] | The extract sheet could offer "Send to Writing" next to Add card: the backend (`writing_links.py`) does the linking; the phone needs the choice of draft and the way back from the draft to the passage |
+
+### Reading progress and links between documents [2026.11.03, 2026.11.04]
+
+| Status | Feature | Mobile notes |
+|---|---|---|
+| ⬜ | **Viewed and Marked read figures**: reading that is not in order is counted by passage, not only by the furthest page [2026.11.04] | Best fit for a phone: it is passive and reading in short sessions jumps about. Upstream's `backend/reader_coverage.py` and the tables from migration 26 are in place and the data syncs; the EPUB page script that records it is switched off on the phone (`track_coverage=False` in `epub_reader.py`) until a screen exists. Next: turn it on, record the viewed pages of the PDF reader, show Viewed against Marked read in the reader's progress strip and in the Library (a thin second bar), mark a range read from the contents sheet. Priority: high |
+| ⬜ | Last added sort in the Library [2026.11.03] | Trivial and useful: the Library sorts by priority, title and recently read; desktop adds newest or oldest added (by note id, which encodes creation time, so it survives regenerated cards). Needs the note id in the Library entries, one chip and four strings. Priority: high, small |
+| ⬜ | Parent context while reviewing: a read-only view of the card's original parent [2026.11.03] | Fits the learning loop: after an extract, see where it came from without leaving the card. A sheet from the card menu, opened by the Parent icon; the backend finds the parent from the extraction origin or the knowledge tree. Priority: medium |
+| ⬜ | Offline snapshots of web pages (website appearance or editable reading copy) [2026.11.04] | The phone's web import already makes a reading copy in Markdown; the website-appearance snapshot needs a page saved with its styles, wanted for reading on a train. Android's share sheet is the entry. Priority: medium, larger |
+| 🟡 | Passage links between PDF and EPUB, with Jump Back [2026.11.04] | The links are stored in the shared database, and the old page and section links work. The new passage status, the reveal of the matching passage and Jump Back are `GAP:` messages in the parity check. Needs the same screen work as coverage. Priority: low |
+| ➖ | Workspace tabs (grouped readers, references, searches), hover previews of PDF links and footnotes, side-by-side panes | A windowed workflow. The phone opens the other reader (links and footnotes already show in a sheet) |
+| ➖ | MCP server for AI tools | Runs a local server on a desktop; not for a phone |
+| ✅ | PDF checks before import (password-protected, damaged, no text layer) [2026.11.04] | Through `pypdf` instead of desktop's PyMuPDF, and a `QPdfDocument` stand-in. Limits: a PDF with owner-only AES encryption is refused because the phone has no crypto library (desktop opens it), and a PDF with a damaged cross-reference table is accepted when its page objects can be found |
 
 ## 4. Extraction and cards [11]
 
@@ -270,6 +286,11 @@ Upkeep and rarely used:
 37. ~~Batch Q/A cards, PDF snapshot previews~~ (done).
 38. ~~DjVu documents~~ (not built: no ready library on the phone; desktop's import makes them PDFs).
 39. PDF reflow: not built. pdf.js offers no reflowed layout whose selections map back exactly to the PDF's text positions, so extracts and highlights made in it could not land in place on desktop.
+
+From desktop v2026.11.04 + 23 (evaluated in "Reading progress and links between documents"):
+
+40. Reading coverage (Viewed against Marked read) in the readers and the Library; Last added sort in the Library.
+41. Parent context in the learning screen; send selected text to Writing; offline website snapshots.
 
 To check rather than build: the leech notice (it reuses AnkiDroid's own check; reaching it needs a card's seventh lapse) and the
 automatic backup folder picker on a device (the empty-session dialog was checked); native review of each translation;

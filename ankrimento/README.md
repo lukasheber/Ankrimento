@@ -141,7 +141,7 @@ that plays AnkiDroid's role (`python-tests/conftest.py`):
 ```bash
 cd ankrimento
 py -3.13 -m venv .venv
-.venv/Scripts/python -m pip install "anki==26.9.3" pytest beautifulsoup4
+.venv/Scripts/python -m pip install "anki==26.9.3" pytest beautifulsoup4 pypdf
 .venv/Scripts/python -m pytest
 ```
 
@@ -162,9 +162,7 @@ adb logcat -s AnkrimentoSmoke python.stderr
 
 ## Bumping upstream
 
-- **Incremento:** `git -C vendor/incremento fetch && git -C vendor/incremento checkout <commit>`,
-  rerun the desktop tests, then review the "desktop wiring" table against the
-  new `__init__.py`.
+- **Incremento:** follow `UPSTREAM.md` (submodule move, update report, parity check, tests, device check, roadmap).
 - **AnkiDroid backend:** when the build stops with the version-mismatch error,
   set `ankiPythonVersion`, `ankiWheelUrl` and `ankiWheelSha256` in
   `build.gradle.kts` to the matching PyPI `anki` wheel, update the venv, and

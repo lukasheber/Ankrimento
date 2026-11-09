@@ -67,6 +67,9 @@ def page_script_builder() -> Any:
     path = runtime.current().addon_dir / "frontend" / "epub_dock.py"
     tree = ast.parse(path.read_text(encoding="utf8"), filename=str(path))
     namespace: dict[str, Any] = {
+        # The builder imports frontend/epub_passages.py relative to its own package, as it does in the add-on.
+        "__name__": f"{_ADDON_PKG}.frontend.epub_dock",
+        "__package__": f"{_ADDON_PKG}.frontend",
         "json": json,
         "t": t,
         "get_locale": get_locale,
@@ -195,6 +198,8 @@ def section_script(
         default_highlight_color=default_color,
         sections=metadata.get("sections") or [],
         appearance=get_appearance(addon_dir, profile, card_id),
+        # Reading coverage (viewed / marked read) is desktop's for now: the script would post messages nothing answers.
+        track_coverage=False,
     )
 
 

@@ -29,6 +29,7 @@ def test_addon_has_the_desktop_layout(rt):
     shipped = sorted(p.name for p in (rt.addon_dir / "frontend").iterdir() if p.name != "__pycache__")
     assert shipped == [
         "epub_dock.py",
+        "epub_passages.py",
         "reader_links.py",
         "search_all_results.py",
         "stats_dashboard.py",

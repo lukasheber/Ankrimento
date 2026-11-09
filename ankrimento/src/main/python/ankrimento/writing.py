@@ -35,7 +35,10 @@ def _config() -> dict[str, Any]:
 
 
 def count_words(text: str, mode: str) -> int:
-    """Mirrors ``_count_words``."""
+    """Mirrors ``_count_words``: the hidden excerpt markers desktop's "Send to Writing" leaves are not words."""
+    from incremento.backend.writing_links import strip_markers
+
+    text = strip_markers(str(text or ""))
     if mode == "word_like":
         return len(_WORD_LIKE_TOKEN_RE.findall(text or ""))
     return len([token for token in (text or "").split() if token.strip()])
@@ -108,14 +111,19 @@ _text_helpers: dict[str, Any] | None = None
 
 # The toolbar's formatting buttons in desktop's order: kind, label (a message id or the text itself), tooltip.
 _TOOLBAR = (
-    ("h1", "H1", "writing_insert_heading"),
+    ("h1", "H1", "writing_heading_one"),
+    ("h2", "H2", "writing_heading_two"),
+    ("h3", "H3", "writing_heading_three"),
     ("bold", "B", "writing_bold"),
     ("italic", "I", "writing_italic"),
+    ("strike", "S", "writing_strike"),
     ("bullet", "•", "writing_bullet_list"),
     ("number", "1.", "writing_numbered_list"),
     ("quote", "writing_quote", "writing_block_quote"),
+    ("inline_code", "`", "writing_inline_code"),
     ("code", "</>", "writing_code_block"),
     ("rule", "HR", "writing_horizontal_rule"),
+    ("table", "writing_table", "writing_table"),
 )
 
 
@@ -151,12 +159,24 @@ def transform(kind: str, selected: str) -> str:
 
     helpers = _helpers()
     selected = helpers["_normalize_selection_text"](selected)
-    if kind == "h1":
-        return helpers["_prefix_lines_text"](selected, "# ", t("writing_placeholder_heading"))
+    # Desktop applies a heading or paragraph style to whole blocks, even when only a word is selected; the editor
+    # passes the lines it wants restyled, so the text here is already whole lines.
+    if kind in ("h1", "h2", "h3", "paragraph"):
+        body = re.sub(r"(?m)^ {0,3}#{1,6} +", "", selected)
+        if kind == "paragraph":
+            return body
+        return helpers["_prefix_lines_text"](body, "#" * int(kind[1]) + " ", t("writing_placeholder_heading"))
     if kind == "bold":
         return helpers["_wrap_selection_text"](selected, "**", "**", t("writing_placeholder_bold"))
     if kind == "italic":
         return helpers["_wrap_selection_text"](selected, "*", "*", t("writing_placeholder_italic"))
+    if kind == "strike":
+        return helpers["_wrap_selection_text"](selected, "~~", "~~", t("writing_placeholder_text"))
+    if kind == "inline_code":
+        body = selected or t("writing_placeholder_code")
+        fence = "`" * (max((len(run) for run in re.findall(r"`+", body)), default=0) + 1)
+        body = f" {body} " if body.startswith("`") or body.endswith("`") else body
+        return f"{fence}{body}{fence}"
     if kind == "bullet":
         return helpers["_prefix_lines_text"](selected, "- ", t("writing_placeholder_list_item"))
     if kind == "number":
@@ -168,9 +188,13 @@ def transform(kind: str, selected: str) -> str:
         return helpers["_prefix_lines_text"](selected, "> ", t("writing_placeholder_quote"))
     if kind == "code":
         body = selected.strip("\n") or t("writing_placeholder_code")
-        return f"```\n{body}\n```"
+        fence = "`" * max(3, max((len(run) for run in re.findall(r"`+", body)), default=0) + 1)
+        return f"\n\n{fence}\n{body}\n{fence}\n\n"
     if kind == "rule":
         return "\n\n---\n\n"
+    if kind == "table":
+        heading, cell = t("writing_placeholder_heading"), t("writing_placeholder_text")
+        return f"\n\n| {heading} | {heading} |\n| --- | --- |\n| {cell} | {cell} |\n\n"
     raise ValueError(f"unknown formatting: {kind!r}")
 
 
