@@ -4,11 +4,14 @@ package com.ichi2.anki.ankrimento
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.text.style.ReplacementSpan
 import android.view.Gravity
 import android.view.View
 import android.webkit.WebView
@@ -33,6 +36,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
+import com.ichi2.anki.ankrimento.ui.ExcerptListSheet
+import com.ichi2.anki.ankrimento.ui.ExcerptRow
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import kotlinx.coroutines.Job
@@ -81,7 +86,9 @@ class WritingActivity : ReaderActivity() {
             savedText = text
             buttons = toolbar
             editor.setText(savedText)
+            markExcerpts(editor.text)
             editor.setSelection(savedText.length)
+            openAtExcerpt(intent.getStringExtra(EXTRA_ANCHOR))
             loaded = true
             showToolbar()
             editor.addTextChangedListener(
@@ -100,7 +107,10 @@ class WritingActivity : ReaderActivity() {
                         count: Int,
                     ) = Unit
 
-                    override fun afterTextChanged(s: Editable?) = scheduleSave()
+                    override fun afterTextChanged(s: Editable?) {
+                        s?.let(::markExcerpts)
+                        scheduleSave()
+                    }
                 },
             )
         }
@@ -113,7 +123,63 @@ class WritingActivity : ReaderActivity() {
                     getString(if (previewing) R.string.ankrimento_writing_edit else R.string.ankrimento_writing_preview),
                     IncrementoIcons.TextFormat,
                 ) { setPreviewing(!previewing) },
+                ReaderTool(getString(R.string.ankrimento_writing_sources), onClick = ::showSources),
             )
+    }
+
+    /**
+     * Desktop hides the markers it writes around a quoted passage (they keep the link to its source through edits) and
+     * marks the passage in the margin. Here each marker is a small quotation mark in the text: the markers stay in the
+     * Markdown, nothing else of them shows.
+     */
+    private fun markExcerpts(text: Editable) {
+        text.getSpans(0, text.length, ExcerptMarkerSpan::class.java).forEach(text::removeSpan)
+        if (!text.contains("incremento-excerpt")) return
+        val color = editor.currentTextColor and 0x00FFFFFF or 0x99000000.toInt()
+        for (match in EXCERPT_MARKER.findAll(text)) {
+            text.setSpan(
+                ExcerptMarkerSpan(match.groupValues[1].isNotEmpty(), color),
+                match.range.first,
+                match.range.last + 1,
+                Editable.SPAN_EXCLUSIVE_EXCLUSIVE,
+            )
+        }
+    }
+
+    /** Opens with the quoted passage whose marker is [anchor] in view, as desktop's jump from the source does. */
+    private fun openAtExcerpt(anchor: String?) {
+        if (anchor == null) return
+        val text = editor.text
+        val at = text.indexOf("<!-- incremento-excerpt-start:$anchor -->")
+        if (at < 0) {
+            toast(getString(R.string.ankrimento_writing_excerpt_missing))
+            return
+        }
+        val position = (text.indexOf('\n', at) + 1).coerceIn(0, text.length)
+        editor.setSelection(position)
+        editor.post { editor.bringPointIntoView(position) }
+    }
+
+    /** The passages quoted in this draft; one opens its source at the place it came from. */
+    private fun showSources() {
+        lifecycleScope.launch {
+            val excerpts = runCatching { withCol { Ankrimento.writingExcerpts(cardId) } }.getOrDefault(emptyList())
+            sheet = {
+                ExcerptListSheet(
+                    title = getString(R.string.ankrimento_writing_sources),
+                    rows =
+                        excerpts.map { excerpt ->
+                            ExcerptRow(excerpt.quote, "${excerpt.sourceTitle} · ${excerpt.label}") {
+                                val place = if (excerpt.kind == "pdf") excerpt.page else excerpt.section
+                                ReaderActivity
+                                    .intentAt(this@WritingActivity, excerpt.kind, excerpt.cardId, place, excerpt.quote.take(MAX_FIND))
+                                    ?.let(::startActivity)
+                            }
+                        },
+                    onDismiss = { sheet = null },
+                )
+            }
+        }
     }
 
     /** Desktop's formatting buttons in a row above the keyboard, each named for screen readers by its tooltip. */
@@ -222,8 +288,49 @@ class WritingActivity : ReaderActivity() {
         super.onDestroy()
     }
 
+    /** An excerpt marker drawn as an opening or closing quotation mark, without changing the text under it. */
+    private class ExcerptMarkerSpan(
+        private val opening: Boolean,
+        private val color: Int,
+    ) : ReplacementSpan() {
+        override fun getSize(
+            paint: Paint,
+            text: CharSequence?,
+            start: Int,
+            end: Int,
+            fm: Paint.FontMetricsInt?,
+        ): Int = paint.measureText(MARK_OPEN).toInt()
+
+        override fun draw(
+            canvas: Canvas,
+            text: CharSequence?,
+            start: Int,
+            end: Int,
+            x: Float,
+            top: Int,
+            y: Int,
+            bottom: Int,
+            paint: Paint,
+        ) {
+            val saved = paint.color
+            paint.color = color
+            canvas.drawText(if (opening) MARK_OPEN else MARK_CLOSE, x, y.toFloat(), paint)
+            paint.color = saved
+        }
+    }
+
     companion object {
         private const val AUTOSAVE_DELAY_MS = 2_000L
+
+        /** The anchor of a quoted passage to open at (desktop's jump from the source into the writing). */
+        const val EXTRA_ANCHOR = "anchor"
+
+        private const val MAX_FIND = 80
+        private const val MARK_OPEN = "“"
+        private const val MARK_CLOSE = "”"
+
+        /** The hidden markers desktop writes around a quoted passage (the group is "-start" on the opening one). */
+        private val EXCERPT_MARKER = Regex("<!-- incremento-excerpt(-start)?:[a-f0-9]{32} -->")
 
         /** Material 3's on-surface text colours, dark and light. */
         private const val DARK_TEXT = 0xFFE6E1E5.toInt()
@@ -237,6 +344,7 @@ class WritingActivity : ReaderActivity() {
         fun intent(
             context: Context,
             cardId: Long,
-        ): Intent = ReaderActivity.intent(context, "writing", cardId, session = false)!!
+            anchor: String? = null,
+        ): Intent = ReaderActivity.intent(context, "writing", cardId, session = false)!!.putExtra(EXTRA_ANCHOR, anchor)
     }
 }

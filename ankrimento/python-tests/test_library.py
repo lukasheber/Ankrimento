@@ -70,3 +70,43 @@ def test_reading_positions_come_as_numbers_for_the_app_to_word(rt, tmp_path):
 
     entry = next(entry for entry in json.loads(facade.library()) if entry["card_id"] == book)
     assert (entry["chapter"], entry["page"]) == (2, 0)
+
+
+def test_a_pdf_or_epub_entry_gives_its_viewed_and_marked_read_percent(rt, tmp_path):
+    from pypdf import PdfWriter
+
+    source = tmp_path / "Library coverage.pdf"
+    writer = PdfWriter()
+    for _ in range(4):
+        writer.add_blank_page(200, 200)
+    with open(source, "wb") as handle:
+        writer.write(handle)
+    card_id = facade.import_pdf(str(source), "Library coverage", priority=50.0)
+    facade.pdf_message(card_id, "incremento_reader_coverage:" + json.dumps(
+        {"cardId": card_id, "position": 0, "start": 0, "end": 2, "totalPages": 4}))
+    facade.coverage_mark(card_id, "mark", 0, 0, 1)
+    video = json.loads(facade.import_link("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "Not coverable"))["card_id"]
+
+    entries = {entry["card_id"]: entry for entry in json.loads(facade.library())}
+
+    assert entries[card_id]["viewed_percent"] == 50.0
+    assert entries[card_id]["marked_percent"] == 25.0
+    assert entries[card_id]["coverage_label"] == "Viewed 50% · Marked read 25%"  # desktop's wording
+    # Other kinds have no figures, and the app shows no bar for them.
+    assert entries[video]["viewed_percent"] is None
+    assert entries[video]["marked_percent"] is None
+
+
+def test_a_document_never_opened_shows_no_progress_yet(rt, tmp_path):
+    from pypdf import PdfWriter
+
+    source = tmp_path / "Never opened.pdf"
+    writer = PdfWriter()
+    writer.add_blank_page(200, 200)
+    with open(source, "wb") as handle:
+        writer.write(handle)
+    card_id = facade.import_pdf(str(source), "Never opened", priority=50.0)
+
+    entry = next(e for e in json.loads(facade.library()) if e["card_id"] == card_id)
+
+    assert entry["viewed_percent"] == 0.0 and entry["marked_percent"] == 0.0

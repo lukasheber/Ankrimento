@@ -41,8 +41,18 @@ class ShareToIncrementoActivity : ComponentActivity() {
         AlertDialog
             .Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert)
             .setTitle(R.string.ankrimento_share_label)
-            .setItems(arrayOf(getString(R.string.ankrimento_add_article), getString(R.string.ankrimento_add_live_page))) { _, which ->
-                if (which == 0) add { Ankrimento.importWebDocument(url).first } else add { Ankrimento.importLink(url, title) }
+            .setItems(
+                arrayOf(
+                    getString(R.string.ankrimento_add_article),
+                    getString(R.string.ankrimento_add_saved_website),
+                    getString(R.string.ankrimento_add_live_page),
+                ),
+            ) { _, which ->
+                when (which) {
+                    0 -> add { Ankrimento.importWebDocument(url).first }
+                    1 -> add { Ankrimento.importWebSnapshot(url, website = true).first }
+                    else -> add { Ankrimento.importLink(url, title) }
+                }
             }.setOnCancelListener { finish() }
             .show()
     }

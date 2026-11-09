@@ -676,6 +676,49 @@ def import_web_document(url: str, deck_name: str = "Topics", priority: float = 5
     return _dumps({"card_id": int(card_id), "title": title})
 
 
+def import_web_snapshot(
+    url: str, fmt: str, deck_name: str = "Topics", priority: float = 50.0, html: str = "", title: str = ""
+) -> str:
+    """Save a web page for offline reading, as desktop's "Webpage as a document" does (``backend/webpage_document.py``).
+
+    ``fmt`` "html" keeps the site's own appearance in a self-contained snapshot, "markdown" makes an editable reading
+    copy; both are EPUB study documents (read, highlighted and extracted like a book, on desktop too). ``html`` is the
+    page's source when the caller already has it; otherwise it is fetched through upstream's public-network guard.
+    """
+    from incremento.backend import epub_manager
+    from incremento.backend.note_metadata import build_incremento_metadata
+    from incremento.backend.priority_manager import set_priority
+    from incremento.backend.webpage_document import prepare_webpage_document
+
+    if fmt not in ("html", "markdown"):
+        raise ValueError("fmt must be html or markdown")
+    rt = runtime.current()
+    prepared = prepare_webpage_document(str(url), html=str(html or ""), title=str(title or ""), capture_format=fmt)
+    try:
+        source_type = "HTML" if fmt == "html" else "Markdown"
+        card_id = epub_manager.add_epub_card(
+            str(rt.addon_dir),
+            rt.col,
+            prepared.path,
+            prepared.title,
+            deck_name=deck_name,
+            profile=rt.profile,
+            source_type=source_type,
+            source_metadata=build_incremento_metadata(
+                source_type=source_type,
+                source_title=prepared.title,
+                source_link=prepared.capture["url"],
+                imported_at=prepared.capture["captured_at"],
+            ),
+        )
+        omitted = int(prepared.capture.get("omitted_images", 0))
+        title_saved = prepared.title
+    finally:
+        prepared.close()
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return _dumps({"card_id": int(card_id), "title": title_saved, "format": fmt, "omitted_images": omitted})
+
+
 def import_link(url: str, title: str = "", priority: float = 50.0) -> str:
     """Add a shared link: a video link as a video topic, anything else as a web topic."""
     from incremento.backend.priority_manager import set_priority
@@ -802,6 +845,27 @@ def writing_save(card_id: int, text: str) -> int:
     from ankrimento import writing
 
     return writing.save_text(int(card_id), text)
+
+
+def send_to_writing(source_json: str, writing_card_id: int) -> str:
+    """Quote a passage of a PDF or EPUB into a writing topic, linked back to its place; returns ``{"anchor", "title"}``."""
+    from ankrimento import writing
+
+    return _dumps(writing.send_excerpt(json.loads(source_json), int(writing_card_id)))
+
+
+def writing_excerpts(writing_card_id: int) -> str:
+    """The passages quoted in a writing topic that are still in its text."""
+    from ankrimento import writing
+
+    return _dumps(writing.excerpts(int(writing_card_id)))
+
+
+def source_excerpts(card_id: int, kind: str, position: int) -> str:
+    """The writing topics quoting a page (PDF) or chapter (EPUB) of a document."""
+    from ankrimento import writing
+
+    return _dumps(writing.source_excerpts(str(kind), int(card_id), int(position)))
 
 
 def create_writing(title: str) -> int:
@@ -954,6 +1018,13 @@ def epub_message(card_id: int, section_index: int, message: str) -> str:
     from ankrimento import epub_reader
 
     return _dumps(epub_reader.handle(int(card_id), int(section_index), message))
+
+
+def parent_context(card_id: int) -> str:
+    """The card an extract came from, read-only: title and visible fields (``{}`` without a parent)."""
+    from ankrimento import parent_context
+
+    return _dumps(parent_context.load(int(card_id)))
 
 
 def coverage_summary(card_id: int) -> str:

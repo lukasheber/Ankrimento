@@ -38,10 +38,13 @@ import com.ichi2.anki.ankrimento.ui.LinkTargetSheet
 import com.ichi2.anki.ankrimento.ui.MarksSheet
 import com.ichi2.anki.ankrimento.ui.PageLimitDialog
 import com.ichi2.anki.ankrimento.ui.PageLinksSheet
+import com.ichi2.anki.ankrimento.ui.PageRange
 import com.ichi2.anki.ankrimento.ui.PdfViewSheet
 import com.ichi2.anki.ankrimento.ui.ReaderPager
 import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderTool
+import com.ichi2.anki.ankrimento.ui.ReadingMark
+import com.ichi2.anki.ankrimento.ui.ReadingMarksSheet
 import com.ichi2.anki.ankrimento.ui.SnapshotLayer
 import com.ichi2.anki.common.destinations.BrowserDestination
 import com.ichi2.anki.common.destinations.DeferredNavigation
@@ -115,6 +118,10 @@ class PdfReaderActivity : ReaderActivity() {
             listOf(
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS),
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_highlight), HIGHLIGHT_JS),
+                ReaderWebView.SelectionAction(
+                    getString(R.string.ankrimento_send_to_writing),
+                    SELECTED_TEXT_JS,
+                ) { sendSelectionToWriting(it) },
             )
         setReaderContent(webView)
         toggleBarsOnTap(webView)
@@ -187,8 +194,8 @@ class PdfReaderActivity : ReaderActivity() {
             listOf(
                 ReaderTool(getString(R.string.ankrimento_marks), IncrementoIcons.Bookmark, onClick = ::showMarks),
                 ReaderTool(getString(R.string.ankrimento_page_links), IncrementoIcons.Link, onClick = ::showPageLinks),
-                ReaderTool(getString(R.string.ankrimento_mark_page_read)) { markPage(read = true) },
-                ReaderTool(getString(R.string.ankrimento_unmark_page)) { markPage(read = false) },
+                ReaderTool(getString(R.string.ankrimento_writing_excerpts_here)) { showWritingExcerpts("pdf", page) },
+                ReaderTool(getString(R.string.ankrimento_reading_marks), onClick = ::showReadingMarks),
                 ReaderTool(getString(R.string.ankrimento_pdf_mark_read)) {
                     webView.evaluateJavascript("window.incrementoPdfMarkRead && window.incrementoPdfMarkRead();", null)
                     toast(getString(R.string.ankrimento_marked_read))
@@ -535,6 +542,20 @@ class PdfReaderActivity : ReaderActivity() {
         pages = total
         if (!choosingDestination) FocusTimer.pdfPageRead(cardId, current)
         pager = if (current > 0 && total > 0) ReaderPager(current, total, ::goToPage) else null
+        // The strip's position follows the page, whichever of the page and the figures arrived first.
+        coverage?.let { showCoverage(it) }
+    }
+
+    /** The selected text of this page, quoted into a writing topic with a link back to the page. */
+    private fun sendSelectionToWriting(result: String) {
+        val quote = if (result == "null") "" else runCatching { JSONArray("[$result]").getString(0) }.getOrDefault("")
+        sendToWriting(
+            JSONObject()
+                .put("kind", "pdf")
+                .put("card_id", cardId)
+                .put("page", page)
+                .put("quote", quote),
+        )
     }
 
     /** Desktop's figures, "Viewed 40% · Marked read 10%", in a strip under the page. */
@@ -543,12 +564,32 @@ class PdfReaderActivity : ReaderActivity() {
         progress = ReaderProgress(if (pages > 0) page.toFloat() / pages else 0f, figures.label)
     }
 
-    /** Marks the page in view read, or takes the mark off: desktop's "Mark this page read" and "Unmark this page". */
-    private fun markPage(read: Boolean) {
-        val shown = page
-        if (shown < 1) return
+    /** Desktop's "Mark this page read", "Unmark this page" and "Mark pages read" in one sheet, the range as from and to. */
+    private fun showReadingMarks() {
+        if (page < 1 || pages < 1) return
+        sheet = {
+            ReadingMarksSheet(
+                figures = coverage?.label,
+                marks =
+                    listOf(
+                        ReadingMark(getString(R.string.ankrimento_mark_page_read)) { markPages(true, page, page) },
+                        ReadingMark(getString(R.string.ankrimento_unmark_page)) { markPages(false, page, page) },
+                    ),
+                range = PageRange(page, pages) { from, to, read -> markPages(read, from, to) },
+                onDismiss = { sheet = null },
+            )
+        }
+    }
+
+    /** Marks pages [from] to [to] (1-based, inclusive) read, or takes the mark off. */
+    private fun markPages(
+        read: Boolean,
+        from: Int,
+        to: Int,
+    ) {
+        if (from < 1 || to < from) return
         lifecycleScope.launch {
-            runCatching { withCol { Ankrimento.markCoverage(cardId, read, 0, shown - 1, shown) } }
+            runCatching { withCol { Ankrimento.markCoverage(cardId, read, 0, from - 1, to) } }
                 .onSuccess { figures ->
                     figures?.let {
                         runOnUiThread {
@@ -556,7 +597,7 @@ class PdfReaderActivity : ReaderActivity() {
                             toast(it.label)
                         }
                     }
-                }.onFailure { Timber.w(it, "Marking the page failed") }
+                }.onFailure { Timber.w(it, "Marking the pages failed") }
         }
     }
 

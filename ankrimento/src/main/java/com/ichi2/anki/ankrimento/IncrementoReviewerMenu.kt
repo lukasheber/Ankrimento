@@ -46,6 +46,7 @@ class IncrementoReviewerMenu(
                 add(Menu.NONE, R.id.ankrimento_topic_revisit_12, Menu.NONE, R.string.ankrimento_topic_revisit_12)
             }
         }
+        menu.add(Menu.NONE, R.id.ankrimento_parent, Menu.CATEGORY_SECONDARY, R.string.ankrimento_parent)
         menu.add(Menu.NONE, R.id.ankrimento_priority, Menu.CATEGORY_SECONDARY, R.string.ankrimento_priority)
     }
 
@@ -58,6 +59,7 @@ class IncrementoReviewerMenu(
             R.id.ankrimento_topic_revisit_3 -> act { Ankrimento.topicRevisit(cardId, 3) }
             R.id.ankrimento_topic_revisit_6 -> act { Ankrimento.topicRevisit(cardId, 6) }
             R.id.ankrimento_topic_revisit_12 -> act { Ankrimento.topicRevisit(cardId, 12) }
+            R.id.ankrimento_parent -> ParentContextSheet.show(activity, cardId)
             R.id.ankrimento_priority -> editPriority(cardId)
             else -> return false
         }

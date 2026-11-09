@@ -76,6 +76,10 @@ def save_text(card_id: int, text: str) -> int:
         backups_enabled=bool(cfg.get("writing_backups_enabled", True)),
         backup_tiers=normalize_writing_backup_tiers(cfg.get("writing_backup_tiers")) or _DEFAULT_WRITING_BACKUP_TIERS,
     )
+    # Mirrors the dock's save: excerpt links follow the markers still in the saved text.
+    from incremento.backend.writing_links import sync_links
+
+    sync_links(addon_dir, profile, int(card_id), text)
     mode = str(cfg.get("writing_word_count_mode", "simple") or "").strip().lower()
     words = count_words(text, mode if mode in _WRITING_WORD_COUNT_MODES else "simple")
     # Mirrors _logical_today_text and the daily baseline: the first count of a
@@ -98,6 +102,96 @@ def create(title: str, deck_name: str = "Topics") -> int:
 
     rt = runtime.current()
     return int(add_writing_card(str(rt.addon_dir), rt.col, title, deck_name=deck_name))
+
+
+# ── Send to Writing: a passage quoted with a link back to its source ──────────────────────────────────────────────
+#
+# Desktop's ``frontend/writing_excerpt_ui.send_to_writing`` and ``writing_dock.insert_linked_excerpt`` (Qt): the link is
+# upstream's ``create_link``; the quote goes at the end of the text between two hidden markers that follow the passage
+# through edits, as ``insert_linked_excerpt`` writes it.
+
+
+def _source_label(source: dict[str, Any]) -> str:
+    """Mirrors ``source_label`` in ``frontend/writing_excerpt_ui.py``."""
+    from incremento.backend.i18n import t
+
+    if source["kind"] == "pdf":
+        return t("study_pdf_page", page=source["page"])
+    if source["kind"] == "epub":
+        return t("study_epub_section", section=source["section"] + 1)
+    return t("study_card")
+
+
+def _writing_title(card_id: int) -> str:
+    note = runtime.current().col.get_card(int(card_id)).note()
+    return str(note["Title"]) if "Title" in note else ""
+
+
+def send_excerpt(source: dict[str, Any], writing_card_id: int) -> dict[str, Any]:
+    """Quote ``source`` ("kind", "card_id", "quote" and its place) into a writing topic; returns its anchor."""
+    from incremento.backend.content_safety import external_plain_text_to_markdown
+    from incremento.backend.recording_links import normalize_source
+    from incremento.backend.study_resources import resolve_document
+    from incremento.backend.writing_links import create_link, marker
+
+    rt = runtime.current()
+    source = normalize_source(source)
+    if not source["quote"].strip():
+        raise ValueError("Select a passage first")
+    note = rt.col.get_card(int(writing_card_id)).note()
+    if note.note_type()["name"] != "Incremento Writing":
+        raise ValueError("Writing card unavailable")
+    if source["kind"] == "card":
+        title = _writing_title(source["card_id"])
+    else:
+        title = resolve_document(str(rt.addon_dir), rt.profile, rt.col, source)["title"]
+    anchor = create_link(str(rt.addon_dir), rt.profile, source, int(writing_card_id), source_title=str(title)[:240])
+    current = open_text(int(writing_card_id))["text"]
+    quote = external_plain_text_to_markdown(source["quote"], max_chars=2000)
+    # Mirrors ``insert_linked_excerpt``: a blank line, the start marker, the quote, the end marker, a blank line.
+    save_text(
+        int(writing_card_id),
+        current + "\n\n" + marker(anchor, start=True) + "\n" + quote + "\n" + marker(anchor) + "\n\n",
+    )
+    return {"anchor": anchor, "title": _writing_title(writing_card_id)}
+
+
+def _excerpt(link: dict[str, Any]) -> dict[str, Any]:
+    source = link["source"]
+    return {
+        "anchor": link["anchor"],
+        "kind": source["kind"],
+        "card_id": source["card_id"],
+        "page": source.get("page", 0),
+        "section": source.get("section", 0),
+        "offset": source.get("offset", -1),
+        "quote": source["quote"],
+        "label": _source_label(source),
+        "source_title": link["source_title"],
+        "writing_card_id": link["writing_card_id"],
+    }
+
+
+def excerpts(writing_card_id: int) -> list[dict[str, Any]]:
+    """The passages quoted in a writing topic that are still in its text, newest first."""
+    from incremento.backend.writing_links import list_links
+
+    rt = runtime.current()
+    return [_excerpt(link) for link in list_links(str(rt.addon_dir), rt.profile, writing_card_id=int(writing_card_id))]
+
+
+def source_excerpts(kind: str, card_id: int, position: int) -> list[dict[str, Any]]:
+    """The writing topics that quote the page (PDF, 1-based) or chapter (EPUB, 0-based) ``position`` of a document."""
+    from incremento.backend.writing_links import list_links
+
+    rt = runtime.current()
+    source = {"kind": kind, "card_id": int(card_id), "quote": ""}
+    source["page" if kind == "pdf" else "section"] = int(position)
+    result = []
+    for link in list_links(str(rt.addon_dir), rt.profile, source=source):
+        if link["writing_card_id"]:
+            result.append({**_excerpt(link), "writing_title": _writing_title(link["writing_card_id"])})
+    return result
 
 
 # ── Formatting toolbar and preview ────────────────────────────────────────────

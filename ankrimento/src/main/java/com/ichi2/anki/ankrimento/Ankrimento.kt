@@ -806,6 +806,10 @@ object Ankrimento {
         val chapter: Int = 0,
         /** The note's id, which encodes when the document was added (desktop's "Last added" order). */
         val noteId: Long = 0,
+        /** Desktop's bookshelf figures for a PDF or EPUB (null for other kinds): what was viewed and marked read. */
+        val viewedPercent: Double? = null,
+        val markedPercent: Double? = null,
+        val coverageLabel: String = "",
     )
 
     /** Desktop's review buttons (`group`, `done`, `postpone`, `extract`) and whether each is shown. */
@@ -857,6 +861,9 @@ object Ankrimento {
                 page = entry.optInt("page"),
                 chapter = entry.optInt("chapter"),
                 noteId = entry.optLong("note_id"),
+                viewedPercent = if (entry.isNull("viewed_percent")) null else entry.optDouble("viewed_percent"),
+                markedPercent = if (entry.isNull("marked_percent")) null else entry.optDouble("marked_percent"),
+                coverageLabel = entry.optString("coverage_label"),
             )
         }
     }
@@ -1104,6 +1111,28 @@ object Ankrimento {
             )
         }
 
+    /** The card an extract came from: [available] false when it is gone; [fields] are (name, sanitised markup). */
+    data class ParentContext(
+        val cardId: Long,
+        val title: String,
+        val available: Boolean,
+        val fields: List<Pair<String, String>>,
+    )
+
+    /** The parent of [cardId] for the Parent sheet, or null when the card has none. */
+    @WorkerThread
+    fun parentContext(cardId: Long): ParentContext? {
+        val json = JSONObject(requireFacade().callAttr("parent_context", cardId).toString())
+        if (!json.has("card_id")) return null
+        val fields = json.getJSONArray("fields")
+        return ParentContext(
+            json.getLong("card_id"),
+            displayTitle(json.getString("title")),
+            json.getBoolean("available"),
+            List(fields.length()) { fields.getJSONObject(it).let { field -> field.getString("name") to field.getString("html") } },
+        )
+    }
+
     /** What was viewed and marked read of a PDF or EPUB, or null for any other document. */
     @WorkerThread
     fun coverage(cardId: Long): Coverage? = coverageOf(JSONObject(requireFacade().callAttr("coverage_summary", cardId).toString()))
@@ -1207,6 +1236,19 @@ object Ankrimento {
     @WorkerThread
     fun importWebDocument(url: String): Pair<Long, String> {
         val added = JSONObject(requireFacade().callAttr("import_web_document", url).toString())
+        return added.getLong("card_id") to added.getString("title")
+    }
+
+    /**
+     * A web page saved for offline reading as desktop's "Webpage as a document" does: its own appearance in a
+     * self-contained snapshot ([website] true), or an editable reading copy. Returns the card and its title.
+     */
+    @WorkerThread
+    fun importWebSnapshot(
+        url: String,
+        website: Boolean,
+    ): Pair<Long, String> {
+        val added = JSONObject(requireFacade().callAttr("import_web_snapshot", url, if (website) "html" else "markdown").toString())
         return added.getLong("card_id") to added.getString("title")
     }
 
@@ -1382,6 +1424,67 @@ object Ankrimento {
     /** A new writing topic; returns its card id. */
     @WorkerThread
     fun createWriting(title: String): Long = requireFacade().callAttr("create_writing", title).toLong()
+
+    /** A passage quoted in a writing topic, or the passage a writing topic quotes from a document's page or chapter. */
+    data class WritingExcerpt(
+        val anchor: String,
+        /** "pdf" or "epub". */
+        val kind: String,
+        val cardId: Long,
+        val page: Int,
+        val section: Int,
+        val offset: Int,
+        val quote: String,
+        /** Desktop's wording for where it is from ("Page 3", "Section 2"). */
+        val label: String,
+        val sourceTitle: String,
+        val writingCardId: Long,
+        val writingTitle: String,
+    )
+
+    private fun excerptsOf(json: String): List<WritingExcerpt> {
+        val rows = JSONArray(json)
+        return List(rows.length()) {
+            val row = rows.getJSONObject(it)
+            WritingExcerpt(
+                anchor = row.getString("anchor"),
+                kind = row.getString("kind"),
+                cardId = row.getLong("card_id"),
+                page = row.optInt("page"),
+                section = row.optInt("section"),
+                offset = row.optInt("offset", -1),
+                quote = row.getString("quote"),
+                label = row.getString("label"),
+                sourceTitle = row.getString("source_title"),
+                writingCardId = row.optLong("writing_card_id"),
+                writingTitle = row.optString("writing_title"),
+            )
+        }
+    }
+
+    /** Quotes a passage of a PDF or EPUB ([source]: kind, card_id, quote and its place) into a writing topic; its title. */
+    @WorkerThread
+    fun sendToWriting(
+        source: JSONObject,
+        writingCardId: Long,
+    ): String = JSONObject(requireFacade().callAttr("send_to_writing", source.toString(), writingCardId).toString()).getString("title")
+
+    /** The passages still quoted in a writing topic, each with where it is from. */
+    @WorkerThread
+    fun writingExcerpts(writingCardId: Long): List<WritingExcerpt> =
+        excerptsOf(requireFacade().callAttr("writing_excerpts", writingCardId).toString())
+
+    /** The writing topics that quote a page (PDF, 1-based) or chapter (EPUB, 0-based) of a document. */
+    @WorkerThread
+    fun sourceExcerpts(
+        cardId: Long,
+        kind: String,
+        position: Int,
+    ): List<WritingExcerpt> = excerptsOf(requireFacade().callAttr("source_excerpts", cardId, kind, position).toString())
+
+    /** The writing topics in the library, to choose where a passage goes. */
+    @WorkerThread
+    fun writingTopics(): List<Pair<Long, String>> = library().filter { it.kind == "writing" }.map { it.cardId to it.title }
 
     /** Add a web page as an Incremento Web topic card; returns the card id. */
     @WorkerThread

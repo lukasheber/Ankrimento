@@ -199,7 +199,15 @@ def section_script(
         default_highlight_color=default_color,
         sections=metadata.get("sections") or [],
         appearance=get_appearance(addon_dir, profile, card_id),
+        # A saved website (an HTML snapshot) keeps its own layout, as desktop's dock does for source type "HTML".
+        preserve_layout=_source_type(card_id) == "HTML",
     )
+
+
+def _source_type(card_id: int) -> str:
+    """Mirrors ``_current_study_source_type`` in ``frontend/epub_dock.py``."""
+    note = runtime.current().col.get_card(int(card_id)).note()
+    return str(note["Incremento_Source_Type"]) if "Incremento_Source_Type" in note else ""
 
 
 def reading(card_id: int) -> dict[str, Any]:

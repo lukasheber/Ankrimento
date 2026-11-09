@@ -47,6 +47,46 @@ def _pdf_pages(card_id: int) -> int:
         return 0
 
 
+_page_counts: dict[tuple, int | None] = {}
+
+
+def _count_pages(path) -> int | None:
+    """Pages of a PDF, remembered per file so the Library does not open every PDF each time it is shown."""
+    try:
+        stat = path.stat()
+        key = (str(path), stat.st_size, stat.st_mtime_ns)
+    except OSError:
+        return None
+    if key not in _page_counts:
+        try:
+            from pypdf import PdfReader
+
+            _page_counts[key] = len(PdfReader(str(path), strict=False).pages) or None
+        except Exception:
+            _page_counts[key] = None
+    return _page_counts[key]
+
+
+def library_figures(card_ids: list[int]) -> dict[int, dict[str, Any]]:
+    """Viewed and marked read percent of each PDF or EPUB among ``card_ids``, as desktop's bookshelf computes them."""
+    from incremento.backend.document_statistics import document_progress_from_collection
+
+    if not card_ids:
+        return {}
+    rt = runtime.current()
+    rows = document_progress_from_collection(
+        rt.col, str(rt.addon_dir), rt.profile, card_ids=list(card_ids), pdf_page_counter=_count_pages
+    )
+    return {int(row["card_id"]): row for row in rows or ()}
+
+
+def label(figures: dict | None) -> str:
+    """Desktop's "Viewed 40% · Marked read 10%" for a figures row, or "" when it has none."""
+    from incremento.frontend.reader_coverage import coverage_label
+
+    return coverage_label(figures) if figures and figures.get("viewed_percent") is not None else ""
+
+
 def _document(card_id: int) -> tuple[str, str, tuple[int, ...]] | None:
     """(kind, filename, chapter lengths) of a PDF or EPUB card, otherwise None."""
     note = runtime.current().col.get_card(int(card_id)).note()

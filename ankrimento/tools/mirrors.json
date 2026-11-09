@@ -13,6 +13,7 @@
     "_create_mobile_video_clip": "237f5fe4e72852ba",
     "_current_pdf_limit_status": "e6a96a5dab072396",
     "_current_priority_order_entries": "044958dd237ade31",
+    "_current_study_source_type": "606198ae4fdf3543",
     "_delete_profile": "18e6cb236b3c644e",
     "_do_video_add_card": "87ef030f9457f79a",
     "_edit_video_bookmark_comment": "94739dfe11f3866e",
@@ -44,9 +45,11 @@
     "current_card_pdf_search_hits": "7c47be6a9c798216",
     "epub_citation": "d5d2b9fd4f1b029d",
     "exportSupportBundleFunction": "61288577202b25fa",
+    "insert_linked_excerpt": "9d96c89ba0ef10fb",
     "pdf_citation": "ff7e92d419c8454b",
     "resolve_pdf_appearance_mode": "eaf9b2c2dcbbae90",
     "session_mode_label": "5360444c564dc53a",
     "session_type_label": "d3f8c87111c5d754",
-    "should_add_extract_source_link": "0c7218d1283a9252"
+    "should_add_extract_source_link": "0c7218d1283a9252",
+    "source_label": "8df2f096e9328909"
 }

@@ -31,6 +31,8 @@ import com.ichi2.anki.ankrimento.ui.MarksSheet
 import com.ichi2.anki.ankrimento.ui.NoteSheet
 import com.ichi2.anki.ankrimento.ui.ReaderProgress
 import com.ichi2.anki.ankrimento.ui.ReaderTool
+import com.ichi2.anki.ankrimento.ui.ReadingMark
+import com.ichi2.anki.ankrimento.ui.ReadingMarksSheet
 import com.ichi2.anki.ankrimento.ui.ReadingSettingsSheet
 import com.ichi2.anki.ankrimento.ui.SnapshotLayer
 import kotlinx.coroutines.channels.Channel
@@ -106,6 +108,14 @@ class EpubReaderActivity : ReaderActivity() {
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_extract), EXTRACT_JS),
                 ReaderWebView.SelectionAction(getString(R.string.ankrimento_epub_highlight), HIGHLIGHT_JS),
                 clozeAction(),
+                ReaderWebView.SelectionAction(
+                    getString(R.string.ankrimento_mark_selection_read),
+                    SELECTION_RANGE_JS,
+                ) { markRange(true, it) },
+                ReaderWebView.SelectionAction(
+                    getString(R.string.ankrimento_send_to_writing),
+                    SELECTION_TEXT_JS,
+                ) { sendSelectionToWriting(it) },
             )
         setReaderContent(webView)
         toggleBarsOnTap(webView)
@@ -118,13 +128,15 @@ class EpubReaderActivity : ReaderActivity() {
                 ReaderTool(getString(R.string.ankrimento_contents), IncrementoIcons.Contents, onClick = ::showContents),
                 ReaderTool(getString(R.string.ankrimento_epub_find), IncrementoIcons.Search, onClick = ::showFind),
                 ReaderTool(getString(R.string.ankrimento_marks_highlights), IncrementoIcons.Bookmark) { changeHighlights { "" } },
+                ReaderTool(
+                    getString(R.string.ankrimento_writing_excerpts_here),
+                ) { section?.index?.let { showWritingExcerpts("epub", it) } },
                 ReaderTool(getString(R.string.ankrimento_epub_read_here)) {
                     webView.evaluateJavascript(READ_MARKER_JS) { placed ->
                         if (placed == "true") toast(getString(R.string.ankrimento_marked_read))
                     }
                 },
-                ReaderTool(getString(R.string.ankrimento_mark_chapter_read)) { markChapter(read = true) },
-                ReaderTool(getString(R.string.ankrimento_unmark_chapter)) { markChapter(read = false) },
+                ReaderTool(getString(R.string.ankrimento_reading_marks), onClick = ::showReadingMarks),
                 ReaderTool(getString(R.string.ankrimento_epub_previous)) { turnChapter(-1) },
                 ReaderTool(getString(R.string.ankrimento_epub_next)) { turnChapter(1) },
                 ReaderTool(getString(R.string.ankrimento_extract_selection)) { runScript(EXTRACT_JS) },
@@ -288,11 +300,71 @@ class EpubReaderActivity : ReaderActivity() {
         progress?.let { progress = ReaderProgress(it.fraction, it.label, figures.label) }
     }
 
-    /** Marks the open chapter read, or takes the mark off, as desktop's "Mark this section read". */
-    private fun markChapter(read: Boolean) {
+    /** The selected passage with its place in the chapter, quoted into a writing topic with a link back to it. */
+    private fun sendSelectionToWriting(result: String) {
+        val shown = section?.index ?: return
+        val selection = runCatching { JSONObject(result) }.getOrNull()
+        sendToWriting(
+            JSONObject()
+                .put("kind", "epub")
+                .put("card_id", cardId)
+                .put("section", shown)
+                .put("offset", selection?.optInt("offset", -1) ?: -1)
+                .put("quote", selection?.optString("text").orEmpty()),
+        )
+    }
+
+    /**
+     * Desktop's marks (a passage, a section) in one sheet: what is on the screen, or the chapter, read or unread. A
+     * selection is marked from its own menu, where the finger already is.
+     */
+    private fun showReadingMarks() {
+        sheet = {
+            ReadingMarksSheet(
+                figures = coverage?.label,
+                marks =
+                    listOf(
+                        ReadingMark(getString(R.string.ankrimento_mark_screen_read)) { markScreen(read = true) },
+                        ReadingMark(getString(R.string.ankrimento_unmark_screen)) { markScreen(read = false) },
+                        ReadingMark(getString(R.string.ankrimento_mark_chapter_read)) { markChapter(read = true) },
+                        ReadingMark(getString(R.string.ankrimento_unmark_chapter)) { markChapter(read = false) },
+                    ),
+                onDismiss = { sheet = null },
+            )
+        }
+    }
+
+    /** The passage on the screen, as the page script reports it (desktop's "mark this passage"). */
+    private fun markScreen(read: Boolean) {
+        webView.evaluateJavascript(VISIBLE_RANGE_JS) { markRange(read, it) }
+    }
+
+    /** Marks the open chapter (the whole of it) read, or takes the mark off, as desktop's "Mark this section read". */
+    private fun markChapter(read: Boolean) = mark(read, 0, 0)
+
+    /** Marks the character range [json] (`{"start":…,"end":…}` from the page script) of the open chapter. */
+    private fun markRange(
+        read: Boolean,
+        json: String,
+    ) {
+        val range = runCatching { JSONObject(json) }.getOrNull()
+        val start = range?.optInt("start", -1) ?: -1
+        val end = range?.optInt("end", -1) ?: -1
+        if (start < 0 || end <= start) {
+            toast(getString(R.string.ankrimento_web_select_first))
+            return
+        }
+        mark(read, start, end)
+    }
+
+    private fun mark(
+        read: Boolean,
+        start: Int,
+        end: Int,
+    ) {
         val shown = section?.index ?: return
         lifecycleScope.launch {
-            runCatching { withCol { Ankrimento.markCoverage(cardId, read, shown, 0, 0) } }
+            runCatching { withCol { Ankrimento.markCoverage(cardId, read, shown, start, end) } }
                 .onSuccess { figures ->
                     figures?.let {
                         runOnUiThread {
@@ -300,7 +372,7 @@ class EpubReaderActivity : ReaderActivity() {
                             toast(it.label)
                         }
                     }
-                }.onFailure { Timber.w(it, "Marking the chapter failed") }
+                }.onFailure { Timber.w(it, "Marking the reading failed") }
         }
     }
 
@@ -594,6 +666,20 @@ class EpubReaderActivity : ReaderActivity() {
     companion object {
         /** Where in the chapter given by [EXTRA_START] to open (0 to 1), as an extract's link back gives it. */
         const val EXTRA_SCROLL = "scroll"
+
+        /** The range of the chapter's text on the screen, from the page script's current location (null when none). */
+        private const val VISIBLE_RANGE_JS =
+            "(function () { var l = window.incrementoEpubCurrentLocation && window.incrementoEpubCurrentLocation(); return l ? l.coverage : null; })()"
+
+        /** The selected text and where in the chapter it starts (null when nothing is selected). */
+        private const val SELECTION_TEXT_JS =
+            "(function () { var s = window.getSelection(); if (!s || s.isCollapsed) return null;" +
+                " var l = window.incrementoEpubCurrentLocation && window.incrementoEpubCurrentLocation();" +
+                " return { text: s.toString(), offset: l ? l.focusOffset : -1 }; })()"
+
+        /** The range of the chapter's text the selection covers (null when nothing is selected). */
+        private const val SELECTION_RANGE_JS =
+            "(function () { var l = window.incrementoEpubCurrentLocation && window.incrementoEpubCurrentLocation(); return l ? l.readRange : null; })()"
 
         /** Enough of a highlight's text for the page script to find it. */
         private const val HIGHLIGHT_SEARCH_CHARS = 120

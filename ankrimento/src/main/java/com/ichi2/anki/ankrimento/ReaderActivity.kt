@@ -36,6 +36,8 @@ import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.BatchSheet
 import com.ichi2.anki.ankrimento.ui.DocumentReviewSheet
+import com.ichi2.anki.ankrimento.ui.ExcerptListSheet
+import com.ichi2.anki.ankrimento.ui.ExcerptRow
 import com.ichi2.anki.ankrimento.ui.ExtractChoice
 import com.ichi2.anki.ankrimento.ui.ExtractQueueChip
 import com.ichi2.anki.ankrimento.ui.ExtractQueueSheet
@@ -53,6 +55,7 @@ import com.ichi2.anki.ankrimento.ui.RevisitDateDialog
 import com.ichi2.anki.ankrimento.ui.TimerChip
 import com.ichi2.anki.ankrimento.ui.TimerSheet
 import com.ichi2.anki.ankrimento.ui.TimerSummaryDialog
+import com.ichi2.anki.ankrimento.ui.WritingPickerSheet
 import com.ichi2.anki.common.destinations.DeferredNavigation
 import com.ichi2.anki.common.destinations.NoteEditorDestination
 import com.ichi2.anki.common.destinations.ReviewDeckDestination
@@ -517,6 +520,7 @@ abstract class ReaderActivity : ComponentActivity() {
             }
             add(ReaderTool(getString(R.string.ankrimento_timer_title)) { timerSheet = true })
             reviewKind?.let { add(ReaderTool(getString(R.string.ankrimento_document_review)) { showDocumentReview() }) }
+            add(ReaderTool(getString(R.string.ankrimento_parent)) { ParentContextSheet.show(this@ReaderActivity, cardId) })
             add(
                 ReaderTool(
                     getString(R.string.ankrimento_tree_show),
@@ -701,6 +705,71 @@ abstract class ReaderActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * Desktop's "Send to Writing": the selected passage, quoted into a writing topic with a link back to its place.
+     * [source] is the passage (kind, card_id, quote and where it is); the topic is chosen on the spot.
+     */
+    protected fun sendToWriting(source: JSONObject) {
+        val quote = source.optString("quote")
+        if (quote.isBlank()) {
+            toast(getString(R.string.ankrimento_web_select_first))
+            return
+        }
+        if (quote.length > MAX_EXCERPT_CHARS) {
+            toast(getString(R.string.ankrimento_send_to_writing_limit, MAX_EXCERPT_CHARS))
+            return
+        }
+        lifecycleScope.launch {
+            val topics = runCatching { withCol { Ankrimento.writingTopics() } }.getOrDefault(emptyList())
+            sheet = {
+                WritingPickerSheet(
+                    topics = topics,
+                    onPick = { target -> quoteInto(source, target, null) },
+                    onNew = { title -> quoteInto(source, null, title) },
+                    onDismiss = { sheet = null },
+                )
+            }
+        }
+    }
+
+    private fun quoteInto(
+        source: JSONObject,
+        target: Long?,
+        newTitle: String?,
+    ) {
+        sheet = null
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.sendToWriting(source, target ?: Ankrimento.createWriting(newTitle.orEmpty())) } }
+                .onSuccess { title -> toast(getString(R.string.ankrimento_sent_to_writing, title)) }
+                .onFailure { error ->
+                    Timber.w(error, "Sending the passage to Writing failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
+        }
+    }
+
+    /** The writing topics that quote this page or chapter, each opening at its passage. */
+    protected fun showWritingExcerpts(
+        kind: String,
+        position: Int,
+    ) {
+        lifecycleScope.launch {
+            val excerpts = runCatching { withCol { Ankrimento.sourceExcerpts(cardId, kind, position) } }.getOrDefault(emptyList())
+            sheet = {
+                ExcerptListSheet(
+                    title = getString(R.string.ankrimento_writing_excerpts_here),
+                    rows =
+                        excerpts.map { excerpt ->
+                            ExcerptRow(excerpt.quote, excerpt.writingTitle) {
+                                startActivity(WritingActivity.intent(this@ReaderActivity, excerpt.writingCardId, excerpt.anchor))
+                            }
+                        },
+                    onDismiss = { sheet = null },
+                )
+            }
+        }
+    }
+
     /** The card's note in AnkiDroid's editor; [onNoteEdited] shows the edit on return. */
     private var editingNote = false
 
@@ -727,6 +796,13 @@ abstract class ReaderActivity : ComponentActivity() {
     }
 
     companion object {
+        /** Desktop's limit for a quoted passage. */
+        internal const val MAX_EXCERPT_CHARS = 2000
+
+        /** The selected text, or null when nothing is selected. */
+        internal const val SELECTED_TEXT_JS =
+            "(function () { var s = window.getSelection(); return s && !s.isCollapsed ? s.toString() : null; })()"
+
         /**
          * The selection and its sentence: the text of the paragraph around it, from the end of the sentence
          * before to the end of its own; as JSON (before, selected, after). A sentence ends at ".", "!" or "?"

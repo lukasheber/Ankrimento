@@ -54,8 +54,12 @@ def entries() -> list[dict[str, Any]]:
     def progress(table: str, columns: str, card_id: int):
         return db.execute(f"SELECT {columns} FROM {table} WHERE card_id = ?", (card_id,)).fetchone()
 
+    from ankrimento import coverage
+
     result = []
-    for card_id in col.find_cards(search):
+    card_ids = list(col.find_cards(search))
+    figures = coverage.library_figures(card_ids)
+    for card_id in card_ids:
         card = col.get_card(card_id)
         note = card.note()
         kind = KINDS.get(note.note_type()["name"])
@@ -88,6 +92,10 @@ def entries() -> list[dict[str, Any]]:
                 # The page or chapter reached, for the app to word in its language (0: none).
                 "page": page,
                 "chapter": chapter,
+                # Desktop's bookshelf figures for a PDF or EPUB; None for any other kind.
+                "viewed_percent": figures.get(int(card_id), {}).get("viewed_percent"),
+                "marked_percent": figures.get(int(card_id), {}).get("marked_percent"),
+                "coverage_label": coverage.label(figures.get(int(card_id))),
                 "done": card.queue == _QUEUE_SUSPENDED,
                 "cover": _cover(col, note, kind),
             }

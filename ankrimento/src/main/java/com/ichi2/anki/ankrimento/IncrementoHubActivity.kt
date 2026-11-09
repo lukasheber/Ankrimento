@@ -11,8 +11,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,6 +27,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -54,6 +57,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -85,6 +90,7 @@ class IncrementoHubActivity : ComponentActivity() {
     private var adding by mutableStateOf(false)
     private var askLink by mutableStateOf(false)
     private var askArticle by mutableStateOf(false)
+    private var askWebsite by mutableStateOf(false)
     private var askWriting by mutableStateOf(false)
 
     private val pickPdf =
@@ -236,6 +242,10 @@ class IncrementoHubActivity : ComponentActivity() {
         lifecycleScope.launch { importDocument { withCol { Ankrimento.importWebDocument(url) } } }
     }
 
+    private fun addWebsite(url: String) {
+        lifecycleScope.launch { importDocument { withCol { Ankrimento.importWebSnapshot(url, website = true) } } }
+    }
+
     private fun addLink(url: String) {
         lifecycleScope.launch {
             importDocument {
@@ -329,6 +339,13 @@ class IncrementoHubActivity : ComponentActivity() {
                 R.string.ankrimento_link_hint,
                 onDismiss = { askArticle = false },
             ) { addArticle(it) }
+        }
+        if (askWebsite) {
+            TextPrompt(
+                R.string.ankrimento_add_saved_website,
+                R.string.ankrimento_link_hint,
+                onDismiss = { askWebsite = false },
+            ) { addWebsite(it) }
         }
         if (askWriting) {
             TextPrompt(R.string.ankrimento_new_writing, R.string.ankrimento_new_writing_title, onDismiss = { askWriting = false }) {
@@ -436,7 +453,12 @@ class IncrementoHubActivity : ComponentActivity() {
     private fun DocumentRow(entry: Ankrimento.LibraryEntry) {
         ListItem(
             headlineContent = { Text(entry.title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
-            supportingContent = { Text(details(entry, withPriority = true), maxLines = 1) },
+            supportingContent = {
+                Column {
+                    Text(details(entry, withPriority = true), maxLines = 1)
+                    CoverageBar(entry)
+                }
+            },
             leadingContent = { Cover(entry, width = ROW_COVER_WIDTH) },
             trailingContent =
                 if (entry.done) {
@@ -446,6 +468,30 @@ class IncrementoHubActivity : ComponentActivity() {
                 },
             modifier = Modifier.clickable { open(entry) },
         )
+    }
+
+    /**
+     * A thin bar under a PDF or EPUB: what was viewed (lighter) and what was marked read (solid), the two figures desktop's
+     * bookshelf keeps apart. Nothing for a document opened never, or for other kinds.
+     */
+    @Composable
+    private fun CoverageBar(entry: Ankrimento.LibraryEntry) {
+        val viewed = entry.viewedPercent ?: return
+        val marked = entry.markedPercent ?: 0.0
+        if (viewed <= 0.0 && marked <= 0.0) return
+        val color = MaterialTheme.colorScheme.primary
+        Box(
+            Modifier
+                .padding(top = 6.dp)
+                .fillMaxWidth()
+                .height(4.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .semantics { contentDescription = entry.coverageLabel },
+        ) {
+            Box(Modifier.fillMaxWidth((viewed / 100).toFloat().coerceIn(0f, 1f)).height(4.dp).background(color.copy(alpha = 0.4f)))
+            Box(Modifier.fillMaxWidth((marked / 100).toFloat().coerceIn(0f, 1f)).height(4.dp).background(color))
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -460,6 +506,7 @@ class IncrementoHubActivity : ComponentActivity() {
                 AddOption(IncrementoIcons.Video, R.string.ankrimento_add_audio_file) { pickAudio.launch(arrayOf("audio/*")) }
                 AddOption(IncrementoIcons.Video, R.string.ankrimento_add_video_file) { pickVideo.launch(arrayOf("video/*")) }
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_article) { askArticle = true }
+                AddOption(IncrementoIcons.Book, R.string.ankrimento_add_saved_website) { askWebsite = true }
                 AddOption(IncrementoIcons.Web, R.string.ankrimento_add_link) { askLink = true }
                 AddOption(IncrementoIcons.Edit, R.string.ankrimento_new_writing) { askWriting = true }
                 AddOption(IncrementoIcons.Add, R.string.ankrimento_new_card) {
