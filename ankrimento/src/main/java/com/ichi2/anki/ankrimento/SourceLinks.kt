@@ -43,9 +43,12 @@ object SourceLinks {
                 val scroll = parts.getOrNull(4)?.toDoubleOrNull()?.coerceIn(0.0, 1.0) ?: 0.0
                 ReaderActivity.intentAt(context, "epub", cardId, section, "")?.putExtra(EpubReaderActivity.EXTRA_SCROLL, scroll)
             }
-            message.startsWith("incremento_open_video:") && parts.size == 3 -> {
+            // card:start, or card:start:end for an extract that marks a segment of the video.
+            message.startsWith("incremento_open_video:") && parts.size in 3..4 -> {
                 val cardId = parts[1].toLongOrNull() ?: return null
-                VideoReaderActivity.intentAt(context, cardId, parts[2].toDoubleOrNull() ?: return null)
+                val start = parts[2].toDoubleOrNull() ?: return null
+                val end = parts.getOrNull(3)?.let { it.toDoubleOrNull()?.takeIf { end -> end > start } ?: return null }
+                VideoReaderActivity.intentAt(context, cardId, start, end)
             }
             else -> null
         }

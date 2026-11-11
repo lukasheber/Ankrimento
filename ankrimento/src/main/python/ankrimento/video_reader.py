@@ -23,8 +23,9 @@ def _context() -> tuple[str, str]:
     return str(rt.addon_dir), rt.profile
 
 
-def open_video(card_id: int) -> dict[str, Any]:
-    """``kind`` is "local" (a downloaded file), "youtube" or "none"."""
+def open_video(card_id: int, start: float | None = None) -> dict[str, Any]:
+    """``kind`` is "local" (a downloaded file), "youtube" or "none". ``start`` (a link from an extract) replaces
+    the saved position, which the Vimeo player page needs in the URL it is loaded from."""
     from incremento.backend.video_manager import (
         extract_video_id,
         get_video_note_media,
@@ -34,7 +35,7 @@ def open_video(card_id: int) -> dict[str, Any]:
 
     addon_dir, profile = _context()
     note = runtime.current().col.get_card(int(card_id)).note()
-    position = float(get_video_position(addon_dir, profile, int(card_id)) or 0.0)
+    position = float(start) if start is not None else float(get_video_position(addon_dir, profile, int(card_id)) or 0.0)
     local = get_video_note_media(note)["local_video_file"]
     if local:
         path = local_video_abspath(addon_dir, profile, local)
@@ -67,19 +68,34 @@ def save_position(card_id: int, position: float, watched_seconds: float = 0.0) -
         record_video_watch(addon_dir, profile, int(card_id), watched, day_end_time=load_scheduler_config().day_end_time)
 
 
-def extract_at(card_id: int, seconds: float) -> None:
+def extract_at(card_id: int, seconds: float, end: float | None = None) -> None:
     """Start an extract tied to this moment; mirrors ``frontend/video_dock.py:_do_video_add_card``:
-    the front links back to the video at that second ("▶ <time> – <title>")."""
+    the front links back to the video at that second ("▶ <time> – <title>").
+
+    With ``end`` the extract marks a *segment* of the parent video instead of copying it: the front carries two
+    links, one the phone plays from the start and stops at the end (``incremento_open_video:card:start:end``), and
+    desktop's own link to the start, which desktop understands. No media is cut or duplicated."""
     from aqt import mw
+    from incremento.backend.recording_links import validate_segment
     from incremento.backend.video_manager import fmt_time
 
     from ankrimento import extract
 
     card_id, t = int(card_id), float(seconds)
+    if end is not None:
+        t, end = validate_segment(t, float(end))
     note = runtime.current().col.get_card(card_id).note()
     title = note.fields[0][:60].strip() if note.fields else ""
-    label = f"&#9654; {fmt_time(t)}" + (f" – {title}" if title else "")
-    link = f"<a href=\"#\" onclick=\"pycmd('incremento_open_video:{card_id}:{t}')\" style=\"color:#4a90d9;\">{label}</a>"
+    style = 'style="color:#4a90d9;"'
+    if end is None:
+        label = f"&#9654; {fmt_time(t)}" + (f" – {html.escape(title)}" if title else "")
+        link = f"<a href=\"#\" onclick=\"pycmd('incremento_open_video:{card_id}:{t}')\" {style}>{label}</a>"
+    else:
+        label = f"&#9654; {fmt_time(t)}–{fmt_time(end)}" + (f" – {html.escape(title)}" if title else "")
+        link = (
+            f"<a href=\"#\" onclick=\"pycmd('incremento_open_video:{card_id}:{t}:{end}')\" {style}>{label}</a>"
+            f" <a href=\"#\" onclick=\"pycmd('incremento_open_video:{card_id}:{t}')\" {style}>(&#9654; {fmt_time(t)})</a>"
+        )
     extract.add_html_to_draft(card_id, 0, link, page=int(t))
     mw.notify_host("extract_draft", card_id=card_id)
 
@@ -140,34 +156,6 @@ def bookmark_comment(card_id: int, bookmark_id: str, comment: str) -> list[dict[
     addon_dir, profile = _context()
     update_reader_bookmark_comment(addon_dir, profile, int(card_id), "video", str(bookmark_id), str(comment or ""))
     return bookmarks(card_id)
-
-
-def clip(card_id: int, start: float, end: float, clip_path: str, duration: float) -> None:
-    """A segment of the video, cut on the device into ``clip_path`` (an MP4), as a new card. Mirrors
-    ``frontend/video_dock.py:_create_mobile_video_clip`` after its rendering: desktop's range limits, its
-    media name, and ``_fill_mobile_video_clip_card``'s front (the clip's player and the link back)."""
-    from aqt import mw
-    from incremento.backend.video_manager import (
-        add_mobile_video_clip_to_anki_media,
-        fmt_time,
-        mobile_video_clip_html,
-        validate_mobile_video_clip_range,
-    )
-
-    from ankrimento import extract
-
-    card_id = int(card_id)
-    start, end = validate_mobile_video_clip_range(float(start), float(end), float(duration) if duration > 0 else None)
-    note = runtime.current().col.get_card(card_id).note()
-    title = note.fields[0].strip() if note.fields else ""
-    name = add_mobile_video_clip_to_anki_media(
-        runtime.current().col, clip_path, source_title=title, start_sec=start, end_sec=end
-    )
-    player = mobile_video_clip_html(name, start_sec=start, end_sec=end, source_title=title)
-    label = f"&#9654; {fmt_time(start)}" + (f" – {html.escape(title[:60])}" if title else "")
-    link = f"<a href=\"#\" onclick=\"pycmd('incremento_open_video:{card_id}:{float(start)}')\" style=\"color:#4a90d9;\">{label}</a>"
-    extract.add_html_to_draft(card_id, 0, f"{player}<br>{link}", page=int(start))
-    mw.notify_host("extract_draft", card_id=card_id)
 
 
 def import_local(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0) -> int:

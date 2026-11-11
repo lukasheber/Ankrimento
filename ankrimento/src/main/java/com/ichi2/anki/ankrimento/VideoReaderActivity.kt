@@ -15,11 +15,19 @@ import android.webkit.WebView
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
@@ -27,11 +35,15 @@ import androidx.webkit.WebViewClientCompat
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.CaptionOverlay
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
+import com.ichi2.anki.ankrimento.ui.MIN_SEGMENT_SECONDS
 import com.ichi2.anki.ankrimento.ui.MarkBookmark
 import com.ichi2.anki.ankrimento.ui.MarksSheet
 import com.ichi2.anki.ankrimento.ui.ReaderTool
+import com.ichi2.anki.ankrimento.ui.SegmentDraft
 import com.ichi2.anki.ankrimento.ui.SubtitlesSheet
-import com.ichi2.anki.ankrimento.ui.VideoClipDialog
+import com.ichi2.anki.ankrimento.ui.VideoSegmentBar
+import com.ichi2.anki.ankrimento.ui.clockText
+import com.ichi2.anki.ankrimento.ui.initialSegment
 import com.ichi2.anki.ankrimento.ui.textAt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -73,6 +85,20 @@ class VideoReaderActivity : ReaderActivity() {
     private val pickSubtitle =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri -> if (uri != null) attachSubtitle(pickingSlot, uri) }
 
+    /** Pauses whichever player is shown. */
+    private var pausePlayer: (() -> Unit)? = null
+
+    /** The segment being chosen for an extract (the bar over the video), or null; and where a linked segment must stop. */
+    private var segment by mutableStateOf<SegmentDraft?>(null)
+    private var stopAt: Double? = null
+
+    /** The video's length in seconds (0 until the player knows it), and starting playback. */
+    private var readDuration: (suspend () -> Double)? = null
+    private var playPlayer: (() -> Unit)? = null
+
+    /** The subtitles' captions; the overlay shows them unless the segment bar is open. */
+    private var captions by mutableStateOf<(@Composable BoxScope.() -> Unit)?>(null)
+
     /** Plays at a speed (1.0 is normal). */
     private var setSpeed: ((Float) -> Unit)? = null
     private var speed = 1.0f
@@ -80,17 +106,40 @@ class VideoReaderActivity : ReaderActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         showTools()
+        overlay = {
+            val draft = segment
+            if (draft == null) {
+                captions?.invoke(this)
+            } else {
+                VideoSegmentBar(
+                    segment = draft,
+                    onRange = ::moveSegment,
+                    onStartHere = { segmentHere(atStart = true) },
+                    onEndHere = { segmentHere(atStart = false) },
+                    onPreview = ::previewSegment,
+                    onExtract = ::extractSegment,
+                    onClose = { segment = null },
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .fillMaxWidth()
+                            .widthIn(max = 560.dp)
+                            .padding(8.dp),
+                )
+            }
+        }
         lifecycleScope.launch {
-            var video =
-                runCatching { withCol { Ankrimento.videoOpen(cardId) } }.getOrElse { error ->
+            // A video extract's link opens the video at its moment (Vimeo's page needs it in the URL it loads).
+            val start = intent.getDoubleExtra(EXTRA_START, -1.0)
+            val video =
+                runCatching { withCol { Ankrimento.videoOpen(cardId, start) } }.getOrElse { error ->
                     Timber.w(error, "Opening a video topic failed")
                     this@VideoReaderActivity.showToast(error.message ?: error.javaClass.simpleName)
                     finish()
                     return@launch
                 }
-            // A video extract's link opens the video at its moment.
-            val start = intent.getDoubleExtra(EXTRA_START, -1.0)
-            if (start >= 0) video = video.copy(position = start)
+            // A segment extract plays from its start and stops at its end.
+            stopAt = intent.getDoubleExtra(EXTRA_END, -1.0).takeIf { start >= 0 && it > start }
             lastPosition = video.position
             when (video.kind) {
                 "local" -> showLocal(video)
@@ -104,6 +153,7 @@ class VideoReaderActivity : ReaderActivity() {
             }
             loadSubtitles()
             launch { followCaptions() }
+            launch { stopAtSegmentEnd() }
             trackProgress()
         }
     }
@@ -116,6 +166,8 @@ class VideoReaderActivity : ReaderActivity() {
         player.setOnPreparedListener { media ->
             player.seekTo((video.position * 1000).toInt())
             player.start()
+            pausePlayer = { player.pause() }
+            playPlayer = { player.start() }
             setSpeed = { rate ->
                 // A speed above zero also starts playback; a paused video stays paused.
                 val playing = player.isPlaying
@@ -124,10 +176,8 @@ class VideoReaderActivity : ReaderActivity() {
                 if (!playing) player.pause()
             }
         }
-        localVideo = File(video.path)
-        localDuration = { player.duration / 1000.0 }
-        showTools() // with Create clip, now that there is a local copy
         readPlayer = { player.currentPosition / 1000.0 to player.isPlaying }
+        readDuration = { (player.duration / 1000.0).coerceAtLeast(0.0) }
         seekBy = { seconds -> player.seekTo((player.currentPosition + seconds * 1000).toInt().coerceAtLeast(0)) }
         seekTo = { seconds -> player.seekTo((seconds * 1000).toInt().coerceAtLeast(0)) }
     }
@@ -136,10 +186,10 @@ class VideoReaderActivity : ReaderActivity() {
         tools =
             listOfNotNull(
                 ReaderTool(getString(R.string.ankrimento_video_extract), IncrementoIcons.Add, onClick = ::extractHere),
+                // A segment of this video as an extract, chosen on a bar over the video. Nothing is cut or copied.
+                ReaderTool(getString(R.string.ankrimento_video_segment_open), IncrementoIcons.Segment, onClick = ::toggleSegmentBar),
                 ReaderTool(getString(R.string.ankrimento_marks_bookmarks), IncrementoIcons.Bookmark, onClick = ::showBookmarks),
                 ReaderTool(getString(R.string.ankrimento_video_subtitles), onClick = ::showSubtitles),
-                // Desktop's Create Mobile Clip cuts a local copy; the phone has one only for a downloaded video.
-                ReaderTool(getString(R.string.ankrimento_video_clip), onClick = ::chooseClip).takeIf { localVideo != null },
                 ReaderTool(getString(R.string.ankrimento_video_back_10)) { seekBy?.invoke(-10.0) },
                 ReaderTool(getString(R.string.ankrimento_video_forward_10)) { seekBy?.invoke(10.0) },
                 ReaderTool(getString(R.string.ankrimento_video_speed, speedLabel(speed))) {
@@ -197,11 +247,7 @@ class VideoReaderActivity : ReaderActivity() {
         }
     }
 
-    private fun clock(seconds: Double): String {
-        val total = seconds.toLong().coerceAtLeast(0)
-        val (hours, minutes, secs) = Triple(total / 3600, total % 3600 / 60, total % 60)
-        return if (hours > 0) "%d:%02d:%02d".format(hours, minutes, secs) else "%d:%02d".format(minutes, secs)
-    }
+    private fun clock(seconds: Double) = clockText(seconds)
 
     /** Vimeo's own player page, as desktop's dock loads it; its video element reports and moves playback. */
     @SuppressLint("SetJavaScriptEnabled")
@@ -223,55 +269,101 @@ class VideoReaderActivity : ReaderActivity() {
             { seconds -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.currentTime = Math.max(0, v.currentTime + $seconds);", null) }
         seekTo = { seconds -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.currentTime = Math.max(0, $seconds);", null) }
         setSpeed = { rate -> webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.playbackRate = $rate;", null) }
-    }
-
-    /** The local video and its length, for clips (null for a streamed video). */
-    private var localVideo: File? = null
-    private var localDuration: (() -> Double)? = null
-
-    /** Desktop's "Create Mobile Clip": a segment cut into an MP4 that plays on any device, as a new card. */
-    private fun chooseClip() {
-        lifecycleScope.launch { showClipDialog(readPlayer?.invoke()?.first ?: lastPosition) }
-    }
-
-    private fun showClipDialog(now: Double) {
-        val duration = localDuration?.invoke()?.takeIf { it > 0 } ?: 0.0
-        sheet = {
-            VideoClipDialog(
-                now = now,
-                duration = duration,
-                onCut = { start, end ->
-                    sheet = null
-                    cutClip(start, end, duration)
-                },
-                onDismiss = { sheet = null },
-            )
+        pausePlayer = { webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.pause();", null) }
+        playPlayer = { webView.evaluateJavascript(VIMEO_VIDEO + "if (v) v.play();", null) }
+        readDuration = {
+            evaluate(webView, "(function () { $VIMEO_VIDEO return v ? v.duration : 0; })()").toDoubleOrNull()?.takeIf { it.isFinite() }
+                ?: 0.0
         }
     }
 
-    private fun cutClip(
+    /** The segment bar opens at the moment playing now (30 seconds on), or closes. */
+    private fun toggleSegmentBar() {
+        if (segment != null) {
+            segment = null
+            return
+        }
+        lifecycleScope.launch {
+            val now = readPlayer?.invoke()?.first ?: lastPosition
+            segment = initialSegment(now, readDuration?.invoke() ?: 0.0)
+            // Some players (Vimeo's) only know the length once playback has started: ask again while the bar is open.
+            repeat(DURATION_RETRIES) {
+                if (segment?.let { it.duration <= 0 } != true) return@launch
+                delay(DURATION_RETRY_MS)
+                val duration = readDuration?.invoke() ?: 0.0
+                val draft = segment ?: return@launch
+                if (duration > 0) {
+                    segment =
+                        draft.copy(
+                            start = minOf(draft.start, duration - MIN_SEGMENT_SECONDS).coerceAtLeast(0.0),
+                            end = minOf(draft.end, duration),
+                            duration = duration,
+                        )
+                }
+            }
+        }
+    }
+
+    /** A handle was dragged: keep the range, and show the frame at the handle that moved. */
+    private fun moveSegment(
         start: Double,
         end: Double,
-        duration: Double,
+        movedStart: Boolean,
     ) {
-        val source = localVideo ?: return
-        toast(getString(R.string.ankrimento_video_clip_cutting))
+        val duration = segment?.duration ?: return
+        segment = SegmentDraft(start, end, duration)
+        seekTo?.invoke(if (movedStart) start else end)
+    }
+
+    /** The moment playing now becomes the segment's start or its end. */
+    private fun segmentHere(atStart: Boolean) {
         lifecycleScope.launch {
-            val clip = File(cacheDir, "clips").apply { mkdirs() }.resolve("clip.mp4")
-            runCatching {
-                val realStart = withContext(Dispatchers.IO) { VideoClipper.cut(source, clip, start, end) }
-                withCol { Ankrimento.videoClip(cardId, realStart, end, clip, duration) }
-            }.onFailure { error ->
-                Timber.w(error, "Cutting a video clip failed")
-                toast(
-                    if (error is VideoClipper.UnsupportedFormat) {
-                        getString(R.string.ankrimento_video_clip_format)
-                    } else {
-                        error.message ?: error.javaClass.simpleName
-                    },
-                )
+            val draft = segment ?: return@launch
+            val now = readPlayer?.invoke()?.first ?: lastPosition
+            segment =
+                if (atStart) {
+                    val end = if (now + 1.0 > draft.end) initialSegment(now, draft.duration).end else draft.end
+                    draft.copy(start = now, end = end)
+                } else if (now < draft.start + 1.0) {
+                    toast(getString(R.string.ankrimento_video_segment_invalid))
+                    draft
+                } else {
+                    draft.copy(end = if (draft.duration > 0) minOf(now, draft.duration) else now)
+                }
+        }
+    }
+
+    /** Plays the segment from its start and pauses at its end. */
+    private fun previewSegment() {
+        val draft = segment ?: return
+        seekTo?.invoke(draft.start)
+        stopAt = draft.end
+        playPlayer?.invoke()
+    }
+
+    private fun extractSegment() {
+        val draft = segment ?: return
+        segment = null
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.videoExtract(cardId, draft.start, draft.end) } }
+                .onFailure {
+                    Timber.w(it, "Starting a video segment extract failed")
+                    toast(it.message ?: it.javaClass.simpleName)
+                }
+        }
+    }
+
+    /** A segment's link plays up to its end and pauses there. */
+    private suspend fun stopAtSegmentEnd() {
+        while (true) {
+            delay(CAPTION_INTERVAL_MS)
+            val end = stopAt ?: continue
+            val (position, playing) = readPlayer?.invoke() ?: continue
+            if (playing && position >= end) {
+                pausePlayer?.invoke()
+                stopAt = null
+                toast(getString(R.string.ankrimento_video_segment_done))
             }
-            clip.delete()
         }
     }
 
@@ -324,6 +416,13 @@ class VideoReaderActivity : ReaderActivity() {
             )
         }
         seekTo = { seconds -> webView.evaluateJavascript("window._ytp && window._ytp.seekTo && window._ytp.seekTo($seconds, true);", null) }
+        pausePlayer = { webView.evaluateJavascript("window._ytp && window._ytp.pauseVideo && window._ytp.pauseVideo();", null) }
+        playPlayer = { webView.evaluateJavascript("window._ytp && window._ytp.playVideo && window._ytp.playVideo();", null) }
+        readDuration = {
+            evaluate(webView, "(window._ytp && window._ytp.getDuration ? window._ytp.getDuration() : 0)")
+                .toDoubleOrNull()
+                ?.takeIf { it.isFinite() } ?: 0.0
+        }
         setSpeed =
             { rate ->
                 webView.evaluateJavascript("window._ytp && window._ytp.setPlaybackRate && window._ytp.setPlaybackRate($rate);", null)
@@ -337,7 +436,7 @@ class VideoReaderActivity : ReaderActivity() {
                 .onFailure { Timber.w(it, "Loading the video's subtitles failed") }
                 .getOrNull()
         val shown = subtitles?.takeUnless { it.isEmpty }
-        overlay =
+        captions =
             shown?.let {
                 {
                     val time = captionTime
@@ -462,10 +561,15 @@ class VideoReaderActivity : ReaderActivity() {
 
     companion object {
         private const val EXTRA_START = "start"
+        private const val EXTRA_END = "end"
         private const val PLAYER_URL = "https://appassets.androidplatform.net/assets/ankrimento/web/video_player.html"
 
         /** Captions follow the playing time this often. */
         private const val CAPTION_INTERVAL_MS = 250L
+
+        /** How often, and how many times, the segment bar asks a player that does not know its length yet. */
+        private const val DURATION_RETRY_MS = 500L
+        private const val DURATION_RETRIES = 120
         private const val PROGRESS_INTERVAL_MS = 5_000L
         private const val YOUTUBE_PLAYING = 1
 
@@ -484,11 +588,12 @@ class VideoReaderActivity : ReaderActivity() {
             cardId: Long,
         ): Intent = ReaderActivity.intent(context, "video", cardId, session = false)!!
 
-        /** The video at [seconds] (a video extract's link). */
+        /** The video at [seconds] (a video extract's link); with [end] it plays that segment and stops there. */
         fun intentAt(
             context: Context,
             cardId: Long,
             seconds: Double,
-        ): Intent = intent(context, cardId).putExtra(EXTRA_START, seconds)
+            end: Double? = null,
+        ): Intent = intent(context, cardId).putExtra(EXTRA_START, seconds).apply { end?.let { putExtra(EXTRA_END, it) } }
     }
 }

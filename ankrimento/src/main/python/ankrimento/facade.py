@@ -863,10 +863,11 @@ def readable_titles(rows: list[dict]) -> list[dict]:
     return rows
 
 
-def video_extract(card_id: int, seconds: float) -> None:
+def video_extract(card_id: int, seconds: float, end: float = -1.0) -> None:
+    """An extract at a moment, or (``end`` >= 0) one that marks a segment of the video (see ``video_reader.extract_at``)."""
     from ankrimento import video_reader
 
-    video_reader.extract_at(int(card_id), float(seconds))
+    video_reader.extract_at(int(card_id), float(seconds), float(end) if end >= 0 else None)
 
 
 def writing_open(card_id: int) -> str:
@@ -913,10 +914,11 @@ def create_writing(title: str) -> int:
     return card_id
 
 
-def video_open(card_id: int) -> str:
+def video_open(card_id: int, start: float = -1.0) -> str:
+    """The video to play; ``start`` >= 0 (an extract's link) opens it there instead of where playback stopped."""
     from ankrimento import video_reader
 
-    return _dumps(video_reader.open_video(int(card_id)))
+    return _dumps(video_reader.open_video(int(card_id), float(start) if start >= 0 else None))
 
 
 def video_bookmarks(card_id: int) -> str:
@@ -1565,13 +1567,6 @@ def epub_snapshot(card_id: int, section_index: int, image: str) -> None:
     from ankrimento import epub_reader
 
     epub_reader.snapshot(int(card_id), int(section_index), str(image))
-
-
-def video_clip(card_id: int, start: float, end: float, clip_path: str, duration: float) -> None:
-    """A segment of a local video, cut on the device, as a new card (see ``video_reader.clip``)."""
-    from ankrimento import video_reader
-
-    video_reader.clip(int(card_id), float(start), float(end), str(clip_path), float(duration))
 
 
 def import_local_video(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0) -> int:

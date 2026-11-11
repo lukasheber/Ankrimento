@@ -46,6 +46,22 @@ class SourceLinksTest {
     }
 
     @Test
+    fun `a segment extract opens its start and carries its end`() {
+        val video = SourceLinks.intentFor(context, "incremento_open_video:9:65.0:95.5")!!
+        assertEquals(VideoReaderActivity::class.java.name, video.component?.className)
+        assertEquals(65.0, video.getDoubleExtra("start", -1.0), 0.0)
+        assertEquals(95.5, video.getDoubleExtra("end", -1.0), 0.0)
+        // A moment has no end.
+        assertEquals(false, SourceLinks.intentFor(context, "incremento_open_video:9:65.0")!!.hasExtra("end"))
+    }
+
+    @Test
+    fun `a segment that ends before it starts is not a source link`() {
+        assertNull(SourceLinks.intentFor(context, "incremento_open_video:9:65.0:60.0"))
+        assertNull(SourceLinks.intentFor(context, "incremento_open_video:9:65.0:soon"))
+    }
+
+    @Test
     fun `anything else is not a source link`() {
         assertNull(SourceLinks.intentFor(context, "incremento_open_web:x:y"))
         assertNull(SourceLinks.intentFor(context, "ankiplay:1"))

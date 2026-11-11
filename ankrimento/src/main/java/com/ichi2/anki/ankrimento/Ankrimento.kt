@@ -1116,18 +1116,6 @@ object Ankrimento {
         }
     }
 
-    /** A segment of a local video, cut into [clip], as a new card; the extract sheet follows. */
-    @WorkerThread
-    fun videoClip(
-        cardId: Long,
-        start: Double,
-        end: Double,
-        clip: java.io.File,
-        duration: Double,
-    ) {
-        requireFacade().callAttr("video_clip", cardId, start, end, clip.path, duration)
-    }
-
     /** A region of the chapter as a new card's image; the extract sheet follows. */
     @WorkerThread
     fun epubSnapshot(
@@ -1291,13 +1279,17 @@ object Ankrimento {
         requireFacade().callAttr("epub_set_appearance", cardId, mode)
     }
 
-    /** Starts an extract from the video at [seconds], as desktop's "Add Card at this point". */
+    /**
+     * Starts an extract from the video at [seconds], as desktop's "Add Card at this point"; with [end] it marks the
+     * segment from [seconds] to [end] of the parent video (nothing is cut or copied).
+     */
     @WorkerThread
     fun videoExtract(
         cardId: Long,
         seconds: Double,
+        end: Double? = null,
     ) {
-        requireFacade().callAttr("video_extract", cardId, seconds)
+        requireFacade().callAttr("video_extract", cardId, seconds, end ?: -1.0)
     }
 
     /**
@@ -1434,8 +1426,11 @@ object Ankrimento {
     )
 
     @WorkerThread
-    fun videoOpen(cardId: Long): Video {
-        val json = JSONObject(requireFacade().callAttr("video_open", cardId).toString())
+    fun videoOpen(
+        cardId: Long,
+        start: Double = -1.0,
+    ): Video {
+        val json = JSONObject(requireFacade().callAttr("video_open", cardId, start).toString())
         return Video(
             kind = json.getString("kind"),
             path = json.optString("path"),
