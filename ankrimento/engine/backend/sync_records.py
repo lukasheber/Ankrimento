@@ -723,6 +723,8 @@ TABLE_CLASSIFICATION: Mapping[str, str] = {
     "document_library_memberships": "later",
     "statistics_goals": "later",
     "reader_custom_colors": "later",
+    "writing_links": "later",
+    "document_coverage": "later",
 }
 
 #: Full-text search tables and their SQLite shadow tables: derived, local.

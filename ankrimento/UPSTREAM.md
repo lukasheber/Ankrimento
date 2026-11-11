@@ -187,5 +187,7 @@ On every update, check that nothing upstream collides with the overlay: `git -C 
 HEAD | grep backend/sync_`. If upstream now has the engine, delete `engine/` and the `from("engine")` block in
 `build.gradle.kts`.
 
+The overlay also carries `sync_files.py`, which shares the files of local file cards (managed copies) with every device; it reads the collection's notes, so a new Anki or upstream note-type change to "Incremento Local File" (field names, the `managed_copy` mode) is what to check there.
+
 Refresh the overlay from an Incremento checkout with `python ankrimento/tools/update_engine.py <checkout>`. It records the
 commit and a hash per file in `engine/ENGINE.json`; `test_engine_sync.py` fails if a file was edited by hand.

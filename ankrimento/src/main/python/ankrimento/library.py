@@ -19,6 +19,7 @@ KINDS = {
     "Incremento Web": "web",
     "Incremento Video": "video",
     "Incremento Writing": "writing",
+    "Incremento Local File": "file",
 }
 
 _QUEUE_SUSPENDED = -1

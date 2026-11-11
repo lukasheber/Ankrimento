@@ -719,6 +719,39 @@ def import_web_snapshot(
     return _dumps({"card_id": int(card_id), "title": title_saved, "format": fmt, "omitted_images": omitted})
 
 
+def import_local_file(path: str, title: str, deck_name: str = "Topics", priority: float = 50.0, note_text: str = "") -> str:
+    """Add any file as a local file card with a managed copy (desktop's Add Local File, "import a managed copy")."""
+    from incremento.backend.priority_manager import set_priority
+
+    from ankrimento import local_files
+
+    rt = runtime.current()
+    card_id = local_files.add(str(path), str(title), str(deck_name), str(note_text))
+    set_priority(str(rt.addon_dir), rt.profile, card_id, float(priority))
+    return _dumps({"card_id": card_id, "title": local_files.info(card_id)["title"]})
+
+
+def local_file_info(card_id: int) -> str:
+    """A local file card for its screen: the file's name, size and type, whether this device has it, and the note."""
+    from ankrimento import local_files
+
+    return _dumps(local_files.info(int(card_id)))
+
+
+def local_file_attach(card_id: int, path: str) -> str:
+    """Keep a copy of a file on this device as the card's file (a desktop reference becomes a managed copy)."""
+    from ankrimento import local_files
+
+    return _dumps(local_files.attach(int(card_id), str(path)))
+
+
+def local_file_suggests(name: str) -> str:
+    """"pdf" or "epub" when a file is better added as that kind of document, otherwise ""."""
+    from ankrimento import local_files
+
+    return local_files.suggests(str(name))
+
+
 def import_link(url: str, title: str = "", priority: float = 50.0) -> str:
     """Add a shared link: a video link as a video topic, anything else as a web topic."""
     from incremento.backend.priority_manager import set_priority
@@ -746,6 +779,7 @@ def card_reader(card_id: int) -> str:
         "Incremento Web": "web",
         "Incremento Video": "video",
         "Incremento Writing": "writing",
+        "Incremento Local File": "file",
     }
     reader = readers.get(note.note_type()["name"], "")
     return reader or ("text" if is_topic(card_id) else "")

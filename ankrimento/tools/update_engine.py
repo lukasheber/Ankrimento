@@ -30,6 +30,7 @@ ENGINE_FILES = (
     "sync_capture.py",
     "sync_documents.py",
     "sync_exchange.py",
+    "sync_files.py",
     "sync_http.py",
     "sync_paths.py",
     "sync_records.py",

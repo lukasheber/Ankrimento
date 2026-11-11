@@ -854,6 +854,7 @@ abstract class ReaderActivity : ComponentActivity() {
                 "web" to WebReaderActivity::class.java,
                 "video" to VideoReaderActivity::class.java,
                 "writing" to WritingActivity::class.java,
+                "file" to LocalFileActivity::class.java,
                 "text" to TextReaderActivity::class.java,
                 "item" to ItemReaderActivity::class.java,
             )

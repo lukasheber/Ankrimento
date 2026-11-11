@@ -364,3 +364,51 @@ def test_the_facade_reports_when_a_budget_cut_the_sync_short_and_a_later_call_fi
         pdf = paths.get_pdf_dir(str(rt.addon_dir), rt.profile) / f"slice{index}.pdf"
         pdf.unlink(missing_ok=True)
     db.close_connection()
+
+
+def _managed_file(rt, device, folder, name, data):
+    """A local file card with a managed copy in ``device``'s profile, as the add-on there makes it."""
+    from incremento.backend.local_file_manager import add_local_file_card
+
+    folder.mkdir(parents=True, exist_ok=True)
+    source = folder / name
+    source.write_bytes(data)
+    card = add_local_file_card(device.addon, device.profile, rt.col, source_path=str(source), title=name, mode="managed_copy")
+    managed = Path(device.addon) / "user_files" / device.profile / "files"
+    return card, next(path for path in managed.iterdir() if path.name.startswith(Path(name).stem))
+
+
+def test_a_local_file_added_on_the_phone_reaches_the_desktop(rt, pair, tmp_path):
+    phone, desktop, store = pair
+    _, kept = _managed_file(rt, phone, tmp_path / "source", "Handout.docx", b"week 3 handout\n" * 40)
+
+    phone.sync(store)
+    desktop.sync(store)
+
+    received = Path(desktop.addon) / "user_files" / desktop.profile / "files" / kept.name
+    assert received.read_bytes() == b"week 3 handout\n" * 40
+
+
+def test_a_local_file_added_on_the_desktop_reaches_the_phone(rt, pair, tmp_path):
+    phone, desktop, store = pair
+    _, kept = _managed_file(rt, desktop, tmp_path / "source", "Slides.pdf", b"%PDF-1.4 desktop slides")
+
+    desktop.sync(store)
+    phone.sync(store)
+
+    received = Path(phone.addon) / "user_files" / phone.profile / "files" / kept.name
+    assert received.read_bytes() == b"%PDF-1.4 desktop slides"
+
+
+def test_a_changed_local_file_replaces_the_old_one_on_the_other_device(rt, pair, tmp_path):
+    phone, desktop, store = pair
+    _, kept = _managed_file(rt, desktop, tmp_path / "source", "Notes.txt", b"first version")
+    desktop.sync(store)
+    phone.sync(store)
+
+    kept.write_bytes(b"second version")
+    desktop.sync(store)
+    phone.sync(store)
+
+    received = Path(phone.addon) / "user_files" / phone.profile / "files" / kept.name
+    assert received.read_bytes() == b"second version"

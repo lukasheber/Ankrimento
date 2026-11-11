@@ -5,6 +5,7 @@ package com.ichi2.anki.ankrimento
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -93,6 +94,9 @@ class IncrementoHubActivity : ComponentActivity() {
     private var askWebsite by mutableStateOf(false)
     private var askWriting by mutableStateOf(false)
 
+    /** A picked file that is a PDF or EPUB, and which kind: asked whether to read it here or only keep it. */
+    private var offered by mutableStateOf<Pair<Uri, String>?>(null)
+
     private val pickPdf =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri !=
@@ -150,6 +154,50 @@ class IncrementoHubActivity : ComponentActivity() {
                 }
             }
         }
+
+    private val pickFile =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                lifecycleScope.launch {
+                    val name = DocumentImport.displayName(this@IncrementoHubActivity, uri) ?: "file"
+                    val kind =
+                        runCatching {
+                            withCol {
+                                Ankrimento.start(this@IncrementoHubActivity, this)
+                                Ankrimento.localFileSuggests(name)
+                            }
+                        }.getOrDefault("")
+                    if (kind.isEmpty()) addFile(uri) else offered = uri to kind
+                }
+            }
+        }
+
+    private fun addFile(uri: Uri) {
+        lifecycleScope.launch {
+            importDocument {
+                DocumentImport.import(
+                    this@IncrementoHubActivity,
+                    uri,
+                    "file",
+                ) { path, title -> Ankrimento.importLocalFile(path, title).first }
+            }
+        }
+    }
+
+    private fun addAsDocument(
+        uri: Uri,
+        kind: String,
+    ) {
+        lifecycleScope.launch {
+            importDocument {
+                if (kind == "pdf") {
+                    DocumentImport.import(this@IncrementoHubActivity, uri, "document.pdf", Ankrimento::importPdf)
+                } else {
+                    DocumentImport.import(this@IncrementoHubActivity, uri, "book.epub", Ankrimento::importEpub)
+                }
+            }
+        }
+    }
 
     private val pickVideo =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -330,6 +378,25 @@ class IncrementoHubActivity : ComponentActivity() {
             }
         }
         if (adding) AddSheet()
+        offered?.let { (uri, kind) ->
+            AlertDialog(
+                onDismissRequest = { offered = null },
+                title = { Text(stringResource(R.string.ankrimento_add_as_document_title)) },
+                text = { Text(stringResource(R.string.ankrimento_add_as_document_message)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        offered = null
+                        addAsDocument(uri, kind)
+                    }) { Text(stringResource(if (kind == "pdf") R.string.ankrimento_add_as_pdf else R.string.ankrimento_add_as_epub)) }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        offered = null
+                        addFile(uri)
+                    }) { Text(stringResource(R.string.ankrimento_add_as_file)) }
+                },
+            )
+        }
         if (askLink) {
             TextPrompt(R.string.ankrimento_add_link, R.string.ankrimento_link_hint, onDismiss = { askLink = false }) { addLink(it) }
         }
@@ -503,6 +570,7 @@ class IncrementoHubActivity : ComponentActivity() {
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_epub_file) { pickEpub.launch(arrayOf("application/epub+zip")) }
                 // File managers name Markdown's type in several ways, often only as text or as bytes.
                 AddOption(IncrementoIcons.Document, R.string.ankrimento_add_markdown_file) { pickMarkdown.launch(MARKDOWN_TYPES) }
+                AddOption(IncrementoIcons.Document, R.string.ankrimento_add_any_file) { pickFile.launch(arrayOf("*/*")) }
                 AddOption(IncrementoIcons.Video, R.string.ankrimento_add_audio_file) { pickAudio.launch(arrayOf("audio/*")) }
                 AddOption(IncrementoIcons.Video, R.string.ankrimento_add_video_file) { pickVideo.launch(arrayOf("video/*")) }
                 AddOption(IncrementoIcons.Book, R.string.ankrimento_add_article) { askArticle = true }
@@ -591,6 +659,7 @@ class IncrementoHubActivity : ComponentActivity() {
             "epub" -> IncrementoIcons.Book
             "web" -> IncrementoIcons.Web
             "video" -> IncrementoIcons.Video
+            "file" -> IncrementoIcons.Document
             else -> IncrementoIcons.Edit
         }
 
@@ -615,6 +684,7 @@ class IncrementoHubActivity : ComponentActivity() {
                 "web" to R.string.ankrimento_kind_web,
                 "video" to R.string.ankrimento_kind_video,
                 "writing" to R.string.ankrimento_kind_writing,
+                "file" to R.string.ankrimento_kind_file,
             )
 
         private const val EXTRA_ADD = "add"

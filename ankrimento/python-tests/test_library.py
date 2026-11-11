@@ -24,7 +24,7 @@ def test_library_lists_documents_with_kind_title_priority_and_position(rt):
     assert all(entry["priority"] == 50.0 for entry in (entries[video], entries[web], entries[writing]))
     assert not entries[video]["done"]
     # Only documents: ordinary topics and items are not in the library.
-    assert {entry["kind"] for entry in entries.values()} <= {"pdf", "epub", "web", "video", "writing"}
+    assert {entry["kind"] for entry in entries.values()} <= {"pdf", "epub", "web", "video", "writing", "file"}
 
 
 def test_an_entry_carries_its_note_id_so_the_library_can_sort_by_last_added(rt):

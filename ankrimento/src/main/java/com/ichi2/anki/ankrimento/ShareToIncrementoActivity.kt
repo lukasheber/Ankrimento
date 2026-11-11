@@ -8,9 +8,11 @@ package com.ichi2.anki.ankrimento
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Patterns
 import androidx.activity.ComponentActivity
+import androidx.core.content.IntentCompat
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
 import kotlinx.coroutines.launch
@@ -25,6 +27,11 @@ import timber.log.Timber
 class ShareToIncrementoActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val stream = IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)
+        if (stream != null && Ankrimento.isSupported) {
+            addSharedFile(stream)
+            return
+        }
         val text = intent.getStringExtra(Intent.EXTRA_TEXT).orEmpty()
         val url = Patterns.WEB_URL.matcher(text).let { if (it.find()) it.group() else null }
         if (url == null || !Ankrimento.isSupported) {
@@ -55,6 +62,58 @@ class ShareToIncrementoActivity : ComponentActivity() {
                 }
             }.setOnCancelListener { finish() }
             .show()
+    }
+
+    /** A shared file: a local file card, or a PDF or EPUB document when the file is one and that is what is wanted. */
+    private fun addSharedFile(uri: Uri) {
+        lifecycleScope.launch {
+            val name = DocumentImport.displayName(this@ShareToIncrementoActivity, uri) ?: "file"
+            val kind =
+                runCatching {
+                    withCol {
+                        Ankrimento.start(this@ShareToIncrementoActivity, this)
+                        Ankrimento.localFileSuggests(name)
+                    }
+                }.getOrDefault("")
+            if (kind.isEmpty()) {
+                storeSharedFile(uri, "")
+                return@launch
+            }
+            AlertDialog
+                .Builder(this@ShareToIncrementoActivity, android.R.style.Theme_Material_Light_Dialog_Alert)
+                .setTitle(R.string.ankrimento_add_as_document_title)
+                .setItems(
+                    arrayOf(
+                        getString(if (kind == "pdf") R.string.ankrimento_add_as_pdf else R.string.ankrimento_add_as_epub),
+                        getString(R.string.ankrimento_add_as_file),
+                    ),
+                ) { _, which -> storeSharedFile(uri, if (which == 0) kind else "") }
+                .setOnCancelListener { finish() }
+                .show()
+        }
+    }
+
+    private fun storeSharedFile(
+        uri: Uri,
+        kind: String,
+    ) {
+        lifecycleScope.launch {
+            runCatching {
+                when (kind) {
+                    "pdf" -> DocumentImport.import(this@ShareToIncrementoActivity, uri, "document.pdf", Ankrimento::importPdf)
+                    "epub" -> DocumentImport.import(this@ShareToIncrementoActivity, uri, "book.epub", Ankrimento::importEpub)
+                    else ->
+                        DocumentImport.import(this@ShareToIncrementoActivity, uri, "file") { path, title ->
+                            Ankrimento.importLocalFile(path, title).first
+                        }
+                }
+            }.onSuccess { (_, title) -> showToast(getString(R.string.ankrimento_pdf_added, title)) }
+                .onFailure { error ->
+                    Timber.w(error, "Adding a shared file failed")
+                    showToast(getString(R.string.ankrimento_pdf_add_failed, error.message ?: error.javaClass.simpleName))
+                }
+            finish()
+        }
     }
 
     private fun add(import: () -> Long) {

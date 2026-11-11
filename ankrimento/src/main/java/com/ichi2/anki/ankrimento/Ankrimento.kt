@@ -1482,6 +1482,66 @@ object Ankrimento {
         position: Int,
     ): List<WritingExcerpt> = excerptsOf(requireFacade().callAttr("source_excerpts", cardId, kind, position).toString())
 
+    /** A local file card for its screen: what the file is, where it is, and whether this device may open it. */
+    data class LocalFile(
+        val cardId: Long,
+        val title: String,
+        val name: String,
+        /** "managed_copy" (a copy kept in the profile) or "reference" (a path on the computer that made the card). */
+        val mode: String,
+        val note: String,
+        /** Whether this device has the file. */
+        val available: Boolean,
+        val path: String,
+        val originalPath: String,
+        val size: Long,
+        val mime: String,
+        val canOpen: Boolean,
+        /** Why the file is not handed to another app ("package"), or "". */
+        val blocked: String,
+    )
+
+    private fun localFileOf(json: JSONObject) =
+        LocalFile(
+            cardId = json.getLong("card_id"),
+            title = displayTitle(json.getString("title")),
+            name = json.getString("name"),
+            mode = json.getString("mode"),
+            note = json.getString("note"),
+            available = json.getBoolean("available"),
+            path = json.getString("path"),
+            originalPath = json.getString("original_path"),
+            size = json.getLong("size"),
+            mime = json.getString("mime"),
+            canOpen = json.getBoolean("can_open"),
+            blocked = json.getString("blocked"),
+        )
+
+    /** The local file card [cardId], for its screen. */
+    @WorkerThread
+    fun localFile(cardId: Long): LocalFile = localFileOf(JSONObject(requireFacade().callAttr("local_file_info", cardId).toString()))
+
+    /** Adds the file at [path] as a local file card with a managed copy; returns the card and its title. */
+    @WorkerThread
+    fun importLocalFile(
+        path: String,
+        title: String,
+    ): Pair<Long, String> {
+        val added = JSONObject(requireFacade().callAttr("import_local_file", path, title).toString())
+        return added.getLong("card_id") to added.getString("title")
+    }
+
+    /** Keeps the file at [path] as the card's file on this device (a desktop reference becomes a managed copy). */
+    @WorkerThread
+    fun attachLocalFile(
+        cardId: Long,
+        path: String,
+    ): LocalFile = localFileOf(JSONObject(requireFacade().callAttr("local_file_attach", cardId, path).toString()))
+
+    /** "pdf" or "epub" when a file named [name] is better added as that kind of document, otherwise "". */
+    @WorkerThread
+    fun localFileSuggests(name: String): String = requireFacade().callAttr("local_file_suggests", name).toString()
+
     /** The writing topics in the library, to choose where a passage goes. */
     @WorkerThread
     fun writingTopics(): List<Pair<Long, String>> = library().filter { it.kind == "writing" }.map { it.cardId to it.title }
