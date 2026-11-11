@@ -594,4 +594,25 @@
     <plurals name="ankrimento_highlight_cards_create">
         <item quantity="other">创建 %d 张卡片</item>
     </plurals>
+    <string name="ankrimento_getting_started">入门指南</string>
+    <string name="ankrimento_guide_progress">第 %1$d 步，共 %2$d 步</string>
+    <string name="ankrimento_guide_skip">跳过指南</string>
+    <string name="ankrimento_guide_back">上一步</string>
+    <string name="ankrimento_guide_next">下一步</string>
+    <string name="ankrimento_guide_finish">完成</string>
+    <string name="ankrimento_guide_welcome_title">欢迎使用 Incremento</string>
+    <string name="ankrimento_guide_welcome_body">Incremento 在 Anki 中完成长篇阅读、摘录和复习。这份简短的指南带你走一遍最稳妥的第一个流程。</string>
+    <string name="ankrimento_guide_add_title">1. 添加第一份文档</string>
+    <string name="ankrimento_guide_add_body">从 PDF 或 EPUB 开始。文档保存在应用内，并会记住你读到的位置。你也可以在任何其他应用中把网页、视频链接或文件分享给 Incremento。</string>
+    <string name="ankrimento_guide_add_action">添加文档…</string>
+    <string name="ankrimento_guide_extract_title">2. 摘录一个有用的想法</string>
+    <string name="ankrimento_guide_extract_body">在阅读器中选中一段文字，然后选择“摘录”。添加之前，请检查类型、优先级以及摘录在知识树中的位置。</string>
+    <string name="ankrimento_guide_session_title">3. 开始一次小型学习</string>
+    <string name="ankrimento_guide_session_body">点按牌组列表上的 Incremento 卡片，在一个流程中阅读和复习。请先选择较少的卡片数量以及主题与条目的比例；高级设置保留完整的调度器。</string>
+    <string name="ankrimento_guide_session_action">打开学习设置…</string>
+    <string name="ankrimento_guide_share_title">4. 从其他应用添加</string>
+    <string name="ankrimento_guide_share_body">在浏览器、文件管理器或视频应用中使用“分享 → Incremento”。网页可以作为文章阅读或保存以便离线阅读，视频链接会成为视频主题，文件会成为卡片。</string>
+    <string name="ankrimento_guide_backup_title">5. 创建备份</string>
+    <string name="ankrimento_guide_backup_body">在大量导入或改变工作方式之前，先做一次完整备份。设置也可以自动备份到你选择的文件夹。</string>
+    <string name="ankrimento_guide_backup_action">打开备份设置…</string>
 </resources>

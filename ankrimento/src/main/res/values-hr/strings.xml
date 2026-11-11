@@ -628,4 +628,25 @@
         <item quantity="few">Stvori %d kartice</item>
         <item quantity="other">Stvori %d kartica</item>
     </plurals>
+    <string name="ankrimento_getting_started">Prvi koraci</string>
+    <string name="ankrimento_guide_progress">Korak %1$d od %2$d</string>
+    <string name="ankrimento_guide_skip">Preskoči vodič</string>
+    <string name="ankrimento_guide_back">Natrag</string>
+    <string name="ankrimento_guide_next">Dalje</string>
+    <string name="ankrimento_guide_finish">Završi</string>
+    <string name="ankrimento_guide_welcome_title">Dobro došli u Incremento</string>
+    <string name="ankrimento_guide_welcome_body">Incremento drži dugo čitanje, izdvajanje i ponavljanje unutar Anki-ja. Ovaj kratki vodič slijedi najsigurniji prvi tijek rada.</string>
+    <string name="ankrimento_guide_add_title">1. Dodajte prvi dokument</string>
+    <string name="ankrimento_guide_add_body">Počnite s PDF-om ili EPUB-om. Dokumenti se čuvaju u aplikaciji, a mjesto na kojem ste stali se pamti. Web-stranicu, poveznicu na video ili datoteku možete i podijeliti s Incrementom iz bilo koje druge aplikacije.</string>
+    <string name="ankrimento_guide_add_action">Dodaj dokument…</string>
+    <string name="ankrimento_guide_extract_title">2. Izdvojite jednu korisnu ideju</string>
+    <string name="ankrimento_guide_extract_body">Odaberite odlomak u čitaču i odaberite Izdvoji. Prije dodavanja provjerite vrstu, prioritet i mjesto izdvojka u stablu znanja.</string>
+    <string name="ankrimento_guide_session_title">3. Započnite malu sesiju</string>
+    <string name="ankrimento_guide_session_body">Dodirnite karticu Incrementa na popisu špilova za čitanje i ponavljanje u jednom tijeku. Prvo odaberite mali broj kartica i omjer tema i stavki; napredne postavke zadržavaju cijeli planer.</string>
+    <string name="ankrimento_guide_session_action">Otvori postavke sesije…</string>
+    <string name="ankrimento_guide_share_title">4. Dodajte iz drugih aplikacija</string>
+    <string name="ankrimento_guide_share_body">Koristite Podijeli → Incremento u pregledniku, upravitelju datoteka ili aplikaciji za video. Web-stranica se može čitati kao članak ili spremiti za čitanje bez mreže, poveznica na video postaje tema s videom, a datoteka postaje kartica.</string>
+    <string name="ankrimento_guide_backup_title">5. Napravite sigurnosnu kopiju</string>
+    <string name="ankrimento_guide_backup_body">Napravite potpunu sigurnosnu kopiju prije velikog uvoza ili promjene tijeka rada. Postavke mogu i automatski stvarati kopije u mapu koju odaberete.</string>
+    <string name="ankrimento_guide_backup_action">Otvori postavke sigurnosnih kopija…</string>
 </resources>

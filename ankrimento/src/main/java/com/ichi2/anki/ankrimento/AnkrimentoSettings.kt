@@ -43,6 +43,11 @@ class AnkrimentoSettings(
         get() = preferences.getBoolean(PREF_HAS_STARTED, false)
         set(value) = preferences.edit { putBoolean(PREF_HAS_STARTED, value) }
 
+    /** The version of the first-run guide finished or skipped (desktop's `onboarding_completed_version`); 0 if none. */
+    var onboardingCompletedVersion: Int
+        get() = preferences.getInt(PREF_ONBOARDING_VERSION, 0)
+        set(value) = preferences.edit { putInt(PREF_ONBOARDING_VERSION, value) }
+
     /** The filtered deck sessions fill, as upstream names it; known once Incremento has started. */
     var sessionDeckName: String
         get() = preferences.getString(PREF_SESSION_DECK, null) ?: DEFAULT_SESSION_DECK
@@ -59,6 +64,7 @@ class AnkrimentoSettings(
         const val PREF_DEVICE_NAME = "device_name"
         const val PREF_HAS_STARTED = "has_started"
         const val PREF_SESSION_DECK = "session_deck"
+        const val PREF_ONBOARDING_VERSION = "onboarding_version"
 
         /** Upstream's default session deck name. */
         const val DEFAULT_SESSION_DECK = "Incremento Session"

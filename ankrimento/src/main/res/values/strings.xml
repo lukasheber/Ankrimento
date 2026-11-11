@@ -611,4 +611,25 @@
         <item quantity="one">Create %d card</item>
         <item quantity="other">Create %d cards</item>
     </plurals>
+    <string name="ankrimento_getting_started">Getting started</string>
+    <string name="ankrimento_guide_progress">Step %1$d of %2$d</string>
+    <string name="ankrimento_guide_skip">Skip guide</string>
+    <string name="ankrimento_guide_back">Back</string>
+    <string name="ankrimento_guide_next">Next</string>
+    <string name="ankrimento_guide_finish">Finish</string>
+    <string name="ankrimento_guide_welcome_title">Welcome to Incremento</string>
+    <string name="ankrimento_guide_welcome_body">Incremento keeps long reading, extracting and review inside Anki. This short guide follows the safest first workflow.</string>
+    <string name="ankrimento_guide_add_title">1. Add your first document</string>
+    <string name="ankrimento_guide_add_body">Start with a PDF or EPUB. Documents are kept inside the app, and your place in them is remembered. You can also share a web page, a video link or a file to Incremento from any other app.</string>
+    <string name="ankrimento_guide_add_action">Add a document…</string>
+    <string name="ankrimento_guide_extract_title">2. Extract one useful idea</string>
+    <string name="ankrimento_guide_extract_body">Select a passage in the reader and choose Extract. Check the type, the priority and where the extract will sit in the knowledge tree before adding it.</string>
+    <string name="ankrimento_guide_session_title">3. Start a small session</string>
+    <string name="ankrimento_guide_session_body">Tap the Incremento card on the deck list to read and review in one flow. Choose a small card count and your mix of topics and items first; the advanced settings keep the full scheduler.</string>
+    <string name="ankrimento_guide_session_action">Open session settings…</string>
+    <string name="ankrimento_guide_share_title">4. Add from other apps</string>
+    <string name="ankrimento_guide_share_body">Use Share → Incremento in a browser, a file manager or a video app. A web page can be read as an article or saved for offline reading, a video link becomes a video topic, and a file becomes a card.</string>
+    <string name="ankrimento_guide_backup_title">5. Create a backup</string>
+    <string name="ankrimento_guide_backup_body">Make a full backup before a large import or a change of workflow. Settings can also back up automatically into a folder you choose.</string>
+    <string name="ankrimento_guide_backup_action">Open backup settings…</string>
 </resources>

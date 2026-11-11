@@ -19,6 +19,7 @@ import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
 import com.ichi2.anki.ankrimento.ui.SessionCardAction
 import com.ichi2.anki.ankrimento.ui.SessionEntryCard
+import com.ichi2.anki.ankrimento.ui.shouldShowOnboarding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,6 +57,11 @@ class IncrementoMenu(
         }
 
     init {
+        // Desktop's first-run guide: once, the first time Incremento opens (and again if its version rises).
+        if (!guideShown && shouldShowOnboarding(settings.onboardingCompletedVersion)) {
+            guideShown = true
+            activity.startActivity(GettingStartedActivity.intent(activity))
+        }
         activity.lifecycleScope.launch(Dispatchers.IO) {
             runCatching { Ankrimento.warmUp(activity) }.onFailure { Timber.w(it, "Ankrimento warm-up failed") }
             // Then the rest of the start, so the first Incremento screen opens without waiting for it.
@@ -117,6 +123,9 @@ class IncrementoMenu(
             },
             SessionCardAction(IncrementoIcons.Add, R.string.ankrimento_add_to_incremento) {
                 activity.startActivity(IncrementoHubActivity.intent(activity, add = true))
+            },
+            SessionCardAction(IncrementoIcons.School, R.string.ankrimento_getting_started) {
+                activity.startActivity(GettingStartedActivity.intent(activity))
             },
             SessionCardAction(IncrementoIcons.Contents, R.string.ankrimento_session_preview) {
                 preview.launch(SessionPreviewActivity.intent(activity))
@@ -261,5 +270,10 @@ class IncrementoMenu(
 
     private fun toast(text: String) {
         activity.showToast(text)
+    }
+
+    private companion object {
+        /** The first-run guide was opened in this run of the app. */
+        var guideShown = false
     }
 }
