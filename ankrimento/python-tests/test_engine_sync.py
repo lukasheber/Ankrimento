@@ -412,3 +412,28 @@ def test_a_changed_local_file_replaces_the_old_one_on_the_other_device(rt, pair,
 
     received = Path(phone.addon) / "user_files" / phone.profile / "files" / kept.name
     assert received.read_bytes() == b"second version"
+
+
+def test_links_between_documents_travel_both_ways(rt, pair, tmp_path):
+    from incremento.backend import db
+    from incremento.backend.document_links import add_document_link, list_document_links
+    from incremento.backend.epub_connections import add_connection, list_connections
+
+    phone, desktop, store = pair
+    source, target = _card(rt), _card(rt)
+
+    add_document_link(desktop.addon, desktop.profile, source_card_id=source, source_kind="pdf", source_page=2,
+                      target_card_id=target, target_page=5, target_scroll=0.5, target_passage={"quote": "the exact words"})
+    add_connection(phone.addon, phone.profile, {"card_id": source, "section": 0, "offset": 1, "scroll": 0.0},
+                   {"card_id": target, "section": 1, "offset": 2, "scroll": 0.3, "passage": {"quote": "a place", "start": 0, "end": 7}})
+
+    desktop.sync(store)
+    phone.sync(store)
+    desktop.sync(store)
+
+    on_phone = list_document_links(phone.addon, phone.profile, source)
+    assert [(row["source_page"], row["target_page"]) for row in on_phone] == [(2, 5)]
+    assert on_phone[0]["target_passage"] == {"quote": "the exact words"}
+    on_desktop = list_connections(desktop.addon, desktop.profile, source, 0)
+    assert [row["target"]["passage"]["quote"] for row in on_desktop] == ["a place"]
+    db.close_connection()

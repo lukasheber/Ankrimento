@@ -32,6 +32,7 @@ ENGINE_FILES = (
     "sync_exchange.py",
     "sync_files.py",
     "sync_http.py",
+    "sync_links.py",
     "sync_paths.py",
     "sync_records.py",
     "sync_schema.py",

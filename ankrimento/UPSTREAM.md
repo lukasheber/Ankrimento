@@ -187,6 +187,8 @@ On every update, check that nothing upstream collides with the overlay: `git -C 
 HEAD | grep backend/sync_`. If upstream now has the engine, delete `engine/` and the `from("engine")` block in
 `build.gradle.kts`.
 
+The overlay also carries `sync_links.py` (PDF page and passage links, EPUB connections: one record per link, keyed by its two ends); a migration that adds a column to `document_links` or `epub_connections` must be classified in `sync_records.py` and carried there.
+
 The overlay also carries `sync_files.py`, which shares the files of local file cards (managed copies) with every device; it reads the collection's notes, so a new Anki or upstream note-type change to "Incremento Local File" (field names, the `managed_copy` mode) is what to check there.
 
 Refresh the overlay from an Incremento checkout with `python ankrimento/tools/update_engine.py <checkout>`. It records the
