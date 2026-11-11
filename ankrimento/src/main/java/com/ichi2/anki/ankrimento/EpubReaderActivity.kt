@@ -21,6 +21,8 @@ import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewClientCompat
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.ContentsSheet
+import com.ichi2.anki.ankrimento.ui.ExcerptListSheet
+import com.ichi2.anki.ankrimento.ui.ExcerptRow
 import com.ichi2.anki.ankrimento.ui.FindBar
 import com.ichi2.anki.ankrimento.ui.FindHit
 import com.ichi2.anki.ankrimento.ui.FindSheet
@@ -70,6 +72,12 @@ class EpubReaderActivity : ReaderActivity() {
 
     /** The anchor the next chapter's page script opens at (a followed link). */
     private var pendingFragment = ""
+
+    /** The passage a followed connection leads to (JSON), for the page script to reveal in the next chapter loaded. */
+    private var pendingPassage = ""
+
+    /** How far down the open chapter reading is, to come back to after a connection. */
+    private var chapterRatio = 0.0
 
     /** Where each followed link was tapped (chapter, scroll ratio), most recent last; Back returns there. */
     private val linkBack = ArrayDeque<Pair<Int, Double>>()
@@ -131,6 +139,7 @@ class EpubReaderActivity : ReaderActivity() {
                 ReaderTool(
                     getString(R.string.ankrimento_writing_excerpts_here),
                 ) { section?.index?.let { showWritingExcerpts("epub", it) } },
+                ReaderTool(getString(R.string.ankrimento_connections), IncrementoIcons.Link, onClick = ::showConnections),
                 ReaderTool(getString(R.string.ankrimento_epub_read_here)) {
                     webView.evaluateJavascript(READ_MARKER_JS) { placed ->
                         if (placed == "true") toast(getString(R.string.ankrimento_marked_read))
@@ -153,6 +162,7 @@ class EpubReaderActivity : ReaderActivity() {
             if (start != null) pendingSearch = intent.getStringExtra(EXTRA_FIND).orEmpty()
             // An extract's link back: its place in the chapter too.
             val scroll = intent.getDoubleExtra(EXTRA_SCROLL, 0.0).coerceIn(0.0, 1.0)
+            pendingPassage = intent.getStringExtra(EXTRA_PASSAGE).orEmpty()
             load(start, start?.let { scroll })
         }
         Ankrimento.readerScope.launch {
@@ -234,6 +244,84 @@ class EpubReaderActivity : ReaderActivity() {
         }
     }
 
+    /**
+     * The chapter's connections to passages elsewhere (desktop makes them with two books side by side): each opens its
+     * other end with the words revealed. In this book the "Back to where you were" chip returns; another book opens
+     * over this one, so Back returns.
+     */
+    private fun showConnections() {
+        val shown = section?.index ?: return
+        lifecycleScope.launch {
+            val connections = runCatching { withCol { Ankrimento.epubConnections(cardId, shown) } }.getOrDefault(emptyList())
+            sheet = {
+                ExcerptListSheet(
+                    title = getString(R.string.ankrimento_connections),
+                    empty = getString(R.string.ankrimento_connections_empty),
+                    rows =
+                        connections.map { connection ->
+                            val place =
+                                connection.chapter.ifBlank {
+                                    getString(
+                                        R.string.ankrimento_epub_chapter_number,
+                                        connection.section + 1,
+                                    )
+                                }
+                            ExcerptRow(
+                                quote = connection.quote.ifBlank { place },
+                                where =
+                                    if (connection.available) {
+                                        "${connection.title} · $place"
+                                    } else {
+                                        getString(R.string.ankrimento_connection_unavailable)
+                                    },
+                                available = connection.available,
+                                onRemove = { removeConnection(shown, connection) },
+                                onOpen = { openConnection(shown, connection) },
+                            )
+                        },
+                    onDismiss = { sheet = null },
+                )
+            }
+        }
+    }
+
+    private fun openConnection(
+        shown: Int,
+        connection: Ankrimento.EpubConnection,
+    ) {
+        lifecycleScope.launch {
+            val place =
+                runCatching { withCol { Ankrimento.epubConnectionTarget(cardId, shown, connection) } }.getOrElse {
+                    Timber.w(it, "Opening a connection failed")
+                    toast(getString(R.string.ankrimento_connection_unavailable))
+                    return@launch
+                }
+            if (place.cardId != cardId) {
+                ReaderActivity
+                    .intentAt(this@EpubReaderActivity, "epub", place.cardId, place.section, "")
+                    ?.putExtra(EXTRA_SCROLL, place.scroll)
+                    ?.putExtra(EXTRA_PASSAGE, place.passage)
+                    ?.let(::startActivity)
+                return@launch
+            }
+            linkBack.addLast(shown to chapterRatio)
+            showLinkBack()
+            pendingPassage = place.passage
+            load(place.section, place.scroll)
+        }
+    }
+
+    private fun removeConnection(
+        shown: Int,
+        connection: Ankrimento.EpubConnection,
+    ) {
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.epubConnectionRemove(cardId, shown, connection) } }
+                .onFailure { Timber.w(it, "Removing a connection failed") }
+            showConnections()
+        }
+    }
+
     private fun returnFromLink() {
         val (index, ratio) = linkBack.removeLastOrNull() ?: return
         showLinkBack()
@@ -285,6 +373,7 @@ class EpubReaderActivity : ReaderActivity() {
         current: Ankrimento.EpubSection,
         chapterRatio: Double,
     ) {
+        this.chapterRatio = chapterRatio.coerceIn(0.0, 1.0)
         val fraction = (current.index + chapterRatio.coerceIn(0.0, 1.0)) / current.count.coerceAtLeast(1)
         progress =
             ReaderProgress(
@@ -634,7 +723,8 @@ class EpubReaderActivity : ReaderActivity() {
                     lifecycleScope.launch {
                         val search = pendingSearch.also { pendingSearch = "" }
                         val fragment = pendingFragment.also { pendingFragment = "" }
-                        val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio, search, fragment) }
+                        val passage = pendingPassage.also { pendingPassage = "" }
+                        val script = withCol { Ankrimento.epubScript(cardId, current, pendingScrollRatio, search, fragment, passage) }
                         webView.evaluateJavascript(TOUCH_SELECTION_JS, null)
                         webView.evaluateJavascript(HIDE_READ_MARKER_JS, null)
                         webView.evaluateJavascript(script, null)
@@ -666,6 +756,9 @@ class EpubReaderActivity : ReaderActivity() {
     companion object {
         /** Where in the chapter given by [EXTRA_START] to open (0 to 1), as an extract's link back gives it. */
         const val EXTRA_SCROLL = "scroll"
+
+        /** The passage to reveal in the chapter given by [EXTRA_START] (JSON), as a followed connection gives it. */
+        const val EXTRA_PASSAGE = "passage"
 
         /** The range of the chapter's text on the screen, from the page script's current location (null when none). */
         private const val VISIBLE_RANGE_JS =

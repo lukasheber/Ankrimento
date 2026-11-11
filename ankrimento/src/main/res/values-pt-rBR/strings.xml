@@ -363,6 +363,10 @@
     <string name="ankrimento_unmark_page">Desmarcar página</string>
     <string name="ankrimento_mark_chapter_read">Marcar capítulo como lido</string>
     <string name="ankrimento_unmark_chapter">Desmarcar capítulo</string>
+    <string name="ankrimento_connections">Conexões</string>
+    <string name="ankrimento_connections_empty">Este capítulo não tem conexões com outros trechos. Elas são criadas no Incremento do computador, com dois livros lado a lado.</string>
+    <string name="ankrimento_connection_unavailable">Essa conexão não pode ser aberta: o livro ou o capítulo não existe mais.</string>
+    <string name="ankrimento_epub_chapter_number">Capítulo %1$d</string>
     <string name="ankrimento_kind_file">Arquivo</string>
     <string name="ankrimento_add_any_file">Qualquer arquivo, aberto em outro app</string>
     <string name="ankrimento_add_as_document_title">Adicionar como documento?</string>

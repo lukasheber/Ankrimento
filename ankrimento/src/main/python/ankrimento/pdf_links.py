@@ -58,7 +58,14 @@ def target(card_id: int, page: int, link_id: int, direction: str) -> dict[str, A
     snapshot = resolve_pdf_reference(addon_dir, profile, runtime.current().col, link["target_card_id"])
     if link["target_page"] > limit(snapshot["card_id"]):
         raise ValueError("Destination page is locked")
-    return {"card_id": snapshot["card_id"], "page": link["target_page"], "scroll": link["target_scroll"], "page_y": link.get("target_y")}
+    return {
+        "card_id": snapshot["card_id"],
+        "page": link["target_page"],
+        "scroll": link["target_scroll"],
+        "page_y": link.get("target_y"),
+        # The exact words at the other end, which the viewer reveals (desktop's passage links); {} for a page link.
+        "passage": link.get("target_passage") or {},
+    }
 
 
 def remove(card_id: int, page: int, link_id: int) -> bool:

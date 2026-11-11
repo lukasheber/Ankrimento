@@ -352,6 +352,10 @@
     <string name="ankrimento_unmark_page">Unmark page</string>
     <string name="ankrimento_mark_chapter_read">Mark chapter read</string>
     <string name="ankrimento_unmark_chapter">Unmark chapter</string>
+    <string name="ankrimento_connections">Connections</string>
+    <string name="ankrimento_connections_empty">This chapter has no connections to other passages. They are made in Incremento on a computer, with two books side by side.</string>
+    <string name="ankrimento_connection_unavailable">That connection can\'t be opened: its book or chapter is missing.</string>
+    <string name="ankrimento_epub_chapter_number">Chapter %1$d</string>
     <string name="ankrimento_kind_file">File</string>
     <string name="ankrimento_add_any_file">Any file, opened with another app</string>
     <string name="ankrimento_add_as_document_title">Add as a document?</string>

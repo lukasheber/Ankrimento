@@ -10,6 +10,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -94,6 +95,30 @@ class PdfReaderActivity : ReaderActivity() {
 
     /** The PDF whose page is being linked when this reader only chooses the destination (0 otherwise). */
     private val linkSource by lazy { intent.getLongExtra(EXTRA_LINK_FROM, 0L) }
+
+    /** Opened by following a link from another document: the place to show, and Back returns there. */
+    private val arrival: Ankrimento.PdfPlace? by lazy {
+        if (!intent.getBooleanExtra(EXTRA_VIA_LINK, false)) {
+            null
+        } else {
+            Ankrimento.PdfPlace(
+                cardId,
+                intent.getIntExtra(EXTRA_START, 1).coerceAtLeast(1),
+                intent.getDoubleExtra(EXTRA_PLACE_SCROLL, 0.0),
+                intent.getDoubleExtra(EXTRA_PLACE_Y, -1.0).takeIf { it >= 0 },
+                intent.getStringExtra(EXTRA_PASSAGE).orEmpty(),
+            )
+        }
+    }
+
+    /** The pages links were followed from inside this document, for desktop's Jump Back. */
+    private val returnPages = ArrayDeque<Int>()
+
+    /** Back returns to the page a link was followed from, while there is one (the viewer's own button is in its controls). */
+    private val backFromJump =
+        object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() = passageBack()
+        }
     private val choosingDestination get() = linkSource != 0L
     private var scrollRatio = 0.0
     private var appearance = "original"
@@ -126,6 +151,7 @@ class PdfReaderActivity : ReaderActivity() {
         setReaderContent(webView)
         toggleBarsOnTap(webView)
         showViewerControls(false)
+        onBackPressedDispatcher.addCallback(this, backFromJump)
         if (choosingDestination) chooseDestination()
         lifecycleScope.launch {
             val path = withCol { Ankrimento.pdfPath(cardId) }
@@ -149,6 +175,10 @@ class PdfReaderActivity : ReaderActivity() {
                 if (message.startsWith(HIGHLIGHT_COLOR_PREFIX)) {
                     val data = message.removePrefix(HIGHLIGHT_COLOR_PREFIX)
                     if (!isDestroyed) runOnUiThread { chooseColor(data) }
+                    continue
+                }
+                if (message.startsWith(PASSAGE_BACK_PREFIX)) {
+                    if (!isDestroyed) runOnUiThread { passageBack() }
                     continue
                 }
                 if (message.startsWith(CONTENTS_PREFIX)) {
@@ -447,6 +477,8 @@ class PdfReaderActivity : ReaderActivity() {
 
     /** Opens the page and words asked for (Search ALL): the match on that page, highlighted. */
     private fun openStart() {
+        // A followed link opened the viewer at its place already, without moving where reading was left.
+        if (arrival != null) return
         val start = intent.getIntExtra(EXTRA_START, 0)
         val query = intent.getStringExtra(EXTRA_FIND).orEmpty().trim()
         if (query.isEmpty()) {
@@ -736,7 +768,15 @@ class PdfReaderActivity : ReaderActivity() {
             webView.evaluateJavascript(PYCMD_SCRIPT, null)
         }
         lifecycleScope.launch {
-            val script = withCol { Ankrimento.pdfStartScript(cardId, PDF_URL, WORKER_URL) }
+            val arrived = arrival
+            val script =
+                withCol {
+                    if (arrived == null) {
+                        Ankrimento.pdfStartScript(cardId, PDF_URL, WORKER_URL)
+                    } else {
+                        Ankrimento.pdfJumpScript(cardId, PDF_URL, WORKER_URL, arrived, back = true)
+                    }
+                }
             webView.evaluateJavascript(script, null)
             webView.evaluateJavascript(COMPACT_STYLE_JS, null)
             webView.evaluateJavascript(PINCH_ZOOM_JS, null)
@@ -804,10 +844,43 @@ class PdfReaderActivity : ReaderActivity() {
 
     /** A link's other end: a page here, or another PDF's reader at that page. */
     private fun openPlace(place: Ankrimento.PdfPlace) {
-        if (place.cardId == cardId) {
-            goToPage(place.page)
-        } else {
-            ReaderActivity.intentAt(this, "pdf", place.cardId, place.page, "")?.let(::startActivity)
+        if (place.cardId != cardId) {
+            // Another document: its own reader over this one, so Back (or the viewer's Jump Back) returns here.
+            startActivity(linkIntent(this, place))
+            return
+        }
+        returnPages.addLast(page.coerceAtLeast(1))
+        backFromJump.isEnabled = true
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.pdfJumpScript(cardId, PDF_URL, WORKER_URL, place, back = true) } }
+                .onSuccess {
+                    webView.evaluateJavascript(it, null)
+                    // The viewer restarts at the place without a page turn to report: the page bar and Back follow here.
+                    showPage(place.page, pages)
+                }.onFailure {
+                    Timber.w(it, "Following a link inside the document failed")
+                    returnPages.removeLastOrNull()
+                    backFromJump.isEnabled = returnPages.isNotEmpty()
+                }
+        }
+    }
+
+    /** Desktop's Jump Back: to the page the link was followed from, or to the document it came from. */
+    private fun passageBack() {
+        val from = returnPages.removeLastOrNull()
+        backFromJump.isEnabled = returnPages.isNotEmpty()
+        when {
+            from != null -> {
+                goToPage(from)
+                if (returnPages.isEmpty() && arrival == null) {
+                    webView.evaluateJavascript(
+                        "window._incDocumentBackAvailable = false;" +
+                            " window.incrementoSetDocumentBackAvailable && window.incrementoSetDocumentBackAvailable(false);",
+                        null,
+                    )
+                }
+            }
+            arrival != null -> finish()
         }
     }
 
@@ -1079,6 +1152,26 @@ class PdfReaderActivity : ReaderActivity() {
         ): Intent = ReaderActivity.intent(context, "pdf", cardId, session = false)!!
 
         private const val EXTRA_LINK_FROM = "link_from"
+        private const val EXTRA_VIA_LINK = "via_link"
+        private const val EXTRA_PLACE_SCROLL = "place_scroll"
+        private const val EXTRA_PLACE_Y = "place_y"
+        private const val EXTRA_PASSAGE = "passage"
+
+        /** The viewer's Jump Back button, shown after a link was followed. */
+        private const val PASSAGE_BACK_PREFIX = "incremento_pdf_passage_back:"
+
+        /** Another PDF opened at a followed link's [place], its passage revealed. */
+        fun linkIntent(
+            context: Context,
+            place: Ankrimento.PdfPlace,
+        ): Intent? =
+            ReaderActivity
+                .intentAt(context, "pdf", place.cardId, place.page, "")
+                ?.putExtra(EXTRA_VIA_LINK, true)
+                ?.putExtra(EXTRA_PLACE_SCROLL, place.scroll)
+                ?.putExtra(EXTRA_PLACE_Y, place.pageY ?: -1.0)
+                ?.putExtra(EXTRA_PASSAGE, place.passage)
+
         private const val EXTRA_LINK_PAGE = "link_page"
         private const val EXTRA_LINK_Y = "link_y"
         private const val SCROLL_PREFIX = "incremento_pdf_scroll:"

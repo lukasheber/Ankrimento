@@ -66,8 +66,6 @@ NOT_ANSWERED = {
     # Desktop's repair of a PDF whose file went missing; on the phone the file lives in the app's own storage.
     "incremento_pdf_repair_missing": "desktop's dialog to replace a missing PDF; the phone re-imports the document",
     # Known gaps: features the readers' pages report that the phone does not have yet (UPSTREAM.md, ROADMAP.md).
-    "incremento_epub_passage_status": "GAP: precise passage links between documents (EPUB side)",
-    "incremento_pdf_passage_back": "GAP: Jump Back after following a precise passage link (PDF side)",
 }
 
 # Desktop names the phone compiles from desktop's Qt files: (phone module, variable, desktop file).

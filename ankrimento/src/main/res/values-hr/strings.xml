@@ -363,6 +363,10 @@
     <string name="ankrimento_unmark_page">Ukloni oznaku stranice</string>
     <string name="ankrimento_mark_chapter_read">Označi poglavlje pročitanim</string>
     <string name="ankrimento_unmark_chapter">Ukloni oznaku poglavlja</string>
+    <string name="ankrimento_connections">Veze</string>
+    <string name="ankrimento_connections_empty">Ovo poglavlje nema veza s drugim odlomcima. Izrađuju se u Incrementu na računalu, s dvije knjige jednom uz drugu.</string>
+    <string name="ankrimento_connection_unavailable">Ta se veza ne može otvoriti: nedostaje knjiga ili poglavlje.</string>
+    <string name="ankrimento_epub_chapter_number">Poglavlje %1$d</string>
     <string name="ankrimento_kind_file">Datoteka</string>
     <string name="ankrimento_add_any_file">Bilo koja datoteka, otvorena drugom aplikacijom</string>
     <string name="ankrimento_add_as_document_title">Dodati kao dokument?</string>

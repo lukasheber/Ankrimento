@@ -37,7 +37,7 @@ def test_a_link_shows_at_both_ends_and_opens_its_other_end(rt, two_pdfs):
 
     # Its other end, where desktop's jump opens it.
     there = json.loads(facade.pdf_page_link_target(source, 1, link_id, "outgoing"))
-    assert there == {"card_id": target, "page": 1, "scroll": 0.5, "page_y": 0.4}
+    assert there == {"card_id": target, "page": 1, "scroll": 0.5, "page_y": 0.4, "passage": {}}
     back = json.loads(facade.pdf_page_link_target(target, 1, link_id, "incoming"))
     assert (back["card_id"], back["page"]) == (source, 1)
 
@@ -78,7 +78,7 @@ def test_the_viewers_own_panel_is_answered(rt, two_pdfs):
         facade.pdf_message(source, "incremento_pdf_page_links:" + json.dumps({**request, "operation": "create", "page_y": 0.3}))
     finally:
         mw.host_events = previous
-    assert ("pdf_open", {"source_card_id": source, "card_id": target, "page": 1, "scroll": 0.0, "page_y": None}) in events
+    assert ("pdf_open", {"source_card_id": source, "card_id": target, "page": 1, "scroll": 0.0, "page_y": None, "passage": {}}) in events
     assert ("pdf_page_link_create", {"card_id": source, "page": 1, "page_y": 0.3}) in events
 
     removed = facade.pdf_message(source, "incremento_pdf_page_links:" + json.dumps(

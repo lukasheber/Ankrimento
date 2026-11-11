@@ -177,11 +177,15 @@ def pdf_path(card_id: int) -> str:
     return path if path and os.path.isfile(path) else ""
 
 
-def start_script(card_id: int, file_url: str, worker_url: str) -> str:
+def start_script(card_id: int, file_url: str, worker_url: str, jump: dict[str, Any] | None = None) -> str:
     """JavaScript that opens the card's PDF at its saved position.
 
-    Mirrors the start sequence of ``frontend/pdf_dock.py`` (``incrementoPdfStart``).
+    Mirrors the start sequence of ``frontend/pdf_dock.py`` (``incrementoPdfStart``). With ``jump`` (a followed link:
+    ``page``, ``scroll``, ``page_y``, ``passage``, ``back``) the viewer opens there instead, reveals the passage and,
+    with ``back``, offers desktop's Jump Back; where reading was left is not moved, as on desktop.
     """
+    from incremento.backend.document_passages import normalize_passage
+
     from incremento.backend.config_service import (
         configured_pdf_controls_collapsed,
         configured_pdf_link_preview_size,
@@ -206,6 +210,11 @@ def start_script(card_id: int, file_url: str, worker_url: str) -> str:
     zoom = float(get_zoom(addon_dir, profile, card_id) or 1.0)
     scroll_ratio = float(get_scroll_ratio(addon_dir, profile, card_id) or 0.0)
     read_page = int(get_read_page(addon_dir, profile, card_id) or 0)
+    jump = jump or {}
+    passage = normalize_passage(jump.get("passage") or None)
+    if jump:
+        page = max(1, int(jump.get("page") or page))
+        scroll_ratio = min(1.0, max(0.0, float(jump.get("scroll") or 0.0)))
     args = [
         card_id,
         filename,
@@ -229,10 +238,11 @@ def start_script(card_id: int, file_url: str, worker_url: str) -> str:
         _appearance_mode(card_id),
         bool(cfg.get("pdf_show_highlight_delete_buttons", True)),
         configured_pdf_link_preview_zoom(cfg, profile),
-        None,  # page y
+        jump.get("page_y"),  # page y
         configured_pdf_controls_collapsed(cfg, profile),
         configured_reader_default_highlight_color(cfg, profile),
         configured_pdf_link_preview_size(cfg, profile),
+        passage,  # the passage a followed link reveals
     ]
     return (
         f"window._pdfWorkerSrc = {json.dumps(worker_url)};"
@@ -241,6 +251,8 @@ def start_script(card_id: int, file_url: str, worker_url: str) -> str:
         f"window._incPdfHighlights = {json.dumps(_highlights_payload(card_id))};"
         "window._pdfNativeHighlightsVisible = false;"
         f"window._incPdfBookmarks = {json.dumps(args[16])};"
+        f"window._incDocumentBackAvailable = {json.dumps(bool(jump.get('back')))};"
+        "window.incrementoSetDocumentBackAvailable && window.incrementoSetDocumentBackAvailable(window._incDocumentBackAvailable);"
         f"window.incrementoPdfStart && window.incrementoPdfStart({', '.join(json.dumps(a) for a in args)});"
     )
 

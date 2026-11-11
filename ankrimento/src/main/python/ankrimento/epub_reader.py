@@ -35,6 +35,7 @@ MSG_MARK_READ = "incremento_epub_mark_read:"
 MSG_SECTION_NAV = "incremento_epub_section_nav:"
 MSG_PAGE_JUMP = "incremento_epub_page_jump:"
 MSG_COVERAGE = "incremento_reader_coverage:"
+MSG_PASSAGE_STATUS = "incremento_epub_passage_status:"
 MSG_OPEN_LINK = "incremento_epub_open_link:"
 MSG_HL_COLOR = "incremento_epub_hl_color:"
 MSG_HL_STYLE = "incremento_epub_hl_style:"
@@ -164,6 +165,7 @@ def section_script(
     scroll_ratio: float | None = None,
     search_query: str = "",
     link_fragment: str = "",
+    passage: dict | None = None,
 ) -> str:
     """The page script for a loaded chapter; mirrors desktop's ``_on_load_finished``.
 
@@ -174,6 +176,7 @@ def section_script(
     from incremento.backend.config_service import configured_reader_default_highlight_color
     from incremento.backend.epub_appearance import get_appearance
     from incremento.backend.epub_highlights import load_highlights
+    from incremento.backend.document_passages import normalize_passage
     from incremento.backend.epub_manager import get_epub_font_scale, get_epub_progress, get_read_anchor
 
     addon_dir, profile = _context()
@@ -201,6 +204,8 @@ def section_script(
         appearance=get_appearance(addon_dir, profile, card_id),
         # A saved website (an HTML snapshot) keeps its own layout, as desktop's dock does for source type "HTML".
         preserve_layout=_source_type(card_id) == "HTML",
+        # The exact words a followed connection leads to: the page script finds and briefly reveals them.
+        passage=normalize_passage(passage or None, "epub"),
     )
 
 
@@ -298,6 +303,13 @@ def handle(card_id: int, section_index: int, msg: str) -> dict[str, Any]:
 
         figures = coverage.receive(card_id, payload(MSG_COVERAGE), section_index=section_index)
         return {"coverage": figures} if figures else {}
+    elif msg.startswith(MSG_PASSAGE_STATUS):
+        # The linked words are no longer in the chapter (the book changed): desktop says so and stays at the place.
+        from incremento.backend.i18n import t
+
+        data = payload(MSG_PASSAGE_STATUS)
+        if for_this_card(data) and data.get("matched") is False:
+            return {"toast": t("reader_passage_unavailable")}
     elif msg.startswith(MSG_FILL_FIELD):
         from ankrimento import extract
 

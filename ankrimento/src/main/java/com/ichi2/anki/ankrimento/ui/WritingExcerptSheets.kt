@@ -26,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -91,6 +92,10 @@ internal fun WritingPickerSheet(
 internal class ExcerptRow(
     val quote: String,
     val where: String,
+    /** Shown dimmed and not opened when false (the other end is gone). */
+    val available: Boolean = true,
+    /** Removes the link, when the list allows it. */
+    val onRemove: (() -> Unit)? = null,
     val onOpen: () -> Unit,
 )
 
@@ -103,6 +108,7 @@ internal class ExcerptRow(
 internal fun ExcerptListSheet(
     title: String,
     rows: List<ExcerptRow>,
+    empty: String = stringResource(R.string.ankrimento_writing_excerpts_none),
     onDismiss: () -> Unit,
 ) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
@@ -110,7 +116,7 @@ internal fun ExcerptListSheet(
             Text(title, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp))
             if (rows.isEmpty()) {
                 Text(
-                    stringResource(R.string.ankrimento_writing_excerpts_none),
+                    empty,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
@@ -121,8 +127,17 @@ internal fun ExcerptListSheet(
                     ListItem(
                         headlineContent = { Text(row.quote, maxLines = 3, overflow = TextOverflow.Ellipsis) },
                         supportingContent = { Text(row.where, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                        trailingContent =
+                            row.onRemove?.let { remove ->
+                                {
+                                    TextButton(onClick = {
+                                        onDismiss()
+                                        remove()
+                                    }) { Text(stringResource(R.string.ankrimento_page_link_remove)) }
+                                }
+                            },
                         modifier =
-                            Modifier.clickable {
+                            Modifier.alpha(if (row.available) 1f else DIMMED).clickable(enabled = row.available) {
                                 onDismiss()
                                 row.onOpen()
                             },
@@ -134,3 +149,4 @@ internal fun ExcerptListSheet(
 }
 
 private const val MAX_TITLE = 120
+private const val DIMMED = 0.5f

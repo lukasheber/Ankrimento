@@ -961,10 +961,79 @@ object Ankrimento {
         scrollRatio: Double?,
         searchQuery: String = "",
         linkFragment: String = "",
+        passage: String = "",
     ): String =
         requireFacade()
-            .callAttr("epub_script", cardId, section.index, section.nonce, scrollRatio ?: -1.0, searchQuery, linkFragment)
+            .callAttr("epub_script", cardId, section.index, section.nonce, scrollRatio ?: -1.0, searchQuery, linkFragment, passage)
             .toString()
+
+    /** A chapter's connection to a passage elsewhere: the other end's book, chapter and words. */
+    data class EpubConnection(
+        val id: Long,
+        /** "outgoing" (made from here) or "incoming" (made from the other end). */
+        val direction: String,
+        val title: String,
+        val section: Int,
+        val chapter: String,
+        val quote: String,
+        val available: Boolean,
+    )
+
+    /** Where a connection opens: a book's chapter and place, with the passage to reveal (JSON, or ""). */
+    data class EpubPlace(
+        val cardId: Long,
+        val section: Int,
+        val scroll: Double,
+        val passage: String,
+    )
+
+    /** The connections of chapter [section] (0-based), from either end. */
+    @WorkerThread
+    fun epubConnections(
+        cardId: Long,
+        section: Int,
+    ): List<EpubConnection> {
+        val rows = JSONArray(requireFacade().callAttr("epub_connections", cardId, section).toString())
+        return List(rows.length()) {
+            val row = rows.getJSONObject(it)
+            EpubConnection(
+                row.getLong("id"),
+                row.getString("direction"),
+                displayTitle(row.getString("title")),
+                row.getInt("section"),
+                row.getString("chapter"),
+                row.getString("quote"),
+                row.getBoolean("available"),
+            )
+        }
+    }
+
+    /** Where a connection opens; throws when its book or chapter is gone. */
+    @WorkerThread
+    fun epubConnectionTarget(
+        cardId: Long,
+        section: Int,
+        link: EpubConnection,
+    ): EpubPlace {
+        val json = JSONObject(requireFacade().callAttr("epub_connection_target", cardId, section, link.id).toString())
+        return EpubPlace(
+            json.getLong("card_id"),
+            json.getInt("section"),
+            json.optDouble("scroll", 0.0),
+            json
+                .optJSONObject("passage")
+                ?.takeIf { it.length() > 0 }
+                ?.toString()
+                .orEmpty(),
+        )
+    }
+
+    @WorkerThread
+    fun epubConnectionRemove(
+        cardId: Long,
+        section: Int,
+        link: EpubConnection,
+    ): Boolean = requireFacade().callAttr("epub_connection_remove", cardId, section, link.id).toBoolean()
 
     /** The book's highlights in book order; [MarkHighlight.page] is the chapter, [MarkHighlight.place] its title. */
     @WorkerThread
@@ -1079,6 +1148,8 @@ object Ankrimento {
         val json = JSONObject(requireFacade().callAttr("epub_message", cardId, sectionIndex, message).toString())
         json.optJSONObject("navigate")?.let { return EpubAction.Navigate(it.getInt("section_index"), it.getDouble("scroll_ratio")) }
         json.optJSONObject("coverage")?.let { figures -> return coverageOf(figures)?.let { EpubAction.Viewed(it) } }
+        // Something to say and nothing to do (a linked passage that is no longer in the chapter).
+        json.optString("toast").takeIf { it.isNotEmpty() }?.let { return EpubAction.Blocked(it) }
         val link = json.optJSONObject("link") ?: return null
         return when (link.optString("kind")) {
             "external" -> EpubAction.OpenWeb(link.getString("url"))
@@ -1596,6 +1667,22 @@ object Ankrimento {
         workerUrl: String,
     ): String = requireFacade().callAttr("pdf_start_script", cardId, fileUrl, workerUrl).toString()
 
+    /**
+     * Starts the viewer at a followed link's [place], its passage revealed. With [back] the viewer offers desktop's
+     * Jump Back. Where reading was left is not moved.
+     */
+    @WorkerThread
+    fun pdfJumpScript(
+        cardId: Long,
+        fileUrl: String,
+        workerUrl: String,
+        place: PdfPlace,
+        back: Boolean,
+    ): String =
+        requireFacade()
+            .callAttr("pdf_jump_script", cardId, fileUrl, workerUrl, place.page, place.scroll, place.pageY ?: -1.0, place.passage, back)
+            .toString()
+
     /** Apply a `pycmd` message from the PDF viewer; returns JavaScript to run (may be empty). */
     @WorkerThread
     fun pdfMessage(
@@ -1754,9 +1841,24 @@ object Ankrimento {
         val cardId: Long,
         val page: Int,
         val scroll: Double,
+        /** How far down the page the link points (0 to 1), when it says. */
+        val pageY: Double? = null,
+        /** The exact words a passage link leads to, as JSON for the viewer to reveal; "" for a page link. */
+        val passage: String = "",
     ) {
         companion object {
-            fun from(json: JSONObject) = PdfPlace(json.getLong("card_id"), json.getInt("page"), json.optDouble("scroll", 0.0))
+            fun from(json: JSONObject) =
+                PdfPlace(
+                    json.getLong("card_id"),
+                    json.getInt("page"),
+                    json.optDouble("scroll", 0.0),
+                    if (json.isNull("page_y")) null else json.optDouble("page_y"),
+                    json
+                        .optJSONObject("passage")
+                        ?.takeIf { it.length() > 0 }
+                        ?.toString()
+                        .orEmpty(),
+                )
         }
     }
 

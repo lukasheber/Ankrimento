@@ -982,14 +982,41 @@ def epub_open(card_id: int, section_index: int = -1) -> str:
 
 
 def epub_script(
-    card_id: int, section_index: int, nonce: str, scroll_ratio: float = -1.0, search_query: str = "", link_fragment: str = ""
+    card_id: int,
+    section_index: int,
+    nonce: str,
+    scroll_ratio: float = -1.0,
+    search_query: str = "",
+    link_fragment: str = "",
+    passage_json: str = "",
 ) -> str:
     """The page script for a loaded chapter (saved position when ``scroll_ratio`` < 0), finding
-    ``search_query`` or opening at ``link_fragment``."""
+    ``search_query``, opening at ``link_fragment``, or revealing the passage a followed connection leads to."""
     from ankrimento import epub_reader
 
     ratio = None if float(scroll_ratio) < 0 else float(scroll_ratio)
-    return epub_reader.section_script(int(card_id), int(section_index), nonce, ratio, search_query, link_fragment)
+    passage = json.loads(passage_json) if passage_json else None
+    return epub_reader.section_script(int(card_id), int(section_index), nonce, ratio, search_query, link_fragment, passage)
+
+
+def epub_connections(card_id: int, section_index: int) -> str:
+    """The chapter's connections to other passages, from either end."""
+    from ankrimento import epub_links
+
+    return _dumps(epub_links.links(int(card_id), int(section_index)))
+
+
+def epub_connection_target(card_id: int, section_index: int, link_id: int) -> str:
+    """Where a connection opens; raises when its book or chapter is unavailable."""
+    from ankrimento import epub_links
+
+    return _dumps(epub_links.target(int(card_id), int(section_index), int(link_id)))
+
+
+def epub_connection_remove(card_id: int, section_index: int, link_id: int) -> bool:
+    from ankrimento import epub_links
+
+    return epub_links.remove(int(card_id), int(section_index), int(link_id))
 
 
 def epub_marks(card_id: int) -> str:
@@ -1108,6 +1135,22 @@ def pdf_start_script(card_id: int, file_url: str, worker_url: str) -> str:
     from ankrimento import pdf_reader
 
     return pdf_reader.start_script(int(card_id), file_url, worker_url)
+
+
+def pdf_jump_script(
+    card_id: int, file_url: str, worker_url: str, page: int, scroll: float, page_y: float, passage_json: str, back: bool
+) -> str:
+    """Starts the viewer at a followed link's place (``page_y`` < 0: none), its passage revealed, with a way back."""
+    from ankrimento import pdf_reader
+
+    jump = {
+        "page": int(page),
+        "scroll": float(scroll),
+        "page_y": None if float(page_y) < 0 else float(page_y),
+        "passage": json.loads(passage_json) if passage_json else None,
+        "back": bool(back),
+    }
+    return pdf_reader.start_script(int(card_id), file_url, worker_url, jump)
 
 
 def pdf_index_state(card_id: int) -> str:

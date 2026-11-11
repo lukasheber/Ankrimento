@@ -341,6 +341,10 @@
     <string name="ankrimento_unmark_page">取消标记此页</string>
     <string name="ankrimento_mark_chapter_read">标记本章已读</string>
     <string name="ankrimento_unmark_chapter">取消标记本章</string>
+    <string name="ankrimento_connections">关联</string>
+    <string name="ankrimento_connections_empty">本章没有与其他段落的关联。关联需在电脑上的 Incremento 中并排打开两本书来创建。</string>
+    <string name="ankrimento_connection_unavailable">无法打开该关联：图书或章节已不存在。</string>
+    <string name="ankrimento_epub_chapter_number">第 %1$d 章</string>
     <string name="ankrimento_kind_file">文件</string>
     <string name="ankrimento_add_any_file">任意文件，用其他应用打开</string>
     <string name="ankrimento_add_as_document_title">添加为文档？</string>
