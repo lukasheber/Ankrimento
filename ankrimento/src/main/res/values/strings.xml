@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="DuplicateCrowdInStrings">
     <string name="ankrimento_session_failed">Incremento session failed: %s</string>
     <string name="ankrimento_pdf_added">Added “%s” to Incremento</string>
     <string name="ankrimento_pdf_add_failed">Adding the document failed: %s</string>
@@ -55,7 +55,6 @@
         <item quantity="other">Saved for later: %d to add, when you leave this document</item>
     </plurals>
     <string name="ankrimento_extract_discard">Discard</string>
-    <string name="ankrimento_extract_added">Card added</string>
     <string name="ankrimento_extract_failed">Adding the card failed: %s</string>
     <string name="ankrimento_sync_now">Sync Incremento data</string>
     <string name="ankrimento_sync_up_to_date">Incremento data is up to date</string>
@@ -71,9 +70,6 @@
     <string name="ankrimento_sync_hub_invalid">Not a valid pairing code</string>
     <string name="ankrimento_statistics_title">Incremento statistics</string>
     <string name="ankrimento_stats_tag_rows">Reviewed cards by tag: each row gives the cards and their study time.</string>
-    <string name="ankrimento_stats_today">Today (cards · time)</string>
-    <string name="ankrimento_stats_lifetime">All time (cards · time)</string>
-    <string name="ankrimento_stats_media">Last 7 days: %1$d pages read, %2$d videos, %3$s watched</string>
     <string name="ankrimento_knowledge_tree_empty">The knowledge tree is empty</string>
     <string name="ankrimento_study_branch">Study this branch</string>
     <string name="ankrimento_session_settings">Incremento session settings…</string>
@@ -92,19 +88,15 @@
     <string name="ankrimento_more_options">More options</string>
     <string name="ankrimento_show_card">Show card</string>
     <string name="ankrimento_open_reader">Open document</string>
-    <string name="ankrimento_revisit_in">Revisit in %s</string>
     <string name="ankrimento_priority_title" comment="Title of the dialog that changes an element's priority">Priority</string>
     <string name="ankrimento_extract_selection">Extract selection</string>
     <string name="ankrimento_highlight_selection">Highlight selection</string>
-    <string name="ankrimento_pdf_page">Page %d</string>
     <string name="ankrimento_pdf_find">Find in document</string>
     <string name="ankrimento_pdf_mark_read">Mark read to this page</string>
     <string name="ankrimento_pdf_previous" comment="PDF reader button: go to the previous page">Previous page</string>
     <string name="ankrimento_pdf_next">Next page</string>
     <string name="ankrimento_pdf_show_controls">Show reader controls</string>
     <string name="ankrimento_pdf_hide_controls">Hide reader controls</string>
-    <string name="ankrimento_zoom_in">Zoom in</string>
-    <string name="ankrimento_zoom_out">Zoom out</string>
     <string name="ankrimento_epub_chapter">Chapter %1$d of %2$d</string>
     <!-- EPUB reading settings -->
     <string name="ankrimento_reading_settings">Text and page</string>
@@ -261,7 +253,6 @@
     <string name="ankrimento_settings_include_learning">Include learning cards</string>
     <string name="ankrimento_settings_include_due">Include due cards</string>
     <string name="ankrimento_settings_auto_refill">Keep the session deck topped up</string>
-    <string name="ankrimento_settings_review" comment="Settings section about reviews">Review</string>
     <string name="ankrimento_settings_fail_pass">Fail / Pass on items</string>
     <string name="ankrimento_settings_more" comment="Settings: slider for how much Sooner shortens a topic's interval">Sooner</string>
     <string name="ankrimento_settings_less" comment="Settings: slider for how much Later lengthens a topic's interval">Later</string>
@@ -506,7 +497,6 @@
     <string name="ankrimento_options_scope_today" comment="Session options: the balancing scope covering today (vs this session, all time)">Today</string>
     <string name="ankrimento_options_scope_all_time">All time</string>
     <!-- Full backup -->
-    <string name="ankrimento_settings_backup">Backup</string>
     <string name="ankrimento_backup_export">Export full backup</string>
     <string name="ankrimento_backup_export_summary">Cards with scheduling and media, plus Incremento\'s documents and data, in the same ZIP as desktop\'s Export Full Backup. Save it to a cloud folder to keep a copy off this device</string>
     <string name="ankrimento_auto_backup">Automatic backups</string>
@@ -586,7 +576,6 @@
     <string name="ankrimento_settings_word_count">Word counting mode</string>
     <string name="ankrimento_settings_word_simple">Simple whitespace</string>
     <string name="ankrimento_settings_word_like">Word-like</string>
-    <string name="ankrimento_settings_upkeep">Upkeep</string>
     <string name="ankrimento_card_formats">Card format updates</string>
     <string name="ankrimento_card_formats_current">Incremento\'s note types are up to date</string>
     <string name="ankrimento_card_formats_pending">To update: %1$s</string>

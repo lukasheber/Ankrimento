@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+@file:SuppressLint("AvoidAlertDialogUsage")
+
 package com.ichi2.anki.ankrimento
 
 import android.annotation.SuppressLint

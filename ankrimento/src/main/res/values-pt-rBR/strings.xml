@@ -59,7 +59,6 @@
         <item quantity="other">Guardados para depois: %d a adicionar, ao sair deste documento</item>
     </plurals>
     <string name="ankrimento_extract_discard">Descartar</string>
-    <string name="ankrimento_extract_added">Cartão adicionado</string>
     <string name="ankrimento_extract_failed">Não foi possível adicionar o cartão: %s</string>
     <string name="ankrimento_sync_now">Sincronizar dados do Incremento</string>
     <string name="ankrimento_sync_up_to_date">Os dados do Incremento estão atualizados</string>
@@ -75,9 +74,6 @@
     <string name="ankrimento_sync_hub_invalid">Código de pareamento inválido</string>
     <string name="ankrimento_statistics_title">Estatísticas do Incremento</string>
     <string name="ankrimento_stats_tag_rows">Cartões revisados por etiqueta: cada linha mostra os cartões e o tempo de estudo.</string>
-    <string name="ankrimento_stats_today">Hoje (cartões · tempo)</string>
-    <string name="ankrimento_stats_lifetime">Desde o início (cartões · tempo)</string>
-    <string name="ankrimento_stats_media">Últimos 7 dias: %1$d páginas lidas, %2$d vídeos, %3$s assistidos</string>
     <string name="ankrimento_knowledge_tree_empty">A árvore do conhecimento está vazia</string>
     <string name="ankrimento_study_branch">Estudar este ramo</string>
     <string name="ankrimento_session_settings">Configurações da sessão do Incremento…</string>
@@ -96,19 +92,15 @@
     <string name="ankrimento_more_options">Mais opções</string>
     <string name="ankrimento_show_card">Mostrar cartão</string>
     <string name="ankrimento_open_reader">Abrir documento</string>
-    <string name="ankrimento_revisit_in">Rever em %s</string>
     <string name="ankrimento_priority_title">Prioridade</string>
     <string name="ankrimento_extract_selection">Extrair seleção</string>
     <string name="ankrimento_highlight_selection">Destacar seleção</string>
-    <string name="ankrimento_pdf_page">Página %d</string>
     <string name="ankrimento_pdf_find">Localizar no documento</string>
     <string name="ankrimento_pdf_mark_read">Marcar como lido até esta página</string>
     <string name="ankrimento_pdf_previous">Página anterior</string>
     <string name="ankrimento_pdf_next">Próxima página</string>
     <string name="ankrimento_pdf_show_controls">Mostrar controles do leitor</string>
     <string name="ankrimento_pdf_hide_controls">Ocultar controles do leitor</string>
-    <string name="ankrimento_zoom_in">Aumentar zoom</string>
-    <string name="ankrimento_zoom_out">Diminuir zoom</string>
     <string name="ankrimento_epub_chapter">Capítulo %1$d de %2$d</string>
     <!-- EPUB reading settings -->
     <string name="ankrimento_reading_settings">Texto e página</string>
@@ -267,7 +259,6 @@
     <string name="ankrimento_settings_include_learning">Incluir cartões em aprendizado</string>
     <string name="ankrimento_settings_include_due">Incluir cartões para revisar</string>
     <string name="ankrimento_settings_auto_refill">Manter o baralho da sessão abastecido</string>
-    <string name="ankrimento_settings_review">Revisão</string>
     <string name="ankrimento_settings_fail_pass">Errei / Acertei nos itens</string>
     <string name="ankrimento_settings_more">Antes</string>
     <string name="ankrimento_settings_less">Depois</string>
@@ -518,7 +509,6 @@
     <string name="ankrimento_options_scope_today">Hoje</string>
     <string name="ankrimento_options_scope_all_time">Desde o início</string>
     <!-- Full backup -->
-    <string name="ankrimento_settings_backup">Backup</string>
     <string name="ankrimento_backup_export">Exportar backup completo</string>
     <string name="ankrimento_backup_export_summary">Cartões com agendamento e mídia, mais os documentos e dados do Incremento, no mesmo ZIP do Exportar Backup Completo do computador. Salve-o numa pasta na nuvem para ter uma cópia fora deste aparelho</string>
     <string name="ankrimento_auto_backup">Backups automáticos</string>
@@ -599,7 +589,6 @@
     <string name="ankrimento_settings_word_count">Modo de contagem de palavras</string>
     <string name="ankrimento_settings_word_simple">Simples, por espaços</string>
     <string name="ankrimento_settings_word_like">Como no Word</string>
-    <string name="ankrimento_settings_upkeep">Manutenção</string>
     <string name="ankrimento_card_formats">Atualizações do formato dos cartões</string>
     <string name="ankrimento_card_formats_current">Os tipos de nota do Incremento estão atualizados</string>
     <string name="ankrimento_card_formats_pending">Para atualizar: %1$s</string>

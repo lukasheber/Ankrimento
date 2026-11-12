@@ -27,20 +27,19 @@ reading positions, topic schedule).
 
 ## 3. The app's own identity (blocker)
 
-- [ ] Name (not "AnkiDroid"; check it is free on the store and as a trademark).
-- [ ] Application ID (not `com.ichi2.anki`), so it installs beside AnkiDroid without conflict.
+- [x] Name: Ankrimento (store and trademark check still to do before a store listing).
+- [x] Application ID `com.memoria.ankrimento`, so it installs beside AnkiDroid without conflict.
 - [ ] Icon, splash and store graphics.
-- [ ] Crash reports: own ACRA endpoint (or off), not AnkiDroid's server.
+- [x] Crash reports and usage analytics: off (no endpoint, settings hidden).
 - [ ] Links in the app (help, issues, privacy, donate, About): own pages, AnkiDroid credited.
 - [ ] AnkiDroid's own update checks, analytics and AnkiWeb wording: review what the fork keeps.
-- [ ] Decide where the source is published (GPL-3.0 requires it) and link it from About.
+- [x] Source published: github.com/lukasheber/Ankrimento (About still to link it).
 
 ## 4. Release build
 
-- [ ] Build the release variant; fix what code shrinking (R8) breaks (Chaquopy, JSON, reflection,
-      Compose); add keep rules as needed.
-- [ ] Signing key created, kept safe, backed up.
-- [ ] Check the APK/AAB size (Python and Anki's library) and the ABIs shipped (arm64, x86_64).
+- [x] Release variant (`full` flavour) builds with R8 and lint; nothing broke at start, import, PDF, EPUB, session.
+- [ ] Signing key created (outside the repo, `~/.ankrimento-signing/`); back it up: without it, updates cannot be signed.
+- [x] Sizes: arm64 72 MB, x86_64 74 MB; only arm64 and x86_64 are built (the Python runtime has no 32-bit build).
 - [ ] Confirm the debug smoke-test activity and its options are absent.
 - [ ] Smoke-test the release build on the tablet: start, a session (topic and item), PDF, EPUB,
       web, video, extract, cloze, statistics, backup and restore.

@@ -59,7 +59,6 @@
         <item quantity="other">Spremljeno za kasnije: %d za dodavanje, kad napustite dokument</item>
     </plurals>
     <string name="ankrimento_extract_discard">Odbaci</string>
-    <string name="ankrimento_extract_added">Karta je dodana</string>
     <string name="ankrimento_extract_failed">Dodavanje karte nije uspjelo: %s</string>
     <string name="ankrimento_sync_now">Sinkroniziraj Incremento podatke</string>
     <string name="ankrimento_sync_up_to_date">Incremento podaci su ažurni</string>
@@ -75,9 +74,6 @@
     <string name="ankrimento_sync_hub_invalid">Nije valjan kod za uparivanje</string>
     <string name="ankrimento_statistics_title">Incremento statistika</string>
     <string name="ankrimento_stats_tag_rows">Pregledane kartice po oznaci: svaki redak prikazuje kartice i vrijeme učenja.</string>
-    <string name="ankrimento_stats_today">Danas (karte · vrijeme)</string>
-    <string name="ankrimento_stats_lifetime">Sveukupno (karte · vrijeme)</string>
-    <string name="ankrimento_stats_media">Zadnjih 7 dana: %1$d pročitanih stranica, %2$d videozapisa, %3$s gledanja</string>
     <string name="ankrimento_knowledge_tree_empty">Stablo znanja je prazno</string>
     <string name="ankrimento_study_branch">Uči ovu granu</string>
     <string name="ankrimento_session_settings">Postavke Incremento sesije…</string>
@@ -96,19 +92,15 @@
     <string name="ankrimento_more_options">Više mogućnosti</string>
     <string name="ankrimento_show_card">Prikaži kartu</string>
     <string name="ankrimento_open_reader">Otvori dokument</string>
-    <string name="ankrimento_revisit_in">Ponovno pregledaj za %s</string>
     <string name="ankrimento_priority_title">Prioritet</string>
     <string name="ankrimento_extract_selection">Izdvoji odabir</string>
     <string name="ankrimento_highlight_selection">Označi odabir</string>
-    <string name="ankrimento_pdf_page">Stranica %d</string>
     <string name="ankrimento_pdf_find">Traži u dokumentu</string>
     <string name="ankrimento_pdf_mark_read">Označi pročitano do ove stranice</string>
     <string name="ankrimento_pdf_previous">Prethodna stranica</string>
     <string name="ankrimento_pdf_next">Sljedeća stranica</string>
     <string name="ankrimento_pdf_show_controls">Prikaži kontrole čitača</string>
     <string name="ankrimento_pdf_hide_controls">Sakrij kontrole čitača</string>
-    <string name="ankrimento_zoom_in">Povećaj</string>
-    <string name="ankrimento_zoom_out">Smanji</string>
     <string name="ankrimento_epub_chapter">Poglavlje %1$d od %2$d</string>
     <!-- EPUB reading settings -->
     <string name="ankrimento_reading_settings">Tekst i stranica</string>
@@ -267,7 +259,6 @@
     <string name="ankrimento_settings_include_learning">Uključi karte u učenju</string>
     <string name="ankrimento_settings_include_due">Uključi dospjele karte</string>
     <string name="ankrimento_settings_auto_refill">Drži špil sesije popunjenim</string>
-    <string name="ankrimento_settings_review">Pregled</string>
     <string name="ankrimento_settings_fail_pass">Ne znam / Znam na stavkama</string>
     <string name="ankrimento_settings_more">Ranije</string>
     <string name="ankrimento_settings_less">Kasnije</string>
@@ -518,7 +509,6 @@
     <string name="ankrimento_options_scope_today">Danas</string>
     <string name="ankrimento_options_scope_all_time">Sveukupno</string>
     <!-- Full backup -->
-    <string name="ankrimento_settings_backup">Sigurnosna kopija</string>
     <string name="ankrimento_backup_export">Izvezi potpunu sigurnosnu kopiju</string>
     <string name="ankrimento_backup_export_summary">Karte s rasporedom i medijima te Incremento dokumenti i podaci, u istom ZIP-u kao Izvezi potpunu sigurnosnu kopiju na računalu. Spremite je u mapu u oblaku kako biste imali kopiju izvan ovog uređaja</string>
     <string name="ankrimento_auto_backup">Automatske sigurnosne kopije</string>
@@ -602,7 +592,6 @@
     <string name="ankrimento_settings_word_count">Način brojanja riječi</string>
     <string name="ankrimento_settings_word_simple">Jednostavno, prema razmacima</string>
     <string name="ankrimento_settings_word_like">Poput Worda</string>
-    <string name="ankrimento_settings_upkeep">Održavanje</string>
     <string name="ankrimento_card_formats">Ažuriranja formata kartica</string>
     <string name="ankrimento_card_formats_current">Incrementove vrste bilješki su ažurne</string>
     <string name="ankrimento_card_formats_pending">Za ažuriranje: %1$s</string>
