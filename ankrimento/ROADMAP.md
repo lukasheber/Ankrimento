@@ -162,6 +162,9 @@ Mobile principles that guide every item:
 | ✅ | Passage links between documents, with Jump Back [2026.11.04] | **Following** is on the phone. PDF: a page link that carries a passage opens its other end with the exact words revealed (desktop's viewer does the revealing); another document opens over this one and Back returns, a jump inside the document returns with Back to the page it was followed from. EPUB: ⋮ → **Connections** lists the chapter's connections from either end (the words, the other book and chapter), opens one with its passage revealed, says in desktop's words when the words are no longer there, and removes one. Where reading was left is not moved by a jump. **Making** a passage link stays on desktop: it is done with two documents side by side (the phone's own "Link this page…" still makes page links). Page links, passage links and EPUB connections travel through the sync engine in both directions (one record per link, identified by its two ends). Checked on the tablet |
 | ➖ | Workspace tabs (grouped readers, references, searches), hover previews of PDF links and footnotes, side-by-side panes | A windowed workflow. The phone opens the other reader (links and footnotes already show in a sheet) |
 | ➖ | MCP server for AI tools | Runs a local server on a desktop; not for a phone |
+| ⬜ | Set a document's priority from the Library [2026.11.11] | Desktop's bookshelf gains **Set Priority…** for one or several PDFs and EPUBs (upstream's `set_priorities`, already in the shipped backend). The Library shows priority but changes it only from the knowledge tree or the reader; a long press on a document, with selection of several, is the phone's version |
+| ⬜ | Hide the parent context icon [2026.11.11] | New setting `reviewer_parent_context_enabled` (default on). The phone's **Show parent** has no switch yet; a toggle under Settings → Review would follow it |
+| ➖ | Set Priority for a Browser selection [2026.11.11] | Desktop's Browser menu; AnkiDroid's browser is not extended, and priorities are set on the card (reviewer chip, readers, tree) |
 | ✅ | PDF checks before import (password-protected, damaged, no text layer) [2026.11.04] | Through `pypdf` instead of desktop's PyMuPDF, and a `QPdfDocument` stand-in. Limits: a PDF with owner-only AES encryption is refused because the phone has no crypto library (desktop opens it), and a PDF with a damaged cross-reference table is accepted when its page objects can be found |
 
 ## 4. Extraction and cards [11]
@@ -293,6 +296,10 @@ From desktop v2026.11.04 + 23 (evaluated in "Reading progress and links between 
 41. ~~Parent context while reviewing; send selected text to Writing with links both ways; offline website snapshots~~ (done).
 42. ~~Following a precise passage link between documents, with a way back~~ (done; the parity check has no known gaps left).
 43. ~~Local file cards: managed copies, open with another app, shared by sync~~ (done).
+
+From desktop v2026.11.11 (taken in; no schema change, parity check clean):
+
+44. Document priority from the Library, and a switch for the parent context icon (see section 3).
 
 To check rather than build: the leech notice (it reuses AnkiDroid's own check; reaching it needs a card's seventh lapse) and the
 automatic backup folder picker on a device (the empty-session dialog was checked); native review of each translation;
