@@ -79,8 +79,11 @@ def start(
     profile: str,
     build_id: str,
     host_language: str = "en",
+    sync_enabled: bool = True,
 ) -> None:
     import ankrimento_addon_source
+
+    source = Path(ankrimento_addon_source.__file__).parent
 
     def dispatch(closure: Callable[[], None]) -> None:
         kotlin_host.runOnMain(_Closure(closure))
@@ -93,7 +96,9 @@ def start(
         collection_path=collection_path,
         addons_dir=addons_dir,
         profile=profile,
-        addon_source_dir=str(Path(ankrimento_addon_source.__file__).parent / "incremento"),
+        addon_source_dir=str(source / "incremento"),
+        sync_addon_source_dir=str(source / "incremento_sync"),
+        sync_enabled=sync_enabled,
         build_id=build_id,
         main_dispatcher=dispatch,
         host_events=host_events,

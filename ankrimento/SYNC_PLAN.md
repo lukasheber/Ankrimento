@@ -1,5 +1,11 @@
 # Incremento sync: plan
 
+> **Update 2026-11-12.** Incremento's author preferred the sync engine to stay a separate Anki add-on. It now lives in
+> [lukasheber/incremento-sync](https://github.com/lukasheber/incremento-sync) (GPL-3.0-or-later), loads into Incremento while
+> switched on and restores it when switched off; Ankrimento vendors it (`vendor/incremento-sync`) and installs it beside
+> Incremento. The stacked pull requests to Incremento are no longer the route; the sections below are the design history.
+
+
 Upstream issue: [BaskovicP/Incremento#16](https://github.com/BaskovicP/Incremento/issues/16).
 The author agreed to the contribution and set its terms:
 

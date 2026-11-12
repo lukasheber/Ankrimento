@@ -175,21 +175,21 @@ author or co-author lines.
 The parity check prints the messages marked `GAP:`: desktop features reached from the reader pages that the phone does
 not have yet. They are also in `ROADMAP.md`.
 
-## The sync engine overlay
+## The sync add-on
 
-Incremento's sync engine (`backend/sync_*.py`, upstream issue 16) is not in upstream yet (checked at v2026.11.04 + 23:
-no `sync_*` file), so it ships beside the vendored add-on from `ankrimento/engine/`. The `incrementoAddonSource` Gradle
-task and the test harness (`python-tests/conftest.py`, `assemble_addon_source`) merge `engine/backend` into the add-on's
-`backend/`; nothing in `vendor/incremento` is edited, and the engine creates its own tables (`sync_schema.py`), so the
-vendored schema, whatever its number, is fine.
+Incremento's own data is synced by the separate add-on [lukasheber/incremento-sync](https://github.com/lukasheber/incremento-sync)
+(agreed with Incremento's author instead of putting the engine into Incremento). It is vendored as
+`vendor/incremento-sync`; the `incrementoAddonSource` Gradle task copies its Qt-free part (`ankrimento.addon.SYNC_ENTRIES`)
+into the app, `ankrimento.addon` installs it beside Incremento, and `ankrimento.runtime.start` switches it on through its
+`loader`. `python-tests/conftest.py` (`assemble_sync_addon_source`) mirrors the Gradle task. Nothing in `vendor/incremento` is
+edited.
 
-On every update, check that nothing upstream collides with the overlay: `git -C vendor/incremento ls-tree -r --name-only
-HEAD | grep backend/sync_`. If upstream now has the engine, delete `engine/` and the `from("engine")` block in
-`build.gradle.kts`.
+On every Incremento update:
 
-The overlay also carries `sync_links.py` (PDF page and passage links, EPUB connections: one record per link, keyed by its two ends); a migration that adds a column to `document_links` or `epub_connections` must be classified in `sync_records.py` and carried there.
-
-The overlay also carries `sync_files.py`, which shares the files of local file cards (managed copies) with every device; it reads the collection's notes, so a new Anki or upstream note-type change to "Incremento Local File" (field names, the `managed_copy` mode) is what to check there.
-
-Refresh the overlay from an Incremento checkout with `python ankrimento/tools/update_engine.py <checkout>`. It records the
-commit and a hash per file in `engine/ENGINE.json`; `test_engine_sync.py` fails if a file was edited by hand.
+1. Run the add-on's own tests against the new Incremento (`INCREMENTO_DIR=<checkout> python -m pytest` in its repository,
+   and `python tools/anki_smoke.py <checkout>`). They fail where the add-on's use of Incremento's internals changed
+   (`paths`, `db`, the reader and highlight stores, `export_bundle.should_skip_user_file`, the note types the local files
+   family reads); fix the add-on there and release it.
+2. Move the submodule: `git -C vendor/incremento-sync pull origin main`, then the Python tests here.
+3. A migration that adds a column to `document_links` or `epub_connections` must be classified in `sync_records.py`; a change
+   to "Incremento Local File" fields or the `managed_copy` mode is what `sync_files.py` reads. Both are in the add-on.

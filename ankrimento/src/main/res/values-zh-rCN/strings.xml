@@ -652,4 +652,6 @@
     <string name="ankrimento_extract_added_item">已添加条目</string>
     <string name="ankrimento_settings_volume_keys">音量键翻页</string>
     <string name="ankrimento_settings_volume_keys_help">适用于 PDF、EPUB、文本和网页阅读器。关闭时音量键调节音量。</string>
+    <string name="ankrimento_settings_sync_addon">Incremento 同步</string>
+    <string name="ankrimento_settings_sync_addon_help">通过共享文件夹或中心同步 Incremento 自己的数据。关闭后 Incremento 不带同步运行，也不会同步；此设备上的同步数据会保留，重新开启后继续。</string>
 </resources>

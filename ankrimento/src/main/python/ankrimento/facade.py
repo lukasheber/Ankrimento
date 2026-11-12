@@ -13,7 +13,7 @@ from typing import Any
 
 from aqt import gui_hooks
 
-from ankrimento import runtime
+from ankrimento import addon, runtime
 
 
 def _dumps(value: Any) -> str:
@@ -1465,6 +1465,16 @@ def restore_discard() -> None:
     backup.discard_restore()
 
 
+def sync_addon_enabled() -> bool:
+    """Whether the sync add-on is switched on in Incremento."""
+    return addon.sync_enabled()
+
+
+def set_sync_addon_enabled(enabled: bool) -> bool:
+    """Switches the sync add-on on or off; off restores Incremento as it was (the sync data stays). Returns the state."""
+    return addon.set_sync_enabled(bool(enabled))
+
+
 def engine_sync(store: Any, label: str, publish_only: bool = False, budget_seconds: float | None = None) -> str:
     """Sync Incremento's data with the sync folder ``store`` through the sync engine.
 
@@ -1475,6 +1485,8 @@ def engine_sync(store: Any, label: str, publish_only: bool = False, budget_secon
     are sent and nothing is received: quick, for a screen that is closing. With ``budget_seconds`` a call transfers
     files for about that long and reports ``more`` when it stopped early; calling again continues.
     """
+    if not addon.sync_enabled():
+        raise RuntimeError("Sync is switched off on this device")
     from incremento.backend import sync_service
 
     rt = runtime.current()

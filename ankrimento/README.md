@@ -102,25 +102,18 @@ video watch time and the last seven days.
 
 ### Syncing Incremento data
 
-AnkiWeb syncs the cards; `syncfolder.py` syncs Incremento's own data
-(`user_files/<profile>`: `incremento.db` and managed files) and settings
-through a shared folder. The module documents the format. On Android the
-folder is picked with the Storage Access Framework ("Incremento sync
-folder…"), so it can be a folder kept in step with Google Drive, Dropbox or
-a computer by Autosync, Dropsync, FolderSync or Syncthing. The profile name
-("Incremento profile…") must match the desktop profile.
+AnkiWeb syncs the cards; Incremento's own data (priorities, the knowledge tree, bookmarks and positions, highlights,
+links between documents, local files and the documents themselves) is synced by the separate
+[**Incremento Sync**](https://github.com/lukasheber/incremento-sync) add-on, the same one desktop Anki uses. It
+works through a shared folder (Dropbox, Syncthing, Google Drive…, picked with the Storage Access Framework) or a
+small hub on your own network (a pairing code in *Incremento settings → This device*).
 
-Ankrimento pulls before a session starts and pushes (releasing its lease)
-when the reviewer closes; "Sync Incremento data" syncs on demand.
-
-The desktop side is the **Ankrimento Sync** add-on (`desktop-addon/`), which
-ships the same `syncfolder.py`; `python desktop-addon/build.py` writes
-`build/ankrimento_sync.ankiaddon`. It finds Incremento's add-on folder
-(numbered when installed from AnkiWeb), and syncs when a profile opens,
-after each AnkiWeb sync, and when the profile closes. Tools → Ankrimento
-Sync picks the folder (inside Google Drive, Dropbox…) and syncs on demand.
-Its Anki API use was checked against aqt 26.9.3; it has not yet been run
-inside Anki desktop.
+On the phone the add-on is vendored as `vendor/incremento-sync` and installed beside Incremento
+(`<filesDir>/ankrimento/addons21/incremento_sync/`), as on desktop. It extends Incremento's backend while it is on
+and puts everything back when it is off: *This device → Incremento Sync* switches it, and nothing syncs while it is
+off. The sync data on the device is kept, so switching on again resumes. The profile name must match the desktop
+profile. Ankrimento syncs after AnkiDroid's own sync and from the Incremento card's menu; the add-on's
+`incremento_sync/loader.py` explains the switch.
 
 ### AnkiDroid hooks
 

@@ -690,4 +690,6 @@
     <string name="ankrimento_extract_added_item">Stavka dodana</string>
     <string name="ankrimento_settings_volume_keys">Tipke glasnoće listaju stranice</string>
     <string name="ankrimento_settings_volume_keys_help">U čitačima PDF-a, EPUB-a, teksta i weba. Isključeno: mijenjaju glasnoću.</string>
+    <string name="ankrimento_settings_sync_addon">Incremento Sync</string>
+    <string name="ankrimento_settings_sync_addon_help">Sinkronizira Incrementove podatke putem dijeljene mape ili huba. Isključeno: Incremento radi bez toga i ništa se ne sinkronizira; podaci sinkronizacije na ovom uređaju ostaju, pa ponovno uključivanje nastavlja.</string>
 </resources>

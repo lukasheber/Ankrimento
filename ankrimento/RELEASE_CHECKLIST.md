@@ -6,11 +6,11 @@ desktop Incremento.
 
 ## 1. Agreement with Incremento's author (blocker)
 
-- [ ] Contact the author: explain the app, ask for consent to bundle the add-on unchanged.
+- [x] Contact the author: explain the app, ask for consent to bundle the add-on unchanged. (2026-11-12: agreed to an APK build on GitHub under the same licence as AnkiDroid, and to the sync engine staying a separate add-on.)
 - [ ] Check the add-on's licence and its compatibility with AnkiDroid's GPL-3.0; record it in the
       repository (`LICENSES/`, `REUSE.toml`) and in the app's About screen.
 - [ ] Agree how the author and the add-on are credited (store listing, About, first run).
-- [ ] Agree the sync format for Incremento's own data (see 2).
+- [x] Agree the sync format for Incremento's own data (see 2): a separate add-on, [incremento-sync](https://github.com/lukasheber/incremento-sync).
 
 ## 2. Data shared with desktop (blocker)
 

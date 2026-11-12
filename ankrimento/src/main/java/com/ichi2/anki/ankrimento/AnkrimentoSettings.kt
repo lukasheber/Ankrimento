@@ -63,6 +63,11 @@ class AnkrimentoSettings(
         get() = preferences.getBoolean(PREF_VOLUME_KEYS, false)
         set(value) = preferences.edit { putBoolean(PREF_VOLUME_KEYS, value) }
 
+    /** Whether the sync add-on is switched on for this device (off: Incremento runs without it, sync data kept). */
+    var syncAddonEnabled: Boolean
+        get() = preferences.getBoolean(PREF_SYNC_ADDON, true)
+        set(value) = preferences.edit { putBoolean(PREF_SYNC_ADDON, value) }
+
     /** The filtered deck sessions fill, as upstream names it; known once Incremento has started. */
     var sessionDeckName: String
         get() = preferences.getString(PREF_SESSION_DECK, null) ?: DEFAULT_SESSION_DECK
@@ -81,6 +86,7 @@ class AnkrimentoSettings(
         const val PREF_SESSION_DECK = "session_deck"
         const val PREF_ONBOARDING_VERSION = "onboarding_version"
         const val PREF_QUICK_EXTRACT = "quick_extract"
+        const val PREF_SYNC_ADDON = "sync_addon_enabled"
         const val PREF_VOLUME_KEYS = "volume_keys_turn_pages"
         const val PREF_EXTRACT_TIP = "extract_tip_shown"
 

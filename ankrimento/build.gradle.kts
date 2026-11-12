@@ -121,12 +121,12 @@ val incrementoAddonSource =
             exclude("**/__pycache__/**", "**/AGENTS.md")
             into("ankrimento_addon_source/incremento")
         }
-        // The sync engine, not yet in the vendored release: merged into the add-on's backend/.
-        // Refresh it with tools/update_engine.py; see engine/ENGINE.json.
-        from("engine") {
-            include("backend/**")
+        // The sync add-on (vendor/incremento-sync), installed beside Incremento as on desktop; only its Qt-free part
+        // ships (see ankrimento.addon.SYNC_ENTRIES).
+        from(rootProject.file("vendor/incremento-sync/incremento_sync")) {
+            include("engine/**", "locales/**", "loader.py", "patches.py", "host.py", "i18n.py", "manifest.json", "config.json")
             exclude("**/__pycache__/**")
-            into("ankrimento_addon_source/incremento")
+            into("ankrimento_addon_source/incremento_sync")
         }
         into(layout.buildDirectory.dir("ankrimento/addon"))
     }

@@ -1,3 +1,6 @@
 [submodule "vendor/incremento"]
 	path = vendor/incremento
 	url = https://github.com/BaskovicP/Incremento
+[submodule "vendor/incremento-sync"]
+	path = vendor/incremento-sync
+	url = https://github.com/lukasheber/incremento-sync

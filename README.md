@@ -1,120 +1,48 @@
-<p align="center">
-<img alt="" src="docs/graphics/logos/banner_readme.png"/>
-</p>
+# Ankrimento
 
-<a href="https://github.com/ankidroid/Anki-Android/releases"><img src="https://img.shields.io/github/v/release/ankidroid/Anki-Android" alt="release"/></a>
-<a href="https://github.com/ankidroid/Anki-Android/actions"><img src="https://img.shields.io/github/checks-status/ankidroid/Anki-Android/main?label=build" alt="build"/></a>
-<a href="https://opencollective.com/ankidroid"><img src="https://img.shields.io/opencollective/all/ankidroid" alt="Open Collective backers and sponsors"/></a>
-<a href="https://github.com/ankidroid/Anki-Android/issues"><img src="https://img.shields.io/github/commit-activity/m/ankidroid/Anki-Android" alt="commit-activity"/></a>
-<a href="https://github.com/ankidroid/Anki-Android/network/members"><img src="https://img.shields.io/github/forks/ankidroid/Anki-Android" alt="forks"/></a>
-<a href="https://github.com/ankidroid/Anki-Android/stargazers"><img src="https://img.shields.io/github/stars/ankidroid/Anki-Android" alt="stars"/></a>
-<a href="https://crowdin.com/project/ankidroid"><img src="https://badges.crowdin.net/ankidroid/localized.svg"></img></a>
-<a href="https://github.com/ankidroid/Anki-Android/graphs/contributors"><img src="https://img.shields.io/github/contributors/ankidroid/Anki-Android" alt="contributors"/></a>
-<a href="https://discord.gg/qjzcRTx"><img src="https://img.shields.io/discord/368267295601983490"></img></a>
-<a href="https://github.com/ankidroid/Anki-Android/blob/main/COPYING"><img src="https://img.shields.io/github/license/ankidroid/Anki-Android" alt="license"/></a>
+Incremental reading on Android: a fork of [AnkiDroid](https://github.com/ankidroid/Anki-Android) that runs the Python
+backend of the desktop add-on [Incremento](https://github.com/BaskovicP/Incremento), unchanged, inside the app. It keeps
+your decks and cards in AnkiDroid and adds what Incremento adds to Anki on the desktop: a mixed session of topics and
+items, a reader for PDFs, EPUBs, web pages, video and text, extracts and clozes made from what you read, priorities, the
+knowledge tree, statistics, writing, and backups.
 
-# AnkiDroid
-An official port of the open source [Anki](https://apps.ankiweb.net/index.html) spaced repetition flashcard system to Android. Memorize anything with AnkiDroid!
+**Status: work in progress, no release yet.** It builds and runs on a real tablet (debug builds); there is no store build.
+`ankrimento/ROADMAP.md` lists what is done, what is deliberately not on the phone, and what is left;
+`ankrimento/RELEASE_CHECKLIST.md` what stands between this and a release.
 
-<img src="docs/graphics/logos/ankidroid_logo.png" align="right" width="40%" height="100%"></img>
+## Three repositories
 
-### Features
+| | |
+|---|---|
+| **Ankrimento** (this one) | The Android app: AnkiDroid with the `ankrimento/` module and a few hooks in AnkiDroid's screens |
+| [Incremento](https://github.com/BaskovicP/Incremento) | The desktop add-on by Paulo (BaskovicP), vendored unchanged in `vendor/incremento` |
+| [Incremento Sync](https://github.com/lukasheber/incremento-sync) | A separate Anki add-on that syncs Incremento's own data between devices; the same files run on desktop Anki and in this app (`vendor/incremento-sync`). It switches off cleanly: *Settings → This device → Incremento Sync* here, `enabled` in its config on desktop |
 
-<div style="display:flex;">
- 
-- Night mode
-- Whiteboard 
-- Progress widget
-- Detailed statistics
-- Syncing with AnkiWeb
-- Write answers (optional)
-- Text-to-speech integration
-- More than 10,000 premade decks
-- Spaced repetition (AI-optimized [FSRS algorithm](https://github.com/open-spaced-repetition))
-- Supported contents: text, images, sounds, MathJax
-- Add cards by intent from other applications like dictionaries
+AnkiWeb keeps syncing the cards as usual; Incremento Sync carries what Incremento keeps beside them (priorities, the
+tree, positions, highlights, documents…) through a shared folder or a small hub on your network.
 
-</div>
+## Build
 
-Install
----------
-<div style="display:flex;">
-
-<a href="https://play.google.com/store/apps/details?id=com.ichi2.anki&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1">
-    <img alt="Get it on Google Play" height="80"
-        src="docs/graphics/logos/google-badge.png" /></a>
-
-<a href="https://f-droid.org/repository/browse/?fdid=com.ichi2.anki">
-    <img alt="Get it on F-Droid" height="80"
-        src="docs/graphics/logos/f-droid-badge.png"></a>
-
-<a href="http://apps.obtainium.imranr.dev/redirect.html?r=obtainium://add/https://github.com/ankidroid/Anki-Android">
-    <img alt="Get it on Obtainium" height="80"
-        src="https://github.com/user-attachments/assets/713d71c5-3dec-4ec4-a3f2-8d28d025a9c6"/></a>
-
-</div>
-
-Signing certificate fingerprint to [verify](https://developer.android.com/studio/command-line/apksigner#usage-verify) the APK:
 ```
-SHA-256: 2071534f0f4b5e54ae952dd275d70da6e3459ee69909d2ab1b4843c4c5b21a45 
-SHA-1: f24e06a3657b190a12671100402df32d7b9b3d36
+git clone --recurse-submodules https://github.com/lukasheber/Ankrimento
+cd Ankrimento
+./gradlew :AnkiDroid:assemblePlayDebug        # APK: AnkiDroid/build/outputs/apk/play/debug/
 ```
 
-Wiki
-----
-View [Wiki](https://github.com/ankidroid/Anki-Android/wiki)
+Needs a 64-bit Android device (arm64). The Python side has its own tests (they run the unchanged add-on on a desktop
+Anki backend): see `ankrimento/README.md` for the virtualenv, then `cd ankrimento && .venv/bin/python -m pytest`.
 
-Help
-----
-Check the [user manual](https://docs.ankidroid.org/) and the wiki for usage instructions. See the [help page](https://docs.ankidroid.org/help.html) 
-for how to submit a bug report or contact a project member, etc.
+`ankrimento/README.md` explains how the pieces fit together; `ankrimento/UPSTREAM.md` is the procedure for taking in a new
+Incremento (and the parity check that guards it).
 
-Contribute
-----------
-You can contribute to AnkiDroid by beta testing, translating, or submitting code. 
-See the [contribution wiki page](https://github.com/ankidroid/Anki-Android/wiki/Contributing) for more info.
+## Branches
 
-Join Us On
-----------
+`main` follows AnkiDroid's `main`, so AnkiDroid's own updates can be merged in. **`ankrimento`** is the app and the default
+branch.
 
-<a href="https://discord.gg/qjzcRTx"><img src="docs/graphics/logos/discord_logo_color.svg" height="46px"/></a>
-<a href="https://www.reddit.com/r/Anki"><img src="docs/graphics/logos/reddit_logo_color.png" height="50px"/></a>
-<a href="https://www.facebook.com/AnkiDroid/"><img src="docs/graphics/logos/facebook_logo_color.png" height="50px"/></a>
-<a href="https://x.com/ankidroid"><img src="docs/graphics/logos/twitter_logo.png" height="50px"/></a>
-<a href="https://forums.ankiweb.net/"><img src="/docs/graphics/logos/anki_forums_logo.png" height="50px"/></a>
+## Licence and credit
 
-## Credits
-<!--- Do not rename this section. AnkiDroid contains a deep link to the section
-header - see https://github.com/ankidroid/Anki-Android/pull/11803 --->
-
-### Code Contributors
-
-Thanks to these awesome code contributors who keep this project going
-
-<a href="https://github.com/ankidroid/Anki-Android/graphs/contributors"><img src="https://opencollective.com/ankidroid/contributors.svg?width=890&button=false" /></a>
-
-### [Sponsors](https://opencollective.com/ankidroid#sponsor)
-<a href="https://opencollective.com/ankidroid#sponsor" target="_blank">
-  <img alt="AnkiDroid Sponsors" src="https://opencollective.com/Ankidroid/sponsors.svg?width=890" />
-</a>
-
-### [Backers](https://opencollective.com/ankidroid#backer)
-
-A big thank you to each of our backers 🙏
-<a href="https://opencollective.com/Ankidroid#backers" target="_blank"><img width=110 src="https://opencollective.com/Ankidroid/backers/badge.svg?"></a>
-
-<p>Your generous donations mean the world to us, and we can't express our gratitude enough. Your support fuels our mission and helps us make a real difference</p>
-
-<a href="https://opencollective.com/Ankidroid/donate" target="_blank">
-  <img alt="Donate to AnkiDroid" src="https://opencollective.com/Ankidroid/donate/button@2x.png?color=blue" width=200 />
-</a>
-
-### [Translators](https://crowdin.com/project/ankidroid/activity-stream)
-
-Thanks to our 1400 translators, for allowing us to be available, partially or totally, in 99 languages as of July 2022.
-
-License
--------
-* [GPL-3.0 License](https://github.com/ankidroid/Anki-Android/blob/main/COPYING)
-* [AGPL-3.0 License](https://github.com/ankitects/anki/blob/main/LICENSE) for some part of the back-end
-* [LGPL-3.0 License](https://github.com/ankidroid/Anki-Android/blob/main/api/COPYING.LESSER) for the AnkiDroid API
+GPL-3.0-or-later, as AnkiDroid (`COPYING`, `LICENSES/`). AnkiDroid is the work of its contributors; its original README is
+kept as `README.AnkiDroid.md`. Incremento is Paulo's (BaskovicP) work and is used with his agreement (2026-11-12) for an APK
+build published on GitHub under the same licence as AnkiDroid; Incremento's code stays under Incremento's own terms and
+is loaded from its repository, not changed. This project is not affiliated with or endorsed by AnkiDroid or Anki.

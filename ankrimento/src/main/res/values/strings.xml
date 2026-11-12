@@ -671,4 +671,6 @@
     <string name="ankrimento_extract_added_item">Item added</string>
     <string name="ankrimento_settings_volume_keys">Volume keys turn pages</string>
     <string name="ankrimento_settings_volume_keys_help">In the PDF, EPUB, text and web readers. Off: they change the volume.</string>
+    <string name="ankrimento_settings_sync_addon">Incremento Sync</string>
+    <string name="ankrimento_settings_sync_addon_help">Syncs Incremento\'s own data through a shared folder or a hub. Off: Incremento runs without it and nothing syncs; the sync data on this device is kept, so turning it on resumes.</string>
 </resources>

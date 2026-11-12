@@ -1024,6 +1024,19 @@ class IncrementoSettingsActivity : ComponentActivity() {
             device.profile = it
             profile = device.profile
         }
+        var syncAddon by remember { mutableStateOf(device.syncAddonEnabled) }
+        Toggle(R.string.ankrimento_settings_sync_addon, syncAddon, R.string.ankrimento_settings_sync_addon_help) { on ->
+            syncAddon = on
+            lifecycleScope.launch {
+                runCatching { withContext(Dispatchers.IO) { Ankrimento.setSyncAddonEnabled(this@IncrementoSettingsActivity, on) } }
+                    .onFailure { error ->
+                        Timber.w(error, "Switching the sync add-on failed")
+                        syncAddon = device.syncAddonEnabled
+                        toast(error.message ?: error.javaClass.simpleName)
+                    }
+            }
+        }
+        if (!syncAddon) return
         ListItem(
             headlineContent = { Text(stringResource(R.string.ankrimento_sync_folder)) },
             supportingContent = {

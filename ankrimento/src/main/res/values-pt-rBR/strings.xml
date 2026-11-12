@@ -684,4 +684,6 @@
     <string name="ankrimento_extract_added_item">Item adicionado</string>
     <string name="ankrimento_settings_volume_keys">Teclas de volume viram páginas</string>
     <string name="ankrimento_settings_volume_keys_help">Nos leitores de PDF, EPUB, texto e web. Desligado: elas mudam o volume.</string>
+    <string name="ankrimento_settings_sync_addon">Incremento Sync</string>
+    <string name="ankrimento_settings_sync_addon_help">Sincroniza os dados do próprio Incremento por uma pasta compartilhada ou um hub. Desligado: o Incremento roda sem ele e nada sincroniza; os dados de sincronização deste aparelho são mantidos, então ligar de novo retoma.</string>
 </resources>

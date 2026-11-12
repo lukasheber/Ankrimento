@@ -160,7 +160,9 @@ object Ankrimento {
             buildId,
             // The app's language (AnkiDroid's own setting applies it to resources), as Anki's on desktop.
             ConfigurationCompat.getLocales(context.resources.configuration)[0]?.toLanguageTag() ?: "en",
+            settings.syncAddonEnabled,
         )
+        syncAddonEnabled = settings.syncAddonEnabled
         facade = python.getModule("ankrimento.facade")
         ChangeManager.subscribe(operationListener)
         settings.syncFolder?.let { useSyncFolder(context, it) }
@@ -267,8 +269,30 @@ object Ankrimento {
             )
     }
 
+    /** The sync add-on is switched on (it loads into Incremento beside it, as on desktop). */
+    @Volatile
+    var syncAddonEnabled = true
+        private set
+
     val isSyncConfigured: Boolean
-        get() = syncHubCode.isNotEmpty() || syncExchange != null
+        get() = syncAddonEnabled && (syncHubCode.isNotEmpty() || syncExchange != null)
+
+    /**
+     * Switches the sync add-on on or off. Off puts Incremento back as it was (the sync data on this device stays,
+     * so switching on again resumes); nothing syncs while it is off.
+     */
+    @WorkerThread
+    fun setSyncAddonEnabled(
+        context: Context,
+        enabled: Boolean,
+    ) {
+        AnkrimentoSettings(context).syncAddonEnabled = enabled
+        if (isStarted) {
+            syncAddonEnabled = requireFacade().callAttr("set_sync_addon_enabled", enabled).toBoolean()
+        } else {
+            syncAddonEnabled = enabled
+        }
+    }
 
     private fun useSyncFolder(
         context: Context,
@@ -326,6 +350,7 @@ object Ankrimento {
         publishOnly: Boolean = false,
         budgetSeconds: Double = NO_BUDGET,
     ): SyncResult? {
+        if (!syncAddonEnabled) return null
         val android = Python.getInstance().getModule("ankrimento.android")
         val result =
             if (syncHubCode.isNotEmpty()) {

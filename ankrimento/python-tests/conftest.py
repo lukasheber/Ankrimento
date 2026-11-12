@@ -22,7 +22,7 @@ from anki._backend_generated import RustBackendGenerated
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INCREMENTO_SOURCE = REPO_ROOT / "vendor" / "incremento"
-ENGINE_DIR = REPO_ROOT / "ankrimento" / "engine"
+SYNC_ADDON = REPO_ROOT / "vendor" / "incremento-sync" / "incremento_sync"
 PROFILE = "User 1"
 
 
@@ -60,10 +60,7 @@ class DesktopHost:
 
 
 def assemble_addon_source(destination: Path) -> Path:
-    """The add-on source the app is built from: the vendored release plus the engine overlay.
-
-    Mirrors the ``incrementoAddonSource`` Gradle task: ``engine/backend`` is merged into the add-on's ``backend``.
-    """
+    """The Incremento add-on source the app is built from (the vendored release's shipped entries)."""
     from ankrimento.addon import SHIPPED_ENTRIES
 
     for name in SHIPPED_ENTRIES:
@@ -73,7 +70,23 @@ def assemble_addon_source(destination: Path) -> Path:
         elif source.exists():
             (destination / name).parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(source, destination / name)
-    shutil.copytree(ENGINE_DIR / "backend", destination / "backend", dirs_exist_ok=True)
+    return destination
+
+
+def assemble_sync_addon_source(destination: Path) -> Path:
+    """The sync add-on source the app is built from: the vendored add-on's shipped entries (Qt-free part).
+
+    Mirrors the ``incrementoAddonSource`` Gradle task.
+    """
+    from ankrimento.addon import SYNC_ENTRIES
+
+    for name in SYNC_ENTRIES:
+        source = SYNC_ADDON / name
+        if source.is_dir():
+            shutil.copytree(source, destination / name, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+        else:
+            destination.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination / name)
     return destination
 
 
@@ -91,4 +104,5 @@ def rt(tmp_path_factory):
         profile=PROFILE,
         addon_source_dir=str(assemble_addon_source(root / "addon_source")),
         build_id="test",
+        sync_addon_source_dir=str(assemble_sync_addon_source(root / "sync_addon_source")),
     )

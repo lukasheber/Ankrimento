@@ -31,6 +31,8 @@ def start(
     main_dispatcher: Callable[[Callable[[], None]], None] | None = None,
     host_events: Callable[[str, dict[str, Any]], None] | None = None,
     host_language: str = "en",
+    sync_addon_source_dir: str | None = None,
+    sync_enabled: bool = True,
 ) -> Runtime:
     """Bring up Incremento's backend on the host's open collection.
 
@@ -63,6 +65,12 @@ def start(
 
     paths.set_active_profile(profile)
     profile_startup.prepare_storage(str(addon_dir), paths.get_active_profile())
+
+    if sync_addon_source_dir:
+        # Beside Incremento, as on desktop; switched on unless the user turned it off on this device.
+        addon.register_sync_package(addon.install_sync_addon(Path(sync_addon_source_dir), Path(addons_dir), build_id))
+        if sync_enabled:
+            addon.set_sync_enabled(True)
 
     from ankrimento import wiring
 

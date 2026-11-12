@@ -1,8 +1,9 @@
-"""The sync engine on the phone: shipped beside the vendored add-on, working on the real Anki collection.
+"""The sync add-on on the phone: installed beside the vendored Incremento, working on the real Anki collection.
 
 Both devices below run the engine's code in this process (the add-on is a singleton), each with its own profile
-folder, exactly as desktop's tests do; what is checked here is what is specific to the phone: the overlay is
-installed, nothing it needs is missing from the vendored add-on, and the host collection answers the engine's queries.
+folder, exactly as desktop's tests do; what is checked here is what is specific to the phone: the add-on is
+installed and switched on, nothing it needs is missing from the vendored Incremento, and the host collection answers
+the engine's queries.
 """
 
 from __future__ import annotations
@@ -12,29 +13,14 @@ from pathlib import Path
 
 import pytest
 
-from conftest import ENGINE_DIR
-
-ENGINE_TOOL = Path(__file__).resolve().parents[1] / "tools"
+from conftest import SYNC_ADDON
 
 
-def _digest(path: Path) -> str:
-    import hashlib
-
-    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
-
-
-def test_the_overlay_is_exactly_what_the_manifest_records():
-    manifest = json.loads((ENGINE_DIR / "ENGINE.json").read_text(encoding="utf8"))
-    shipped = sorted(p.name for p in (ENGINE_DIR / "backend").glob("*.py"))
-
-    assert shipped == sorted(manifest["files"]), "files were added or removed without update_engine.py"
-    for name, expected in manifest["files"].items():
-        assert _digest(ENGINE_DIR / "backend" / name) == expected, f"{name} was edited by hand"
-
-
-def test_the_installed_addon_contains_the_engine_beside_upstreams_backend(rt):
-    for name in json.loads((ENGINE_DIR / "ENGINE.json").read_text(encoding="utf8"))["files"]:
-        assert (rt.addon_dir / "backend" / name).is_file(), name
+def test_the_sync_addon_is_installed_beside_incremento(rt):
+    installed = rt.addon_dir.parent / "incremento_sync"
+    for name in (p.name for p in (SYNC_ADDON / "engine").glob("sync_*.py")):
+        assert (installed / "engine" / name).is_file(), name
+    assert (installed / "loader.py").is_file()
     assert (rt.addon_dir / "backend" / "session.py").is_file()
 
 
