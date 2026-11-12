@@ -1509,6 +1509,19 @@ def engine_sync(store: Any, label: str, publish_only: bool = False, budget_secon
     )
 
 
+def pair_hub(text: str, device_name: str) -> str:
+    """Pairs this device with a hub from what the person typed and returns the long pairing code to keep.
+
+    ``text`` is the six digit code the hub shows (optionally followed by its address, for a network where the hub
+    cannot be found by itself) or a long pairing code. Raises ``PairingRefused`` (a ``StoreError``) saying why not.
+    """
+    if not addon.sync_enabled():
+        raise RuntimeError("Sync is switched off on this device")
+    from incremento.backend import sync_http
+
+    return sync_http.resolve_pairing(text, device_name).code()
+
+
 def engine_sync_hub(code: str, publish_only: bool = False, budget_seconds: float | None = None) -> str:
     """Sync through a hub on the network, paired with ``code`` (see ``incremento.backend.sync_http``).
 

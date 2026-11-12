@@ -290,6 +290,22 @@ object Ankrimento {
     }
 
     /**
+     * Pairs with a hub from what the person typed: the six digit code the hub shows (found on the network, or with its
+     * address after the code) or a long pairing code. Returns the pairing code to hand to [setSyncHub]. Throws with a
+     * message to show when the hub is not found or the code is wrong.
+     */
+    @WorkerThread
+    fun pairHub(typed: String): String {
+        val name =
+            Build.MODEL
+                .replace(Regex("[^A-Za-z0-9_-]+"), "-")
+                .trim('-')
+                .take(40)
+                .ifEmpty { "phone" }
+        return requireFacade().callAttr("pair_hub", typed, name).toString()
+    }
+
+    /**
      * Use the hub paired with [code] (empty: no hub). The code is checked when it is used: [sync] throws for one
      * that is not a pairing code.
      */

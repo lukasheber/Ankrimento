@@ -143,7 +143,7 @@ class IncrementoMenu(
                 activity.startActivity(StatisticsActivity.intent(activity))
             },
             // The hub is paired in settings; a session start syncs too.
-            settings.syncHubCode.takeIf { it.isNotEmpty() }?.let {
+            hubPaired.takeIf { it }?.let {
                 SessionCardAction(IncrementoIcons.Sync, R.string.ankrimento_sync_now) { activity.lifecycleScope.launch { syncNow() } }
             },
         )
@@ -168,7 +168,11 @@ class IncrementoMenu(
         return true
     }
 
+    /** A hub is paired and sync is on; read when the deck list shows, so the menu follows the settings. */
+    private var hubPaired by mutableStateOf(false)
+
     private suspend fun refreshSessionEntry() {
+        hubPaired = settings.syncHubCode.isNotEmpty() && settings.syncAddonEnabled
         runCatching {
             CollectionManager.withCol { SessionDeck.remaining(this, settings.sessionDeckName) }
         }.onSuccess { (deckId, remaining) ->

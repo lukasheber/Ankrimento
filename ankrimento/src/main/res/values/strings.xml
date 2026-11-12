@@ -67,7 +67,7 @@
     <string name="ankrimento_sync_working">Syncing Incremento data… %1$d sent, %2$d received so far</string>
     <string name="ankrimento_sync_hub">Sync hub</string>
     <string name="ankrimento_sync_hub_none">Not set. Pair with a hub on your network to sync Incremento data</string>
-    <string name="ankrimento_sync_hub_message">Paste the pairing code printed by the sync hub on the computer that runs it (Incremento Sync, scripts/sync_hub.py). Leave it empty to stop syncing.</string>
+    <string name="ankrimento_sync_hub_message">Type the 6-digit code the sync hub shows on the computer that runs it (Incremento Sync, scripts/sync_hub.py serve). If it can\'t find the hub, add its address after the code, like 483 920 192.168.1.5. Leave empty to stop syncing.</string>
     <string name="ankrimento_sync_hub_summary">%1$s on %2$s</string>
     <string name="ankrimento_sync_hub_invalid">Not a valid pairing code</string>
     <string name="ankrimento_statistics_title">Incremento statistics</string>
@@ -670,5 +670,7 @@
     <string name="ankrimento_settings_volume_keys">Volume keys turn pages</string>
     <string name="ankrimento_settings_volume_keys_help">In the PDF, EPUB, text and web readers. Off: they change the volume.</string>
     <string name="ankrimento_settings_sync_addon">Incremento Sync</string>
-    <string name="ankrimento_settings_sync_addon_help">Syncs Incremento\'s own data through a shared folder or a hub. Off: Incremento runs without it and nothing syncs; the sync data on this device is kept, so turning it on resumes.</string>
+    <string name="ankrimento_settings_sync_addon_help">Syncs Incremento\'s own data with a hub on your network. Off: Incremento runs without it and nothing syncs; the sync data on this device is kept, so turning it on resumes.</string>
+    <string name="ankrimento_sync_hub_pairing">Looking for the hub…</string>
+    <string name="ankrimento_sync_hub_paired">Paired with the hub</string>
 </resources>

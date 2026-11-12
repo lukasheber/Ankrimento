@@ -71,7 +71,7 @@
     <string name="ankrimento_sync_working">Sincronizando os dados do Incremento… %1$d enviados, %2$d recebidos até agora</string>
     <string name="ankrimento_sync_hub">Hub de sincronização</string>
     <string name="ankrimento_sync_hub_none">Não definido. Pareie com um hub na sua rede para sincronizar os dados do Incremento</string>
-    <string name="ankrimento_sync_hub_message">Cole o código de pareamento mostrado pelo hub de sincronização no computador que o executa (Incremento Sync, scripts/sync_hub.py). Deixe vazio para parar de sincronizar.</string>
+    <string name="ankrimento_sync_hub_message">Digite o código de 6 dígitos que o hub de sincronização mostra no computador que o executa (Incremento Sync, scripts/sync_hub.py serve). Se ele não achar o hub, acrescente o endereço depois do código, como 483 920 192.168.1.5. Deixe vazio para parar de sincronizar.</string>
     <string name="ankrimento_sync_hub_summary">%1$s em %2$s</string>
     <string name="ankrimento_sync_hub_invalid">Código de pareamento inválido</string>
     <string name="ankrimento_statistics_title">Estatísticas do Incremento</string>
@@ -683,5 +683,7 @@
     <string name="ankrimento_settings_volume_keys">Teclas de volume viram páginas</string>
     <string name="ankrimento_settings_volume_keys_help">Nos leitores de PDF, EPUB, texto e web. Desligado: elas mudam o volume.</string>
     <string name="ankrimento_settings_sync_addon">Incremento Sync</string>
-    <string name="ankrimento_settings_sync_addon_help">Sincroniza os dados do próprio Incremento por uma pasta compartilhada ou um hub. Desligado: o Incremento roda sem ele e nada sincroniza; os dados de sincronização deste aparelho são mantidos, então ligar de novo retoma.</string>
+    <string name="ankrimento_settings_sync_addon_help">Sincroniza os dados do próprio Incremento com um hub na sua rede. Desligado: o Incremento roda sem ele e nada sincroniza; os dados de sincronização deste aparelho são mantidos, então ligar de novo retoma.</string>
+    <string name="ankrimento_sync_hub_pairing">Procurando o hub…</string>
+    <string name="ankrimento_sync_hub_paired">Pareado com o hub</string>
 </resources>

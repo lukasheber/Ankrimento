@@ -1026,12 +1026,31 @@ class IncrementoSettingsActivity : ComponentActivity() {
         if (!syncAddon) return
         TextRow(
             label = R.string.ankrimento_sync_hub,
-            value = syncHubCode,
+            // The key is never shown: the field starts empty, to type a new code in.
+            value = "",
             message = R.string.ankrimento_sync_hub_message,
             shown = hubSummary(syncHubCode) ?: stringResource(R.string.ankrimento_sync_hub_none),
-        ) { code ->
-            Ankrimento.setSyncHub(this, code)
+        ) { typed -> pairHub(typed) }
+    }
+
+    /** Pairs with the hub the person's text names (empty: stops syncing), finding it on the network, and says what happened. */
+    private fun pairHub(typed: String) {
+        if (typed.isEmpty()) {
+            Ankrimento.setSyncHub(this, "")
             syncHubCode = device.syncHubCode
+            return
+        }
+        toast(getString(R.string.ankrimento_sync_hub_pairing))
+        lifecycleScope.launch {
+            runCatching { withContext(Dispatchers.IO) { Ankrimento.pairHub(typed) } }
+                .onSuccess { code ->
+                    Ankrimento.setSyncHub(this@IncrementoSettingsActivity, code)
+                    syncHubCode = device.syncHubCode
+                    toast(getString(R.string.ankrimento_sync_hub_paired))
+                }.onFailure { error ->
+                    Timber.w(error, "Pairing with the hub failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
         }
     }
 

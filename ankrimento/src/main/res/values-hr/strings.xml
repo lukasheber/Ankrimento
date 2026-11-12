@@ -71,7 +71,7 @@
     <string name="ankrimento_sync_working">Sinkronizacija Incremento podataka… dosad poslano %1$d, primljeno %2$d</string>
     <string name="ankrimento_sync_hub">Središte za sinkronizaciju</string>
     <string name="ankrimento_sync_hub_none">Nije postavljeno. Uparite s hubom na svojoj mreži za sinkronizaciju podataka Incrementa</string>
-    <string name="ankrimento_sync_hub_message">Zalijepite kod za uparivanje koji prikazuje sinkronizacijski hub na računalu na kojem radi (Incremento Sync, scripts/sync_hub.py). Ostavite prazno za prestanak sinkronizacije.</string>
+    <string name="ankrimento_sync_hub_message">Upišite 6-znamenkasti kod koji sinkronizacijski hub prikazuje na računalu na kojem radi (Incremento Sync, scripts/sync_hub.py serve). Ako ne može pronaći hub, dodajte njegovu adresu iza koda, npr. 483 920 192.168.1.5. Ostavite prazno za prestanak sinkronizacije.</string>
     <string name="ankrimento_sync_hub_summary">%1$s na %2$s</string>
     <string name="ankrimento_sync_hub_invalid">Nije valjan kod za uparivanje</string>
     <string name="ankrimento_statistics_title">Incremento statistika</string>
@@ -689,5 +689,7 @@
     <string name="ankrimento_settings_volume_keys">Tipke glasnoće listaju stranice</string>
     <string name="ankrimento_settings_volume_keys_help">U čitačima PDF-a, EPUB-a, teksta i weba. Isključeno: mijenjaju glasnoću.</string>
     <string name="ankrimento_settings_sync_addon">Incremento Sync</string>
-    <string name="ankrimento_settings_sync_addon_help">Sinkronizira Incrementove podatke putem dijeljene mape ili huba. Isključeno: Incremento radi bez toga i ništa se ne sinkronizira; podaci sinkronizacije na ovom uređaju ostaju, pa ponovno uključivanje nastavlja.</string>
+    <string name="ankrimento_settings_sync_addon_help">Sinkronizira Incrementove podatke s hubom na vašoj mreži. Isključeno: Incremento radi bez toga i ništa se ne sinkronizira; podaci sinkronizacije na ovom uređaju ostaju, pa ponovno uključivanje nastavlja.</string>
+    <string name="ankrimento_sync_hub_pairing">Tražim hub…</string>
+    <string name="ankrimento_sync_hub_paired">Upareno s hubom</string>
 </resources>

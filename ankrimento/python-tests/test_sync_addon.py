@@ -61,3 +61,27 @@ def test_the_sync_data_survives_switching_off(rt, sync_on):
 
     conn = db.get_connection(str(rt.addon_dir), rt.profile)
     assert conn.execute("SELECT count(*) FROM sync_meta").fetchone()[0] >= 1
+
+
+def test_the_phone_pairs_with_the_six_digits_a_hub_shows(rt, sync_on, tmp_path):
+    from incremento.backend import sync_http
+
+    book = sync_http.KeyBook(tmp_path / "keys.json")
+    hub = sync_http.Hub(tmp_path / "Hub", book.as_mapping(), host="127.0.0.1", port=0, key_book=book)
+    hub.start()
+    try:
+        pin = hub.open_pairing()
+        code = facade.pair_hub(f"{pin[:3]} {pin[3:]} 127.0.0.1:{hub.port}", "SM-X123")
+
+        pairing = sync_http.Pairing.from_code(code)
+        assert (pairing.identity, pairing.host, pairing.port) == ("SM-X123", "127.0.0.1", hub.port)
+        assert book.devices()["SM-X123"] == pairing.key
+    finally:
+        hub.stop()
+
+
+def test_pairing_while_the_sync_addon_is_off_says_so(rt, sync_on):
+    facade.set_sync_addon_enabled(False)
+
+    with pytest.raises(RuntimeError, match="switched off"):
+        facade.pair_hub("123456", "tablet")

@@ -63,7 +63,7 @@
     <string name="ankrimento_sync_working">正在同步 Incremento 数据… 已发送 %1$d 项，已接收 %2$d 项</string>
     <string name="ankrimento_sync_hub">同步中心</string>
     <string name="ankrimento_sync_hub_none">未设置。与你网络中的同步中心配对，即可同步 Incremento 数据</string>
-    <string name="ankrimento_sync_hub_message">粘贴运行同步中心的电脑上显示的配对码（Incremento Sync，scripts/sync_hub.py）。留空则停止同步。</string>
+    <string name="ankrimento_sync_hub_message">输入运行同步中心的电脑上显示的 6 位数字码（Incremento Sync，scripts/sync_hub.py serve）。如果找不到中心，请在码后面加上它的地址，例如 483 920 192.168.1.5。留空则停止同步。</string>
     <string name="ankrimento_sync_hub_summary">%1$s（%2$s）</string>
     <string name="ankrimento_sync_hub_invalid">配对码无效</string>
     <string name="ankrimento_statistics_title">Incremento 统计</string>
@@ -651,5 +651,7 @@
     <string name="ankrimento_settings_volume_keys">音量键翻页</string>
     <string name="ankrimento_settings_volume_keys_help">适用于 PDF、EPUB、文本和网页阅读器。关闭时音量键调节音量。</string>
     <string name="ankrimento_settings_sync_addon">Incremento 同步</string>
-    <string name="ankrimento_settings_sync_addon_help">通过共享文件夹或中心同步 Incremento 自己的数据。关闭后 Incremento 不带同步运行，也不会同步；此设备上的同步数据会保留，重新开启后继续。</string>
+    <string name="ankrimento_settings_sync_addon_help">与你网络中的同步中心同步 Incremento 自己的数据。关闭后 Incremento 不带同步运行，也不会同步；此设备上的同步数据会保留，重新开启后继续。</string>
+    <string name="ankrimento_sync_hub_pairing">正在查找同步中心…</string>
+    <string name="ankrimento_sync_hub_paired">已与同步中心配对</string>
 </resources>

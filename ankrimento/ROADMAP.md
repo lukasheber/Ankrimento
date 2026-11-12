@@ -313,6 +313,13 @@ Learning-loop UX review (2026-11-12, on the tablet), done in one pass:
 52. ~~One-time hint~~ that selecting text extracts it.
 53. Not offered: Cloze for PDF (a PDF's text cannot carry a cloze); a Highlight action in the text and web readers (they have no highlight feature to call).
 
+Sync on the phone (2026-11-12):
+
+54. The phone syncs through a hub on the network only. Folder sync (Storage Access Framework) was never tried with Google Drive, Dropbox or Syncthing on a device, so it is not offered (the add-on still supports folders on desktop).
+55. Pairing is a six digit code the hub shows (found by broadcast, or with the hub's address after the code), not a long key; the key is made by the hub and handed over inside a connection the code is bound to. Checked on the tablet and a PC over a real Wi-Fi network (tablet 192.168.1.150, PC 192.168.1.5), not through `adb reverse`: pairing from six digits, a first sync of the whole library (130 records, 9.8 MB of documents), changes in both directions, the hub moving to another port and both devices finding it again, three wrong codes closing the window, the hub being off (reported after 8 seconds, in words), a revoked device told to pair again and then re-paired. Files: all 11 EPUBs, 4 PDFs and 4 local files arrived byte for byte, and a local file edited on the PC reached the tablet.
+56. ⬜ **Not synced: local video files.** A video topic from a local file (or a downloaded one) keeps its file and subtitles in `user_files/videos/`, which neither the engine nor AnkiWeb carries, so the other device has the topic but not the video. Audio topics are different: their file is Anki media (`[sound:…]`), which AnkiWeb syncs; that path was not tested (it needs an AnkiWeb account).
+57. ⬜ The pairing field is a plain text field (it also takes the hub's address); a numeric keyboard would suit the six digits.
+
 Not covered by that review (still to look at): the video and web topic bars; long cards (the test collection has one-word items); accessibility and large font sizes; whether Extract on a PDF selection gives the whole selection ("sentence to" showed as "sentence"); keeping the screen on while reading and volume-key page turns (not built); labels on the reader's top-bar icons.
 
 To check rather than build: the leech notice (it reuses AnkiDroid's own check; reaching it needs a card's seventh lapse) and the
