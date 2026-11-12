@@ -6,9 +6,17 @@ your decks and cards in AnkiDroid and adds what Incremento adds to Anki on the d
 items, a reader for PDFs, EPUBs, web pages, video and text, extracts and clozes made from what you read, priorities, the
 knowledge tree, statistics, writing, and backups.
 
-**Status: work in progress, no release yet.** It builds and runs on a real tablet (debug builds); there is no store build.
-`ankrimento/ROADMAP.md` lists what is done, what is deliberately not on the phone, and what is left;
-`ankrimento/RELEASE_CHECKLIST.md` what stands between this and a release.
+**Status: beta.** [0.1.0 beta 1](https://github.com/lukasheber/Ankrimento/releases) is out for 64-bit Android devices. It is
+tested on one tablet only, so expect rough edges; `ankrimento/ROADMAP.md` lists what is done, what is deliberately not on the
+phone, and what is left, and `ankrimento/RELEASE_CHECKLIST.md` what stands between this and a store release.
+
+## Install
+
+Download the APK for your device from the [releases](https://github.com/lukasheber/Ankrimento/releases) (`arm64-v8a` for
+almost every phone and tablet, `x86_64` for emulators and Chromebooks), check it against `SHA256SUMS.txt`, and open it
+(Android asks to allow installs from your browser or file manager). It installs beside AnkiDroid and does not touch it.
+On first start it asks for "All files access", which keeps your collection in a place that survives uninstalling.
+The APKs are signed with the key whose SHA-256 is `93:12:FD:94:FD:47:4E:5B:CA:CE:F2:72:E1:54:46:28:FD:2A:35:87:68:F1:84:D0:44:23:71:59:A8:08:79:E2`.
 
 ## Three repositories
 
