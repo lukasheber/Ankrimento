@@ -120,7 +120,7 @@
         <item quantity="one">%1$d daqiqa</item>
         <item quantity="other">%1$d daqiqa</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid kartasi</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento kartasi</string>
     <string name="note_editor_copy_note" maxLength="28">Qayddan nusxa oliş</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Örnini özgartiriş</string>
     <string name="card_editor_reset_card" maxLength="28">Progressni öçiriş</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">Tekşiriş</string>
     <string name="unknown_type_field_warning">Kiritiş javobi: nomaʼlum %s maydoni</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Dasta öçirilmoqda&#8230;</string>
-    <string name="info_rate">AnkiDroidʼga baho beriş</string>
+    <string name="info_rate">Ankrimentoʼga baho beriş</string>
     <string name="import_title">Import qiliş</string>
     <string name="import_preparing_file">Fayl import uçun tayyorlanmoqda&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Qöşiş</string>
@@ -143,16 +143,16 @@
     <string name="import_error_handle_exception">Faylni import qilib bölmadi\n\n%s</string>
     <string name="import_error_not_apkg_extension">“%s” fayl nomida .apkg yoki .colpkg kengaytmasi yöq</string>
     <string name="import_error_load_imported_database">Anki maʼlumotlar bazasini (.anki2) almaştiriş hali qöllab-quvvatlanmaydi. Iltimos, almaştiriş böyiça körsatmalar uçun qöllanmaga murojaat qiling.</string>
-    <string name="import_error_content_provider">Tanlangan faylni AnkiDroid tomonidan avtomatik import qilib bölmadi. Anki fayllarni qölda import qiliş uçun foydalanuvçi qöllanmasiga murojaat qiling: \n%s</string>
+    <string name="import_error_content_provider">Tanlangan faylni Ankrimento tomonidan avtomatik import qilib bölmadi. Anki fayllarni qölda import qiliş uçun foydalanuvçi qöllanmasiga murojaat qiling: \n%s</string>
     <string name="import_error_copy_to_cache_title">Faylni keşlaş amalga oşmadi</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Bu köpinça faylni tanlaş uçun foydalangan ilovadagi xato tufayli yuzaga keladi. Quyidagi yeçimlarni sinab köring:\n\n%s</string>
-    <string name="import_interrupted">Import uzuldi: AnkiDroid yopilgan</string>
+    <string name="import_interrupted">Import uzuldi: Ankrimento yopilgan</string>
     <string name="export_ready_title">Eksportga tayyor</string>
     <string name="export_send_no_handlers">apkg bilan işlaş uçun ilova mavjud emas. Saqlanmoqda&#8230;</string>
     <string name="export_save_apkg_successful">Anki paket muvaffaqiyatli saqlandi</string>
     <string name="export_save_apkg_unsuccessful">Anki paketini saqlab bölmadi</string>
     <string name="export_share_title">Anki paketini quyidagi bilan yuboring</string>
-    <string name="export_email_subject">AnkiDroid kartalarni eksport qildi: %s</string>
+    <string name="export_email_subject">Ankrimento kartalarni eksport qildi: %s</string>
     <string name="export_email_text"><![CDATA[
         Salom!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">Yozuv taxtasi rasmini saqlab bölmadi. %s</string>
     <string name="white_board_image_saved">Yozuv taxtasi rasmi %s ga saqlandi</string>
     <string name="title_whiteboard_editor" maxLength="28">Yozuv taxtasi muharriri</string>
-    <string name="user_is_a_robot">Avtomatik test aniqlandi. Agar siz inson bölsangiz, AnkiDroid qöllab-quvvatlaş guruhiga murojaat qiling.</string>
+    <string name="user_is_a_robot">Avtomatik test aniqlandi. Agar siz inson bölsangiz, Ankrimento qöllab-quvvatlaş guruhiga murojaat qiling.</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Bu karta AnkiDroid qöllab-quvvatlamagan funksiyalarni işlatadi. %1$s dasturçi bilan boğlaning yoki vikiga murojaat qiling. %2$s</string>
     <string name="invalid_json_data">Karta yaroqsiz maʼlumot taqdim etdi. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Dastalarni qidiriş</string>
     <string name="ankidroid_init_failed_webview_title">Kritik xato</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid hozirda mavjud bölmagan tizim WebViewʼga tayanadi. Bu tizim yangilanişlarni örnatayotganda sodir bölişi mumkin. Bir neça daqiqadan söng qayta urinib köring.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">Android xatoligi sababli AnkiDroid diskka ruxsati yöq.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento hozirda mavjud bölmagan tizim WebViewʼga tayanadi. Bu tizim yangilanişlarni örnatayotganda sodir bölişi mumkin. Bir neça daqiqadan söng qayta urinib köring.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Android xatoligi sababli Ankrimento diskka ruxsati yöq.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Şrift ölçami</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">Video juda katta, videoni qölda kiriting</string>
     <string name="note_editor_audio_too_large">Audio fayl juda katta, audio faylni qölda kiriting</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Android zaxiralaşi amalga oşmoqda. Iltimos, qayta urinib köring</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">AnkiDroidʼga yorliqlar qöşişga ruxsat beriş uçun iManagerʼdan foydalanişingiz kerak bölişi mumkin</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Ankrimentoʼga yorliqlar qöşişga ruxsat beriş uçun iManagerʼdan foydalanişingiz kerak bölişi mumkin</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen şortcuts’ in system settings for %s to add şortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Asosiy ekraningiz AnkiDroidʼga yorliqlar qöşişga ruxsat bermaydi</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Asosiy ekraningiz Ankrimentoʼga yorliqlar qöşişga ruxsat bermaydi</string>
     <string name="create_shortcut_error">Yorliq qöşişda xatolik: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Jumlalar boş harf bilan</string>
     <!-- Dialog hints -->
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">AnkiWebʼdan sinxronlaş</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid hali işga tuşirilmagan. AnkiDroidʼni oçing va qayta urinib köring</string>
+    <string name="app_not_initialized_new">Ankrimento hali işga tuşirilmagan. Ankrimentoʼni oçing va qayta urinib köring</string>
     <!-- Deck Creation -->
     <string name="deck_created">Dasta yaratildi</string>
     <string name="deck_renamed">Dasta nomi özgartirildi</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Örnatiş</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Nutq sintezatori sozlamalarini oçib bölmadi</string>
-    <string name="shared_decks_ankiweb_login_limit">Şared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Şared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Tavsif</string>
     <string name="deck_description_saved">Tavsif yangilandi</string>
     <string name="format_deck_description_as_markdown">Markdown sifatida formatlaş</string>

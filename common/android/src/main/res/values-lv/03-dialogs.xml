@@ -41,12 +41,12 @@
         <item quantity="other">Atiestatītas %d kartītes</item>
     </plurals>
     <string name="answering_error_title">Datubāzes kļūda</string>
-    <string name="answering_error_message">Rakstīšana krājumā neizdevās. Datubāze varētu būt bojāta vai diskā vārētu nebūt pietiekami daudz brīvas vietas.\n\nJa tas notiek biežāk, jāmēģina pārbaudīt datubāzi, labot krājumu vai atjaunot to no rezerves kopijas. Jāpiesit \"Iespējas\", lai to izdarītu.\n\nVai arī tā varētu būt AnkiDroid nepilnība; lūgums ziņot par kļūdu, lai mēs varētu to pārbaudīt.</string>
+    <string name="answering_error_message">Rakstīšana krājumā neizdevās. Datubāze varētu būt bojāta vai diskā vārētu nebūt pietiekami daudz brīvas vietas.\n\nJa tas notiek biežāk, jāmēģina pārbaudīt datubāzi, labot krājumu vai atjaunot to no rezerves kopijas. Jāpiesit \"Iespējas\", lai to izdarītu.\n\nVai arī tā varētu būt Ankrimento nepilnība; lūgums ziņot par kļūdu, lai mēs varētu to pārbaudīt.</string>
     <string name="answering_error_report">Ziņot par kļūdu</string>
-    <string name="storage_full_message">Nav pietiekami daudz brīvas krātuves vietas, lai atvērtu AnkiDroid. Jāatbrīvo mazliet vietas, lai varētu turpināt.</string>
+    <string name="storage_full_message">Nav pietiekami daudz brīvas krātuves vietas, lai atvērtu Ankrimento. Jāatbrīvo mazliet vietas, lai varētu turpināt.</string>
     <string name="repair_deck_dialog">Vai tiešām mēģināt salabot datubāzi?\n\nPirms mēģinājuna uzsākšanas apakšmapē \"%s\" tiks izveidota kopija.</string>
     <string name="intent_aedict_empty">Kategorija \"noklusējums\" ir tukša</string>
-    <string name="intent_aedict_category">Lai AnkiDroid pievienotu kartītes, jānoņem visas piezīmju grāmatiņu kategorijas vai jāpievieno viena ar nosaukumu \"default\"</string>
+    <string name="intent_aedict_category">Lai Ankrimento pievienotu kartītes, jānoņem visas piezīmju grāmatiņu kategorijas vai jāpievieno viena ar nosaukumu \"default\"</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Parskatīt kartītes, kas ir aizmirstas pēdējās x dienās:</string>
@@ -56,7 +56,7 @@
     <string name="storage_full_title">Krātuve pilna</string>
     <string name="storage_almost_full_title">Krātuve gandrīz pilna</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Nav vietas</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid ir nepieciešama %s brīva krātuves vieta, lai turpinātu. Lūgums atbrīvot vietu</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento ir nepieciešama %s brīva krātuves vieta, lai turpinātu. Lūgums atbrīvot vietu</string>
     <string name="restore_backup_title">Atjaunot rezerves kopiju?</string>
     <string name="restore_backup">Krājums tiks aizvietots ar vecāku kopiju. Jebkāda nesaglabāta virzība tiks zaudēta.</string>
     <string name="restore_backup_choose_another">Izvēlēties citu</string>
@@ -120,9 +120,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Datubāze slēgta</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Nesaderīga datubāzes versija</string>
-    <string name="incompatible_database_version_summary">Datubāzei ir jaunāka versija nekā tā, ar ko šī AnkiDroid versija var darboties. Jāuzlabo AnkiDroid vai jāpazemina databāze, lai atvērtu to\n\nAtbalstītā versija: %1$d\nDatubāzes versija: %2$d\n\nŠīs atjaunošanas iespējas aizstās pašreizējo krājumu, iespējams ar saderīgu datubāzes versiju:</string>
+    <string name="incompatible_database_version_summary">Datubāzei ir jaunāka versija nekā tā, ar ko šī Ankrimento versija var darboties. Jāuzlabo Ankrimento vai jāpazemina databāze, lai atvērtu to\n\nAtbalstītā versija: %1$d\nDatubāzes versija: %2$d\n\nŠīs atjaunošanas iespējas aizstās pašreizējo krājumu, iespējams ar saderīgu datubāzes versiju:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Fona attēls iestatīts</string>
     <string name="background_image_removed">Fona attēls noņemts</string>

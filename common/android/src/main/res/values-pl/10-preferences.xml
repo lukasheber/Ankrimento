@@ -73,7 +73,7 @@
     <string name="card_browser_font_size" maxLength="41">Skalowanie czcionki przeglądania kart</string>
     <string name="card_browser_hide_media" maxLength="41">Wyświetlaj nazwy plików w przeglądarce kart</string>
     <string name="card_browser_hide_media_summary">Wyświetlaj nazwy plików dźwiękowych w polach pytanie/odpowiedź w przeglądarce kart</string>
-    <string name="col_path" maxLength="41">Katalog AnkiDroid</string>
+    <string name="col_path" maxLength="41">Katalog Ankrimento</string>
     <string name="fullscreen_review" maxLength="41">Tryb pełnoekranowy</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">Wyłączony</string>
     <string name="full_screen_system">Ukryj paski systemowe</string>
@@ -316,9 +316,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Ogólne</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Szukaj</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">Pomóż ulepszyć AnkiDroid!</string>
+    <string name="analytics_dialog_title">Pomóż ulepszyć Ankrimento!</string>
     <string name="analytics_title" maxLength="41">Udostępnij użycie aplikacji</string>
-    <string name="analytics_summ">Możesz ulepszyć AnkiDroid, pomagając zespołowi programistów zobaczyć jakie funkcje są najczęściej używane</string>
+    <string name="analytics_summ">Możesz ulepszyć Ankrimento, pomagając zespołowi programistów zobaczyć jakie funkcje są najczęściej używane</string>
     <string name="note_editor_replace_newlines" maxLength="41">Zastąp nowe wiersze przez HTML</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">Zaznacz pole „podaj odpowiedź”</string>
@@ -330,8 +330,8 @@
     <string name="about_contributors_description"><![CDATA[To są nasi wspaniali <a href=\"%1$s\">współtwórcy</a>. Możesz również pomóc AnkiDroid poprzez programowanie, tłumaczenie, darowiznę i <a href=\"%2$s\">więcej</a>!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">Licencja</string>
-    <string name="license_description"><![CDATA[AnkiDroid jest wydawany na licencji <a href=\"%1$s\">GPL-3.0</a> i <a href=\"%2$s\">AGPL-3.0</a> z kodem źródłowym dostępnym <a href=\"%3$s\">na GitHubie</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid używa również bibliotek i ikon firm trzecich, które są licencjonowane na podstawie <a href=\"%1$s\">licencji</a> open source ]]></string>
+    <string name="license_description"><![CDATA[Ankrimento jest wydawany na licencji <a href=\"%1$s\">GPL-3.0</a> i <a href=\"%2$s\">AGPL-3.0</a> z kodem źródłowym dostępnym <a href=\"%3$s\">na GitHubie</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento używa również bibliotek i ikon firm trzecich, które są licencjonowane na podstawie <a href=\"%1$s\">licencji</a> open source ]]></string>
     <string name="donate_description"><![CDATA[Możesz wspierać rozwój AnkiDroid <a href=\"%1$s\">darowizną</a>. Jesteśmy wdzięczni za każdą kwotę.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">Dodaj gest</string>
@@ -367,7 +367,7 @@
     <string name="bindings_already_bound">Już przypisane do %s</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Eksperymentalne</string>
-    <string name="readtext_deprecation_warn">AnkiDroid wprowadził lepszy mechanizm TTS, który jest kompatybilny z innymi klientami Anki i zawiera więcej głosów i ulepszeń w odtwarzaniu języków!\n\nZaktualizuj tak szybko jak to możliwe, ponieważ to ustawienie wkrótce zniknie</string>
+    <string name="readtext_deprecation_warn">Ankrimento wprowadził lepszy mechanizm TTS, który jest kompatybilny z innymi klientami Anki i zawiera więcej głosów i ulepszeń w odtwarzaniu języków!\n\nZaktualizuj tak szybko jak to możliwe, ponieważ to ustawienie wkrótce zniknie</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Uaktualnij do nowego formatu przetwarzania tekstu na mowę</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -382,9 +382,9 @@
          #################################### Backup options ###################################
          ####################################################################################### -->
     <string name="pref__backups_help__summary"><![CDATA[
-        AnkiDroid okresowo wykonuje kopię zapasową twojej kolekcji.
+        Ankrimento okresowo wykonuje kopię zapasową twojej kolekcji.
         Po utworzeniu kopii zapasowych starszych niż dwa dni
-        AnkiDroid rozpocznie usuwanie niektórych z nich, aby zwolnić miejsce na dysku.
+        Ankrimento rozpocznie usuwanie niektórych z nich, aby zwolnić miejsce na dysku.
         <br><br>
         Zauważ, że pliki multimedialne nie wchodzą w skład są kopii zapasowej.
         Dla bezpieczeństwa synchronizuj swoją kolekcję lub wykonaj kopię zapasową – eksport.

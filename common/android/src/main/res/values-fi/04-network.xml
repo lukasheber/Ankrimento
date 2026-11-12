@@ -35,7 +35,7 @@
     <string name="username">Sähköpostiosoite</string>
     <string name="password">Salasana</string>
     <string name="sign_up_description">Eikö sinulla ole AnkiWeb-tiliä? Se on ilmainen!</string>
-    <string name="sign_up_not_affiliated">Huomatus: AnkiWeb ei ole sidoksissa AnkiDroidiin</string>
+    <string name="sign_up_not_affiliated">Huomatus: AnkiWeb ei ole sidoksissa Ankrimentoiin</string>
     <string name="sign_up">Rekisteröidy</string>
     <string name="logged_as">Olet kirjautunut tilille</string>
     <string name="reset_password">Nollaa salasanasi</string>

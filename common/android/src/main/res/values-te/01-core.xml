@@ -82,12 +82,12 @@
     <string name="menu_disable_voice_playback">వాయిస్ ప్లేబ్యాక్‌ని నిలిపివేయండి</string>
     <string name="menu_create_backup" maxLength="28">బ్యాకప్ను సృష్టించు</string>
     <string name="new_dynamic_deck">ఫిల్టర్ డెక్ను సృష్టించండి</string>
-    <string name="directory_inaccessible">AnkiDroid డైరెక్టరీ అందుబాటులో లేదు</string>
+    <string name="directory_inaccessible">Ankrimento డైరెక్టరీ అందుబాటులో లేదు</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">దయచేసి కొనసాగించడానికి AnkiDroidకి \'స్టోరేజ్\' అనుమతిని మంజూరు చేయండి</string>
+    <string name="startup_no_storage_permission">దయచేసి కొనసాగించడానికి Ankrimentoకి \'స్టోరేజ్\' అనుమతిని మంజూరు చేయండి</string>
     <string name="rebuild_filtered_deck">ఫిల్టర్ చేసిన డెక్‌ని పునర్నిర్మిస్తోంది&#8230;</string>
     <string name="empty_cram_label" maxLength="28">ఖాళీ</string>
     <string name="create_subdeck">సబ్‌డెక్‌ను సృష్టించండి</string>
@@ -124,7 +124,7 @@
     <string name="card_template_editor_save_error">చీటి టెంప్లేట్ మార్పులను సేవ్ చేయడం సాధ్యపడలేదు: %s</string>
     <string name="template_for_current_card_deleted">ప్రస్తుత చీటి కోసం చీటి రకం తొలగించబడింది.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">AnkiDroid డేటాబేస్కు చదవండి మరియు వ్రాయండి</string>
+    <string name="read_write_permission_label">Ankrimento డేటాబేస్కు చదవండి మరియు వ్రాయండి</string>
     <string name="read_write_permission_description">పొందు ప్రస్తుతం ఉన్న గమనికలు, చీటీలు, నోట్ రకాలు మరియు డెక్స్, కొత్త వాటిని సృష్టించడం</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Card browser</string>
@@ -133,24 +133,24 @@
     <string name="sync_conflict_message_new">సేకరణలను కలపడం సాధ్యం కాదు.\nమీరు ఏ సేకరణను ఉంచాలనుకుంటున్నారు?</string>
     <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">అంకిడ్రాయిడ్</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">అంకివెబ్</string>
-    <string name="sync_conflict_remote_confirm_new">AnkiDroidలో మీ సేకరణను AnkiWeb నుండి మీ సేకరణతో భర్తీ చేయాలా?</string>
-    <string name="sync_conflict_local_confirm_new">AnkiWebలో మీ సేకరణను AnkiDroid నుండి మీ సేకరణతో భర్తీ చేయాలా?</string>
+    <string name="sync_conflict_remote_confirm_new">Ankrimentoలో మీ సేకరణను AnkiWeb నుండి మీ సేకరణతో భర్తీ చేయాలా?</string>
+    <string name="sync_conflict_local_confirm_new">AnkiWebలో మీ సేకరణను Ankrimento నుండి మీ సేకరణతో భర్తీ చేయాలా?</string>
     <string name="sync_conflict_title_new">ఉంచడానికి సేకరణను ఎంచుకోండి</string>
     <string name="sync_conflict_replace_title">సేకరణను భర్తీ చేయండి</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">%s ఫైల్‌కి వ్రాయలేరు లేదా సృష్టించలేరు</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">సేకరణ అందుబాటులో లేదు</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store విధానంలో మార్పు కారణంగా AnkiDroid అన్‌ఇన్‌స్టాల్ చేసిన తర్వాత మేము మీ సేకరణను యాక్సెస్ చేయలేకపోతున్నాము\n\nమీ డేటా సురక్షితంగా ఉంది మరియు పునరుద్ధరించబడుతుంది. ఇది\n%s\n\nని పునరుద్ధరించడానికి దిగువన ఉన్న ఎంపికను ఎంచుకోండి:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">యాప్ నిష్క్రియాత్మకత కారణంగా Android AnkiDroid %1$s అనుమతిని తీసివేసింది.\n\nమీ డేటా సురక్షితంగా ఉంది మరియు పునరుద్ధరించబడుతుంది. ఇది\n%2$s\n\nపునరుద్ధరణకు దిగువన ఉన్న ఎంపికను ఎంచుకోండి:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store విధానంలో మార్పు కారణంగా Ankrimento అన్‌ఇన్‌స్టాల్ చేసిన తర్వాత మేము మీ సేకరణను యాక్సెస్ చేయలేకపోతున్నాము\n\nమీ డేటా సురక్షితంగా ఉంది మరియు పునరుద్ధరించబడుతుంది. ఇది\n%s\n\nని పునరుద్ధరించడానికి దిగువన ఉన్న ఎంపికను ఎంచుకోండి:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">యాప్ నిష్క్రియాత్మకత కారణంగా Android Ankrimento %1$s అనుమతిని తీసివేసింది.\n\nమీ డేటా సురక్షితంగా ఉంది మరియు పునరుద్ధరించబడుతుంది. ఇది\n%2$s\n\nపునరుద్ధరణకు దిగువన ఉన్న ఎంపికను ఎంచుకోండి:</string>
     <string name="restore_data_from_ankiweb">AnkiWeb నుండి పునరుద్ధరించు (సిఫార్సు చేయబడింది)</string>
     <string name="install_non_play_store_ankidroid_recommended">ఫోల్డర్ యాక్సెస్‌ని పునరుద్ధరించు (సిఫార్సు చేయబడింది)</string>
     <string name="install_non_play_store_ankidroid">ఫోల్డర్ యాక్సెస్‌ని పునరుద్ధరించు (అధునాతన)</string>
     <string name="restore_data_from_backup">.colpkg బ్యాకప్ నుండి పునరుద్ధరించు (అధునాతన)</string>
     <string name="create_new_collection">కొత్త సేకరణను సృష్టించండి</string>
-    <string name="new_unsafe_collection">మీరు AnkiDroidని అన్‌ఇన్‌స్టాల్ చేస్తే కొత్త సేకరణ మీ ఫోన్ నుండి తీసివేయబడుతుంది</string>
+    <string name="new_unsafe_collection">మీరు Ankrimentoని అన్‌ఇన్‌స్టాల్ చేస్తే కొత్త సేకరణ మీ ఫోన్ నుండి తీసివేయబడుతుంది</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid పని చేయడానికి కొన్ని అనుమతులు అవసరం</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">ఈ అనుమతులతో AnkiDroid బాగా పనిస్తేస్తది</string>
+    <string name="permissions_screen_headline">Ankrimento పని చేయడానికి కొన్ని అనుమతులు అవసరం</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">ఈ అనుమతులతో Ankrimento బాగా పనిస్తేస్తది</string>
     <string name="storage_access_title">నిల్వ యాక్సెస్</string>
     <string name="storage_access_summary">యాప్‌ని అన్‌ఇన్‌స్టాల్ చేస్తే తొలగించబడని సురక్షిత ప్రదేశంలో మీ సేకరణను సేవ్ చేస్తుంది</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">అన్ని ఫైల్‌ల యాక్సెస్</string>
@@ -168,7 +168,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Required for the app to work</string>
-    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <string name="permission_required_message">Please grant Ankrimento the ‘%s’ permission to continue</string>
     <!-- Multiple profile -->
     <string name="add_profile">Add profile</string>
 </resources>

@@ -73,7 +73,7 @@
     <string name="card_browser_font_size" maxLength="41">Масштаб шрифта в списке карточек</string>
     <string name="card_browser_hide_media" maxLength="41">Показывать имена файлов</string>
     <string name="card_browser_hide_media_summary">Отображать имена аудио файлов в полях вопроса или ответа в списке карточек</string>
-    <string name="col_path" maxLength="41">Папка AnkiDroid</string>
+    <string name="col_path" maxLength="41">Папка Ankrimento</string>
     <string name="fullscreen_review" maxLength="41">Полноэкранный режим</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">Выкл.</string>
     <string name="full_screen_system">Скрыть системную панель</string>
@@ -315,7 +315,7 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Общие</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Запрос</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">Помогите сделать AnkiDroid лучше!</string>
+    <string name="analytics_dialog_title">Помогите сделать Ankrimento лучше!</string>
     <string name="analytics_title" maxLength="41">Делиться статистикой использования</string>
     <string name="analytics_summ">Отправляет информацию о функциях, которые предпочитают пользователи</string>
     <string name="note_editor_replace_newlines" maxLength="41">Заменять перенос строк на HTML</string>
@@ -329,8 +329,8 @@
     <string name="about_contributors_description"><![CDATA[Это наши потрясающие <a href=\"%1$s\">участники</a>. Вы также можете помочь AnkiDroid программируя, делая переводы, пожертвования <a href=\"%2$s\">и другое</a>!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">Лицензия</string>
-    <string name="license_description"><![CDATA[AnkiDroid выпущен на условиях лицензий <a href=\"%1$s\">GPL-3.0</a> и <a href=\"%2$s\">AGPL-3.0</a> с исходным кодом <a href=\"%3$s\">на GitHub</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid также использует сторонние библиотеки и иконки, которые лицензированы под различными лицензиями <a href=\"%1$s\">с открытым исходным кодом</a>]]></string>
+    <string name="license_description"><![CDATA[Ankrimento выпущен на условиях лицензий <a href=\"%1$s\">GPL-3.0</a> и <a href=\"%2$s\">AGPL-3.0</a> с исходным кодом <a href=\"%3$s\">на GitHub</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento также использует сторонние библиотеки и иконки, которые лицензированы под различными лицензиями <a href=\"%1$s\">с открытым исходным кодом</a>]]></string>
     <string name="donate_description"><![CDATA[Вы можете поддержать развитие AnkiDroid, <a href=\"%1$s\">пожертвованием</a>. Любая сумма сильно поможет.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">Добавить жест</string>
@@ -366,7 +366,7 @@
     <string name="bindings_already_bound">Уже назначено на «%s»</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Экспериментальная</string>
-    <string name="readtext_deprecation_warn">У AnkiDroid появился более совершенный механизм синтеза речи, который совместим с другими клиентами Anki и содержит больше голосов и улучшения в воспроизведении языков.\n\nПожалуйста, обновитесь как можно скорее, так как эта настройка скоро будет удалена.</string>
+    <string name="readtext_deprecation_warn">У Ankrimento появился более совершенный механизм синтеза речи, который совместим с другими клиентами Anki и содержит больше голосов и улучшения в воспроизведении языков.\n\nПожалуйста, обновитесь как можно скорее, так как эта настройка скоро будет удалена.</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Пожалуйста, обновитесь до нового формата преобразования текста в речь</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -381,8 +381,8 @@
          #################################### Backup options ###################################
          ####################################################################################### -->
     <string name="pref__backups_help__summary"><![CDATA[
-        AnkiDroid периодически делает резервную копию вашей коллекции.
-        AnkiDroid удаляет копии старше двух дней, чтобы освободить место на диске.
+        Ankrimento периодически делает резервную копию вашей коллекции.
+        Ankrimento удаляет копии старше двух дней, чтобы освободить место на диске.
         <br><br>
         Заметьте, что медиафайлы не резервируются.
         Для надёжности периодически синхронизируйте вашу коллекцию или экспортируйте её в другое место.

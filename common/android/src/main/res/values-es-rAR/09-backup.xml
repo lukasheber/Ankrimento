@@ -40,7 +40,7 @@
     <string name="backup_repair_deck_progress">Reparando base de datos.\nPor favor aguarde&#8230;</string>
     <string name="backup_invalid_file_error">El archivo de copia de seguridad seleccionado no es válido</string>
     <string name="backup_restore_select_title">Seleccione copia de seguridad para restaurar</string>
-    <string name="backup_restore_no_backups">No hay copias de seguridad para esta colección disponibles en este dispositivo. Si tiene copias de seguridad en su computadora de escritorio por favor cópielas manualmente al directorio de AnkiDroid</string>
+    <string name="backup_restore_no_backups">No hay copias de seguridad para esta colección disponibles en este dispositivo. Si tiene copias de seguridad en su computadora de escritorio por favor cópielas manualmente al directorio de Ankrimento</string>
     <string name="open_collection_failed_title">La colección no fue abierta</string>
     <string name="corrupt_db_message">Desafortunadamente su colección se ha corrompido.\n\nToque \'opciones\' para restaurarla desde una copia de seguridad, o si eso no funciona revisa las siguientes instrucciones para repararla manualmente:\n%1$s</string>
     <string name="access_collection_failed_message">Ocurrió un error al acceder a su colección. Pudo haber sido causado por un error inofensivo, o podría haber un problema con ella.\n\nIntente ejecutar la verificación de su base de datos o restaurarla desde una copia de seguridad presionando el botón \'opciones\'. Si continúa viendo este mensaje, por favor cree un informe de error:\n%1$s</string>

@@ -35,7 +35,7 @@
     <string name="username">Adresa e E-Mailit</string>
     <string name="password">Fjalkalimi</string>
     <string name="sign_up_description">Nuk ke ende një llogari AnkiWeb? Është falas!</string>
-    <string name="sign_up_not_affiliated">Shënim: AnkiWeb nuk është e lidhur me AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Shënim: AnkiWeb nuk është e lidhur me Ankrimento</string>
     <string name="sign_up">Rregjistrohu</string>
     <string name="logged_as">Loguar si</string>
     <string name="reset_password">Ndrysho fjalëkalimin</string>

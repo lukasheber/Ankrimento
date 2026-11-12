@@ -54,7 +54,7 @@
     <string name="storage_full_title">حافظه</string>
     <string name="storage_almost_full_title">اوکی</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">جای خالی وجود ندارد</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid %s فضای خالی لازم دارد تا ادامه دهد. لطفا کمی جا خالی کنید</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento %s فضای خالی لازم دارد تا ادامه دهد. لطفا کمی جا خالی کنید</string>
     <string name="restore_backup_title">بازیابی نسخه پشتیبان؟</string>
     <string name="restore_backup">مجموعه شما با یک نسخه قدیمی تر جایگزین خواهد شد. موارد ذخیره نشده از بین خواهند رفت.</string>
     <string name="restore_backup_choose_another">انتخاب دیگری</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">دیتابیس قفل است</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">نسخه پایگاه داده ناسازگار است</string>
-    <string name="incompatible_database_version_summary">نسخه ی پایگاه داده پیشرفته‌تر از نسخه ای است که AnkiDroid توانایی کار کردن با آن را دارد. یا AnkiDroid را ارتقاء دهید یا درجه پایگاه داده را پایین آورید\n\nنسخه های همایت شده: %1$d\nنسخه پایگاه داده: %2$d\n\nگزینه های بازگرداندن زیر مجموعه شما را بازنویسی میکنند، ممکن تر با نسخه پایگاه داده سازگار:</string>
+    <string name="incompatible_database_version_summary">نسخه ی پایگاه داده پیشرفته‌تر از نسخه ای است که Ankrimento توانایی کار کردن با آن را دارد. یا Ankrimento را ارتقاء دهید یا درجه پایگاه داده را پایین آورید\n\nنسخه های همایت شده: %1$d\nنسخه پایگاه داده: %2$d\n\nگزینه های بازگرداندن زیر مجموعه شما را بازنویسی میکنند، ممکن تر با نسخه پایگاه داده سازگار:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">تصویر پس‌زمینه اعمال شد</string>
     <string name="background_image_removed">تصویر پس‌زمینه حذف شد</string>

@@ -25,11 +25,11 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="zero">Pienācis %d AnkiDroid kartīšu laiks</item>
-        <item quantity="one">Pienācis %d AnkiDroid kartītes laiks</item>
-        <item quantity="other">Pienācis %d AnkiDroid kartīšu laiks</item>
+        <item quantity="zero">Pienācis %d Ankrimento kartīšu laiks</item>
+        <item quantity="one">Pienācis %d Ankrimento kartītes laiks</item>
+        <item quantity="other">Pienācis %d Ankrimento kartīšu laiks</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid mazs</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento mazs</string>
     <plurals name="widget_cards_due">
         <item quantity="zero">Pienācis %d kartīšu laiks</item>
         <item quantity="one">Pienācis %d kartītes laiks</item>
@@ -40,7 +40,7 @@
         <item quantity="one">Atlikusi %d minūte</item>
         <item quantity="other">Atlikušas %d minūtes</item>
     </plurals>
-    <string name="widget_add_note_button">Pievienot jaunu AnkiDroid piezīmi</string>
+    <string name="widget_add_note_button">Pievienot jaunu Ankrimento piezīmi</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Kavu atlasītājs</string>
     <string name="card_analysis_extra_widget_description">Kartīšu apkopojums</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

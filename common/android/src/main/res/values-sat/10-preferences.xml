@@ -71,7 +71,7 @@
     <string name="card_browser_font_size" maxLength="41">ᱠᱟᱰ ᱵᱨᱟᱣᱡᱚᱨ ᱪᱤᱠᱤ ᱢᱟᱯ</string>
     <string name="card_browser_hide_media" maxLength="41">ᱠᱟᱰ ᱵᱨᱟᱣᱡᱚᱨ ᱨᱮ ᱨᱮᱫᱼᱧᱩᱛᱩᱢ ᱫᱮᱠᱷᱟᱣᱢᱮ</string>
     <string name="card_browser_hide_media_summary">Display audio filenames in the card browser question/answer fields</string>
-    <string name="col_path" maxLength="41">AnkiDroid ᱩᱫᱩᱜ ᱯᱩᱛᱷᱤ</string>
+    <string name="col_path" maxLength="41">Ankrimento ᱩᱫᱩᱜ ᱯᱩᱛᱷᱤ</string>
     <string name="fullscreen_review" maxLength="41">ᱯᱩᱨᱟᱹᱥᱠᱨᱤᱱ ᱢᱚᱰ</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">ᱵᱚᱸᱫ</string>
     <string name="full_screen_system">ᱥᱭᱥᱴᱚᱢ ᱵᱟᱨ ᱩᱠᱩᱭ ᱢᱮ</string>
@@ -308,9 +308,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">ᱥᱟᱱᱟᱢ</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">ᱥᱮᱸᱫᱽᱨᱟ</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">Help make AnkiDroid better!</string>
+    <string name="analytics_dialog_title">Help make Ankrimento better!</string>
     <string name="analytics_title" maxLength="41">Share feature usage</string>
-    <string name="analytics_summ">You can contribute to AnkiDroid by helping the development team see which features people use</string>
+    <string name="analytics_summ">You can contribute to Ankrimento by helping the development team see which features people use</string>
     <string name="note_editor_replace_newlines" maxLength="41">HTML ᱥᱟᱞᱟᱜ ᱱᱟᱣᱟᱞᱟᱹᱭᱤᱱ ᱵᱚᱫᱚᱞ ᱢᱮ</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">ᱫᱷᱮᱭᱟᱱ ᱮᱢ ᱢᱮ \'ᱞᱟᱹᱱᱟᱹᱭ ᱴᱟᱤᱯ ᱨᱮ\'</string>
@@ -322,8 +322,8 @@
     <string name="about_contributors_description"><![CDATA[ᱱᱩᱠᱩ ᱠᱚᱫᱚ ᱟᱵᱚᱣᱟᱜ ᱟᱹᱰᱤ ᱱᱟᱯᱟᱭ <a href=\"%1$s\">contributors</a> ᱠᱟᱱᱟ ᱠᱚ ᱾ ᱟᱢ ᱯᱨᱳᱜᱨᱟᱢ, ᱛᱚᱨᱡᱚᱢᱟ, ᱥᱚᱦᱚᱫ ᱟᱨ <a href=\"%2$s\">ᱦᱚᱲᱟᱜ</a> ᱠᱟᱛᱮ ᱟᱢᱦᱚᱸ AnkiDroid ᱜᱚᱲᱚ ᱫᱟᱲᱮᱭᱟᱜᱼᱟᱢ!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">ᱞᱟᱭᱥᱮᱱᱥ</string>
-    <string name="license_description"><![CDATA[AnkiDroid ᱫᱚ <a href=\"%1$s\">GPL-3.0</a> ᱟᱨ <a href=\"%2$s\">AGPL-3.0</a> ᱞᱟᱭᱥᱮᱱᱥ ᱟᱛᱮ ᱨᱤᱞᱤᱡᱽ ᱟᱠᱟᱱᱟ, ᱡᱟᱦᱟᱸ ᱨᱮᱱᱟᱜ ᱥᱳᱨᱥ ᱠᱚᱰ <a href=\"%3$s\">GitHub</a> ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
+    <string name="license_description"><![CDATA[Ankrimento ᱫᱚ <a href=\"%1$s\">GPL-3.0</a> ᱟᱨ <a href=\"%2$s\">AGPL-3.0</a> ᱞᱟᱭᱥᱮᱱᱥ ᱟᱛᱮ ᱨᱤᱞᱤᱡᱽ ᱟᱠᱟᱱᱟ, ᱡᱟᱦᱟᱸ ᱨᱮᱱᱟᱜ ᱥᱳᱨᱥ ᱠᱚᱰ <a href=\"%3$s\">GitHub</a> ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
     <string name="donate_description"><![CDATA[ᱟᱢ <a href=\"%1$s\">ᱫᱚᱦᱚᱭ ᱠᱟᱛᱮ</a> AnkiDroid ᱨᱮᱭᱟᱜ ᱩᱛᱷᱱᱟᱹᱣ ᱨᱮ ᱜᱚᱲᱚ ᱮᱢ ᱫᱟᱲᱮᱭᱟᱜᱼᱟ ᱾ ᱡᱟᱦᱟᱸᱱ ᱮᱢᱟᱱ ᱜᱮ ᱟᱹᱰᱤ ᱟᱞᱜᱟ ᱛᱮᱭ ᱢᱟᱱᱟᱣ ᱵᱟᱛᱟᱣᱜᱼᱟ ᱾]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">ᱤᱥᱟᱨᱟ ᱡᱚᱲᱟᱣ</string>
@@ -359,7 +359,7 @@
     <string name="bindings_already_bound">ᱢᱟᱬᱟᱝ ᱠᱷᱚᱱ ᱛᱚᱞ %s</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">ᱮᱠᱥᱯᱮᱨᱤᱢᱮᱱᱴᱟᱞ</string>
-    <string name="readtext_deprecation_warn">AnkiDroid has introduced a better TTS mechanism which is compatible with other Anki clients and includes more voices and improvements to language playback!\n\nPlease upgrade as soon as possible, as this setting will be removed soon</string>
+    <string name="readtext_deprecation_warn">Ankrimento has introduced a better TTS mechanism which is compatible with other Anki clients and includes more voices and improvements to language playback!\n\nPlease upgrade as soon as possible, as this setting will be removed soon</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">ᱱᱟᱶᱟ ᱚᱞ ᱛᱮ ᱨᱚᱲ ᱞᱤᱥᱴᱤ ᱛᱮ ᱩᱛᱱᱟᱹᱣ ᱢᱮ</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>

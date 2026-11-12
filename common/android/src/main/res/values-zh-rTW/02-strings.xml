@@ -117,7 +117,7 @@
     <plurals name="in_minutes">
         <item quantity="other">%1$d 分鐘</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid 卡片</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento 卡片</string>
     <string name="note_editor_copy_note" maxLength="28">複製筆記</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">變更位置</string>
     <string name="card_editor_reset_card" maxLength="28">重設卡片進度</string>
@@ -129,7 +129,7 @@
     <string name="checks_action" maxLength="28">檢查</string>
     <string name="unknown_type_field_warning">輸入答案：未知的欄位 %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">刪除牌組中&#8230;\n請稍候</string>
-    <string name="info_rate">評價 AnkiDroid</string>
+    <string name="info_rate">評價 Ankrimento</string>
     <string name="import_title">正在匯入&#8230;&#8230;</string>
     <string name="import_preparing_file">準備匯入檔案&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">新增</string>
@@ -140,7 +140,7 @@
     <string name="import_error_handle_exception">無法匯入檔案\n\n%s</string>
     <string name="import_error_not_apkg_extension">檔案名“%s”不包含 .apkg 或 .colpkg 副檔名</string>
     <string name="import_error_load_imported_database">Anki 資料庫 (.anki2) 替換還不受支援。請見用戶手冊以查找替換指引。</string>
-    <string name="import_error_content_provider">所選的檔案無法被 AnkiDroid 自動匯入。請參考用戶手冊瞭解如何手動匯入 Anki 檔案：\n%s</string>
+    <string name="import_error_content_provider">所選的檔案無法被 Ankrimento 自動匯入。請參考用戶手冊瞭解如何手動匯入 Anki 檔案：\n%s</string>
     <string name="import_error_copy_to_cache_title">無法快取檔案</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">This is often caused by a bug in the app you used to select the file. Please try the following fixes:\n\n%s</string>
     <string name="import_interrupted">匯入中斷</string>
@@ -149,7 +149,7 @@
     <string name="export_save_apkg_successful">成功儲存 Anki 套件</string>
     <string name="export_save_apkg_unsuccessful">儲存 Anki 套件失敗</string>
     <string name="export_share_title">以&#8230;傳送Anki牌組包</string>
-    <string name="export_email_subject">AnkiDroid 已匯出單字卡：%s</string>
+    <string name="export_email_subject">Ankrimento 已匯出單字卡：%s</string>
     <string name="export_email_text"><![CDATA[
         你好！
         <br/><br/>
@@ -196,7 +196,7 @@
     <string name="white_board_image_save_failed">儲存白板圖像失敗。%s</string>
     <string name="white_board_image_saved">白板圖像儲存至%s</string>
     <string name="title_whiteboard_editor" maxLength="28">白板編輯器</string>
-    <string name="user_is_a_robot">已偵測到自動測驗。如果您不是機器人，請聯絡AnkiDroid支援.</string>
+    <string name="user_is_a_robot">已偵測到自動測驗。如果您不是機器人，請聯絡Ankrimento支援.</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">這張卡使用AnkiDroid不支援的功能。請連絡開發人員%1$s，或查看wiki。%2$s</string>
     <string name="invalid_json_data">卡片提供了無效的資訊。%s</string>
@@ -212,8 +212,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">搜尋牌組</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid 依賴於系統 WebView，但其不可用。這可能在系統安裝更新時發生。請等待幾分鐘後再試。\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid cannot access storage due to an Android error.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento 依賴於系統 WebView，但其不可用。這可能在系統安裝更新時發生。請等待幾分鐘後再試。\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento cannot access storage due to an Android error.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">字型大小</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -242,9 +242,9 @@
     <string name="note_editor_video_too_large">影片太大，無法貼上，請手動插入</string>
     <string name="note_editor_audio_too_large">此音訊檔太大，無法貼上，請手動插入</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">正在進行 Android 備份。請重試</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">你可能需要使用 iManager 以允許 AnkiDroid 新增捷徑</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">你可能需要使用 iManager 以允許 Ankrimento 新增捷徑</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">您的主畫面不允許 AnkiDroid 新增捷徑</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">您的主畫面不允許 Ankrimento 新增捷徑</string>
     <string name="create_shortcut_error">新增捷徑時發生錯誤：%s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">大寫句子</string>
     <!-- Dialog hints -->
@@ -311,7 +311,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">從AnkiWeb同步</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid尚未初始化。請打開AnkiDroid再試一次</string>
+    <string name="app_not_initialized_new">Ankrimento尚未初始化。請打開Ankrimento再試一次</string>
     <!-- Deck Creation -->
     <string name="deck_created">已創建牌組</string>
     <string name="deck_renamed">重命名的牌組</string>
@@ -331,7 +331,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">互聯網</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">下載</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">開啟文音互譯功能失敗</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">描述</string>
     <string name="deck_description_saved">描述已更新</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

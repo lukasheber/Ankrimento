@@ -100,7 +100,9 @@ android {
     defaultConfig {
         applicationId = "com.memoria.ankrimento"
         buildConfigField("Boolean", "CI", (System.getenv("CI") == "true").toString())
-        buildConfigField("String", "ACRA_URL", "\"https://ankidroid.org/acra/report\"")
+        // Crash reports are off in Ankrimento: AnkiDroid's server is not ours, and it would receive them. An empty URL
+        // switches reporting off everywhere (see AcraCrashReporter.reportingAvailable).
+        buildConfigField("String", "ACRA_URL", "\"\"")
         buildConfigField("String", "BACKEND_VERSION", "\"${libs.versions.ankiBackend.get()}\"")
         buildConfigField("Boolean", "ENABLE_LEAK_CANARY", "false")
         buildConfigField("String", "GIT_COMMIT_HASH", "\"${gitCommitHash.get()}\"")

@@ -71,7 +71,7 @@
     <string name="card_browser_font_size" maxLength="41">Karta brauzeri şrift masştabi</string>
     <string name="card_browser_hide_media" maxLength="41">Karta brauzerda fayl nomlarini körsatiş</string>
     <string name="card_browser_hide_media_summary">Audio fayl nomlarini karta brauzeri savol/javob maydonlarida körsatiş</string>
-    <string name="col_path" maxLength="41">AnkiDroid katalogi</string>
+    <string name="col_path" maxLength="41">Ankrimento katalogi</string>
     <string name="fullscreen_review" maxLength="41">Butun ekran rejimi</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">Öçiq</string>
     <string name="full_screen_system">Tizim panellarini yaşiriş</string>
@@ -307,22 +307,22 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Umumiy</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Qidiriş</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">AnkiDroidʼni yaxşilaşga yordamlaşing!</string>
+    <string name="analytics_dialog_title">Ankrimentoʼni yaxşilaşga yordamlaşing!</string>
     <string name="analytics_title" maxLength="41">Funksiyalarni işlatişimni ulaşiş</string>
-    <string name="analytics_summ">Dasturçilarga odamlar qaysi funksiyalardan foydalanayotganligini körişga yordam beriş orqali AnkiDroidʼga hissa qöşişingiz mumkin</string>
+    <string name="analytics_summ">Dasturçilarga odamlar qaysi funksiyalardan foydalanayotganligini körişga yordam beriş orqali Ankrimentoʼga hissa qöşişingiz mumkin</string>
     <string name="note_editor_replace_newlines" maxLength="41">Yangi qatorlarni HTML bilan almaştiriş</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">‘Javobni kiritiş’ maydoniga ötiş</string>
     <string name="type_in_answer_focus_summ">Örganiş ekranida ‘javobni kiritiş’ maydoniga avtomatik tarzda ötiş</string>
     <!-- About -->
     <string name="open_changelog">Özgarişlar röyxatini oçiş</string>
-    <string name="pref_cat_about_title" maxLength="41">AnkiDroid haqida</string>
+    <string name="pref_cat_about_title" maxLength="41">Ankrimento haqida</string>
     <string name="contributors_title">Hissa qöşganlar</string>
     <string name="about_contributors_description"><![CDATA[Bular bizning ajoyib <a href=\"%1$s\">hissa qöşuvçilarimiz</a>. Siz ham dasturlaş, tarjima qiliş, xayriya qiliş va <a href=\"%2$s\">boşqa yöllar</a> orqali AnkiDroidʼga yordam berişingiz mumkin!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">Litsenziya</string>
-    <string name="license_description"><![CDATA[AnkiDroid <a href=\"%1$s\">GPL-3.0</a> va <a href=\"%2$s\">AGPL-3.0</a> litsenziyalari ostida çiqarilgan, dastur kodi <a href=\"%3$s\">GitHubda</a> mavjud]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid, şuningdek, turli oçiq kodli <a href=\"%1$s\">litsenziyalar</a> asosida tarqatilgan uçinçi tomon kutubxonalari va piktogrammalaridan foydalanadi.]]></string>
+    <string name="license_description"><![CDATA[Ankrimento <a href=\"%1$s\">GPL-3.0</a> va <a href=\"%2$s\">AGPL-3.0</a> litsenziyalari ostida çiqarilgan, dastur kodi <a href=\"%3$s\">GitHubda</a> mavjud]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento, şuningdek, turli oçiq kodli <a href=\"%1$s\">litsenziyalar</a> asosida tarqatilgan uçinçi tomon kutubxonalari va piktogrammalaridan foydalanadi.]]></string>
     <string name="donate_description"><![CDATA[<a href=\"%1$s\">Xayriya qiliş</a> orqali AnkiDroid rivojini qöllab-quvvatlaşingiz mumkin. Har qanday miqdordagi yordam yuksak qadrlanadi.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">Qöl işorasini qöşiş</string>
@@ -358,7 +358,7 @@
     <string name="bindings_already_bound">Allaqaçon ‘%s’ga boğlangan</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Tajribaviy</string>
-    <string name="readtext_deprecation_warn">AnkiDroid boşqa Anki mijozlari bilan mos tuşadigan va köproq ovozlar va tilni ijro etiş uçun takomillaştirişlarni öz içiga olgan yaxşiroq nutq sintezatori mexanizmini taqdim etdi!\n\nImkon qadar tezroq yangilang, çunki bu sozlama tez orada öçiriladi.</string>
+    <string name="readtext_deprecation_warn">Ankrimento boşqa Anki mijozlari bilan mos tuşadigan va köproq ovozlar va tilni ijro etiş uçun takomillaştirişlarni öz içiga olgan yaxşiroq nutq sintezatori mexanizmini taqdim etdi!\n\nImkon qadar tezroq yangilang, çunki bu sozlama tez orada öçiriladi.</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Iltimos, yangi nutq sintezatori formatiga yangilang</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -372,9 +372,9 @@
     <!-- #######################################################################################
          #################################### Backup options ###################################
          ####################################################################################### -->
-    <string name="pref__backups_help__summary"><![CDATA[        AnkiDroid vaqti-vaqti bilana kolleksiyangizni zaxiralaydi.
+    <string name="pref__backups_help__summary"><![CDATA[        Ankrimento vaqti-vaqti bilana kolleksiyangizni zaxiralaydi.
         Agar zaxira nusxalari ikki kundan oşgan bölsa,
-        AnkiDroid diskda böş joy böşatiş uçun ularni baʻzilarini öçirib taşlaydi.
+        Ankrimento diskda böş joy böşatiş uçun ularni baʻzilarini öçirib taşlaydi.
         <br><br>
         Eʼtibor bering, media fayllar zaxiralanmaydi.
         Amin böliş uçun kolleksiyangizni vaqti-vaqti bilan sinxronlang yoki uni zaxira nusxalarini eksport qiling.

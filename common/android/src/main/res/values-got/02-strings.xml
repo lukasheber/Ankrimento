@@ -146,7 +146,7 @@
     <string name="import_error_content_provider">𐌸𐌰𐍄𐌰 𐍆𐌰𐌾𐌻 𐌲𐌰𐍅𐌰𐌻𐌹𐌳𐍉 𐌽𐌹 𐌼𐌰𐌷𐍄𐌰 𐌹𐌽𐌽𐌰𐍄𐌱𐌰𐌹𐍂𐌰𐌽 𐍆𐍂𐌰𐌼 𐌰𐌽𐌺𐌴𐌹𐌳𐍂𐌰𐌿𐌳 𐍃𐌹𐌻𐌱𐌰𐍄𐌰𐌿𐌾𐌰𐌽𐌳𐍉. 𐌱𐌹𐌳𐌾𐌰𐌼 𐌸𐌿𐌺, 𐍃𐌰𐌹 𐌸𐌹𐍃 𐌱𐍂𐌿𐌺𐌾𐌹𐌽𐍃 𐌷𐌰𐌽𐌳𐌿𐌱𐍉𐌺𐍉𐍃 𐍅𐌹𐍄𐌰𐌽 𐍈𐌰𐌹𐍅𐌰 𐌹𐌽𐌽𐌰𐍄𐌱𐌰𐌹𐍂𐌰𐌽 𐌰𐌽𐌺𐌴𐌹 𐍆𐌰𐌾𐌻𐌰 𐌼𐌰𐌷𐍄𐌴𐌹𐌲 𐌹𐍃𐍄: \n%s</string>
     <string name="import_error_copy_to_cache_title">Failed to cache file</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">This is often caused by a bug in the app you used to select the file. Please try the following fixes:\n\n%s</string>
-    <string name="import_interrupted">Import interrupted: AnkiDroid was closed</string>
+    <string name="import_interrupted">Import interrupted: Ankrimento was closed</string>
     <string name="export_ready_title">𐌿𐍄𐌱𐌰𐌿𐍂 𐌼𐌰𐌽𐍅𐌹𐌸 𐌹𐍃𐍄</string>
     <string name="export_send_no_handlers">𐌽𐌹 𐍃𐌹𐌽𐌳 𐌰𐍀𐍀𐌻𐌴𐌹𐌺𐌰𐍄𐌾𐍉𐌽𐍃 𐌰𐍀𐌺𐌲 𐌳𐌿 𐍅𐌰𐌿𐍂𐌺𐌾𐌰𐌽. 𐌲𐌰𐍆𐌰𐍃𐍄𐌰𐌽𐌳𐍃&#8230;</string>
     <string name="export_save_apkg_successful">𐌲𐌰𐍆𐌰𐍃𐍄𐌰𐌹𐌳𐌰 𐍀𐌰𐌺𐌺𐌿 𐌰𐌽𐌺𐌴𐌹𐌽𐍃 𐍅𐌰𐌹𐌻𐌰</string>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">𐌽𐌹 𐌼𐌰𐌷𐍄𐌰 𐌲𐌰𐍆𐌰𐍃𐍄𐌰𐌽 𐍆𐍂𐌹𐍃𐌰𐌷𐍄 𐍈𐌴𐌹𐍄𐌰𐌱𐌰𐌿𐍂𐌳𐌹𐍃. %s</string>
     <string name="white_board_image_saved">𐍆𐍂𐌹𐍃𐌰𐌷𐍄𐍃 𐍈𐌴𐌹𐍄𐌰𐌱𐌰𐌿𐍂𐌳𐌹𐍃 𐌲𐌰𐍆𐌰𐍃𐍄𐌰𐌽𐌰 𐌳𐌿 %s</string>
     <string name="title_whiteboard_editor" maxLength="28">𐌹𐌽𐌼𐌰𐌹𐌳𐌾𐍉 𐍈𐌴𐌹𐍄𐌰𐌱𐌰𐌿𐍂𐌳𐌹𐍃</string>
-    <string name="user_is_a_robot">Detected automated test. If you are a human, contact AnkiDroid support</string>
+    <string name="user_is_a_robot">Detected automated test. If you are a human, contact Ankrimento support</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">𐍃𐍉 𐍇𐌰𐍂𐍄𐌰 𐌳𐌰𐌹𐌻𐌹𐌽𐍃 𐌿𐌽𐍃𐍄𐍉𐌳𐌹𐌳𐍉𐍃 𐌰𐌽𐌺𐌴𐌹𐌳𐍂𐌰𐌿𐌳𐍃 𐌷𐌰𐌱𐌰𐌹𐌸. 𐍂𐍉𐌳𐌴𐌹 𐌳𐌿 𐌰𐌽𐌳𐍅𐌰𐌹𐌱𐌾𐌰𐌽𐌳 %1$s, 𐌰𐌹𐌸𐌸𐌰𐌿 𐍃𐌰𐌹 𐍅𐌹𐌺𐌹. %2$s</string>
     <string name="invalid_json_data">𐌺𐌰𐍂𐍄𐌰 𐌲𐌰𐍆 𐌳𐌰𐍄𐌰 𐌿𐌽𐍂𐌰𐌹𐌷𐍄𐌰. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳𐌰 𐍃𐍉𐌺𐌾𐌰𐌽</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid relies on the System WebView which is unavailable. This can happen if the system is installing updates. Please try again in a few minutes.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid cannot access storage due to an Android error.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento relies on the System WebView which is unavailable. This can happen if the system is installing updates. Please try again in a few minutes.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento cannot access storage due to an Android error.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">𐌼𐌹𐌺𐌹𐌻𐌴𐌹 𐍆𐌰𐌿𐌽𐍄𐌹𐍃</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,7 +245,7 @@
     <string name="note_editor_video_too_large">𐌸𐌰𐍄𐌰 𐍆𐌰𐌾𐌻 𐌵𐌹𐍅𐌰𐍆𐍂𐌹𐍃𐌰𐌷𐍄𐌰𐌹𐍃 𐌿𐍆𐌰𐍂𐌼𐌹𐌺𐌹𐌻 𐌹𐍃𐍄, 𐌱𐌹𐌳𐌾𐌰𐌼 𐌸𐌿𐌺 𐌹𐌽𐌻𐌰𐌲𐌾𐌰𐌽 𐌵𐌹𐍅𐌰𐍆𐍂𐌹𐍃𐌰𐌷𐍄 𐌷𐌰𐌽𐌳𐌿𐍅𐌰𐌿𐍂𐌷𐍄𐌰𐌱𐌰</string>
     <string name="note_editor_audio_too_large">𐌸𐌰𐍄𐌰 𐍆𐌰𐌾𐌻 𐌰𐍅𐌳𐌾𐍉𐌽𐍃 𐌿𐍆𐌰𐍂𐌼𐌹𐌺𐌹𐌻 𐌹𐍃𐍄, 𐌱𐌹𐌳𐌾𐌰𐌼 𐌸𐌿𐌺 𐌹𐌽𐌻𐌰𐌲𐌾𐌰𐌽 𐌰𐍅𐌳𐌾𐍉𐌽 𐌷𐌰𐌽𐌳𐌿𐍅𐌰𐌿𐍂𐌷𐍄𐌰𐌱𐌰</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">𐌰𐌽𐌳𐍂𐌰𐌿𐌳 𐌱𐌰𐌹𐌺-𐌰𐍀 𐌹𐌽 𐍆𐍂𐌰𐌼𐌲𐌰𐌷𐍄𐌰𐌹. 𐌱𐌹𐌳𐌾𐌰𐌼 𐌸𐌿𐌺, 𐍃𐍉𐌺𐌴𐌹 𐌰𐍆𐍄𐍂𐌰.</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">You may need to use iManager to allow AnkiDroid to add shortcuts</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">You may need to use iManager to allow Ankrimento to add shortcuts</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
     <string name="create_shortcut_failed" comment="home screen == launcher">𐌲𐌰𐍂𐌳𐌰𐍃𐌺𐌰𐌹𐍂𐌼𐍃 𐌸𐌴𐌹𐌽𐍃 𐌽𐌹 𐌰𐌽𐌳𐌻𐌴𐍄𐌹𐌸 𐌰𐌽𐌺𐌴𐌹𐌳𐍂𐌰𐌿𐌳 𐌱𐌹𐌰𐌿𐌺𐌰𐌽 𐌼𐌰𐌿𐍂𐌲𐌹𐍅𐌹𐌲𐌰𐌽𐍃</string>
     <string name="create_shortcut_error">𐌰𐌹𐍂𐌶𐌴𐌹 𐍅𐌰𐍂𐌸 𐌱𐌹𐌰𐌿𐌺𐌰𐌽 𐌼𐌰𐌿𐍂𐌲𐌿𐍅𐌹𐌲: %s</string>
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">𐌲𐌰𐌲𐌰𐌻𐌴𐌹𐌺𐍉 𐍆𐍂𐌰𐌼 𐌰𐌽𐌺𐌴𐌹𐍅𐌰𐌱𐌾𐌰</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid is not initialized yet. Please open AnkiDroid and try again</string>
+    <string name="app_not_initialized_new">Ankrimento is not initialized yet. Please open Ankrimento and try again</string>
     <!-- Deck Creation -->
     <string name="deck_created">𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳 𐌲𐌰𐍃𐌺𐌰𐍀𐌰𐌽</string>
     <string name="deck_renamed">𐌺𐌰𐍂𐍄𐌰𐌷𐌿𐌶𐌳 𐌰𐍆𐍄𐍂𐌰𐌷𐌰𐌹𐍄𐌰𐌽</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">𐌲𐌰𐌽𐌰𐍄𐌹</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">𐌲𐌰𐍃𐌿𐌻𐌾𐌰𐌽</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">𐌽𐌹 𐌼𐌰𐌷𐍄𐌰 𐌱𐍉𐌺𐍉-𐌳𐌿-𐍃𐍄𐌹𐌱𐌽𐌰𐌹 𐌻𐌰𐌲𐌴𐌹𐌽𐌹𐌽𐍃 𐌿𐍃𐌻𐌿𐌺𐌰𐌽</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">𐌲𐌰𐍃𐌺𐌴𐌹𐍂𐌴𐌹𐌽𐍃</string>
     <string name="deck_description_saved">Description updated</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

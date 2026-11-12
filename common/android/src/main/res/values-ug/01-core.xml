@@ -82,12 +82,12 @@
     <string name="menu_disable_voice_playback">ئاۋاز قويۇشنى چەكلە</string>
     <string name="menu_create_backup" maxLength="28">زاپاس قۇر</string>
     <string name="new_dynamic_deck">سۈزۈلگەن دەستە قۇر</string>
-    <string name="directory_inaccessible">AnkiDroid مۇندەرىجىسىنى زىيارەت قىلغىلى بولمايدۇ</string>
+    <string name="directory_inaccessible">Ankrimento مۇندەرىجىسىنى زىيارەت قىلغىلى بولمايدۇ</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">داۋاملاشتۇرۇش ئۈچۈن AnkiDroid قا «ساقلاش» ئىجازىتى بېرىڭ</string>
+    <string name="startup_no_storage_permission">داۋاملاشتۇرۇش ئۈچۈن Ankrimento قا «ساقلاش» ئىجازىتى بېرىڭ</string>
     <string name="rebuild_filtered_deck">سۈزۈلگەن دەستىنى قايتا قۇرۇۋاتىدۇ&#8230;</string>
     <string name="empty_cram_label" maxLength="28">بوش</string>
     <string name="create_subdeck">تارماق دەستە قۇر</string>
@@ -124,33 +124,33 @@
     <string name="card_template_editor_save_error">كارتا قېلىپ ئۆزگىرىشىنى ساقلىيالمايدۇ: %s</string>
     <string name="template_for_current_card_deleted">نۆۋەتتىكى كارتىنىڭ كارتا تۈرى ئۆچۈرۈلگەن.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">AnkiDroid ساندانىنى ئوقۇيدۇ ۋە يازىدۇ</string>
+    <string name="read_write_permission_label">Ankrimento ساندانىنى ئوقۇيدۇ ۋە يازىدۇ</string>
     <string name="read_write_permission_description">مەۋجۇت خاتىرە، كارتا، خاتىرە تۈرى ۋە دەستىنى زىيارەت قىلىپلا قالماي يەنە يېڭىسىنى قۇرىدۇ</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">كارتا كۆرگۈچ</string>
     <string name="context_menu_anki_card_label">Anki كارتا</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">توپلامنى بىرلەشتۈرگىلى بولمايدۇ.\nقايسى توپلامنى ساقلاپ قالىسىز؟</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">AnkiDroid تىكى توپلىمىڭىزنىڭ ئورنىغا AnkiWeb تىكى توپلامنى ئالماشتۇرامسىز؟</string>
-    <string name="sync_conflict_local_confirm_new">AnkiWeb تىكى توپلىمىڭىزنىڭ ئورنىغا AnkiDroid تىكى توپلامنى ئالماشتۇرامسىز؟</string>
+    <string name="sync_conflict_remote_confirm_new">Ankrimento تىكى توپلىمىڭىزنىڭ ئورنىغا AnkiWeb تىكى توپلامنى ئالماشتۇرامسىز؟</string>
+    <string name="sync_conflict_local_confirm_new">AnkiWeb تىكى توپلىمىڭىزنىڭ ئورنىغا Ankrimento تىكى توپلامنى ئالماشتۇرامسىز؟</string>
     <string name="sync_conflict_title_new">ساقلاپ قالىدىغان توپلام تاللىنىدۇ</string>
     <string name="sync_conflict_replace_title">توپلامنى ئالماشتۇر</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">%s ھۆججەتكە يازالمايدۇ ياكى قۇرالمايدۇ</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">توپلامنى زىيارەت قىلالمايدۇ</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store سىياسىتىنىڭ ئۆزگىرىشى سەۋەبىدىن AnkiDroid نى ئۆچۈرۈۋەتكەندىن كېيىن توپلىمىڭىزنى زىيارەت قىلالمايمىز \n\nسانلىق مەلۇماتلىرىڭىز بىخەتەر، ئەسلىگە كەلتۈرگىلى بولىدۇ. %s دا قۇلۇپلانغان\n\nتۆۋەندىكى ئەسلىگە كەلتۈرۈش تاللانمىسىدىن بىرى تاللىنىدۇ:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">ئەپنى ئۇزۇن ۋاقىت ئىشلەتمىگەچكە AnkiDroid نىڭ %1$s ئىجازىتىنى Android چىقىرىۋەتتى.\n\nسانلىق مەلۇماتىڭىز بىخەتەر، ئەسلىگە كەلتۈرگىلى بولىدۇ. %2$s دا قۇلۇپلانغان\n\nتۆۋەندىكى ئەسلىگە كەلتۈرۈش تاللانمىسىدىن بىرى تاللىنىدۇ:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store سىياسىتىنىڭ ئۆزگىرىشى سەۋەبىدىن Ankrimento نى ئۆچۈرۈۋەتكەندىن كېيىن توپلىمىڭىزنى زىيارەت قىلالمايمىز \n\nسانلىق مەلۇماتلىرىڭىز بىخەتەر، ئەسلىگە كەلتۈرگىلى بولىدۇ. %s دا قۇلۇپلانغان\n\nتۆۋەندىكى ئەسلىگە كەلتۈرۈش تاللانمىسىدىن بىرى تاللىنىدۇ:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">ئەپنى ئۇزۇن ۋاقىت ئىشلەتمىگەچكە Ankrimento نىڭ %1$s ئىجازىتىنى Android چىقىرىۋەتتى.\n\nسانلىق مەلۇماتىڭىز بىخەتەر، ئەسلىگە كەلتۈرگىلى بولىدۇ. %2$s دا قۇلۇپلانغان\n\nتۆۋەندىكى ئەسلىگە كەلتۈرۈش تاللانمىسىدىن بىرى تاللىنىدۇ:</string>
     <string name="restore_data_from_ankiweb">AnkiWeb دىن ئەسلىگە كەلتۈرۈڭ (تەۋسىيە)</string>
     <string name="install_non_play_store_ankidroid_recommended">قىسقۇچ زىيارىتىنى ئەسلىگە كەلتۈرۈش (تەۋسىيە)</string>
     <string name="install_non_play_store_ankidroid">قىسقۇچ زىيارىتىنى ئەسلىگە كەلتۈرۈش (ئالىي)</string>
     <string name="restore_data_from_backup">.colpkg زاپاستىن ئەسلىگە كەلتۈرۈش (ئالىي)</string>
     <string name="create_new_collection">يېڭى توپلام قۇرىدۇ</string>
-    <string name="new_unsafe_collection">ئەگەر AnkiDroid نى ئۆچۈرسىڭىز، يېڭى توپلام تېلېفونىڭىزدىن ئۆچۈرۈلىدۇ</string>
+    <string name="new_unsafe_collection">ئەگەر Ankrimento نى ئۆچۈرسىڭىز، يېڭى توپلام تېلېفونىڭىزدىن ئۆچۈرۈلىدۇ</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid بەزى ئىجازەتكە ئېرىشسە ئاندىن ئىشلەيدۇ</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid بۇ ئىجازەتتە ياخشى ئىشلەيدۇ</string>
+    <string name="permissions_screen_headline">Ankrimento بەزى ئىجازەتكە ئېرىشسە ئاندىن ئىشلەيدۇ</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento بۇ ئىجازەتتە ياخشى ئىشلەيدۇ</string>
     <string name="storage_access_title">ساقلاش زىيارىتى</string>
     <string name="storage_access_summary">توپلامنى ئەپنى ئۆچۈرگەن تەقدىردىمۇ ئۆچۈرگىلى بولمايدىغان بىخەتەر جايغا ساقلاڭ</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">بارلىق ھۆججەت زىيارىتى</string>
@@ -168,7 +168,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">ئىنتېرنېت</string>
     <string name="permission_access_summary">ئەپنىڭ ئىشلىشى ئۈچۈن زۆرۈر</string>
-    <string name="permission_required_message">داۋاملاشتۇرۇش ئۈچۈن AnkiDroid قا «%s» ئىجازىتى بېرىڭ</string>
+    <string name="permission_required_message">داۋاملاشتۇرۇش ئۈچۈن Ankrimento قا «%s» ئىجازىتى بېرىڭ</string>
     <!-- Multiple profile -->
     <string name="add_profile">تەرجىمىھال قوش</string>
 </resources>

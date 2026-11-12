@@ -90,7 +90,7 @@
     <string name="ankrimento_priority">Prioridade no Incremento…</string>
     <string name="ankrimento_priority_message">De 0 a 100. Com as configurações padrão do Incremento, números menores são mais importantes.</string>
     <string name="ankrimento_profile">Perfil do Incremento</string>
-    <string name="ankrimento_profile_message">O nome do perfil do Anki usado no seu computador (para sincronizar). Vale depois de reiniciar o AnkiDroid.</string>
+    <string name="ankrimento_profile_message">O nome do perfil do Anki usado no seu computador (para sincronizar). Vale depois de reiniciar o Ankrimento.</string>
     <!-- Reader screen -->
     <string name="ankrimento_navigate_up">Voltar</string>
     <string name="ankrimento_more_options">Mais opções</string>
@@ -546,10 +546,10 @@
     <string name="ankrimento_restore_contents">Backup do perfil “%1$s”: %2$d cartões, %3$d arquivos de mídia, %4$d arquivos do Incremento.</string>
     <string name="ankrimento_restore_other_profile">Ele vem de um perfil com outro nome; os arquivos dele tomam o lugar dos deste perfil.</string>
     <string name="ankrimento_restore_missing_covers">Faltam %d capas de PDF ou EPUB nele; esses documentos aparecem sem capa.</string>
-    <string name="ankrimento_restore_replaces">Isto substitui os cartões, a mídia e os arquivos do Incremento deste aparelho, inclusive o que for mais recente. O AnkiDroid faz antes um backup da coleção. O AnkiWeb não é consultado: na próxima sincronização, escolha se quer enviar a coleção restaurada.</string>
+    <string name="ankrimento_restore_replaces">Isto substitui os cartões, a mídia e os arquivos do Incremento deste aparelho, inclusive o que for mais recente. O Ankrimento faz antes um backup da coleção. O AnkiWeb não é consultado: na próxima sincronização, escolha se quer enviar a coleção restaurada.</string>
     <string name="ankrimento_restore_confirm">Substituir</string>
     <string name="ankrimento_restore_working">Restaurando…</string>
-    <string name="ankrimento_restore_no_safety_backup">O AnkiDroid não conseguiu fazer antes um backup da coleção</string>
+    <string name="ankrimento_restore_no_safety_backup">O Ankrimento não conseguiu fazer antes um backup da coleção</string>
     <string name="ankrimento_restore_failed">A restauração falhou; nada foi substituído: %s</string>
     <string name="ankrimento_restore_done">Backup restaurado. O app vai reiniciar agora.</string>
     <plurals name="ankrimento_backup_saved">

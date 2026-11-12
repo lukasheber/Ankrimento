@@ -40,7 +40,7 @@
     <string name="backup_repair_deck_progress">データベースを修復しています&#8230;</string>
     <string name="backup_invalid_file_error">選択したバックアップファイルは無効です</string>
     <string name="backup_restore_select_title">復元するバックアップを選択</string>
-    <string name="backup_restore_no_backups">利用可能なバックアップがこの端末内にありません。PCなど別の端末にバックアップがある場合は、そのバックアップをAnkiDroidフォルダに手動でコピーしてください。</string>
+    <string name="backup_restore_no_backups">利用可能なバックアップがこの端末内にありません。PCなど別の端末にバックアップがある場合は、そのバックアップをAnkrimentoフォルダに手動でコピーしてください。</string>
     <string name="open_collection_failed_title">コレクションを開けませんでした</string>
     <string name="corrupt_db_message">コレクションが破損しています。\n\n「︙」(その他のオプション) ボタンをタップして「バックアップから復元」を選択してください。もしその復元が成功しない場合は、データベースを手動で修復するために次の手順を試してください：\n%1$s</string>
     <string name="access_collection_failed_message">コレクションへのアクセス中にエラーが発生しました。軽微なバグによって生じた可能性もありますが、コレクションに問題が発生した可能性もあります。\n\n下の「オプション」ボタンをタップして、「データベースをチェック」か「バックアップから復元」を試してください。このメッセージが引き続き表示される場合は、下記リンク先の記載を参照してバグレポートを送信してください：\n%1$s</string>

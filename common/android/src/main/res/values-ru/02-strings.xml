@@ -126,7 +126,7 @@
         <item quantity="many">%1$d минут</item>
         <item quantity="other">%1$d минут</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Карточка AnkiDroid</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Карточка Ankrimento</string>
     <string name="note_editor_copy_note" maxLength="28">Копировать запись</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Переместить</string>
     <string name="card_editor_reset_card" maxLength="28">Сбросить прогресс</string>
@@ -138,7 +138,7 @@
     <string name="checks_action" maxLength="28">Проверить</string>
     <string name="unknown_type_field_warning">Неизвестный тип поля: %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Колода удаляется&#8230;</string>
-    <string name="info_rate">Оценить AnkiDroid</string>
+    <string name="info_rate">Оценить Ankrimento</string>
     <string name="import_title">Импорт</string>
     <string name="import_preparing_file">Подготовка файла для импорта&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Добавить</string>
@@ -158,7 +158,7 @@
     <string name="export_save_apkg_successful">Пакет Anki успешно сохранён</string>
     <string name="export_save_apkg_unsuccessful">Не удалось сохранить пакет Anki</string>
     <string name="export_share_title">Отправить пакет Anki с помощью</string>
-    <string name="export_email_subject">AnkiDroid экспортировал колоды карточек: %s</string>
+    <string name="export_email_subject">Ankrimento экспортировал колоды карточек: %s</string>
     <string name="export_email_text"><![CDATA[
         Привет!
         <br/><br/>
@@ -205,7 +205,7 @@
     <string name="white_board_image_save_failed">Не удалось сохранить изображение доски. %s</string>
     <string name="white_board_image_saved">Изображение доски сохранено в %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Редактор доски</string>
-    <string name="user_is_a_robot">Обнаружен автоматический тест. Если вы человек, обратитесь в службу поддержки AnkiDroid</string>
+    <string name="user_is_a_robot">Обнаружен автоматический тест. Если вы человек, обратитесь в службу поддержки Ankrimento</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Эта карточка использует неподдерживаемые в AnkiDroid функции. Свяжитесь с разработчиками %1$s или обратитесь к вики-справке. %2$s</string>
     <string name="invalid_json_data">В карточке недопустимые данные. %s</string>
@@ -221,8 +221,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Найти колоду</string>
     <string name="ankidroid_init_failed_webview_title">Критическая ошибка</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid использует системный WebView, который сейчас не доступен. Это может произойти, если система устанавливает обновления. Повторите попытку через несколько минут.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid не может получить доступ к хранилищу из-за ошибки Android.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento использует системный WebView, который сейчас не доступен. Это может произойти, если система устанавливает обновления. Повторите попытку через несколько минут.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento не может получить доступ к хранилищу из-за ошибки Android.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Размер шрифта</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -251,9 +251,9 @@
     <string name="note_editor_video_too_large">Видео слишком большое. Вставьте видео вручную</string>
     <string name="note_editor_audio_too_large">Аудио слишком большое. Вставьте аудио вручную</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Выполняется резервное копирование Android. Попробуйте еще раз</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Возможно, вам потребуется iManager, чтобы AnkiDroid мог добавлять ярлыки</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Возможно, вам потребуется iManager, чтобы Ankrimento мог добавлять ярлыки</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Разрешить ярлыки рабочего стола в системных настройках для %s</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Ваш домашний экран не позволяет AnkiDroid добавлять ярлыки</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Ваш домашний экран не позволяет Ankrimento добавлять ярлыки</string>
     <string name="create_shortcut_error">Ошибка при добавлении ярлыка: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Предложение с заглавной буквы</string>
     <!-- Dialog hints -->
@@ -326,7 +326,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Начать</string>
     <string name="intro_sync_from_ankiweb">Скачать с AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid не запущен. Пожалуйста, откройте AnkiDroid и попробуйте снова</string>
+    <string name="app_not_initialized_new">Ankrimento не запущен. Пожалуйста, откройте Ankrimento и попробуйте снова</string>
     <!-- Deck Creation -->
     <string name="deck_created">Колода создана</string>
     <string name="deck_renamed">Колода переименована</string>
@@ -346,7 +346,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Интернет</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Загрузить</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Не удалось открыть настройки синтеза речи</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Описание</string>
     <string name="deck_description_saved">Описание обновлено</string>
     <string name="format_deck_description_as_markdown">Форматировать в Markdown</string>

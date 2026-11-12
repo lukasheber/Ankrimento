@@ -39,12 +39,12 @@
         <item quantity="other">Rivendosja e %d kartave</item>
     </plurals>
     <string name="answering_error_title">Gabim në bazën e të dhënave</string>
-    <string name="answering_error_message">Shkrimi në koleksion dështoi. Baza e të dhënave mund të jetë e dëmtuar ose mund të mos ketë hapësirë ​​boshe të mjaftueshme në disk.\n\nNëse kjo ndodh më shpesh, provo të kontrollosh bazën e të dhënave, të riparosh koleksionin ose ta rivendosësh atë nga një kopje rezervë. Prekni \"opsionet\" për këtë.\n\Ose mund të jetë edhe një gabim i AnkiDroid; ju lutemi raportoni gabimin në mënyrë që ta kontrollojmë këtë.</string>
+    <string name="answering_error_message">Shkrimi në koleksion dështoi. Baza e të dhënave mund të jetë e dëmtuar ose mund të mos ketë hapësirë ​​boshe të mjaftueshme në disk.\n\nNëse kjo ndodh më shpesh, provo të kontrollosh bazën e të dhënave, të riparosh koleksionin ose ta rivendosësh atë nga një kopje rezervë. Prekni \"opsionet\" për këtë.\n\Ose mund të jetë edhe një gabim i Ankrimento; ju lutemi raportoni gabimin në mënyrë që ta kontrollojmë këtë.</string>
     <string name="answering_error_report">Raportoni gabimin</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">Dëshiron vërtet të provosh të riparosh bazën e të dhënave?\n\nPara fillimit të përpjekjes, do të krijohet një kopje në nënfolderin \"%s\".</string>
     <string name="intent_aedict_empty">Kategoria \"e parazgjedhur\" është bosh</string>
-    <string name="intent_aedict_category">Për të shtuar karta në AnkiDroid, hiqni të gjitha kategoritë e Notepad ose shtoni një të quajtur \"default\"</string>
+    <string name="intent_aedict_category">Për të shtuar karta në Ankrimento, hiqni të gjitha kategoritë e Notepad ose shtoni një të quajtur \"default\"</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Rishikoni kartat e harruara në x ditët e fundit:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Magazinimi plot</string>
     <string name="storage_almost_full_title">Magazinimi pothuajse i mbushur</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Nuk ka hapësirë</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid ka nevojë për %s hapësirë ​​ruajtëse falas për të vazhduar. Ju lutemi lironi pak hapësirë</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento ka nevojë për %s hapësirë ​​ruajtëse falas për të vazhduar. Ju lutemi lironi pak hapësirë</string>
     <string name="restore_backup_title">Të rivendoset rezervimi?</string>
     <string name="restore_backup">Koleksioni juaj do të zëvendësohet me një kopje më të vjetër. Çdo përparim i paruajtur do të humbet.</string>
     <string name="restore_backup_choose_another">Zgjidhni një tjetër</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Baza e të dhënave është e kyçur</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Versioni i papajtueshëm i bazës së të dhënave</string>
-    <string name="incompatible_database_version_summary">Baza e të dhënave është një version më i avancuar sesa mund të punojë ky version i AnkiDroid. Përmirësoni AnkiDroid ose ulni bazën e të dhënave për ta hapur atë\n\nVersioni i mbështetur: %1$d\nVersioni i bazës së të dhënave: %2$d\n\nOpsionet e mëposhtme të rivendosjes do të mbishkruajnë koleksionin tuaj aktual, ndoshta me një version të përputhshëm të bazës së të dhënave:</string>
+    <string name="incompatible_database_version_summary">Baza e të dhënave është një version më i avancuar sesa mund të punojë ky version i Ankrimento. Përmirësoni Ankrimento ose ulni bazën e të dhënave për ta hapur atë\n\nVersioni i mbështetur: %1$d\nVersioni i bazës së të dhënave: %2$d\n\nOpsionet e mëposhtme të rivendosjes do të mbishkruajnë koleksionin tuaj aktual, ndoshta me një version të përputhshëm të bazës së të dhënave:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Imazhi i sfondit u aplikua</string>
     <string name="background_image_removed">Imazhi i sfondit u hoq</string>

@@ -70,7 +70,7 @@
     <string name="card_browser_font_size" maxLength="41">卡片浏览器字体缩放</string>
     <string name="card_browser_hide_media" maxLength="41">在卡牌浏览器中显示文件名</string>
     <string name="card_browser_hide_media_summary">在卡牌浏览器问题/回答字段中显示音频文件名</string>
-    <string name="col_path" maxLength="41">AnkiDroid 路径</string>
+    <string name="col_path" maxLength="41">Ankrimento 路径</string>
     <string name="fullscreen_review" maxLength="41">全屏显示</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">关闭</string>
     <string name="full_screen_system">隐藏系统状态栏</string>
@@ -304,9 +304,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">常规</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">搜索</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">帮助改进 AnkiDroid！</string>
+    <string name="analytics_dialog_title">帮助改进 Ankrimento！</string>
     <string name="analytics_title" maxLength="41">分享软件使用情况</string>
-    <string name="analytics_summ">通过让开发人员了解您在使用哪些功能，您可用让 AnkiDroid 变得更好</string>
+    <string name="analytics_summ">通过让开发人员了解您在使用哪些功能，您可用让 Ankrimento 变得更好</string>
     <string name="note_editor_replace_newlines" maxLength="41">用 HTML 替换换行</string>
     <string name="note_editor_replace_newlines_summ">在笔记编辑器中，编辑卡片时将所有的&lt;br&gt;转换为换行符。</string>
     <string name="type_in_answer_focus" maxLength="41">定位答案输入框</string>
@@ -318,8 +318,8 @@
     <string name="about_contributors_description"><![CDATA[这些是我们非常了不起的<a href=\"%1$s\">贡献者</a>。您也可以通过贡献代码、翻译、捐赠和<a href=\"%2$s\">更多方式</a>来帮助 AnkiDroid！]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[这些是我们非常了不起的<a href=\"%1$s\">贡献者</a>。您也可以通过贡献代码、翻译、捐赠和<a href=\"%2$s\">更多方式</a>来帮助 AnkiDroid！]]></string>
     <string name="license">许可证</string>
-    <string name="license_description"><![CDATA[AnkiDroid 根据<a href=\"%1$s\">GPL-3.0</a>和<a href=\"%2$s\">AGPL-3.0</a>许可证发布，源代码可在 <a href=\"%3$s\">Github</a> 上获取]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid 也使用第三方库和图标，它们按照多种开源<a href=\"%1$s\">许可证</a>许可]]></string>
+    <string name="license_description"><![CDATA[Ankrimento 根据<a href=\"%1$s\">GPL-3.0</a>和<a href=\"%2$s\">AGPL-3.0</a>许可证发布，源代码可在 <a href=\"%3$s\">Github</a> 上获取]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento 也使用第三方库和图标，它们按照多种开源<a href=\"%1$s\">许可证</a>许可]]></string>
     <string name="donate_description"><![CDATA[您可以通过<a href=\"%1$s\">捐赠</a>支持 AnkiDroid 的开发。我们感谢任何数额的捐赠。]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">添加手势</string>
@@ -355,7 +355,7 @@
     <string name="bindings_already_bound">已绑定到「%s」</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">实验性功能</string>
-    <string name="readtext_deprecation_warn">AnkiDroid 引入了一个更好的 TTS 机制，它与其他 Anki 客户端兼容，并包含更多的声音和语言播放的改进！\n\n请尽快升级，因为此设置将很快被删除</string>
+    <string name="readtext_deprecation_warn">Ankrimento 引入了一个更好的 TTS 机制，它与其他 Anki 客户端兼容，并包含更多的声音和语言播放的改进！\n\n请尽快升级，因为此设置将很快被删除</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">请升级到新文本到语音格式</string>
     <string name="allow_templates_to_record_audio" maxLength="41">允许模板录制音频</string>
     <string name="template_is_trying_to_record_audio">此模板正在尝试录制音频</string>
@@ -370,11 +370,11 @@
          #################################### Backup options ###################################
          ####################################################################################### -->
     <string name="pref__backups_help__summary"><![CDATA[
-        AnkiDroid 定期备份您的集合。
+        Ankrimento 定期备份您的集合。
         在备份文件生成超过两天后，
-        AnkiDroid 会开始删除一些备份释放磁盘空间。
+        Ankrimento 会开始删除一些备份释放磁盘空间。
         <br><br>
-        请注意，AnkiDroid 不会备份媒体文件。
+        请注意，Ankrimento 不会备份媒体文件。
         为了安全起见，请定期同步您的集合，或备份集合的导出文件。
         <br><br>
         您可以通过牌组列表菜单恢复备份和导出您的集合。

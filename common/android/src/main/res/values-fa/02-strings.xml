@@ -120,7 +120,7 @@
         <item quantity="one">%1$d دقیقه</item>
         <item quantity="other">%1$d دقیقه</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">کارت AnkiDroid</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">کارت Ankrimento</string>
     <string name="note_editor_copy_note" maxLength="28">کپی یادداشت</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">تغییر مکان</string>
     <string name="card_editor_reset_card" maxLength="28">تنظیم مجدد پیشرفت</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">بررسی</string>
     <string name="unknown_type_field_warning">پاسخ را تایپ کنید:فیلد نامشخص %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">در حال حذف دسته کارت&#8230;</string>
-    <string name="info_rate">امتیازدهی به AnkiDroid</string>
+    <string name="info_rate">امتیازدهی به Ankrimento</string>
     <string name="import_title">درحال وارد کردن</string>
     <string name="import_preparing_file">آماده‌سازی فایل برای وارد کردن&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">اضافه کردن</string>
@@ -143,10 +143,10 @@
     <string name="import_error_handle_exception">ورود این فایل ناموفق بود\n\n%s</string>
     <string name="import_error_not_apkg_extension">فایل \"%s\" فاقد پسوند .apkg یا .colpkg است</string>
     <string name="import_error_load_imported_database">جایگزین پایگاه داده آنکی (.anki2) هنوز پشتیبانی نشده است. لطفاً برای راهنمایی در مورد جایگزینی راهنما را بخوانید.</string>
-    <string name="import_error_content_provider">فایل انتخاب شده به صورت خودکار توسط AnkiDroid نمی تواند وارد شود. لطفا راهنمای کاربر را ببینید که چگونه به صورت دستی بتوان فایل Anki را وارد کرد:\n%s</string>
+    <string name="import_error_content_provider">فایل انتخاب شده به صورت خودکار توسط Ankrimento نمی تواند وارد شود. لطفا راهنمای کاربر را ببینید که چگونه به صورت دستی بتوان فایل Anki را وارد کرد:\n%s</string>
     <string name="import_error_copy_to_cache_title">کش کردن فایل ناموفق بود</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">این مشکل اغلب به دلیل وجود اشکال در برنامه‌ای که برای انتخاب فایل استفاده کرده‌اید، ایجاد می‌شود. لطفاً راه‌حل‌های زیر را امتحان کنید:\n\n%s</string>
-    <string name="import_interrupted">در فرایند ورود اختلال ایجاد شد: AnkiDroid بسته بود</string>
+    <string name="import_interrupted">در فرایند ورود اختلال ایجاد شد: Ankrimento بسته بود</string>
     <string name="export_ready_title">خروجی آماده است</string>
     <string name="export_send_no_handlers">هیچ برنامه ای برای بررسی apkg در دسترس نیست. در حال ذخیره&#8230;</string>
     <string name="export_save_apkg_successful">بسته Anki با موفقیت ذخیره شد</string>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">ذخیرۀ تصویر تخته سفید با مشکل مواجه شد. %s</string>
     <string name="white_board_image_saved">تصویر تخته سفید در %s ذخیره شد</string>
     <string name="title_whiteboard_editor" maxLength="28">ویرایشگر تخته صفید</string>
-    <string name="user_is_a_robot">تست خودکار شناسایی شد. اگر شما انسان هستید، با پشتیبانی AnkiDroid ارتباط برقرار کنید</string>
+    <string name="user_is_a_robot">تست خودکار شناسایی شد. اگر شما انسان هستید، با پشتیبانی Ankrimento ارتباط برقرار کنید</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">این کارت از امکانات پشتیبانی نشده AnkiDroid استفاده میکند. با توسعه دهنده %1$s ارتباط برقرار کنید، یا این wiki را ببینید. %2$s</string>
     <string name="invalid_json_data">کارت اطلاعات نامعتبر ارائه کرد. %s</string>
@@ -215,7 +215,7 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">جستجو در تمام دسته‌ها</string>
     <string name="ankidroid_init_failed_webview_title">خطای جبران‌ناپذیر</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid بر روی سیستم WebView تکیه میکند که غیرقابل دسترسی است. این میتواند اتفاق بیفتد اگر سیستم در حال نسب کردن آپدیت باشد. لطفا دقایقی دیگر تلاش کنید.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento بر روی سیستم WebView تکیه میکند که غیرقابل دسترسی است. این میتواند اتفاق بیفتد اگر سیستم در حال نسب کردن آپدیت باشد. لطفا دقایقی دیگر تلاش کنید.\n\n%s</string>
     <string name="ankidroid_init_failed_storage">آنکی‌دروید به دلیل خطای اندروید نمی‌تواند به فضای ذخیره‌سازی دسترسی داشته باشد
 
 خطا.\n\n%s</string>
@@ -247,9 +247,9 @@
     <string name="note_editor_video_too_large">فایل ویدیو زیادی بزرگ است، لطفا ویدیو را دستی وارد کنید</string>
     <string name="note_editor_audio_too_large">فایل صدا زیادی بزرگ است، لطفا صدا را دستی وارد کنید</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">پشتیبان گیری اندروید درحال انجام شدن هست. لطفا دوباره تلاش کنید</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">شما به iManager نیاز دارید تا به AnkiDroid اجازه اضافه کردن میانبر بدهید</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">شما به iManager نیاز دارید تا به Ankrimento اجازه اضافه کردن میانبر بدهید</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">برای افزودن میانبرها، دسترسی «میانبرهای صفحهٔ اصلی» را در تنظیمات سیستم برای %s فعال کنید</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">صفحه اصلی شما به AnkiDroid اجازه میانبور اضافه کردن نمیدهد</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">صفحه اصلی شما به Ankrimento اجازه میانبور اضافه کردن نمیدهد</string>
     <string name="create_shortcut_error">خطا در افزودن میانبُر: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">جملات را با حروف بزرگ بنویس</string>
     <!-- Dialog hints -->
@@ -338,7 +338,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">اینترنت</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">نصب شود</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">باز کردن تنظیمات متن به گفتار ناموفق بود</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">توضیحات</string>
     <string name="deck_description_saved">توضیح به‌روز شد</string>
     <string name="format_deck_description_as_markdown">قالب‌بندی به فرمت مارک‌داون</string>

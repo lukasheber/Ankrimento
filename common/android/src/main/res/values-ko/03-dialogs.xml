@@ -37,12 +37,12 @@
         <item quantity="other">%d개의 카드를 초기화했습니다.</item>
     </plurals>
     <string name="answering_error_title">데이터베이스 오류</string>
-    <string name="answering_error_message">컬렉션에 쓰는 것을 실패했습니다. 데이터베이스가 손상되었거나 디스크에 충분한 여유 공간이 없을 수 있습니다.\n\n이 문제가 자주 발생하면 데이터베이스를 점검하거나 컬렉션을 복구하거나 설정에서 백업 파일을 복원해 보세요. \n\n또는 AnkiDroid 버그일 수 있으니, 오류를 보고해 주시면 확인해 보겠습니다.</string>
+    <string name="answering_error_message">컬렉션에 쓰는 것을 실패했습니다. 데이터베이스가 손상되었거나 디스크에 충분한 여유 공간이 없을 수 있습니다.\n\n이 문제가 자주 발생하면 데이터베이스를 점검하거나 컬렉션을 복구하거나 설정에서 백업 파일을 복원해 보세요. \n\n또는 Ankrimento 버그일 수 있으니, 오류를 보고해 주시면 확인해 보겠습니다.</string>
     <string name="answering_error_report">오류 보고하기</string>
-    <string name="storage_full_message">AnkiDroid를 열기 위한 저장공간이 충분하지 않습니다. 계속하려면 여유 공간을 확보하세요.</string>
+    <string name="storage_full_message">Ankrimento를 열기 위한 저장공간이 충분하지 않습니다. 계속하려면 여유 공간을 확보하세요.</string>
     <string name="repair_deck_dialog">데이터베이스를 복구하시겠습니까?\n\n 복구를 시작하기 전에 지정된 하위폴더에 복사본 파일이 저장됩니다\'%s\'.</string>
     <string name="intent_aedict_empty">\'기본값\' 카테고리가 비어 있습니다</string>
-    <string name="intent_aedict_category">AnkiDroid에 카드를 추가하기 위해 모든 메모장 범주 삭제 또는 \'기본값\'으로 지정하기</string>
+    <string name="intent_aedict_category">Ankrimento에 카드를 추가하기 위해 모든 메모장 범주 삭제 또는 \'기본값\'으로 지정하기</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">최근 x일 동안 잊혀진 복습 카드:</string>
@@ -52,7 +52,7 @@
     <string name="storage_full_title">저장 공간이 가득 찼습니다.</string>
     <string name="storage_almost_full_title">저장공간이 거의 가득 찼습니다.</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">빈 공간 없음</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid는 계속 진행하기 위해 %s만큼의 여유 공간이 필요합니다. 공간을 조금 확보해 주세요</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento는 계속 진행하기 위해 %s만큼의 여유 공간이 필요합니다. 공간을 조금 확보해 주세요</string>
     <string name="restore_backup_title">백업을 복원할까요?</string>
     <string name="restore_backup">컬렉션이 기존의 것으로 대체됩니다. 저장되지 않은 모든 작업은 손실됩니다.</string>
     <string name="restore_backup_choose_another">다른 항목 선택하기</string>
@@ -114,9 +114,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">데이터베이스 잠김</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">다른 AnkiDroid 앱이 이 컬렉션을 사용하고 있습니다. 앱이 실행되고 있지 않아도, 충돌이 발생할 수 있습니다. \n\n두 앱을 계속 사용하려면, 둘 중 하나의 앱의 고급 설정에서 \'%s\'를 변경하세요. \n\n지금 바로 이 앱을 사용하려면, 충돌이 발생하는 다른 앱을 강제 종료하세요.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">다른 Ankrimento 앱이 이 컬렉션을 사용하고 있습니다. 앱이 실행되고 있지 않아도, 충돌이 발생할 수 있습니다. \n\n두 앱을 계속 사용하려면, 둘 중 하나의 앱의 고급 설정에서 \'%s\'를 변경하세요. \n\n지금 바로 이 앱을 사용하려면, 충돌이 발생하는 다른 앱을 강제 종료하세요.</string>
     <string name="incompatible_database_version_title">Incompatible Database Version</string>
-    <string name="incompatible_database_version_summary">The database is a more advanced version than this version of AnkiDroid can work with. Upgrade AnkiDroid or downgrade the database to open it\n\nSupported version: %1$d\nDatabase version: %2$d\n\nThe following restore options will overwrite your current collection, possibly with a compatible database version:</string>
+    <string name="incompatible_database_version_summary">The database is a more advanced version than this version of Ankrimento can work with. Upgrade Ankrimento or downgrade the database to open it\n\nSupported version: %1$d\nDatabase version: %2$d\n\nThe following restore options will overwrite your current collection, possibly with a compatible database version:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">배경 이미지 적용 완료</string>
     <string name="background_image_removed">배경 이미지 제거 완료</string>

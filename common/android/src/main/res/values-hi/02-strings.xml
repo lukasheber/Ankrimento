@@ -120,7 +120,7 @@
         <item quantity="one">%1$d मिनट</item>
         <item quantity="other">मिनट %1$d</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid कार्ड</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento कार्ड</string>
     <string name="note_editor_copy_note" maxLength="28">नोट कॉपी करें</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">स्थानांतरित करे</string>
     <string name="card_editor_reset_card" maxLength="28">प्रगति को रीसेट</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">जांचें</string>
     <string name="unknown_type_field_warning">उत्तर टाइप करें: अज्ञात फ़ील्ड %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">हटाने deck&#8230;\nPlease रुको।</string>
-    <string name="info_rate">दर AnkiDroid</string>
+    <string name="info_rate">दर Ankrimento</string>
     <string name="import_title">आयात</string>
     <string name="import_preparing_file">आयात के लिए फ़ाइल तैयार की जा रही है&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">जोड़ें</string>
@@ -143,7 +143,7 @@
     <string name="import_error_handle_exception">फ़ाइल आयात करने में विफल\n\n%s</string>
     <string name="import_error_not_apkg_extension">फ़ाइल नाम \"%s\" में .apkg या .colpkg एक्सटेंशन नहीं है</string>
     <string name="import_error_load_imported_database">अन्कि डाटाबेस (.anki2) प्रतिस्थापन अभीतक सहारा नहीं दिया जाता हैं । कृपया पुस्तिका प्रतिस्थापन के शिक्षण के लिये देखिये ।</string>
-    <string name="import_error_content_provider">The selected file couldn’t be imported automatically by AnkiDroid. Please see the user manual for how to manually import Anki files: \n%s</string>
+    <string name="import_error_content_provider">The selected file couldn’t be imported automatically by Ankrimento. Please see the user manual for how to manually import Anki files: \n%s</string>
     <string name="import_error_copy_to_cache_title">फ़ाइल कैश करने में विफल</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">This is often caused by a bug in the app you used to select the file. Please try the following fixes:\n\n%s</string>
     <string name="import_interrupted">आयात बाधित हुआ</string>
@@ -152,7 +152,7 @@
     <string name="export_save_apkg_successful">सफलतापूर्वक Anki पैकेज को सहेजा गया</string>
     <string name="export_save_apkg_unsuccessful">Anki पैकेज सहेजना विफल रहा</string>
     <string name="export_share_title">Anki पैकेज का उपयोग करके भेजें</string>
-    <string name="export_email_subject">AnkiDroid निर्यात किए गए स्पैनिश: %s</string>
+    <string name="export_email_subject">Ankrimento निर्यात किए गए स्पैनिश: %s</string>
     <string name="export_email_text"><![CDATA[
         नमस्ते!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">श्वेतपट्ट छवि को सहेजने में विफल। %s</string>
     <string name="white_board_image_saved">श्वेतपट्ट छवि %s में सहेजी गई</string>
     <string name="title_whiteboard_editor" maxLength="28">श्वेतपट्ट संपादक</string>
-    <string name="user_is_a_robot">स्वचालित परीक्षण का पता लगाया। यदि आप एक मानव हैं, तो AnkiDroid समर्थन से संपर्क करें</string>
+    <string name="user_is_a_robot">स्वचालित परीक्षण का पता लगाया। यदि आप एक मानव हैं, तो Ankrimento समर्थन से संपर्क करें</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">यह कार्ड असमर्थित AnkiDroid सुविधाओं का उपयोग करता है। डेवलपर से संपर्क करें %1$s, या विकी देखें। %2$s</string>
     <string name="invalid_json_data">कार्ड ने अवैध डेटा प्रदान किया। %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">खोज डेक</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid सिस्टम WebView पर निर्भर करता है जो अनुपलब्ध है। यह तब हो सकता है जब सिस्टम अपडेट स्थापित कर रहा है। कृपया कुछ मिनटों में पुन: प्रयास करें। \n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid cannot access storage due to an Android error.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento सिस्टम WebView पर निर्भर करता है जो अनुपलब्ध है। यह तब हो सकता है जब सिस्टम अपडेट स्थापित कर रहा है। कृपया कुछ मिनटों में पुन: प्रयास करें। \n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento cannot access storage due to an Android error.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">फ़ॉन्ट आकार</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">AnkiWeb से सिंक करें</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid अभी प्रारंभ नहीं हुआ है। कृपया AnkiDroid खोलें और पुनः प्रयास करें</string>
+    <string name="app_not_initialized_new">Ankrimento अभी प्रारंभ नहीं हुआ है। कृपया Ankrimento खोलें और पुनः प्रयास करें</string>
     <!-- Deck Creation -->
     <string name="deck_created">बनाया गया डेक</string>
     <string name="deck_renamed">नाम बदला हुआ डेक</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Install</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Failed to open text to speech settings</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">विवरण</string>
     <string name="deck_description_saved">Description updated</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

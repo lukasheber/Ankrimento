@@ -90,7 +90,7 @@
     <string name="ankrimento_priority">Incremento prioritet…</string>
     <string name="ankrimento_priority_message">Od 0 do 100. Sa zadanim postavkama Incrementa manji brojevi su važniji.</string>
     <string name="ankrimento_profile">Incremento profil</string>
-    <string name="ankrimento_profile_message">Naziv Anki profila na vašem računalu (za sinkronizaciju). Primjenjuje se nakon ponovnog pokretanja AnkiDroida.</string>
+    <string name="ankrimento_profile_message">Naziv Anki profila na vašem računalu (za sinkronizaciju). Primjenjuje se nakon ponovnog pokretanja Ankrimentoa.</string>
     <!-- Reader screen -->
     <string name="ankrimento_navigate_up">Natrag</string>
     <string name="ankrimento_more_options">Više mogućnosti</string>
@@ -546,10 +546,10 @@
     <string name="ankrimento_restore_contents">Sigurnosna kopija profila „%1$s”: karata %2$d, medijskih datoteka %3$d, Incremento datoteka %4$d.</string>
     <string name="ankrimento_restore_other_profile">Potječe iz profila drugog naziva; njezine datoteke zauzimaju mjesto ovog profila.</string>
     <string name="ankrimento_restore_missing_covers">Nedostaje joj PDF ili EPUB naslovnica: %d; ti se dokumenti prikazuju bez naslovnice.</string>
-    <string name="ankrimento_restore_replaces">Ovo zamjenjuje karte, medije i Incremento datoteke na ovom uređaju, uključujući sve novije. AnkiDroid najprije sprema sigurnosnu kopiju zbirke. AnkiWeb se ne provjerava: pri sljedećoj sinkronizaciji odaberite želite li prenijeti vraćenu zbirku.</string>
+    <string name="ankrimento_restore_replaces">Ovo zamjenjuje karte, medije i Incremento datoteke na ovom uređaju, uključujući sve novije. Ankrimento najprije sprema sigurnosnu kopiju zbirke. AnkiWeb se ne provjerava: pri sljedećoj sinkronizaciji odaberite želite li prenijeti vraćenu zbirku.</string>
     <string name="ankrimento_restore_confirm">Zamijeni</string>
     <string name="ankrimento_restore_working">Vraćanje…</string>
-    <string name="ankrimento_restore_no_safety_backup">AnkiDroid nije mogao najprije spremiti sigurnosnu kopiju zbirke</string>
+    <string name="ankrimento_restore_no_safety_backup">Ankrimento nije mogao najprije spremiti sigurnosnu kopiju zbirke</string>
     <string name="ankrimento_restore_failed">Vraćanje nije uspjelo; ništa nije zamijenjeno: %s</string>
     <string name="ankrimento_restore_done">Sigurnosna kopija je vraćena. Aplikacija se sada ponovno pokreće.</string>
     <plurals name="ankrimento_backup_saved">

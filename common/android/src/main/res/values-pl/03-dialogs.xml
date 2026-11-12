@@ -43,12 +43,12 @@
         <item quantity="other">%d kart zresetowano</item>
     </plurals>
     <string name="answering_error_title">Błąd bazy danych</string>
-    <string name="answering_error_message">Wystąpił błąd podczas zapisywania do kolekcji. Powodem może być uszkodzenie bazy danych albo niewystarczająca ilość miejsca na dysku.\n\nJeśli błąd ten występuje często, spróbuj użyć opcji „sprawdź bazę danych” oraz naprawić kolekcję lub przywróć ją z kopii zapasowej (by tego dokonać kliknij „opcje”).\n\nRównie dobrze może to być też błąd AnkiDroid; zgłoś go, abyśmy mogli to sprawdzić.</string>
+    <string name="answering_error_message">Wystąpił błąd podczas zapisywania do kolekcji. Powodem może być uszkodzenie bazy danych albo niewystarczająca ilość miejsca na dysku.\n\nJeśli błąd ten występuje często, spróbuj użyć opcji „sprawdź bazę danych” oraz naprawić kolekcję lub przywróć ją z kopii zapasowej (by tego dokonać kliknij „opcje”).\n\nRównie dobrze może to być też błąd Ankrimento; zgłoś go, abyśmy mogli to sprawdzić.</string>
     <string name="answering_error_report">Zgłoś błąd</string>
-    <string name="storage_full_message">Nie ma wystarczającej ilości wolnego miejsca, aby otworzyć AnkiDroid. Zwolnij trochę miejsca, aby kontynuować.</string>
+    <string name="storage_full_message">Nie ma wystarczającej ilości wolnego miejsca, aby otworzyć Ankrimento. Zwolnij trochę miejsca, aby kontynuować.</string>
     <string name="repair_deck_dialog">Czy na pewno chcesz próbować naprawić bazę danych? \n\nPrzed próbą naprawy zostanie utworzona kopia w katalogu \'%s\'.</string>
     <string name="intent_aedict_empty">Kategoria \'Domyślne\' jest pusta</string>
-    <string name="intent_aedict_category">Aby dodać karty do AnkiDroid, usuń wszystkie kategorie Notatnika lub dodaj jedną o nazwie \'Domyślne\'</string>
+    <string name="intent_aedict_category">Aby dodać karty do Ankrimento, usuń wszystkie kategorie Notatnika lub dodaj jedną o nazwie \'Domyślne\'</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Przejrzyj zapomniane karty z ostatnich x dni:</string>
@@ -58,7 +58,7 @@
     <string name="storage_full_title">Pamięć jest pełna</string>
     <string name="storage_almost_full_title">Pamięć jest prawie pełna</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Brak miejsca</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid potrzebuje %s wolnej przestrzeni dyskowej, by kontynuować. Zwolnij trochę miejsca</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento potrzebuje %s wolnej przestrzeni dyskowej, by kontynuować. Zwolnij trochę miejsca</string>
     <string name="restore_backup_title">Odtworzyć kopię zapasową?</string>
     <string name="restore_backup">Kolekcja zostanie zastąpione starszą kopią. Wszelkie niezapisane postępy zostaną utracone.</string>
     <string name="restore_backup_choose_another">Wybierz inny</string>
@@ -123,9 +123,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Baza danych zablokowana</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Niekompatybilna wersja bazy danych</string>
-    <string name="incompatible_database_version_summary">Baza danych jest w wersji wyższejej niż najwyższa obsługiwana przez AnkiDroid. Zaktualizuj AnkiDroid lub przywróć poprzednią wersję bazy danych, by kontynuować. Obsługiwana wersja: %1$d\nwersja bazy danych: %2$d\nPoniższe opcje przywracania nadpiszą twoją obecną kolekcję, prawdopodobnie kompatybilną wersją</string>
+    <string name="incompatible_database_version_summary">Baza danych jest w wersji wyższejej niż najwyższa obsługiwana przez Ankrimento. Zaktualizuj Ankrimento lub przywróć poprzednią wersję bazy danych, by kontynuować. Obsługiwana wersja: %1$d\nwersja bazy danych: %2$d\nPoniższe opcje przywracania nadpiszą twoją obecną kolekcję, prawdopodobnie kompatybilną wersją</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Ustawiono obraz w tle</string>
     <string name="background_image_removed">Obraz w tle usunięty</string>

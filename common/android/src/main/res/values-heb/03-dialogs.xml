@@ -41,13 +41,13 @@
         <item quantity="other">%d כרטיסים אופסו</item>
     </plurals>
     <string name="answering_error_title">שגיאת מסד נתונים</string>
-    <string name="answering_error_message">כתיבה לאוסף נכשלה. מאגר המידע אולי שבור או שאין מספיק מקום בדיסק.\n\n אם זה קורה שוב ושוב, אפשר לבדוק את מאגר המידע, לתקן את האוסף או לשחזר אותו מגיבוי. לחץ \'אפשרויות\' עבור כך. \n כמו כן ייתכן שזוהי תקלה בAnkiDroid. נא לדווח את השגיאה כדי שנוכל לבדוק זאת.</string>
+    <string name="answering_error_message">כתיבה לאוסף נכשלה. מאגר המידע אולי שבור או שאין מספיק מקום בדיסק.\n\n אם זה קורה שוב ושוב, אפשר לבדוק את מאגר המידע, לתקן את האוסף או לשחזר אותו מגיבוי. לחץ \'אפשרויות\' עבור כך. \n כמו כן ייתכן שזוהי תקלה בAnkrimento. נא לדווח את השגיאה כדי שנוכל לבדוק זאת.</string>
     <string name="answering_error_report">דיווח על שגיאה</string>
-    <string name="storage_full_message">אין מספיק שטח אחסון פנוי כדי לפתוח את AnkiDroid.  פנה קצת מקום כדי להמשיך.</string>
+    <string name="storage_full_message">אין מספיק שטח אחסון פנוי כדי לפתוח את Ankrimento.  פנה קצת מקום כדי להמשיך.</string>
     <string name="repair_deck_dialog">לתקן את המאגר?\n\n
 לפני תחילת ניסיון התיקון, יתבצע שמירת העתק בתקייה %s</string>
     <string name="intent_aedict_empty">הקטגוריה \'ברירת מחדל\' ריקה</string>
-    <string name="intent_aedict_category">כדי להוסיף כרטיסים ל-AnkiDroid הסר את כל קטגוריות פנקס הרשימות או הוסף אחת בשם \"ברירת מחדל\"</string>
+    <string name="intent_aedict_category">כדי להוסיף כרטיסים ל-Ankrimento הסר את כל קטגוריות פנקס הרשימות או הוסף אחת בשם \"ברירת מחדל\"</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">חזרה על כרטיסים נשכחים בx ימים האחרונים</string>
@@ -57,7 +57,7 @@
     <string name="storage_full_title">האיחסון מלא</string>
     <string name="storage_almost_full_title">שטח האחסון כמעט מלא</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">אין מקום</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid זקוק ל-%s שטח אחסון פנוי כדי להמשיך. נא לפנות קצת מקום</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento זקוק ל-%s שטח אחסון פנוי כדי להמשיך. נא לפנות קצת מקום</string>
     <string name="restore_backup_title">לשחזר מגיבוי?</string>
     <string name="restore_backup">האוסף שלך יוחלף בעותק ישן יותר. כל תהליך שלא נשמר ילך לאיבוד.</string>
     <string name="restore_backup_choose_another">אחר</string>
@@ -121,9 +121,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">מסד הנתונים ננעל</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">גרסת מסד נתונים לא תואמת</string>
-    <string name="incompatible_database_version_summary">מסד הנתונים הוא גרסה מתקדמת יותר ממה שגרסה זו של AnkiDroid יכולה לעבוד איתה. שדרג את AnkiDroid או שדרג לאחור את מסד הנתונים כדי לפתוח אותו\n\nגרסה נתמכת: %1$d\nגרסת מסד נתונים: %2$d\n\nאפשרויות השחזור הבאות יחליפו את האוסף הנוכחי שלך, אולי עם גרסת מסד נתונים תואמת:</string>
+    <string name="incompatible_database_version_summary">מסד הנתונים הוא גרסה מתקדמת יותר ממה שגרסה זו של Ankrimento יכולה לעבוד איתה. שדרג את Ankrimento או שדרג לאחור את מסד הנתונים כדי לפתוח אותו\n\nגרסה נתמכת: %1$d\nגרסת מסד נתונים: %2$d\n\nאפשרויות השחזור הבאות יחליפו את האוסף הנוכחי שלך, אולי עם גרסת מסד נתונים תואמת:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">הוחלה תמונת רקע</string>
     <string name="background_image_removed">תמונת רקע הוסרה</string>

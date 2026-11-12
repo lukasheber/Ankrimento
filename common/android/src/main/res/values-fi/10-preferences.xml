@@ -71,7 +71,7 @@
     <string name="card_browser_font_size" maxLength="41">Korttiselaimen kirjasimien skaalaus</string>
     <string name="card_browser_hide_media" maxLength="41">Näytä tiedostonimet korttiselaimessa</string>
     <string name="card_browser_hide_media_summary">Näytä äänten tiedostonimet korttiselaimen kysymys-/vastaus-kentissä</string>
-    <string name="col_path" maxLength="41">AnkiDroid-hakemisto</string>
+    <string name="col_path" maxLength="41">Ankrimento-hakemisto</string>
     <string name="fullscreen_review" maxLength="41">Koko näytön tila</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">Pois päältä</string>
     <string name="full_screen_system">Piilota järjestelmäpalkit</string>
@@ -307,9 +307,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Yleistä</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Haku</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">Auta parantamaan AnkiDroidia!</string>
+    <string name="analytics_dialog_title">Auta parantamaan Ankrimentoia!</string>
     <string name="analytics_title" maxLength="41">Jaa tietoja käyttämistäsi ominaisuuksista</string>
-    <string name="analytics_summ">Voit auttaa AnkiDroidin kehitystiimiä ymmärtämään, mitä sovelluksen ominaisuuksia oikeasti käytetään</string>
+    <string name="analytics_summ">Voit auttaa Ankrimentoin kehitystiimiä ymmärtämään, mitä sovelluksen ominaisuuksia oikeasti käytetään</string>
     <string name="note_editor_replace_newlines" maxLength="41">Korvaa rivinvaihdot HTML:llä</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">Kohdista \"kirjoita vastaus\" -kenttään</string>
@@ -321,8 +321,8 @@
     <string name="about_contributors_description"><![CDATA[Tässä ovat upeat  <a href=\"%1$s\">kehittäjämme ja avustajamme</a>. Sinäkin voit auttaa AnkiDroidia ohjelmoimalla, kääntämällä, lahjoittamalla ja <a href=\"%2$s\">monin muin tavoin</a>!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">Lisenssi</string>
-    <string name="license_description"><![CDATA[AnkiDroid julkaistaan <a href=\"%1$s\">GPL-3.0</a> and <a href=\"%2$s\">AGPL-3.0</a>  -lisensseillä, ja lähdekoodi on saatavilla <a href=\"%3$s\">GitHubissa</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid käyttää myös kolmannen osapuolen kirjastoja ja kuvakkeita, jotka on lisensoitu useilla avoimen lähdekoodin <a href=\"%1$s\">lisensseillä</a>]]></string>
+    <string name="license_description"><![CDATA[Ankrimento julkaistaan <a href=\"%1$s\">GPL-3.0</a> and <a href=\"%2$s\">AGPL-3.0</a>  -lisensseillä, ja lähdekoodi on saatavilla <a href=\"%3$s\">GitHubissa</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento käyttää myös kolmannen osapuolen kirjastoja ja kuvakkeita, jotka on lisensoitu useilla avoimen lähdekoodin <a href=\"%1$s\">lisensseillä</a>]]></string>
     <string name="donate_description"><![CDATA[Voit tukea AnkiDroid\:n kehitystä <a href=\"%1$s\">lahjoittamalla</a>. Mikä tahansa summa on erittäin tervetullut.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">Lisää kosketusele</string>
@@ -358,7 +358,7 @@
     <string name="bindings_already_bound">Jo käytössä kohteessa \"%s\"</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Kokeellinen</string>
-    <string name="readtext_deprecation_warn">AnkiDroid on ottanut käyttöön paremman TTS-mekanismin, joka on yhteensopiva muiden Anki-ohjelmien kanssa ja sisältää enemmän ääniä ja parannuksia kielentoistoon!\n\nPäivitä mahdollisimman pian, sillä tämä asetus poistetaan pian.</string>
+    <string name="readtext_deprecation_warn">Ankrimento on ottanut käyttöön paremman TTS-mekanismin, joka on yhteensopiva muiden Anki-ohjelmien kanssa ja sisältää enemmän ääniä ja parannuksia kielentoistoon!\n\nPäivitä mahdollisimman pian, sillä tämä asetus poistetaan pian.</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Päivitä uuteen tekstistä puheeksi -formaattiin</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -373,9 +373,9 @@
          #################################### Backup options ###################################
          ####################################################################################### -->
     <string name="pref__backups_help__summary"><![CDATA[
-        AnkiDroid varmuuskopioi kokoelmasi säännöllisesti.
+        Ankrimento varmuuskopioi kokoelmasi säännöllisesti.
         Kun varmuuskopiot ovat yli kaksi päivää vanhoja,
-        AnkiDroid alkaa poistaa joitakin niistä vapauttaakseen levytilaa.
+        Ankrimento alkaa poistaa joitakin niistä vapauttaakseen levytilaa.
         <br><br>
         Huomaa, että mediatiedostoja ei varmuuskopioida.
         Varmuuden vuoksi synkronoi kokoelmasi säännöllisesti tai varmuuskopioi ulos viedyt kopiot.

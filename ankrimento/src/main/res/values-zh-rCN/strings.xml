@@ -82,7 +82,7 @@
     <string name="ankrimento_priority">Incremento 优先级…</string>
     <string name="ankrimento_priority_message">0 到 100。在 Incremento 的默认设置下，数字越小越重要。</string>
     <string name="ankrimento_profile">Incremento 配置文件</string>
-    <string name="ankrimento_profile_message">你电脑上使用的 Anki 配置文件名称（用于同步）。重启 AnkiDroid 后生效。</string>
+    <string name="ankrimento_profile_message">你电脑上使用的 Anki 配置文件名称（用于同步）。重启 Ankrimento 后生效。</string>
     <!-- Reader screen -->
     <string name="ankrimento_navigate_up">返回</string>
     <string name="ankrimento_more_options">更多选项</string>
@@ -522,10 +522,10 @@
     <string name="ankrimento_restore_contents">配置文件“%1$s”的备份：%2$d 张卡片，%3$d 个媒体文件，%4$d 个 Incremento 文件。</string>
     <string name="ankrimento_restore_other_profile">它来自另一个名称的配置文件；其文件将取代此配置文件的文件。</string>
     <string name="ankrimento_restore_missing_covers">其中缺少 %d 个 PDF 或 EPUB 封面；这些文档将不显示封面。</string>
-    <string name="ankrimento_restore_replaces">这将替换本设备上的卡片、媒体和 Incremento 文件，包括任何更新的内容。AnkiDroid 会先备份集合。不会检查 AnkiWeb：下次同步时，请选择是否上传恢复后的集合。</string>
+    <string name="ankrimento_restore_replaces">这将替换本设备上的卡片、媒体和 Incremento 文件，包括任何更新的内容。Ankrimento 会先备份集合。不会检查 AnkiWeb：下次同步时，请选择是否上传恢复后的集合。</string>
     <string name="ankrimento_restore_confirm">替换</string>
     <string name="ankrimento_restore_working">正在恢复…</string>
-    <string name="ankrimento_restore_no_safety_backup">AnkiDroid 无法先备份集合</string>
+    <string name="ankrimento_restore_no_safety_backup">Ankrimento 无法先备份集合</string>
     <string name="ankrimento_restore_failed">恢复失败；没有替换任何内容：%s</string>
     <string name="ankrimento_restore_done">备份已恢复。应用现在将重新启动。</string>
     <plurals name="ankrimento_backup_saved">

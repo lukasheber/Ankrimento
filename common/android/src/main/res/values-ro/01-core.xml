@@ -85,12 +85,12 @@
     <string name="menu_disable_voice_playback">Dezactivează redarea vocii</string>
     <string name="menu_create_backup" maxLength="28">Creează copie de siguranță</string>
     <string name="new_dynamic_deck">Crează punte filtrată</string>
-    <string name="directory_inaccessible">Directorul AnkiDroid este inaccesibil</string>
+    <string name="directory_inaccessible">Directorul Ankrimento este inaccesibil</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">Vă rugăm să acordați AnkiDroid permisiunea de „Stocare” pentru a continua</string>
+    <string name="startup_no_storage_permission">Vă rugăm să acordați Ankrimento permisiunea de „Stocare” pentru a continua</string>
     <string name="rebuild_filtered_deck">Se reconstruiește pachetul filtrat&#8230;</string>
     <string name="empty_cram_label" maxLength="28">Goleste</string>
     <string name="create_subdeck">Creați sub-pachet</string>
@@ -129,33 +129,33 @@
     <string name="card_template_editor_save_error">Modificările șablonului cărții nu au putut fi salvate: %s</string>
     <string name="template_for_current_card_deleted">Tipul de carte al cărții actuale a fost șters</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">Citește și scrie în baza de date a AnkiDroid</string>
+    <string name="read_write_permission_label">Citește și scrie în baza de date a Ankrimento</string>
     <string name="read_write_permission_description">accesați notițe, cărți, tipuri de notițe, și pachete și creați altele noi</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Card browser</string>
     <string name="context_menu_anki_card_label">Anki card</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">Colecțiile nu pot fi combinate.\nCe colecție doriți să păstrați?</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">Înlocuiește-ți colecția din AnkiDroid cu colecția ta din AnkiWeb?</string>
-    <string name="sync_conflict_local_confirm_new">Înlocuiește-ți colecția din AnkiWeb cu colecția ta din AnkiDroid?</string>
+    <string name="sync_conflict_remote_confirm_new">Înlocuiește-ți colecția din Ankrimento cu colecția ta din AnkiWeb?</string>
+    <string name="sync_conflict_local_confirm_new">Înlocuiește-ți colecția din AnkiWeb cu colecția ta din Ankrimento?</string>
     <string name="sync_conflict_title_new">Selectează colecția care va fi păstrată</string>
     <string name="sync_conflict_replace_title">Înlocuiește colecția</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">Nu se poate crea or scrie în fișierul %s</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">Colecție inaccesibilă</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Nu putem accesa colecția ta după ce AnkiDroid este dezinstalat din cauza unei schimbări în Politica Magazinului Play.\n\nDatele tale sunt sigure și pot fi restaurate. Se află la\n%s\n\nSelectați una din opțiunile de mai jos pentru a le restaura:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android a înlăturat permisiunea %1$s a AnkiDroid datorită inactivității aplicației. \n\nDatele dvs. sunt în siguranță și pot fi restaurate. Se află la\n%2$s\n\nSelectați o opțiune de mai jos pentru a restaura:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Nu putem accesa colecția ta după ce Ankrimento este dezinstalat din cauza unei schimbări în Politica Magazinului Play.\n\nDatele tale sunt sigure și pot fi restaurate. Se află la\n%s\n\nSelectați una din opțiunile de mai jos pentru a le restaura:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android a înlăturat permisiunea %1$s a Ankrimento datorită inactivității aplicației. \n\nDatele dvs. sunt în siguranță și pot fi restaurate. Se află la\n%2$s\n\nSelectați o opțiune de mai jos pentru a restaura:</string>
     <string name="restore_data_from_ankiweb">Restaurează din AnkiWeb (recomandat)</string>
     <string name="install_non_play_store_ankidroid_recommended">Restaurează accesul la dosar (recomandat)</string>
     <string name="install_non_play_store_ankidroid">Restaurează accesul la dosar (avansat)</string>
     <string name="restore_data_from_backup">Restaurează dintr-o copie de rezervă .colpkg (avansat)</string>
     <string name="create_new_collection">Creați o colecție nouă</string>
-    <string name="new_unsafe_collection">Noua colecție va fi ștearsă de pe telefon dacă dezinstalați AnkiDroid</string>
+    <string name="new_unsafe_collection">Noua colecție va fi ștearsă de pe telefon dacă dezinstalați Ankrimento</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid necesită câteva permisiuni pentru a funcționa</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid funcționează cel mai bine cu aceste permisiuni</string>
+    <string name="permissions_screen_headline">Ankrimento necesită câteva permisiuni pentru a funcționa</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento funcționează cel mai bine cu aceste permisiuni</string>
     <string name="storage_access_title">Acces stocare</string>
     <string name="storage_access_summary">Salvează colecția într-un loc sigur care nu va fi șters dacă aplicația este dezinstalată</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Acces la toate fișierele</string>
@@ -173,7 +173,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Necesar pentru ca aplicația să funcționeze</string>
-    <string name="permission_required_message">Vă rugăm să acordați AnkiDroid permisiunea \'%s\' pentru a continua</string>
+    <string name="permission_required_message">Vă rugăm să acordați Ankrimento permisiunea \'%s\' pentru a continua</string>
     <!-- Multiple profile -->
     <string name="add_profile">Adăugare profil</string>
 </resources>

@@ -35,7 +35,7 @@
     <string name="username">Електронна пошта</string>
     <string name="password">Пароль</string>
     <string name="sign_up_description">Не маєте облікового запису AnkiWeb? Це безкоштовно!</string>
-    <string name="sign_up_not_affiliated">Примітка: AnkiWeb не афілійований з AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Примітка: AnkiWeb не афілійований з Ankrimento</string>
     <string name="sign_up">Створити обліковий запис</string>
     <string name="logged_as">Ви ввійшли як</string>
     <string name="reset_password">Відновити пароль</string>

@@ -413,4 +413,7 @@ internal val childHelpMenuItems =
             parentId = 4,
             action = OpenUrlResource(R.string.link_ankiweb_terms_and_conditions),
         ),
-    )
+    ).let { items ->
+        // No "send an exception report" where reports have nowhere to go (Ankrimento's build).
+        if (BuildConfig.ACRA_URL.isNotEmpty()) items else items.filterNot { it.id == 202L }.toTypedArray()
+    }

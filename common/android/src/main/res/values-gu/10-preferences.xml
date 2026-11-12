@@ -71,7 +71,7 @@
     <string name="card_browser_font_size" maxLength="41">કાર્ડ બ્રાઉઝર ફોન્ટ સ્કેલિંગ</string>
     <string name="card_browser_hide_media" maxLength="41">કાર્ડ બ્રાઉઝરમાં ફાઇલનામો દર્શાવો</string>
     <string name="card_browser_hide_media_summary">Display audio filenames in the card browser question/answer fields</string>
-    <string name="col_path" maxLength="41">AnkiDroid ડિરેક્ટરી</string>
+    <string name="col_path" maxLength="41">Ankrimento ડિરેક્ટરી</string>
     <string name="fullscreen_review" maxLength="41">પૂર્ણસ્ક્રીન મોડ</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">બંધ</string>
     <string name="full_screen_system">સિસ્ટમ બાર છુપાવો</string>
@@ -308,9 +308,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">જનરલ</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">શોધો</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">AnkiDroid ને બહેતર બનાવવામાં મદદ કરો!</string>
+    <string name="analytics_dialog_title">Ankrimento ને બહેતર બનાવવામાં મદદ કરો!</string>
     <string name="analytics_title" maxLength="41">સુવિધાનો ઉપયોગ શેર કરો</string>
-    <string name="analytics_summ">તમે વિકાસ ટીમને લોકો કઈ સુવિધાઓનો ઉપયોગ કરે છે તે જોવામાં મદદ કરીને AnkiDroid માં યોગદાન આપી શકો છો</string>
+    <string name="analytics_summ">તમે વિકાસ ટીમને લોકો કઈ સુવિધાઓનો ઉપયોગ કરે છે તે જોવામાં મદદ કરીને Ankrimento માં યોગદાન આપી શકો છો</string>
     <string name="note_editor_replace_newlines" maxLength="41">નવી લાઇનને HTML સાથે બદલો</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">\'જવાબ લખો\' પર ફોકસ કરો</string>
@@ -322,8 +322,8 @@
     <string name="about_contributors_description"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating, donating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">લાઇસન્સ</string>
-    <string name="license_description"><![CDATA[AnkiDroid is released under the <a href=\"%1$s\">GPL-3.0</a> and <a href=\"%2$s\">AGPL-3.0</a> licenses, with the source code available <a href=\"%3$s\">on GitHub</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
+    <string name="license_description"><![CDATA[Ankrimento is released under the <a href=\"%1$s\">GPL-3.0</a> and <a href=\"%2$s\">AGPL-3.0</a> licenses, with the source code available <a href=\"%3$s\">on GitHub</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
     <string name="donate_description"><![CDATA[તમે <a href=\"%1$s\">દાન</a> કરીને AnkiDroid ના વિકાસને સમર્થન આપી શકો છો. કોઈપણ રકમની ખૂબ પ્રશંસા કરવામાં આવે છે.
 ]]></string>
     <!-- Controls -->
@@ -360,7 +360,7 @@
     <string name="bindings_already_bound">પહેલેથી \'%s\' સાથે બંધાયેલ</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Experimental</string>
-    <string name="readtext_deprecation_warn">AnkiDroid has introduced a better TTS mechanism which is compatible with other Anki clients and includes more voices and improvements to language playback!\n\nPlease upgrade as soon as possible, as this setting will be removed soon</string>
+    <string name="readtext_deprecation_warn">Ankrimento has introduced a better TTS mechanism which is compatible with other Anki clients and includes more voices and improvements to language playback!\n\nPlease upgrade as soon as possible, as this setting will be removed soon</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">કૃપા કરીને નવા ટેક્સ્ટ ટુ સ્પીચ ફોર્મેટમાં અપગ્રેડ કરો</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -375,9 +375,9 @@
          #################################### Backup options ###################################
          ####################################################################################### -->
     <string name="pref__backups_help__summary"><![CDATA[
-        AnkiDroid periodically backs up your collection.
+        Ankrimento periodically backs up your collection.
         After backups are more than two days old,
-        AnkiDroid will start removing some of them to free up disk space.
+        Ankrimento will start removing some of them to free up disk space.
         <br><br>
         Note that media files are not backed up.
         To be safe, please periodically synchronize your collection, or back up exports of it.

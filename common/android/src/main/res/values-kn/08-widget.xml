@@ -25,8 +25,8 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="one">%d AnkiDroid ಕಾರ್ಡ್ ಬಾಕಿಯಿದೆ</item>
-        <item quantity="other">%d AnkiDroid ಕಾರ್ಡ್‌ಗಳ ಬಾಕಿಯಿದೆ</item>
+        <item quantity="one">%d Ankrimento ಕಾರ್ಡ್ ಬಾಕಿಯಿದೆ</item>
+        <item quantity="other">%d Ankrimento ಕಾರ್ಡ್‌ಗಳ ಬಾಕಿಯಿದೆ</item>
     </plurals>
     <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">ಆಂಚಿಡ್ರಾಯ್ಡ್ ಚಿಕ್ಕದಾಗಿದೆ</string>
     <plurals name="widget_cards_due">
@@ -37,7 +37,7 @@
         <item quantity="one">%d ನಿಮಿಷಗಳು ಉಳಿದಿವೆ</item>
         <item quantity="other">%d ನಿಮಿಷಗಳು ಉಳಿದಿವೆ</item>
     </plurals>
-    <string name="widget_add_note_button">ಹೊಸ AnkiDroid ಟಿಪ್ಪಣಿಯನ್ನು ಸೇರಿಸಿ</string>
+    <string name="widget_add_note_button">ಹೊಸ Ankrimento ಟಿಪ್ಪಣಿಯನ್ನು ಸೇರಿಸಿ</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">ಡೆಕ್ ಪಿಕರ್</string>
     <string name="card_analysis_extra_widget_description">ಕಾರ್ಡ್ ವಿಶ್ಲೇಷಣೆ</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

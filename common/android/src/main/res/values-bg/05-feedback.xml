@@ -27,9 +27,9 @@
     <string name="empty_string"></string>
     <string name="error_reporting_choice" maxLength="41">Режим за докладване на грешки</string>
     <string name="feedback_disclaimer">Опровержение: Ние не събираме никаква лична информация като Вашите имейл адреси, телефонни номер или IMEI на Вашия телефон. Ние събираме информация за Вашето устройство като производител, модел и версия на Android, както и естеството на докладвани грешки, за стъпките, които доведоха до тяхното настъпване.</string>
-    <string name="feedback_title">AnkiDroid Feedback</string>
+    <string name="feedback_title">Ankrimento Feedback</string>
     <string name="feedback_default_text">Моля, въведете вашата обратна информация, или информация за естеството на всички грешки, които съобщавате.</string>
-    <string name="feedback_auto_toast_text">AnkiDroid се натъкна на проблем; Докладът се изпраща на разработчиците&#8230;</string>
+    <string name="feedback_auto_toast_text">Ankrimento се натъкна на проблем; Докладът се изпраща на разработчиците&#8230;</string>
     <string name="feedback_for_manual_toast_text">An error report is being prepared for the developers&#8230;</string>
     <string name="feedback_report">Доклад</string>
     <string name="feedback_report_automatically">Автоматично изплащане на докладите за грешки</string>

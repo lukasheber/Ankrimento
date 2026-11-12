@@ -35,7 +35,7 @@
     <string name="username">ელფოსტის მისამართი</string>
     <string name="password">პაროლი</string>
     <string name="sign_up_description">არ გაქვთ AnkiWeb-ის ანგარიში? უფასოა!</string>
-    <string name="sign_up_not_affiliated">შენიშვნა: AnkiWeb არ თანამშრომლობს AnkiDroid-თან</string>
+    <string name="sign_up_not_affiliated">შენიშვნა: AnkiWeb არ თანამშრომლობს Ankrimento-თან</string>
     <string name="sign_up">რეგისტრაცია</string>
     <string name="logged_as">შესული ხართ როგორც</string>
     <string name="reset_password">პაროლის აღდგენა</string>

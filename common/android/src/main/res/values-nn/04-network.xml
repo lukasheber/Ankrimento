@@ -35,7 +35,7 @@
     <string name="username">E-postadresse</string>
     <string name="password">Passord</string>
     <string name="sign_up_description">Har du ingen AnkiWeb-konto? Det er gratis!</string>
-    <string name="sign_up_not_affiliated">Merk: AnkiWeb er ikke tilknyttet AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Merk: AnkiWeb er ikke tilknyttet Ankrimento</string>
     <string name="sign_up">Registrer deg</string>
     <string name="logged_as">Logga inn som</string>
     <string name="reset_password">Tilbakestill passord</string>

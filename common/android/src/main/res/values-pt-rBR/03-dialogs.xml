@@ -39,12 +39,12 @@
         <item quantity="other">%d resetar cards</item>
     </plurals>
     <string name="answering_error_title">Erro de banco de dados</string>
-    <string name="answering_error_message">Ocorreu um erro ao gravar na coleção. Isso pode estar relacionado a um banco de dados corrompido ou espaço insuficiente no disco.\n\nSe isso ocorrer frequentemente, tente verificar o banco de dados, reparar a coleção ou restaurá-la de um backup. Clique em \'Opções\' para isso.\n\nEm todo caso, isso pode ser um bug do AnkiDroid; relate o erro para que possamos verificar o problema.</string>
+    <string name="answering_error_message">Ocorreu um erro ao gravar na coleção. Isso pode estar relacionado a um banco de dados corrompido ou espaço insuficiente no disco.\n\nSe isso ocorrer frequentemente, tente verificar o banco de dados, reparar a coleção ou restaurá-la de um backup. Clique em \'Opções\' para isso.\n\nEm todo caso, isso pode ser um bug do Ankrimento; relate o erro para que possamos verificar o problema.</string>
     <string name="answering_error_report">Reportar erro</string>
-    <string name="storage_full_message">Não há espaço de armazenamento livre suficiente para abrir o AnkiDroid. Libere algum espaço para continuar.</string>
+    <string name="storage_full_message">Não há espaço de armazenamento livre suficiente para abrir o Ankrimento. Libere algum espaço para continuar.</string>
     <string name="repair_deck_dialog">Você realmente deseja tentar reparar o banco de dados?\n\nAntes de iniciar a tentativa, uma cópia será criada na subpasta \"%s\".</string>
     <string name="intent_aedict_empty">Categoria \'padrão\' está vazia</string>
-    <string name="intent_aedict_category">Para adicionar cartões ao AnkiDroid, remova todas as categorias das notas ou adicione uma com o nome \'default\'</string>
+    <string name="intent_aedict_category">Para adicionar cartões ao Ankrimento, remova todas as categorias das notas ou adicione uma com o nome \'default\'</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Revisar cards esquecidos nos últimos x dias:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Armazenamento cheio</string>
     <string name="storage_almost_full_title">Armazenamento quase cheio</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Sem espaço</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid precisa de %s de espaço de armazenamento livre para continuar. Por favor, limpe algum espaço</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento precisa de %s de espaço de armazenamento livre para continuar. Por favor, limpe algum espaço</string>
     <string name="restore_backup_title">Restaurar backup?</string>
     <string name="restore_backup">A sua coleção será substituída por uma cópia mais antiga. Qualquer progresso não salvo será perdido.</string>
     <string name="restore_backup_choose_another">Procurar</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Banco de dados bloqueado</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Versão do banco de dados incompatível</string>
-    <string name="incompatible_database_version_summary">O banco de dados é uma versão mais avançada do que esta versão do AnkiDroid pode trabalhar. Atualize o AnkiDroid ou faça o downgrade do banco de dados para abri-lo\n\nVersão Suportada: %1$d\nVersão do banco de dados: %2$d\n\nAs seguintes opções de restauração substituirão sua coleção atual, possivelmente com uma versão compatível do banco de dados:</string>
+    <string name="incompatible_database_version_summary">O banco de dados é uma versão mais avançada do que esta versão do Ankrimento pode trabalhar. Atualize o Ankrimento ou faça o downgrade do banco de dados para abri-lo\n\nVersão Suportada: %1$d\nVersão do banco de dados: %2$d\n\nAs seguintes opções de restauração substituirão sua coleção atual, possivelmente com uma versão compatível do banco de dados:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Imagem de fundo aplicada</string>
     <string name="background_image_removed">Imagem de fundo removida</string>

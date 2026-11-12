@@ -41,12 +41,12 @@
         <item quantity="other">%d kartica resetirano</item>
     </plurals>
     <string name="answering_error_title">Greška baze podataka</string>
-    <string name="answering_error_message">Pisanje u kolekciju nije uspjelo. Baza podataka mogla bi biti neispravna ili možda nema dovoljno slobodnog prostora na disku.\n\nAko se ovo češće događa, provjerite bazu podataka, popravite kolekciju ili je obnovite iz sigurnosne kopije. Pritisnite \"opcije\" za to.\n\Ili bi mogla biti programska greška u AnkiDroidu; prijavite grešku kako bismo je mogli provjeriti.</string>
+    <string name="answering_error_message">Pisanje u kolekciju nije uspjelo. Baza podataka mogla bi biti neispravna ili možda nema dovoljno slobodnog prostora na disku.\n\nAko se ovo češće događa, provjerite bazu podataka, popravite kolekciju ili je obnovite iz sigurnosne kopije. Pritisnite \"opcije\" za to.\n\Ili bi mogla biti programska greška u Ankrimentou; prijavite grešku kako bismo je mogli provjeriti.</string>
     <string name="answering_error_report">Prijavi grešku</string>
-    <string name="storage_full_message">Nema dovoljno slobodnog prostora za pohranu da se otvori AnkiDroid. Oslobodite prostora kako biste nastavili.</string>
+    <string name="storage_full_message">Nema dovoljno slobodnog prostora za pohranu da se otvori Ankrimento. Oslobodite prostora kako biste nastavili.</string>
     <string name="repair_deck_dialog">Želite li zaista opraviti bazu podataka?\n\nPrije započinjanja pokušaja, kopija će biti stvorena u podmapi “%s”.</string>
     <string name="intent_aedict_empty">Kategorija “zadano” je prazna</string>
-    <string name="intent_aedict_category">Uklonite sve kategorije notesa kako biste dodali kartice u AnkiDroid ili dodajte jednu s nazivom “default”</string>
+    <string name="intent_aedict_category">Uklonite sve kategorije notesa kako biste dodali kartice u Ankrimento ili dodajte jednu s nazivom “default”</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Kartice ponavljanja zaboravljene u zadnjih x dana:</string>
@@ -56,7 +56,7 @@
     <string name="storage_full_title">Pohrana je puna</string>
     <string name="storage_almost_full_title">Pohrana je skoro puna</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Nema mjesta</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid zahtijeva %s slobodnog prostora za pohranu kako bi nastavio. Očistite malo prostora</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento zahtijeva %s slobodnog prostora za pohranu kako bi nastavio. Očistite malo prostora</string>
     <string name="restore_backup_title">Obnoviti sigurnosnu kopiju?</string>
     <string name="restore_backup">Vaša kolekcija će biti zamijenjena starijom kopijom. Izgubit ćete sav napredak koji nije spremljen.</string>
     <string name="restore_backup_choose_another">Odaberi drugi</string>
@@ -120,9 +120,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Baza podataka zaključana</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Nekompatibilna verzija baze podataka</string>
-    <string name="incompatible_database_version_summary">Verzija baze podataka je naprednija od one s kojom trenutna verzija AnkiDroida može rukovati. Ažurirajte AnkiDroid ili smanjite verziju baze podataka kako biste je otvorili\n\nPodržana verzija:%1$d\nVerzija baze podataka: %2$d\n\nSljedeće postavke za obnovu će pregaziti vašu trenutnu kolekciju, potencijalno s kompatibilnom verzijom baze podatka:</string>
+    <string name="incompatible_database_version_summary">Verzija baze podataka je naprednija od one s kojom trenutna verzija Ankrimentoa može rukovati. Ažurirajte Ankrimento ili smanjite verziju baze podataka kako biste je otvorili\n\nPodržana verzija:%1$d\nVerzija baze podataka: %2$d\n\nSljedeće postavke za obnovu će pregaziti vašu trenutnu kolekciju, potencijalno s kompatibilnom verzijom baze podatka:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Pozadinska slika primijenjena</string>
     <string name="background_image_removed">Pozadinska slika uklonjena</string>

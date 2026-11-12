@@ -40,7 +40,7 @@
     <string name="backup_repair_deck_progress">Acontzende sa base de datos&#8230;</string>
     <string name="backup_invalid_file_error">Su documentu de còpia de seguresa ischertadu non fiat vàlidu</string>
     <string name="backup_restore_select_title">Ischerta sa còpia de seguresa de ripristinare</string>
-    <string name="backup_restore_no_backups">Peruna còpia de seguresa a disponimentu in custu dispositivu. Si nde tenes in s\'elaboradore de iscrivania tuo còpia·las manualmente in sa cartella de AnkiDroid tua.</string>
+    <string name="backup_restore_no_backups">Peruna còpia de seguresa a disponimentu in custu dispositivu. Si nde tenes in s\'elaboradore de iscrivania tuo còpia·las manualmente in sa cartella de Ankrimento tua.</string>
     <string name="open_collection_failed_title">Colletzione no aberta</string>
     <string name="corrupt_db_message">Sa colletzione tua s\'est corrùmpia.\n
                                                 \n

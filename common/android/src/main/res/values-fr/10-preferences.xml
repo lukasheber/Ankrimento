@@ -71,7 +71,7 @@
     <string name="card_browser_font_size" maxLength="41">Échelle de la police de l’explorateur</string>
     <string name="card_browser_hide_media" maxLength="41">Afficher les noms de fichiers dans le navigateur de cartes</string>
     <string name="card_browser_hide_media_summary">Afficher le nom des fichiers audio dans les champs questions/ réponses du navigateur de cartes.</string>
-    <string name="col_path" maxLength="41">Répertoire de AnkiDroid</string>
+    <string name="col_path" maxLength="41">Répertoire de Ankrimento</string>
     <string name="fullscreen_review" maxLength="41">Mode plein écran</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">Inactif</string>
     <string name="full_screen_system">Masquer les barres système</string>
@@ -308,9 +308,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Général</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Recherche</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">Aidez à améliorer AnkiDroid !</string>
+    <string name="analytics_dialog_title">Aidez à améliorer Ankrimento !</string>
     <string name="analytics_title" maxLength="41">Partager l\'utilisation de la fonctionnalité</string>
-    <string name="analytics_summ">Vous pouvez contribuer à AnkiDroid en aidant l\'équipe de développement à voir quelles fonctionnalités les gens utilisent</string>
+    <string name="analytics_summ">Vous pouvez contribuer à Ankrimento en aidant l\'équipe de développement à voir quelles fonctionnalités les gens utilisent</string>
     <string name="note_editor_replace_newlines" maxLength="41">Remplacer les nouvelles lignes par du HTML</string>
     <string name="note_editor_replace_newlines_summ">Dans l\'éditeur de notes, convertissez toutes les instances de &lt;br&gt; en nouvelles lignes lors de l\'édition d\'une carte.</string>
     <string name="type_in_answer_focus" maxLength="41">Mettre en évidence « Saisir la réponse »</string>
@@ -322,8 +322,8 @@
     <string name="about_contributors_description"><![CDATA[Ce sont nos <a href=\"%1$s\">contributeurs</a> géniaux. Vous pouvez aussi aider AnkiDroid en programmant, traduisant, donnant et <a href=\"%2$s\">plus</a> !]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">Licence</string>
-    <string name="license_description"><![CDATA[AnkiDroid est publié sous les licences <a href=\"%1$s\">GPL-3.0</a> et <a href=\"%2$s\">AGPL-3.0</a>, avec le code source disponible <a href=\"%3$s\">sur GitHub</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid utilise également des bibliothèques et des icônes tierces, sous l\'autorisation de différentes <a href=\"%1$s\">licences</a> open source. ]]></string>
+    <string name="license_description"><![CDATA[Ankrimento est publié sous les licences <a href=\"%1$s\">GPL-3.0</a> et <a href=\"%2$s\">AGPL-3.0</a>, avec le code source disponible <a href=\"%3$s\">sur GitHub</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento utilise également des bibliothèques et des icônes tierces, sous l\'autorisation de différentes <a href=\"%1$s\">licences</a> open source. ]]></string>
     <string name="donate_description"><![CDATA[Vous pouvez supporter le développement de AnkiDroid en <a href=\"%1$s\">faisant un don</a>. N\'importe quel montant est très fortement apprécié.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">Ajouter un geste</string>
@@ -359,7 +359,7 @@
     <string name="bindings_already_bound">Déjà lié à %s</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Expérimental</string>
-    <string name="readtext_deprecation_warn">AnkiDroid a introduit un meilleur mécanisme de synthèse vocale qui est compatible avec d\'autres clients Anki et inclut plus de voix et des améliorations à la lecture de la langue !\n\nVeuillez mettre à jour dès que possible, car ce paramètre sera bientôt supprimé</string>
+    <string name="readtext_deprecation_warn">Ankrimento a introduit un meilleur mécanisme de synthèse vocale qui est compatible avec d\'autres clients Anki et inclut plus de voix et des améliorations à la lecture de la langue !\n\nVeuillez mettre à jour dès que possible, car ce paramètre sera bientôt supprimé</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Veuillez mettre à jour vers le nouveau format de synthèse vocale</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Autoriser les modèles à enregistrer de l\'audio</string>
     <string name="template_is_trying_to_record_audio">Ce modèle essaie d\'enregistrer de l\'audio</string>
@@ -374,9 +374,9 @@ Elles ne sont pas destinées à la plupart des utilisateurs et restent en anglai
     <!-- #######################################################################################
          #################################### Backup options ###################################
          ####################################################################################### -->
-    <string name="pref__backups_help__summary"><![CDATA[        AnkiDroid sauvegarde régulièrement vos collections.
+    <string name="pref__backups_help__summary"><![CDATA[        Ankrimento sauvegarde régulièrement vos collections.
         Après que les sauvegardes sont âgées de plus de deux jours,
-        AnkiDroid va supprimer quelques-un pour libérer de l\'espace sur le disque.
+        Ankrimento va supprimer quelques-un pour libérer de l\'espace sur le disque.
         <br><br>
         Veuillez noter que les fichiers médias ne sont pas sauvegardées.
         Pour plus de sécurité, veuillez synchroniser périodiquement votre collection, ou sauvegarder les exports de celles-ci.

@@ -35,7 +35,7 @@
     <string name="username">Email cím</string>
     <string name="password">Jelszó</string>
     <string name="sign_up_description">Nincs AnkiWeb fiókod? Ingyenes, meg minden!</string>
-    <string name="sign_up_not_affiliated">Az AnkiWeb nem áll kapcsolatban az AnkiDroiddal</string>
+    <string name="sign_up_not_affiliated">Az AnkiWeb nem áll kapcsolatban az Ankrimentodal</string>
     <string name="sign_up">Regisztráció</string>
     <string name="logged_as">Bejelentkezve mint</string>
     <string name="reset_password">Jelszó visszaállítása</string>

@@ -39,12 +39,12 @@
         <item quantity="other">%d mga card ang na-reset</item>
     </plurals>
     <string name="answering_error_title">Database error</string>
-    <string name="answering_error_message">Ang pagsulat sa koleksyon ay nabigo. Maaaring sira ang database o di kaya`y hindi sapat ang bakanteng space sa disk. \n\n Kung ito ay nangyayari ng madalas, subukang tignan ang database, ayusin ang koleksyon o ibalik ito mula sa isang backup. Pindutin ang \"mga opsyon\" para diyan. \n\Maaaring ito rin ay isang AnkiDroid bug; i-ulat ang mali upang maiayos namin ito.</string>
+    <string name="answering_error_message">Ang pagsulat sa koleksyon ay nabigo. Maaaring sira ang database o di kaya`y hindi sapat ang bakanteng space sa disk. \n\n Kung ito ay nangyayari ng madalas, subukang tignan ang database, ayusin ang koleksyon o ibalik ito mula sa isang backup. Pindutin ang \"mga opsyon\" para diyan. \n\Maaaring ito rin ay isang Ankrimento bug; i-ulat ang mali upang maiayos namin ito.</string>
     <string name="answering_error_report">Maling ulat</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">Gusto mo ba talagang subukan ang pag-aayos ng database? \n\n Bago mo simulan ang pagtatangka, isang kopya ang lilikhain sa mga subfolder \"%s\".</string>
     <string name="intent_aedict_empty">Ang kategoryang \"default\" ay walng laman</string>
-    <string name="intent_aedict_category">Upang magdagdag ng mga kard sa AnkiDroid alisin lahat ng mga kategorya ng Notepad o magdagdag ng isa na pinangalanang \"default\"</string>
+    <string name="intent_aedict_category">Upang magdagdag ng mga kard sa Ankrimento alisin lahat ng mga kategorya ng Notepad o magdagdag ng isa na pinangalanang \"default\"</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Ang mga review kard na nakalimutan sa huling x araw:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Puno na ang storage</string>
     <string name="storage_almost_full_title">Malapit nang mapuno ang storage</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Walang espasyo</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Kailangan ng AnkiDroid ng %s na bakanteng storage space para makapagpatuloy. Mangyaring magbukas pa ng space.</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Kailangan ng Ankrimento ng %s na bakanteng storage space para makapagpatuloy. Mangyaring magbukas pa ng space.</string>
     <string name="restore_backup_title">Ibalik ang backup?</string>
     <string name="restore_backup">Ang iyong koleksyon ay mapapalitan ng mas lumang kopya. Ang anumang pag-unlad na hindi na - isave ay mawawala.</string>
     <string name="restore_backup_choose_another">Pumili ng iba pa</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Nakakandado ang Database</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Hindi Angkop Ang Bersyon ng Database</string>
-    <string name="incompatible_database_version_summary">Mas abante ang database na ito kumpara sa bersyong kayang gamitin ng AnkiDroid. I-upgrade o i-downgrade ang database ng AnkiDroid upang mabuksan ito\n\nBersyon na suportado: %1$d\nBersyon ng database: %2$d\n\nAng sumusunod na mga opsyon sa pagbalik ay posibleng sapawan ang kasalukuyan mong koleksyon ng isang angkop na bersyon ng database.</string>
+    <string name="incompatible_database_version_summary">Mas abante ang database na ito kumpara sa bersyong kayang gamitin ng Ankrimento. I-upgrade o i-downgrade ang database ng Ankrimento upang mabuksan ito\n\nBersyon na suportado: %1$d\nBersyon ng database: %2$d\n\nAng sumusunod na mga opsyon sa pagbalik ay posibleng sapawan ang kasalukuyan mong koleksyon ng isang angkop na bersyon ng database.</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Inapply ang larawan sa background</string>
     <string name="background_image_removed">Tinanggal ang larawan sa background</string>

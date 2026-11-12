@@ -47,12 +47,13 @@ class AnkiDroidUsageAnalyticsTest : RobolectricTest() {
     }
 
     @Test
-    fun `a preference write from elsewhere rebuilds the client`() {
+    fun `a preference write cannot turn analytics on while there is no property to report to`() {
+        // Ankrimento's build has no analytics property (ga_trackingId is empty): the preference is ignored.
         withStubbedRebuild {
             getPreferences().edit(commit = true) { putBoolean(AnkiDroidUsageAnalytics.PREF_ANALYTICS_OPTIN, true) }
 
-            assertThat(AnkiDroidUsageAnalytics.isEnabled, equalTo(true))
-            verify(exactly = 1) { AnkiDroidUsageAnalytics.reinitialize(any()) }
+            assertThat(AnkiDroidUsageAnalytics.isEnabled, equalTo(false))
+            verify(exactly = 0) { AnkiDroidUsageAnalytics.reinitialize(any()) }
         }
     }
 

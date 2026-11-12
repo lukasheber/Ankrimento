@@ -71,7 +71,7 @@
     <string name="card_browser_font_size" maxLength="41">Pagsusulat ng font ng browser ng card</string>
     <string name="card_browser_hide_media" maxLength="41">Ipakita ang filename sa card browser</string>
     <string name="card_browser_hide_media_summary">Display audio filenames in the card browser question/answer fields</string>
-    <string name="col_path" maxLength="41">AnkiDroid directory</string>
+    <string name="col_path" maxLength="41">Ankrimento directory</string>
     <string name="fullscreen_review" maxLength="41">Fullscreen mode</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">Off</string>
     <string name="full_screen_system">Itago ang mga bar ng system</string>
@@ -308,9 +308,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Pangkalahatan</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Paghahanap</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">Tulungang pabutihin pa ang AnkiDroid!</string>
+    <string name="analytics_dialog_title">Tulungang pabutihin pa ang Ankrimento!</string>
     <string name="analytics_title" maxLength="41">Ibahagi ang paggamit ng mga katangian</string>
-    <string name="analytics_summ">Maaari ka mag-ambag sa AnkiDroid sa pagtulong sa development team na makita ang mga katangiang madalas ginagamit ng mga tao</string>
+    <string name="analytics_summ">Maaari ka mag-ambag sa Ankrimento sa pagtulong sa development team na makita ang mga katangiang madalas ginagamit ng mga tao</string>
     <string name="note_editor_replace_newlines" maxLength="41">Palitan ang mga newlines ng HTML</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">Tampulan ang \'i-type ang sagot\'</string>
@@ -322,8 +322,8 @@
     <string name="about_contributors_description"><![CDATA[Ito ang mga astig naming mga <a href=\"%1$s\">nag-ambag</a>. Maaari ka ring tumulong sa AnkiDroid sa pag-program, pagsalin, paghandog <a href=\"%2$s\">at iba pa</a>!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">Lisensya</string>
-    <string name="license_description"><![CDATA[Ang AnkiDroid ay inilabas sa ilalim ng <a href=\"%1$s\">GPL-3.0</a> at <a href=\"%2$s\">AGPL-3.0</a> na mga lisensya, kung saan ang mga source code nito ay mahahanap <a href=\"%3$s\">sa GitHub</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
+    <string name="license_description"><![CDATA[Ang Ankrimento ay inilabas sa ilalim ng <a href=\"%1$s\">GPL-3.0</a> at <a href=\"%2$s\">AGPL-3.0</a> na mga lisensya, kung saan ang mga source code nito ay mahahanap <a href=\"%3$s\">sa GitHub</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
     <string name="donate_description"><![CDATA[Maaari mong suportahan ang pag-develop sa AnkiDroid sa pamamagitan ng <a href=\"%1$s\">paghahandog</a>. Lubos naming ipinapasalamat ang anumang halaga.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">Magdagdag ng gesture</string>
@@ -359,7 +359,7 @@
     <string name="bindings_already_bound">Nakakabit na sa \'%s\'</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Eksperimental</string>
-    <string name="readtext_deprecation_warn">Sinimulan ng AnkiDroid ang mas pinagaling na mekanismo sa TTS kung saan ito ay gagana sa iba\'t ibang kliyente ng Anki at mayroon itong mas maraming boses at mas pinagaling na playback ng wika! Mangyaring mag-upgrade sa lalong madaling panahon, dahil mawawal na ang setting na ito.</string>
+    <string name="readtext_deprecation_warn">Sinimulan ng Ankrimento ang mas pinagaling na mekanismo sa TTS kung saan ito ay gagana sa iba\'t ibang kliyente ng Anki at mayroon itong mas maraming boses at mas pinagaling na playback ng wika! Mangyaring mag-upgrade sa lalong madaling panahon, dahil mawawal na ang setting na ito.</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Mangyaring mag-upgrade sa bagong text to speech na format</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -373,9 +373,9 @@
     <!-- #######################################################################################
          #################################### Backup options ###################################
          ####################################################################################### -->
-    <string name="pref__backups_help__summary"><![CDATA[        Pana-panahong bina-backup ng AnkiDroid ang iyong koleksyon.
+    <string name="pref__backups_help__summary"><![CDATA[        Pana-panahong bina-backup ng Ankrimento ang iyong koleksyon.
         Matapos lumagpas ng dalawang araw ang ilan sa mga backup,
-        Dahan-dahang buburahin ng AnkiDroid ang mga ito para lumaki ang iyong space.
+        Dahan-dahang buburahin ng Ankrimento ang mga ito para lumaki ang iyong space.
         <br><br>
         Tandaan na ang mga media file ay hindi binaback-up
         Para sigurado, dalasan ang pag-sync sa iyong koleksyon, o gumawa ng mga export nito.

@@ -79,12 +79,12 @@
     <string name="menu_disable_voice_playback">목소리 재생 끄기</string>
     <string name="menu_create_backup" maxLength="28">백업 생성</string>
     <string name="new_dynamic_deck">필터링된 덱 만들기</string>
-    <string name="directory_inaccessible">AnkiDroid 폴더에 접근할 수 없습니다</string>
+    <string name="directory_inaccessible">Ankrimento 폴더에 접근할 수 없습니다</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">계속하기 위해서는 AnkiDroid에 \'저장소\'권한이 필요합니다.</string>
+    <string name="startup_no_storage_permission">계속하기 위해서는 Ankrimento에 \'저장소\'권한이 필요합니다.</string>
     <string name="rebuild_filtered_deck">필터링된 덱을 재구성하는 중&#8230;</string>
     <string name="empty_cram_label" maxLength="28">비우기</string>
     <string name="create_subdeck">하위 덱 만들기</string>
@@ -119,33 +119,33 @@
     <string name="card_template_editor_save_error">카드 템플릿 변경 사항을 저장할 수 없습니다. %s</string>
     <string name="template_for_current_card_deleted">현재 카드의 카드 유형은 삭제되었습니다.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">AnkiDroid 데이터베이스 읽고 쓰기</string>
+    <string name="read_write_permission_label">Ankrimento 데이터베이스 읽고 쓰기</string>
     <string name="read_write_permission_description">기존의 노트, 카드, 노트 유형, 덱에 접근하여 새로운 항목 생성하기</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Anki에서 찾기</string>
     <string name="context_menu_anki_card_label">Anki 카드 추가</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">컬렉션을 합칠 수 없습니다.\n어떤 컬렉션을 유지하시겠습니까?</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">AnkiDroid의 컬렉션을 AnkiWeb의 컬렉션으로 덮어쓰시겠습니까?</string>
-    <string name="sync_conflict_local_confirm_new">AnkiWeb의 컬렉션을 AnkiDroid의 컬렉션으로 덮어쓰시겠습니까?</string>
+    <string name="sync_conflict_remote_confirm_new">Ankrimento의 컬렉션을 AnkiWeb의 컬렉션으로 덮어쓰시겠습니까?</string>
+    <string name="sync_conflict_local_confirm_new">AnkiWeb의 컬렉션을 Ankrimento의 컬렉션으로 덮어쓰시겠습니까?</string>
     <string name="sync_conflict_title_new">유지할 컬렉션 선택</string>
     <string name="sync_conflict_replace_title">컬렉션을 덮어쓰는 중&#8230;</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">%s 파일을 쓰거나 생성할 수 없습니다.</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">접근할 수 없는 컬렉션</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">플레이 스토어 정책 변경으로 AnkiDroid가 삭제된 후에는 저희가 컬렉션에 접근할 수 없습니다.\n\n데이터는 안전하게 저장되었으며 복구할 수 있습니다. 데이터는 다음 위치에 저장되어 있습니다 \n%s\n\n복구하려면 아래 옵션을 선택하세요:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">안드로이드에서 앱 비활성화로 인해 AnkiDroid의 %1$s 권한을 제거했습니다.\n\n데이터는 안전하게 저장되었으며 복구 가능합니다. 데이터는 다음 위치에 저장되어 있습니다.\n%2$s\n\n데이터를 복구하려면 아래 옵션을 선택하세요.</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">플레이 스토어 정책 변경으로 Ankrimento가 삭제된 후에는 저희가 컬렉션에 접근할 수 없습니다.\n\n데이터는 안전하게 저장되었으며 복구할 수 있습니다. 데이터는 다음 위치에 저장되어 있습니다 \n%s\n\n복구하려면 아래 옵션을 선택하세요:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">안드로이드에서 앱 비활성화로 인해 Ankrimento의 %1$s 권한을 제거했습니다.\n\n데이터는 안전하게 저장되었으며 복구 가능합니다. 데이터는 다음 위치에 저장되어 있습니다.\n%2$s\n\n데이터를 복구하려면 아래 옵션을 선택하세요.</string>
     <string name="restore_data_from_ankiweb">AnkiWeb에서 복구하기(권장)</string>
     <string name="install_non_play_store_ankidroid_recommended">폴더 접근 권한 복구 (권장)</string>
     <string name="install_non_play_store_ankidroid">폴더 접근 권한 복구하기 (고급)</string>
     <string name="restore_data_from_backup">.colpkg 백업에서 복구하기 (고급)</string>
     <string name="create_new_collection">새 컬렉션 생성하기</string>
-    <string name="new_unsafe_collection">AnkiDroid를 삭제할 경우 새 컬렉션이 기기에서 삭제됩니다.</string>
+    <string name="new_unsafe_collection">Ankrimento를 삭제할 경우 새 컬렉션이 기기에서 삭제됩니다.</string>
     <!-- Permissions screen -->
     <string name="permissions_screen_headline">작업을 위해 AnkiDroi에 다음 권한이 필요합니다</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid는 이러한 권한이 있을 때 가장 잘 작동합니다</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento는 이러한 권한이 있을 때 가장 잘 작동합니다</string>
     <string name="storage_access_title">저장소에 접근하기</string>
     <string name="storage_access_summary">앱이 삭제될 경우 컬렉션이 함께 삭제되지 않도록 안전한 공간에 컬렉션을 저장해 주세요.</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">모든 파일 접근</string>
@@ -163,7 +163,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">인터넷</string>
     <string name="permission_access_summary">앱이 작동하려면 필요합니다</string>
-    <string name="permission_required_message">계속하려면 AnkiDroid의 \'%s\' 권한을 허용해주세요</string>
+    <string name="permission_required_message">계속하려면 Ankrimento의 \'%s\' 권한을 허용해주세요</string>
     <!-- Multiple profile -->
     <string name="add_profile">프로필 추가</string>
 </resources>

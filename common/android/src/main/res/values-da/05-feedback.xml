@@ -27,9 +27,9 @@
     <string name="empty_string"></string>
     <string name="error_reporting_choice" maxLength="41">Fejlrapporterings tilstand</string>
     <string name="feedback_disclaimer">Ansvarsfraskrivelse: Vi indsamler ingen personlige oplysninger såsom din e-mailadresse, telefonnummer eller din telefons IMEI. Vi indsamler nogle oplysninger om din enhed, såsom producent, model og Android-version, samt arten af ​​de rapporterede fejl og de trin, der førte til, at de opstod.</string>
-    <string name="feedback_title">AnkiDroid Feedback</string>
+    <string name="feedback_title">Ankrimento Feedback</string>
     <string name="feedback_default_text">Angiv venligst din feedback eller oplysninger om arten af eventuelle fejl du rapporterer.</string>
-    <string name="feedback_auto_toast_text">AnkiDroid er stødt på et problem; en rapport bliver sendt til udviklerne&#8230;</string>
+    <string name="feedback_auto_toast_text">Ankrimento er stødt på et problem; en rapport bliver sendt til udviklerne&#8230;</string>
     <string name="feedback_for_manual_toast_text">En fejlrapport udarbejdes til udviklerne&#8230;</string>
     <string name="feedback_report">Rapporter</string>
     <string name="feedback_report_automatically">Send fejlmeldinger automatisk</string>

@@ -35,7 +35,7 @@
     <string name="username">ئېلخەت ئادرېس</string>
     <string name="password">ئىم</string>
     <string name="sign_up_description">AnkiWeb ھېساباتىڭىز يوقمۇ؟ ھەقسىز!</string>
-    <string name="sign_up_not_affiliated">ئەسكەرتىش: AnkiWeb تورى AnkiDroid قا تەۋە ئەمەس</string>
+    <string name="sign_up_not_affiliated">ئەسكەرتىش: AnkiWeb تورى Ankrimento قا تەۋە ئەمەس</string>
     <string name="sign_up">تىزىملىتىڭ</string>
     <string name="logged_as">تىزىمغا كىرگىنى</string>
     <string name="reset_password">ئىمنى ئەسلىگە قايتۇر</string>

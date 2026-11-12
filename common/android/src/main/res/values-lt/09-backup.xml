@@ -40,7 +40,7 @@
     <string name="backup_repair_deck_progress">Duomenų bazė taisoma&#8230;</string>
     <string name="backup_invalid_file_error">Pasirinktos atsarginės kopijos failas neveikia</string>
     <string name="backup_restore_select_title">Norėdami atkurti, pasirinkite atsarginę kopiją</string>
-    <string name="backup_restore_no_backups">Šiame įrenginyje nėra jokių atsarginių kopijų. Jei turite atsarginių kopijų kompiuteryje, nukopijuokite jas rankiniu būdu į „AnkiDroid“ katalogą.</string>
+    <string name="backup_restore_no_backups">Šiame įrenginyje nėra jokių atsarginių kopijų. Jei turite atsarginių kopijų kompiuteryje, nukopijuokite jas rankiniu būdu į „Ankrimento“ katalogą.</string>
     <string name="open_collection_failed_title">Neatidaryta kolekcija</string>
     <string name="corrupt_db_message">Jūsų kolekcija yra sugadinta.\n\nNorėdami atkurti ją iš atsarginės kopijos, spauskite „Parinktys“, o jei tai nepadeda, tuomet peržiūrėkite toliau pateiktus nurodymus, kaip galite duomenų bazė pataisyti rankiniu būdu:\n%1$s</string>
     <string name="access_collection_failed_message">Jungiantis prie jūsų kolekcijos įvyko klaida. Ją galėjo sukelti nepavojingas pranešimas apie klaidą arba problema gali būti susijusi su pačia kolekcija. \n\nPabandykite patikrinti duomenų bazę arba atkurti ją iš atsarginės kopijos, paspaudę mygtuką „Parinktys“. Jei šį pranešimą rodys ir toliau, prašome išsiųsti pranešimą apie klaidą:\n%1$s</string>

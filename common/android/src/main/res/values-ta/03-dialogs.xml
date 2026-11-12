@@ -39,12 +39,12 @@
         <item quantity="other">%d கார்டுகள் மீட்டமைக்கப்பட்டது</item>
     </plurals>
     <string name="answering_error_title">தரவுத்தள பிழை</string>
-    <string name="answering_error_message">தொகுப்பிற்கு எழுதுவது தோல்வியடைந்தது. தரவுத்தளம் சிதைந்திருக்கலாம் அல்லது வட்டில் போதுமான காலி இடம் இல்லாமல் இருக்கலாம்.\n\nஇது அடிக்கடி நடந்தால், தரவுத்தளத்தைச் சரிபார்த்து, சேகரிப்பைச் சரிசெய்து அல்லது காப்புப்பிரதியிலிருந்து மீட்டமைக்க முயற்சிக்கவும். அதற்கான \"விருப்பங்களை\" தொடவும்.\n\அல்லது அது AnkiDroid பிழையாகவும் இருக்கலாம்; தயவு செய்து பிழையைப் புகாரளிக்கவும், இதன் மூலம் நாங்கள் இதைச் சரிபார்க்க முடியும்.</string>
+    <string name="answering_error_message">தொகுப்பிற்கு எழுதுவது தோல்வியடைந்தது. தரவுத்தளம் சிதைந்திருக்கலாம் அல்லது வட்டில் போதுமான காலி இடம் இல்லாமல் இருக்கலாம்.\n\nஇது அடிக்கடி நடந்தால், தரவுத்தளத்தைச் சரிபார்த்து, சேகரிப்பைச் சரிசெய்து அல்லது காப்புப்பிரதியிலிருந்து மீட்டமைக்க முயற்சிக்கவும். அதற்கான \"விருப்பங்களை\" தொடவும்.\n\அல்லது அது Ankrimento பிழையாகவும் இருக்கலாம்; தயவு செய்து பிழையைப் புகாரளிக்கவும், இதன் மூலம் நாங்கள் இதைச் சரிபார்க்க முடியும்.</string>
     <string name="answering_error_report">பிழையைப் புகாரளிக்கவும்</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">நீங்கள் உண்மையில் தரவுத்தளத்தைச் சரிசெய்ய முயற்சிக்க விரும்புகிறீர்களா?\n\nமுயற்சியைத் தொடங்கும் முன், \"%s\" என்ற துணைக் கோப்புறையில் ஒரு நகல் உருவாக்கப்படும்.</string>
     <string name="intent_aedict_empty">\"இயல்புநிலை\" வகை காலியாக உள்ளது</string>
-    <string name="intent_aedict_category">AnkiDroid இல் கார்டுகளைச் சேர்க்க அனைத்து நோட்பேட் வகைகளையும் அகற்றவும் அல்லது \"இயல்புநிலை\" என்று பெயரிடப்பட்ட ஒன்றைச் சேர்க்கவும்</string>
+    <string name="intent_aedict_category">Ankrimento இல் கார்டுகளைச் சேர்க்க அனைத்து நோட்பேட் வகைகளையும் அகற்றவும் அல்லது \"இயல்புநிலை\" என்று பெயரிடப்பட்ட ஒன்றைச் சேர்க்கவும்</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">கடந்த x நாட்களில் மறக்கப்பட்ட மதிப்பாய்வு அட்டைகள்:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">சேமிப்பு நிரம்பியது</string>
     <string name="storage_almost_full_title">சேமிப்பு கிட்டத்தட்ட நிரம்பிவிட்டது</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">இடமில்லை</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">தொடர்வதற்கு AnkiDroidக்கு %s இலவச சேமிப்பிடம் தேவை. கொஞ்சம் இடத்தைக் காலி செய்யவும்</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">தொடர்வதற்கு Ankrimentoக்கு %s இலவச சேமிப்பிடம் தேவை. கொஞ்சம் இடத்தைக் காலி செய்யவும்</string>
     <string name="restore_backup_title">காப்புப்பிரதியை மீட்டெடுக்கவா?</string>
     <string name="restore_backup">உங்கள் சேகரிப்பு பழைய நகலால் மாற்றப்படும். சேமிக்கப்படாத எந்த முன்னேற்றமும் இழக்கப்படும்.</string>
     <string name="restore_backup_choose_another">இன்னொன்றைத் தேர்ந்தெடுங்கள்</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">தரவுத்தளம் பூட்டப்பட்டது</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">பொருந்தாத தரவுத்தள பதிப்பு</string>
-    <string name="incompatible_database_version_summary">AnkiDroid இன் இந்த பதிப்பு வேலை செய்யக்கூடியதை விட தரவுத்தளமானது மிகவும் மேம்பட்ட பதிப்பாகும். AnkiDroid ஐ மேம்படுத்தவும் அல்லது அதைத் திறக்க தரவுத்தளத்தை தரமிறக்கவும்\n\nஆதரிக்கப்படும் பதிப்பு: %1$d\nடேட்டாபேஸ் பதிப்பு: %2$d\n\nபின்வரும் மீட்டெடுப்பு விருப்பங்கள் உங்கள் தற்போதைய சேகரிப்பை மேலெழுதும், ஒருவேளை இணக்கமான தரவுத்தள பதிப்பில்:</string>
+    <string name="incompatible_database_version_summary">Ankrimento இன் இந்த பதிப்பு வேலை செய்யக்கூடியதை விட தரவுத்தளமானது மிகவும் மேம்பட்ட பதிப்பாகும். Ankrimento ஐ மேம்படுத்தவும் அல்லது அதைத் திறக்க தரவுத்தளத்தை தரமிறக்கவும்\n\nஆதரிக்கப்படும் பதிப்பு: %1$d\nடேட்டாபேஸ் பதிப்பு: %2$d\n\nபின்வரும் மீட்டெடுப்பு விருப்பங்கள் உங்கள் தற்போதைய சேகரிப்பை மேலெழுதும், ஒருவேளை இணக்கமான தரவுத்தள பதிப்பில்:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">பின்னணி படம் பயன்படுத்தப்பட்டது</string>
     <string name="background_image_removed">பின்னணி படம் அகற்றப்பட்டது</string>

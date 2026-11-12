@@ -39,12 +39,12 @@
         <item quantity="other">%d tarjetas reiniciadas</item>
     </plurals>
     <string name="answering_error_title">Error en base de datos</string>
-    <string name="answering_error_message">Se ha producido un error al escribir en la colección. Esto podría estar relacionado con una base de datos dañada o con un espacio en disco insuficiente.\n\nSi esto ocurre con más frecuencia, intenta verificar la base de datos, reparar la colección o restaurar desde una copia de seguridad. Para ello, presiona \"Opciones\".\n\nDe todos modos, podría ser un error de AnkiDroid; por favor, informa del error para que podamos comprobarlo.</string>
+    <string name="answering_error_message">Se ha producido un error al escribir en la colección. Esto podría estar relacionado con una base de datos dañada o con un espacio en disco insuficiente.\n\nSi esto ocurre con más frecuencia, intenta verificar la base de datos, reparar la colección o restaurar desde una copia de seguridad. Para ello, presiona \"Opciones\".\n\nDe todos modos, podría ser un error de Ankrimento; por favor, informa del error para que podamos comprobarlo.</string>
     <string name="answering_error_report">Reportar un error</string>
-    <string name="storage_full_message">No hay suficiente espacio de almacenamiento libre para abrir AnkiDroid. Libera algo de espacio para continuar.</string>
+    <string name="storage_full_message">No hay suficiente espacio de almacenamiento libre para abrir Ankrimento. Libera algo de espacio para continuar.</string>
     <string name="repair_deck_dialog">¿Desea realmente intentar reparar la base de datos?\n\nAntes de comenzar con el intento, una copia será creada en el subdirectorio \'%s\'.</string>
     <string name="intent_aedict_empty">La categoría \'predeterminado\' está vacía</string>
-    <string name="intent_aedict_category">Para añadir tarjetas a AnkiDroid elimine todas las categorías de los blocks de notas y agregue una llamada \'predeterminado\'</string>
+    <string name="intent_aedict_category">Para añadir tarjetas a Ankrimento elimine todas las categorías de los blocks de notas y agregue una llamada \'predeterminado\'</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Repasar tarjetas olvidadas en los últimos x días:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Almacenamiento lleno</string>
     <string name="storage_almost_full_title">Almacenamiento casi lleno</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Sin spacio</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid necesita %s espacio de almacenamiento libre para continuar. Por favor, borre algo de memoria</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento necesita %s espacio de almacenamiento libre para continuar. Por favor, borre algo de memoria</string>
     <string name="restore_backup_title">¿Restaurar copia de seguridad?</string>
     <string name="restore_backup">Su colección será reemplazada con una copia más antigua. Cualquier progreso no salvado se perderá.</string>
     <string name="restore_backup_choose_another">Elige otro</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Base de datos bloqueada</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Versión de base de datos incompatible</string>
-    <string name="incompatible_database_version_summary">La base de datos es una versión más avanzada con la que esta versión de AnkiDroid puede trabajar. Actualice AnkiDroid o degrade la base de datos para abrirla\n\nVersión soportada: %1$d\nVersión de la base de datos: %2$d\n\nLas siguientes opciones de restauración sobrescribirán su colección actual, posiblemente con una versión compatible de la base de datos:</string>
+    <string name="incompatible_database_version_summary">La base de datos es una versión más avanzada con la que esta versión de Ankrimento puede trabajar. Actualice Ankrimento o degrade la base de datos para abrirla\n\nVersión soportada: %1$d\nVersión de la base de datos: %2$d\n\nLas siguientes opciones de restauración sobrescribirán su colección actual, posiblemente con una versión compatible de la base de datos:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Imagen de fondo aplicada</string>
     <string name="background_image_removed">Imagen de fondo eliminada</string>

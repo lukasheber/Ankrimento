@@ -120,7 +120,7 @@
         <item quantity="one">%1$d minuutissa</item>
         <item quantity="other">%1$d minuutissa</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid-kortti</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento-kortti</string>
     <string name="note_editor_copy_note" maxLength="28">Kopioi muistiinpano</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Uudelleenasettele</string>
     <string name="card_editor_reset_card" maxLength="28">Tyhjennä edistyminen</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">Tarkista</string>
     <string name="unknown_type_field_warning">Kirjoita vastaus: tuntematon kenttä %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Poistetaan pakka&#8230;</string>
-    <string name="info_rate">Arvostele AnkiDroid</string>
+    <string name="info_rate">Arvostele Ankrimento</string>
     <string name="import_title">Tuodaan</string>
     <string name="import_preparing_file">Valmistellaan tiedostoa tuontiin&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Lisää</string>
@@ -143,16 +143,16 @@
     <string name="import_error_handle_exception">Tiedoston tuonti epäonnistui\n\n%s</string>
     <string name="import_error_not_apkg_extension">Tiedostolla ”%s” ei ole .apkg tai .colpkg päätettä</string>
     <string name="import_error_load_imported_database">Ankin tietokannan (.anki2) korvaamista ei vielä tueta. Katso korvausohjeet käyttöoppaasta.</string>
-    <string name="import_error_content_provider">Valittua tiedostoa ei voitu tuoda automaattisesti AnkiDroidiin. Katso käyttöohjeesta, kuinka tuoda manuaalisesti Anki-tiedostoja: \n%s</string>
+    <string name="import_error_content_provider">Valittua tiedostoa ei voitu tuoda automaattisesti Ankrimentoiin. Katso käyttöohjeesta, kuinka tuoda manuaalisesti Anki-tiedostoja: \n%s</string>
     <string name="import_error_copy_to_cache_title">Tiedoston tallentaminen välimuistiin epäonnistui</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Tämä johtuu usein viasta sovelluksessa, jota käytit tiedoston valitsemiseen. Kokeile seuraavia korjauksia:\n\n%s</string>
-    <string name="import_interrupted">Tuonti keskeytyi: AnkiDroid suljettiin</string>
+    <string name="import_interrupted">Tuonti keskeytyi: Ankrimento suljettiin</string>
     <string name="export_ready_title">Vienti valmis</string>
     <string name="export_send_no_handlers">Sovellusta apkg:n käsittelyyn ei ole olemassa. Tallennetaan&#8230;</string>
     <string name="export_save_apkg_successful">Anki-tiedosto tallennettu.</string>
     <string name="export_save_apkg_unsuccessful">Anki-tiedoston tallennus epäonnistui.</string>
     <string name="export_share_title">Lähetä Anki-pakkaus käyttäen</string>
-    <string name="export_email_subject">AnkiDroid toi kortit: %s</string>
+    <string name="export_email_subject">Ankrimento toi kortit: %s</string>
     <string name="export_email_text"><![CDATA[
         Hei!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">Kirjoitustaulun kuvan tallentaminen epäonnistui. %s</string>
     <string name="white_board_image_saved">Kirjoitustaulun kuva tallennettu sijaintiin %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Valkotaulu editori</string>
-    <string name="user_is_a_robot">Automaattinen testi havaittu. Jos olet ihminen, ota yhteyttä AnkiDroidin tukeen.</string>
+    <string name="user_is_a_robot">Automaattinen testi havaittu. Jos olet ihminen, ota yhteyttä Ankrimentoin tukeen.</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Tämä kortti käyttää AnkiDroidin ominaisuuksia, joita ei tueta. Ota yhteyttä kehittäjään %1$s, tai katso wiki. %2$s</string>
     <string name="invalid_json_data">Kortti antoi virheellisiä tietoja. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Etsi pakkoja</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid vaatii toimiakseen System WebView -palvelun, joka ei ole käytettävissä. Näin voi käydä, jos järjestelmän päivitys on käynnissä. Yritä uudelleen muutaman minuutin kuluttua.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid ei voi käyttää tallennustilaa Android-virheen vuoksi.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento vaatii toimiakseen System WebView -palvelun, joka ei ole käytettävissä. Näin voi käydä, jos järjestelmän päivitys on käynnissä. Yritä uudelleen muutaman minuutin kuluttua.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento ei voi käyttää tallennustilaa Android-virheen vuoksi.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Fonttikoko</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">Videotiedosto on liian suuri, aseta video käsin</string>
     <string name="note_editor_audio_too_large">Äänitiedosto on liian suuri, aseta ääni käsin</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Android varmuuskopiointi käynnissä. Yritä uudelleen</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Saatat joutua käyttämään iManageria, jotta AnkiDroid voi lisätä pikanäppäimiä.</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Saatat joutua käyttämään iManageria, jotta Ankrimento voi lisätä pikanäppäimiä.</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Aloitusnäyttösi ei salli AnkiDroidin lisätä pikakuvakkeita</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Aloitusnäyttösi ei salli Ankrimentoin lisätä pikakuvakkeita</string>
     <string name="create_shortcut_error">Virhe lisättäessä pikakuvaketta: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Aloita lauseet isolla alkukirjaimella</string>
     <!-- Dialog hints -->
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">Synkronoi AnkiWebistä</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroidia ei ole vielä alustettu. Avaa AnkiDroid ja yritä uudelleen</string>
+    <string name="app_not_initialized_new">Ankrimentoia ei ole vielä alustettu. Avaa Ankrimento ja yritä uudelleen</string>
     <!-- Deck Creation -->
     <string name="deck_created">Pakka luotu</string>
     <string name="deck_renamed">Pakka nimetty uudelleen</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Asenna</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Teksti puheeksi -asetusten avaaminen epäonnistui</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Kuvaus</string>
     <string name="deck_description_saved">Kuvaus päivitetty</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

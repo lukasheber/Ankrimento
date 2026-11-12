@@ -40,7 +40,7 @@
     <string name="backup_repair_deck_progress">מסד הנתונים מתוקן&#8230;</string>
     <string name="backup_invalid_file_error">קובץ הגיבוי שנבחר שגוי</string>
     <string name="backup_restore_select_title">נא לבחור גיבוי לשחזור</string>
-    <string name="backup_restore_no_backups">אין גיבויים במכשיר. אם יש לך גיבויים במחשב האישי, ניתן להעתיק אותם ידנית אל הספריה של AnkiDroid.</string>
+    <string name="backup_restore_no_backups">אין גיבויים במכשיר. אם יש לך גיבויים במחשב האישי, ניתן להעתיק אותם ידנית אל הספריה של Ankrimento.</string>
     <string name="open_collection_failed_title">האוסף לא נפתח</string>
     <string name="corrupt_db_message">האוסף שלך פגום.\n\nגע ב\"אפשרויות\" כדי לשחזר מגיבוי, או אם זה לא עובד, עיין בהוראות הבאות לתיקון ידני של מסד הנתונים:\n%1$s</string>
     <string name="access_collection_failed_message">אירעה שגיאה בעת הגישה לאוסף שלך. ייתכן שזה נגרם על ידי באג לא מזיק, או שיש בעיה איתו. \n\nנסה להפעיל את בדיקת מסד הנתונים, או לשחזר מגיבוי על ידי לחיצה על כפתור \"אפשרויות\". אם אתה ממשיך לראות את ההודעה הזו, נא להגיש דוח באג:\n%1$s</string>

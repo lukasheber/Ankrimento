@@ -25,10 +25,10 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="one">%d Carta AnkiDroid scaduta</item>
-        <item quantity="other">%d Carte AnkiDroid scadute</item>
+        <item quantity="one">%d Carta Ankrimento scaduta</item>
+        <item quantity="other">%d Carte Ankrimento scadute</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid piccolo</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento piccolo</string>
     <plurals name="widget_cards_due">
         <item quantity="one">%d carta scaduta</item>
         <item quantity="other">%d carte scadute</item>
@@ -37,7 +37,7 @@
         <item quantity="one">%d minuto rimasto</item>
         <item quantity="other">%d minuti rimanenti</item>
     </plurals>
-    <string name="widget_add_note_button">Aggiungi una nuova nota di AnkiDroid</string>
+    <string name="widget_add_note_button">Aggiungi una nuova nota di Ankrimento</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Scegli mazzo</string>
     <string name="card_analysis_extra_widget_description">Analisi delle carte</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

@@ -39,12 +39,12 @@
         <item quantity="other">%d alusta kortit</item>
     </plurals>
     <string name="answering_error_title">Tietokantavirhe</string>
-    <string name="answering_error_message">Kirjoittaminen kokoelmaan epäonnistui. Tietokanta voi olla vioittunut tai levyllä ei ole tarpeeksi tyhjää tilaa.\n\nJos näin tapahtuu useammin, tarkista tietokanta, korjaa kokoelma tai palauta se varmuuskopiosta. Löydät tämän asetuksista.\n\Mahdollisesti kyseessä voi olla myös AnkiDroidin virhe; ilmoita virheestä, jotta voimme tarkistaa sen.</string>
+    <string name="answering_error_message">Kirjoittaminen kokoelmaan epäonnistui. Tietokanta voi olla vioittunut tai levyllä ei ole tarpeeksi tyhjää tilaa.\n\nJos näin tapahtuu useammin, tarkista tietokanta, korjaa kokoelma tai palauta se varmuuskopiosta. Löydät tämän asetuksista.\n\Mahdollisesti kyseessä voi olla myös Ankrimentoin virhe; ilmoita virheestä, jotta voimme tarkistaa sen.</string>
     <string name="answering_error_report">Ilmoita viasta</string>
-    <string name="storage_full_message">AnkiDroidin avaamiseen ei ole riittävästi vapaata tallennustilaa. Vapauta tilaa jatkaaksesi.</string>
+    <string name="storage_full_message">Ankrimentoin avaamiseen ei ole riittävästi vapaata tallennustilaa. Vapauta tilaa jatkaaksesi.</string>
     <string name="repair_deck_dialog">Haluatko varmasti yrittää korjata tietokannan?\n\nEnnen yritystä kopio tietokannasta luodaan alihakemistoon ”%s”.</string>
     <string name="intent_aedict_empty">Oletus-luokka on tyhjä</string>
-    <string name="intent_aedict_category">Lisätäksesi kortteja AnkiDroidiin poista kaikki Notepad-kategoriat tai lisää uusi nimellä ”default”</string>
+    <string name="intent_aedict_category">Lisätäksesi kortteja Ankrimentoiin poista kaikki Notepad-kategoriat tai lisää uusi nimellä ”default”</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Kortteja unohdettu edellisenä x päivänä:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Tallennustila on täynnä</string>
     <string name="storage_almost_full_title">Tallennustila on melkein täynnä</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Ei tilaa</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid tarvitsee %s vapaata tallennustilaa jatkaakseen. Vapauta tilaa ennen kuin jatkat</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento tarvitsee %s vapaata tallennustilaa jatkaakseen. Vapauta tilaa ennen kuin jatkat</string>
     <string name="restore_backup_title">Palauta varmuuskopio?</string>
     <string name="restore_backup">Kokoelmasi korvataan vanhemmalla kopiolla. Mahdolliset tallentamattomat tiedot menetetään.</string>
     <string name="restore_backup_choose_another">Valitse toinen</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Tietokanta lukittu</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Yhteensopimaton tietokannan versio</string>
-    <string name="incompatible_database_version_summary">Tietokanta on edistyneempi versio kuin mitä tämä AnkiDroid-versio voi käyttää. Päivitä AnkiDroid tai siirry vanhempaan tietokantaversioon avataksesi sen\n\nTuettu versio: %1$d\nTietokannan versio: %2$d\n\n\nSeuraavat palautusvaihtoehdot korvaavat nykyisen kokoelmasi, mahdollisesti yhteensopivalla tietokannan versiolla:</string>
+    <string name="incompatible_database_version_summary">Tietokanta on edistyneempi versio kuin mitä tämä Ankrimento-versio voi käyttää. Päivitä Ankrimento tai siirry vanhempaan tietokantaversioon avataksesi sen\n\nTuettu versio: %1$d\nTietokannan versio: %2$d\n\n\nSeuraavat palautusvaihtoehdot korvaavat nykyisen kokoelmasi, mahdollisesti yhteensopivalla tietokannan versiolla:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Taustakuva asetettu</string>
     <string name="background_image_removed">Taustakuva poistettu</string>

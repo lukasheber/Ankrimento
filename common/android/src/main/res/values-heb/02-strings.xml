@@ -123,7 +123,7 @@
         <item quantity="two">%1$d דקות</item>
         <item quantity="other">%1$d דקות</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">כרטיס AnkiDroid</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">כרטיס Ankrimento</string>
     <string name="note_editor_copy_note" maxLength="28">העתק רשומה</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">מיקום מחדש</string>
     <string name="card_editor_reset_card" maxLength="28">איפוס התקדמות</string>
@@ -135,7 +135,7 @@
     <string name="checks_action" maxLength="28">בדוק</string>
     <string name="unknown_type_field_warning">הקלד תשובה: שדה אינו מוכר %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">מוחק חפיסה&#8230;</string>
-    <string name="info_rate">דירוג AnkiDroid</string>
+    <string name="info_rate">דירוג Ankrimento</string>
     <string name="import_title">מתבצע ייבוא</string>
     <string name="import_preparing_file">מכין קובץ לייבוא&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">הוספה</string>
@@ -146,16 +146,16 @@
     <string name="import_error_handle_exception">ייבוא הקובץ נכשל\n\n%s</string>
     <string name="import_error_not_apkg_extension">לשם הקובץ „%s” אין סיומת ‎.apkg או ‎.colpkg</string>
     <string name="import_error_load_imported_database">עדיין אין תמיכה בהחלפות של Anki Database (.anki2). אנא עיין במדריך להוראות החלפה.</string>
-    <string name="import_error_content_provider">לא ניתן היה לייבא את הקובץ שנבחר באופן אוטומטי על ידי AnkiDroid. אנא עיין במדריך למשתמש כיצד לייבא קבצי Anki באופן ידני: \n%s</string>
+    <string name="import_error_content_provider">לא ניתן היה לייבא את הקובץ שנבחר באופן אוטומטי על ידי Ankrimento. אנא עיין במדריך למשתמש כיצד לייבא קבצי Anki באופן ידני: \n%s</string>
     <string name="import_error_copy_to_cache_title">לא הצליח לשמור את הקובץ במטמון</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">This is often caused by a bug in the app you used to select the file. Please try the following fixes:\n\n%s</string>
-    <string name="import_interrupted">הייבוא נפסק: AnkiDroid נסגר</string>
+    <string name="import_interrupted">הייבוא נפסק: Ankrimento נסגר</string>
     <string name="export_ready_title">הייצוא מוכן</string>
     <string name="export_send_no_handlers">לא נמצא יישום התומך ב- apkg. שומר&#8230;</string>
     <string name="export_save_apkg_successful">חבילת ה־Anki נשמרה בהצלחה</string>
     <string name="export_save_apkg_unsuccessful">שמירת חבילת Anki נכשלה</string>
     <string name="export_share_title">שלח חבילת אנקי באמצעות</string>
-    <string name="export_email_subject">קלפי AnkiDroid שיוצאו: %s</string>
+    <string name="export_email_subject">קלפי Ankrimento שיוצאו: %s</string>
     <string name="export_email_text"><![CDATA[
          היי!
          <br/><br/>
@@ -202,7 +202,7 @@
     <string name="white_board_image_save_failed">נכשל לשמור תמונת לוח. %s</string>
     <string name="white_board_image_saved">תמונת לוח נשמרה ל %s</string>
     <string name="title_whiteboard_editor" maxLength="28">עורך לוח</string>
-    <string name="user_is_a_robot">זוהה אוטומציה ממוחשבת, אם אתה אנושי, צור קשר עם תמיכת AnkiDroid</string>
+    <string name="user_is_a_robot">זוהה אוטומציה ממוחשבת, אם אתה אנושי, צור קשר עם תמיכת Ankrimento</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">כרטיס זה משתמש באפשרויות שאינן נתמכות בAnkiDroid. צור קשר עם המפתח %1$s, או קרא בויקי. %2$s</string>
     <string name="invalid_json_data">הכרטיס מכיל תוכן לא תקין. %s</string>
@@ -218,8 +218,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">חיפוש בחפיסות</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid משתמש בדפדפן המערכת שאינו זמין. זה קורה לפעמים אם המערכת מתקינה עדכונים. נא נסה שנית בעוד כמה דקות. \n\n%s</string>
-    <string name="ankidroid_init_failed_storage">ל-AnkiDroid אין גישה לאחסון עקב שגיאת אנדרואיד.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento משתמש בדפדפן המערכת שאינו זמין. זה קורה לפעמים אם המערכת מתקינה עדכונים. נא נסה שנית בעוד כמה דקות. \n\n%s</string>
+    <string name="ankidroid_init_failed_storage">ל-Ankrimento אין גישה לאחסון עקב שגיאת אנדרואיד.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">גודל גופן</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -248,9 +248,9 @@
     <string name="note_editor_video_too_large">קובץ הווידאו גדול מדי, אנא הכנס אותו באופן ידני</string>
     <string name="note_editor_audio_too_large">קובץ השמע גדול מדי, אנא הכנס אותו באופן ידני</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">בתהליך עדכון אנדרואיד, אנא נסה שנית.</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">ייתכן שיהיה עליך להשתמש ב- iManager כדי לאפשר ל- AnkiDroid להוסיף קיצורי דרך</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">ייתכן שיהיה עליך להשתמש ב- iManager כדי לאפשר ל- Ankrimento להוסיף קיצורי דרך</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">מסך הבית שלך אינו מאפשר ל- AnkiDroid להוסיף קיצורי דרך</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">מסך הבית שלך אינו מאפשר ל- Ankrimento להוסיף קיצורי דרך</string>
     <string name="create_shortcut_error">שגיאה בהוספת קיצור הדרך: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Capitalize sentences</string>
     <!-- Dialog hints -->
@@ -321,7 +321,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">סנכרון מ-AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid עדיין לא אתחול. פתח את AnkiDroid ונסה שוב</string>
+    <string name="app_not_initialized_new">Ankrimento עדיין לא אתחול. פתח את Ankrimento ונסה שוב</string>
     <!-- Deck Creation -->
     <string name="deck_created">החפיסה נוצרה</string>
     <string name="deck_renamed">שם החפיסה השתנה</string>
@@ -341,7 +341,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">אינטרנט</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">התקן</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">פתיחת הגדרות טקסט-לדיבור נכשלה</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">תיאור</string>
     <string name="deck_description_saved">התיאור עודכן</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

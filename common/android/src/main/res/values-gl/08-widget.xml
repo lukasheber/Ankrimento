@@ -25,10 +25,10 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="one">Tes %d tarxeta AnkiDroid pendente</item>
-        <item quantity="other">Tes %d tarxetas AnkiDroid pendentes</item>
+        <item quantity="one">Tes %d tarxeta Ankrimento pendente</item>
+        <item quantity="other">Tes %d tarxetas Ankrimento pendentes</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid pequecho</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento pequecho</string>
     <plurals name="widget_cards_due">
         <item quantity="one">%d tarxeta pendente</item>
         <item quantity="other">%d tarxetas pendentes</item>
@@ -37,7 +37,7 @@
         <item quantity="one">%d minuto restante</item>
         <item quantity="other">%d minutos restantes</item>
     </plurals>
-    <string name="widget_add_note_button">Engadir nova nota AnkiDroid</string>
+    <string name="widget_add_note_button">Engadir nova nota Ankrimento</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Selector de barallas</string>
     <string name="card_analysis_extra_widget_description">Análise da tarxeta</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

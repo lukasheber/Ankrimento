@@ -140,17 +140,17 @@
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">ಫೈಲ್ ಅನ್ನು ಬರೆಯಲು ಅಥವಾ ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ %s</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">ಪ್ರವೇಶಿಸಲಾಗದ ಸಂಗ್ರಹ</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store ನೀತಿಯಲ್ಲಿನ ಬದಲಾವಣೆಯಿಂದಾಗಿ AnkiDroid ಅನ್ನು ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ನಂತರ ನಿಮ್ಮ ಸಂಗ್ರಹಣೆಯನ್ನು ಪ್ರವೇಶಿಸಲು ನಮಗೆ ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ\n\nನಿಮ್ಮ ಡೇಟಾ ಸುರಕ್ಷಿತವಾಗಿದೆ ಮತ್ತು ಮರುಸ್ಥಾಪಿಸಬಹುದು. ಇದು \n%s\n\nಮರುಸ್ಥಾಪಿಸಲು ಕೆಳಗಿನ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">ಆ್ಯಪ್ ನಿಷ್ಕ್ರಿಯತೆಯಿಂದಾಗಿ Android AnkiDroid ನ %1$s ಅನುಮತಿಯನ್ನು ತೆಗೆದುಹಾಕಿದೆ.\n\nನಿಮ್ಮ ಡೇಟಾ ಸುರಕ್ಷಿತವಾಗಿದೆ ಮತ್ತು ಮರುಸ್ಥಾಪಿಸಬಹುದು. ಇದು \n%2$s\n\nಮರುಸ್ಥಾಪಿಸಲು ಕೆಳಗಿನ ಆಯ್ಕೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store ನೀತಿಯಲ್ಲಿನ ಬದಲಾವಣೆಯಿಂದಾಗಿ Ankrimento ಅನ್ನು ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ನಂತರ ನಿಮ್ಮ ಸಂಗ್ರಹಣೆಯನ್ನು ಪ್ರವೇಶಿಸಲು ನಮಗೆ ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ\n\nನಿಮ್ಮ ಡೇಟಾ ಸುರಕ್ಷಿತವಾಗಿದೆ ಮತ್ತು ಮರುಸ್ಥಾಪಿಸಬಹುದು. ಇದು \n%s\n\nಮರುಸ್ಥಾಪಿಸಲು ಕೆಳಗಿನ ಆಯ್ಕೆಯನ್ನು ಆರಿಸಿ:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">ಆ್ಯಪ್ ನಿಷ್ಕ್ರಿಯತೆಯಿಂದಾಗಿ Android Ankrimento ನ %1$s ಅನುಮತಿಯನ್ನು ತೆಗೆದುಹಾಕಿದೆ.\n\nನಿಮ್ಮ ಡೇಟಾ ಸುರಕ್ಷಿತವಾಗಿದೆ ಮತ್ತು ಮರುಸ್ಥಾಪಿಸಬಹುದು. ಇದು \n%2$s\n\nಮರುಸ್ಥಾಪಿಸಲು ಕೆಳಗಿನ ಆಯ್ಕೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ:</string>
     <string name="restore_data_from_ankiweb">AnkiWeb ನಿಂದ ಮರುಸ್ಥಾಪಿಸಿ (ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ)</string>
     <string name="install_non_play_store_ankidroid_recommended">ಫೋಲ್ಡರ್ ಪ್ರವೇಶವನ್ನು ಮರುಸ್ಥಾಪಿಸಿ (ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ)</string>
     <string name="install_non_play_store_ankidroid">ಫೋಲ್ಡರ್ ಪ್ರವೇಶವನ್ನು ಮರುಸ್ಥಾಪಿಸಿ (ಸುಧಾರಿತ)</string>
     <string name="restore_data_from_backup">ಬ್ಯಾಕಪ್‌ನಿಂದ .colpkg ಮರುಸ್ಥಾಪನೆ (ಸುಧಾರಿತ)</string>
     <string name="create_new_collection">ಹೊಸ ಸಂಗ್ರಹವನ್ನು ರಚಿಸಿ</string>
-    <string name="new_unsafe_collection">ನೀವು AnkiDroid ಅನ್ನು ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದರೆ ಹೊಸ ಸಂಗ್ರಹವನ್ನು ನಿಮ್ಮ ಫೋನ್‌ನಿಂದ ಅಳಿಸಲಾಗುತ್ತದೆ</string>
+    <string name="new_unsafe_collection">ನೀವು Ankrimento ಅನ್ನು ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದರೆ ಹೊಸ ಸಂಗ್ರಹವನ್ನು ನಿಮ್ಮ ಫೋನ್‌ನಿಂದ ಅಳಿಸಲಾಗುತ್ತದೆ</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid ಕೆಲಸ ಮಾಡಲು ಕೆಲವು ಅನುಮತಿಗಳ ಅಗತ್ಯವಿದೆ</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid works best with these permissions</string>
+    <string name="permissions_screen_headline">Ankrimento ಕೆಲಸ ಮಾಡಲು ಕೆಲವು ಅನುಮತಿಗಳ ಅಗತ್ಯವಿದೆ</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento works best with these permissions</string>
     <string name="storage_access_title">ಶೇಖರಣಾ ಪ್ರವೇಶ</string>
     <string name="storage_access_summary">ನಿಮ್ಮ ಸಂಗ್ರಹಣೆಯನ್ನು ಸುರಕ್ಷಿತ ಸ್ಥಳದಲ್ಲಿ ಉಳಿಸುತ್ತದೆ, ಅಪ್ಲಿಕೇಶನ್ ಅನ್ನು ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದರೆ ಅದನ್ನು ಅಳಿಸಲಾಗುವುದಿಲ್ಲ</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">ಎಲ್ಲಾ ಫೈಲ್‌ಗಳ ಪ್ರವೇಶ</string>
@@ -168,7 +168,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Required for the app to work</string>
-    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <string name="permission_required_message">Please grant Ankrimento the ‘%s’ permission to continue</string>
     <!-- Multiple profile -->
     <string name="add_profile">Add profile</string>
 </resources>

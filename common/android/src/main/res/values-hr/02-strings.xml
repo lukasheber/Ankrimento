@@ -123,7 +123,7 @@
         <item quantity="few">%1$d minute</item>
         <item quantity="other">%1$d minuta</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid kartica</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento kartica</string>
     <string name="note_editor_copy_note" maxLength="28">Kopiraj bilješku</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Promijeni poziciju</string>
     <string name="card_editor_reset_card" maxLength="28">Resetiraj napredak</string>
@@ -135,7 +135,7 @@
     <string name="checks_action" maxLength="28">Provjeri</string>
     <string name="unknown_type_field_warning">Upiši odgovor: nepoznato polje %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Brisanje špila&#8230;</string>
-    <string name="info_rate">Ocijeni AnkiDroid</string>
+    <string name="info_rate">Ocijeni Ankrimento</string>
     <string name="import_title">Uvoženje</string>
     <string name="import_preparing_file">Priprema datoteke za uvoz&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Dodaj</string>
@@ -146,16 +146,16 @@
     <string name="import_error_handle_exception">Greška pri uvozu datoteke\n\n%s</string>
     <string name="import_error_not_apkg_extension">Naziv datoteke “%s” nema nastavak .apkg ili .colpkg</string>
     <string name="import_error_load_imported_database">Zamjena Anki baze podataka (.anki2) još nije podržana. Pogledajte priručnik za upute o zamjeni.</string>
-    <string name="import_error_content_provider">Nije se moglo automatski uvesti odabranu datoteku u AnkiDroid. Pogledajte korisnički priručnik da biste vidjeli kako ručno uvesti Anki datoteke: \n%s</string>
+    <string name="import_error_content_provider">Nije se moglo automatski uvesti odabranu datoteku u Ankrimento. Pogledajte korisnički priručnik da biste vidjeli kako ručno uvesti Anki datoteke: \n%s</string>
     <string name="import_error_copy_to_cache_title">Greška pri kopiranju datoteke u predmemoriju</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Ovo je obično uzrokovano greškom u aplikaciji kojoj ste odabrali ovu datoteku. Pokušajte sljedeća rješenja:\n\n%s</string>
-    <string name="import_interrupted">Uvoz prekinut: AnkiDroid je zatvoren</string>
+    <string name="import_interrupted">Uvoz prekinut: Ankrimento je zatvoren</string>
     <string name="export_ready_title">Izvoz je spreman</string>
     <string name="export_send_no_handlers">Nijedna aplikacija nije dostupna da rukuje s apkg. Spremanje&#8230;</string>
     <string name="export_save_apkg_successful">Anki paket uspješno spremljen</string>
     <string name="export_save_apkg_unsuccessful">Anki paket nije uspješno spremljen</string>
     <string name="export_share_title">Pošalji Anki paket koristeći</string>
-    <string name="export_email_subject">Izvezene AnkiDroid kartice: %s</string>
+    <string name="export_email_subject">Izvezene Ankrimento kartice: %s</string>
     <string name="export_email_text"><![CDATA[
         Bok!
         <br/><br/>
@@ -202,7 +202,7 @@
     <string name="white_board_image_save_failed">Greška pri spremanju slike ploče. %s</string>
     <string name="white_board_image_saved">Slika ploče spremljena u %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Uređivač ploče</string>
-    <string name="user_is_a_robot">Prepoznat je automatiziran test. Ako ste ljudska osoba, kontaktirajte AnkiDroid podršku</string>
+    <string name="user_is_a_robot">Prepoznat je automatiziran test. Ako ste ljudska osoba, kontaktirajte Ankrimento podršku</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Ova kartica koristi nepodržane AnkiDroid značajke. Kontaktirajte razvijatelja %1$s ili pogledajte wiki. %2$s</string>
     <string name="invalid_json_data">Kartica je pružila neispravne podatke. %s</string>
@@ -219,7 +219,7 @@
     <string name="search_decks" maxLength="28">Pretraži špilove</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
     <string name="ankidroid_init_failed_webview">Android se oslanja na System WebView koji nije dostupan. Ovo se može dogoditi pri ažuriranju sustava. Pokušajte ponovno za par minuta.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid ne može pristupiti prostoru za pohranu zbog greške u Androidu:\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento ne može pristupiti prostoru za pohranu zbog greške u Androidu:\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Veličina fonta</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -248,9 +248,9 @@
     <string name="note_editor_video_too_large">Video datoteka je prevelika, umetnite video ručno</string>
     <string name="note_editor_audio_too_large">Zvučna datoteka je prevelika, umetnite zvuk ručno</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Sigurnosna kopija Androida u tijeku. Pokušajte ponovno</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Možda ćete morati koristiti iManager kako biste dozvolili da AnkiDroid stvori prečace</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Možda ćete morati koristiti iManager kako biste dozvolili da Ankrimento stvori prečace</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Vaš kućni ekran ne dozvoljava da AnkiDroid stvara prečace</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Vaš kućni ekran ne dozvoljava da Ankrimento stvara prečace</string>
     <string name="create_shortcut_error">Greška pri dodavanju prečaca: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Veliko slovo na početku</string>
     <!-- Dialog hints -->
@@ -321,7 +321,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">Sinkroniziraj s AnkiWeba</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid još nije inicijaliziran. Otvorite AnkiDroid te zatim pokušajte ponovno</string>
+    <string name="app_not_initialized_new">Ankrimento još nije inicijaliziran. Otvorite Ankrimento te zatim pokušajte ponovno</string>
     <!-- Deck Creation -->
     <string name="deck_created">Špil stvoren</string>
     <string name="deck_renamed">Špil preimenovan</string>
@@ -341,7 +341,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Instaliraj</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Greška pri otvaranju postavki sinteze govora</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Opis</string>
     <string name="deck_description_saved">Opis ažuriran</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

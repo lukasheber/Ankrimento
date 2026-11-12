@@ -45,10 +45,10 @@
     <string name="answering_error_title">Chyba databázy</string>
     <string name="answering_error_message">Zápis kolekcie zlyhal. Databáza môže byť poškodená alebo na úložisku nie je dostatok miesta.\n\nAk sa to stáva častejšie, skontrolujte databázu, opravte kolekciu alebo ju obnovte zo zálohy. Ak to chcete urobiť, stlačte „Možnosti”.\n\Môže ísť aj o chybu aplikácie; prosím oznámte túto chybu aby sme to mohli skontrolovať.</string>
     <string name="answering_error_report">Nahlásiť chybu</string>
-    <string name="storage_full_message">Nie je dostatok voľného miesta v úložisku na otvorenie AnkiDroid. Uvoľnite miesto v pamäti na pokračovanie.</string>
+    <string name="storage_full_message">Nie je dostatok voľného miesta v úložisku na otvorenie Ankrimento. Uvoľnite miesto v pamäti na pokračovanie.</string>
     <string name="repair_deck_dialog">Naozaj chcete skúsiť opraviť databázu?\n\nPred začatím pokusu o opravenie bude vytvorená kópia v podpriečinku \"%s\".</string>
     <string name="intent_aedict_empty">Kategória \"predvolený\" je prázdna</string>
-    <string name="intent_aedict_category">Ak chcete pridať kartičky do AnkiDroid, odstráňte všetky kategórie poznámkového bloku alebo pridajte jednu s názvom \"predvolený\"</string>
+    <string name="intent_aedict_category">Ak chcete pridať kartičky do Ankrimento, odstráňte všetky kategórie poznámkového bloku alebo pridajte jednu s názvom \"predvolený\"</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Zopakovať si kartičky zabudnuté za posledných x dní:</string>
@@ -58,7 +58,7 @@
     <string name="storage_full_title">Úložisko je plné</string>
     <string name="storage_almost_full_title">Úložisko je takmer plné</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Nedostatok miesta</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid potrebuje %s voľného ukladacieho priestoru na pokračovanie. Prosím, uvoľnite priestor</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento potrebuje %s voľného ukladacieho priestoru na pokračovanie. Prosím, uvoľnite priestor</string>
     <string name="restore_backup_title">Obnoviť zálohu?</string>
     <string name="restore_backup">Vaša kolekcia bude nahradená staršou kópiou. Všetky neuložené zmeny budú stratené.</string>
     <string name="restore_backup_choose_another">Ďalšie zálohy</string>
@@ -123,9 +123,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Databáza uzamknutá</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Nekompatibilná verzia databázy</string>
-    <string name="incompatible_database_version_summary">Databáza je pokročilejšej verzie ako vie AnkiDroid pracovať. Aktualizujte AnkiDroid alebo zmeňte verziu databázy na nižšiu verziu\n\nPodporovaná verzia: %1$d\nVerzia databázy: %2$d\n\nNasledovné možnosti obnovenia prepíšu vašu aktuálnu kolekciu, pravdepodobne kompatibilnou verziou databázy:</string>
+    <string name="incompatible_database_version_summary">Databáza je pokročilejšej verzie ako vie Ankrimento pracovať. Aktualizujte Ankrimento alebo zmeňte verziu databázy na nižšiu verziu\n\nPodporovaná verzia: %1$d\nVerzia databázy: %2$d\n\nNasledovné možnosti obnovenia prepíšu vašu aktuálnu kolekciu, pravdepodobne kompatibilnou verziou databázy:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Použil sa obrázok pozadia</string>
     <string name="background_image_removed">Obrázok pozadia bol odstránený</string>

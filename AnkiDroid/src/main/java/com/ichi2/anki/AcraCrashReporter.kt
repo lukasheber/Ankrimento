@@ -76,6 +76,12 @@ private object AcraCrashReporter : CrashReporter {
         fun getToastMessage(context: Context) = context.getString(toastMessageRes)
     }
 
+    /**
+     * Whether a crash report can be sent anywhere: there is a server to send it to. This build has none, so reports
+     * are never made, asked about or sent.
+     */
+    val reportingAvailable: Boolean get() = BuildConfig.ACRA_URL.isNotEmpty()
+
     private fun createAcraCoreConfigBuilder(): CoreConfigurationBuilder {
         val builder =
             CoreConfigurationBuilder()
@@ -118,16 +124,16 @@ private object AcraCrashReporter : CrashReporter {
                         .withText(application.getString(CommonString.feedback_default_text))
                         .withPositiveButtonText(application.getString(CommonString.feedback_report))
                         .withResIcon(R.drawable.logo_star_144dp)
-                        .withEnabled(dialogEnabled)
+                        .withEnabled(dialogEnabled && reportingAvailable)
                         .build(),
                     HttpSenderConfigurationBuilder()
                         .withHttpMethod(HttpSender.Method.PUT)
                         .withUri(BuildConfig.ACRA_URL)
-                        .withEnabled(true)
+                        .withEnabled(reportingAvailable)
                         .build(),
                     ToastConfigurationBuilder()
                         .withText(toastText)
-                        .withEnabled(true)
+                        .withEnabled(reportingAvailable)
                         .build(),
                     LimiterConfigurationBuilder()
                         .withExceptionClassLimit(1000)
@@ -181,6 +187,8 @@ private object AcraCrashReporter : CrashReporter {
      * @param value value of FEEDBACK_REPORT_KEY preference
      */
     override fun setReportingMode(value: String) {
+        @Suppress("NAME_SHADOWING")
+        val value = if (reportingAvailable) value else FEEDBACK_REPORT_NEVER
         application.sharedPrefs().edit {
             // Set the ACRA disable value
             if (value == FEEDBACK_REPORT_NEVER) {
@@ -266,6 +274,7 @@ private object AcraCrashReporter : CrashReporter {
         onlyIfSilent: Boolean,
         context: Context,
     ) {
+        if (!reportingAvailable) return
         // the same filter ACRA uses below: it exists to keep sync server messages and
         // other PII out of reporting, and analytics is reporting too
         if (!ThrowableFilterService.shouldDiscardThrowable(e)) {
@@ -337,6 +346,7 @@ private object AcraCrashReporter : CrashReporter {
      *  submitted
      */
     override fun sendReport(activity: android.app.Activity): Boolean {
+        if (!reportingAvailable) return false
         val ankiActivity = activity as AnkiActivity
         val preferences = ankiActivity.sharedPrefs()
         val reportMode = preferences.getString(FEEDBACK_REPORT_KEY, "")

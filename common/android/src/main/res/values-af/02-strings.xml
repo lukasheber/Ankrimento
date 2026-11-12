@@ -120,7 +120,7 @@
         <item quantity="one">%1$d minuut</item>
         <item quantity="other">%1$d minute</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid kaart</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento kaart</string>
     <string name="note_editor_copy_note" maxLength="28">Kopieer nota</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Herposisioneer</string>
     <string name="card_editor_reset_card" maxLength="28">Herstel vordering</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">Kontroleer</string>
     <string name="unknown_type_field_warning">Tik antwoord: onbekende veld %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Pak verwyder&#8230;</string>
-    <string name="info_rate">Beoordeel AnkiDroid</string>
+    <string name="info_rate">Beoordeel Ankrimento</string>
     <string name="import_title">Invoer</string>
     <string name="import_preparing_file">Lêer voorberei vir invoer&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Voeg by</string>
@@ -143,16 +143,16 @@
     <string name="import_error_handle_exception">Kon nie lêer invoer nie\n\n%s</string>
     <string name="import_error_not_apkg_extension">Lêernaam “%s” het nie .apkg of .colpkg uitbreiding nie</string>
     <string name="import_error_load_imported_database">Anki-databasis (.anki2) vervangings word nog nie ondersteun nie. Raadpleeg asseblief die handleiding vir vervangingsinstruksies.</string>
-    <string name="import_error_content_provider">Die geselekteerde lêer kon nie outomaties deur AnkiDroid ingevoer word nie. Raadpleeg asseblief die gebruikershandleiding vir hoe om Anki-lêers handmatig in te voer: \n%s</string>
+    <string name="import_error_content_provider">Die geselekteerde lêer kon nie outomaties deur Ankrimento ingevoer word nie. Raadpleeg asseblief die gebruikershandleiding vir hoe om Anki-lêers handmatig in te voer: \n%s</string>
     <string name="import_error_copy_to_cache_title">Kon nie lêer kas nie</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">This is often caused by a bug in the app you used to select the file. Please try the following fixes:\n\n%s</string>
-    <string name="import_interrupted">Invoer onderbreek: AnkiDroid is gesluit</string>
+    <string name="import_interrupted">Invoer onderbreek: Ankrimento is gesluit</string>
     <string name="export_ready_title">Gereed vir uitvoer</string>
     <string name="export_send_no_handlers">Geen toepassings beskikbaar om .apkg te hanteer nie. Stoor&#8230;</string>
     <string name="export_save_apkg_successful">Suksesvol Anki-pakket gestoor</string>
     <string name="export_save_apkg_unsuccessful">Stoor Anki-pakket het misluk</string>
     <string name="export_share_title">Stuur Anki-pakket met behulp van</string>
-    <string name="export_email_subject">AnkiDroid uitgevoerde flitskaarte: %s</string>
+    <string name="export_email_subject">Ankrimento uitgevoerde flitskaarte: %s</string>
     <string name="export_email_text"><![CDATA[
         Hi!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">Kon nie witbordbeeld stoor nie. %s</string>
     <string name="white_board_image_saved">Witbordbeeld gestoor na %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Witbordredakteur</string>
-    <string name="user_is_a_robot">Geoutomatiseerde toets opgespoor. As jy \'n mens is, kontak AnkiDroid-ondersteuning.</string>
+    <string name="user_is_a_robot">Geoutomatiseerde toets opgespoor. As jy \'n mens is, kontak Ankrimento-ondersteuning.</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Hierdie kaart gebruik nie-ondersteunde AnkiDroid-funksies nie. Kontak ontwikkelaar %1$s, of kyk na die wiki. %2$s</string>
     <string name="invalid_json_data">Kaart het ongeldige data verskaf. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Soek pakke</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid maak staat op die Stelsel WebView wat nie beskikbaar is nie. Dit kan gebeur as die stelsel opdaterings installeer. Probeer asseblief weer oor \'n paar minute.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid cannot access storage due to an Android error.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento maak staat op die Stelsel WebView wat nie beskikbaar is nie. Dit kan gebeur as die stelsel opdaterings installeer. Probeer asseblief weer oor \'n paar minute.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento cannot access storage due to an Android error.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Lettergrootte</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">Die videolêer is te groot, voeg asseblief die video handmatig in</string>
     <string name="note_editor_audio_too_large">Die klanklêer is te groot, voeg asseblief die klank handmatig in</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Android backup in progress. Please try again</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Jy sal dalk iManager moet gebruik om AnkiDroid toe te laat om kortpaaie by te voeg</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Jy sal dalk iManager moet gebruik om Ankrimento toe te laat om kortpaaie by te voeg</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Jou tuisskerm laat nie toe dat AnkiDroid kortpaaie byvoeg nie</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Jou tuisskerm laat nie toe dat Ankrimento kortpaaie byvoeg nie</string>
     <string name="create_shortcut_error">Fout met byvoeging van kortpad: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Hoofletters sinne</string>
     <!-- Dialog hints -->
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">Sinkroniseer Van AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid Is Nog Nie Geïnisialiseer Nie. Maak Asseblief AnkiDroid Oop En Probeer Weer.</string>
+    <string name="app_not_initialized_new">Ankrimento Is Nog Nie Geïnisialiseer Nie. Maak Asseblief Ankrimento Oop En Probeer Weer.</string>
     <!-- Deck Creation -->
     <string name="deck_created">Pak geskep</string>
     <string name="deck_renamed">Pak hernoem</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Install</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Failed to open text to speech settings</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Beskrywing</string>
     <string name="deck_description_saved">Description updated</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

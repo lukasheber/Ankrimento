@@ -35,7 +35,7 @@
     <string name="username">El. pašto adresas</string>
     <string name="password">Slaptažodis</string>
     <string name="sign_up_description">Nesate susikūrę „AnkiWeb“ paskyros? Tai padaryti galite nemokamai!</string>
-    <string name="sign_up_not_affiliated">Pastaba: „AnkiWeb“ nėra susijusi su „AnkiDroid“</string>
+    <string name="sign_up_not_affiliated">Pastaba: „AnkiWeb“ nėra susijusi su „Ankrimento“</string>
     <string name="sign_up">Užsiregistruoti</string>
     <string name="logged_as">Esate prisijungę kaip</string>
     <string name="reset_password">Atkurti slaptažodį</string>

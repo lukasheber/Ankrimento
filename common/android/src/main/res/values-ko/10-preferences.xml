@@ -70,7 +70,7 @@
     <string name="card_browser_font_size" maxLength="41">카드 탐색기 글꼴 크기 조정</string>
     <string name="card_browser_hide_media" maxLength="41">카드 탐색기에서 파일명 보기</string>
     <string name="card_browser_hide_media_summary">카드 탐색기의 질문/답변 필드에 미디어 파일 이름을 표시합니다.</string>
-    <string name="col_path" maxLength="41">AnkiDroid 디렉토리</string>
+    <string name="col_path" maxLength="41">Ankrimento 디렉토리</string>
     <string name="fullscreen_review" maxLength="41">전체 화면 모드</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">끔</string>
     <string name="full_screen_system">시스템 바 숨기기</string>
@@ -303,9 +303,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">일반</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">검색</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">AnkiDroid를 개선하는데 도움을 주세요!</string>
+    <string name="analytics_dialog_title">Ankrimento를 개선하는데 도움을 주세요!</string>
     <string name="analytics_title" maxLength="41">사용 정보 공유</string>
-    <string name="analytics_summ">개발팀이 사람들이 어떤 기능을 사용하는지 볼 수 있도록 도와주어 AnkiDroid에 기여할 수 있습니다.</string>
+    <string name="analytics_summ">개발팀이 사람들이 어떤 기능을 사용하는지 볼 수 있도록 도와주어 Ankrimento에 기여할 수 있습니다.</string>
     <string name="note_editor_replace_newlines" maxLength="41">줄바꿈을 HTML로 변환</string>
     <string name="note_editor_replace_newlines_summ">노트 편집기에서 카드를 편집할 때 &lt;br&gt;을 줄바꿈으로 변환합니다.</string>
     <string name="type_in_answer_focus" maxLength="41">\'정답 입력\' 포커스</string>
@@ -317,8 +317,8 @@
     <string name="about_contributors_description"><![CDATA[우리의 멋진 <a href=\"%1$s\">기여자</a>들입니다. 프로그래밍, 번역 기부와 <a href=\"%2$s\">그밖의 다양한 방법</a>으로 AnkiDroid를 도와주실 수 있습니다!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">라이센스</string>
-    <string name="license_description"><![CDATA[AnkiDroid는  <a href=\"%1$s\">GPL-3.0</a>과 <a href=\"%2$s\">AGPL-3.0</a> 라이선스 하에 배포됩니다. 소스코드는 <a href=\"%3$s\">GitHub</a>에서 확인할 수 있습니다.]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid 제3 자 라이브러리와 아이콘을 사용합니다. 각 항목은 오픈 소스 <a href=\"%1$s\">라이선스</a>를 따릅니다.]]></string>
+    <string name="license_description"><![CDATA[Ankrimento는  <a href=\"%1$s\">GPL-3.0</a>과 <a href=\"%2$s\">AGPL-3.0</a> 라이선스 하에 배포됩니다. 소스코드는 <a href=\"%3$s\">GitHub</a>에서 확인할 수 있습니다.]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento 제3 자 라이브러리와 아이콘을 사용합니다. 각 항목은 오픈 소스 <a href=\"%1$s\">라이선스</a>를 따릅니다.]]></string>
     <string name="donate_description"><![CDATA[<a href=\"%1$s\">기부를</a> 통해 AnkiDroid 개발을 지원해주실 수 있습니다. 얼마가 되든 감사드립니다.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">제스쳐 추가하기</string>
@@ -354,7 +354,7 @@
     <string name="bindings_already_bound">\'%s\'에 이미 할당됨</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">실험적</string>
-    <string name="readtext_deprecation_warn">AnkiDroid에 더 향상된 TTS(음성 합성) 기능이 도입되었습니다! 이제 다른 Anki 클라이언트와도 호환되며, 더 다양한 음성과 언어 재생 품질이 개선되었습니다.\n\n이 설정은 곧 제거될 예정이니, 가능한 빨리 앱을 업그레이드해 주세요.</string>
+    <string name="readtext_deprecation_warn">Ankrimento에 더 향상된 TTS(음성 합성) 기능이 도입되었습니다! 이제 다른 Anki 클라이언트와도 호환되며, 더 다양한 음성과 언어 재생 품질이 개선되었습니다.\n\n이 설정은 곧 제거될 예정이니, 가능한 빨리 앱을 업그레이드해 주세요.</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">새로운 TTS 포맷을 위해 업데이트 해주세요.</string>
     <string name="allow_templates_to_record_audio" maxLength="41">카드 템플릿이 오디오를 녹음하도록 허용</string>
     <string name="template_is_trying_to_record_audio">이 템플릿은 오디오를 녹음합니다</string>
@@ -368,7 +368,7 @@
     <!-- #######################################################################################
          #################################### Backup options ###################################
          ####################################################################################### -->
-    <string name="pref__backups_help__summary"><![CDATA[AnkiDroid는 주기적으로 컬렉션을 백업합니다.
+    <string name="pref__backups_help__summary"><![CDATA[Ankrimento는 주기적으로 컬렉션을 백업합니다.
 2일 이상 지난 백업은
 디스크 공간 확보를 위해 삭제되기 시작합니다.
 <br><br>

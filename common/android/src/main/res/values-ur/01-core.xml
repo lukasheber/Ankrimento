@@ -87,7 +87,7 @@
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">براہ کرم AnkiDroid کو جاری رکھنے کے لیے \'اسٹوریج\' کی اجازت دیں</string>
+    <string name="startup_no_storage_permission">براہ کرم Ankrimento کو جاری رکھنے کے لیے \'اسٹوریج\' کی اجازت دیں</string>
     <string name="rebuild_filtered_deck">فلٹر شدہ ڈیک کو دوبارہ بنایا جا رہا ہے&#8230;</string>
     <string name="empty_cram_label" maxLength="28">خالى</string>
     <string name="create_subdeck">سب ڈیک بنائیں</string>
@@ -124,7 +124,7 @@
     <string name="card_template_editor_save_error">کارڈ ٹیمپلیٹ کی تبدیلیاں محفوظ کرنے سے قاصر: %s</string>
     <string name="template_for_current_card_deleted">موجودہ کارڈ کے لیے کارڈ کی قسم کو حذف کر دیا گیا تھا۔</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">AnkiDroid ڈیٹا بیس کو پڑھیں اور لکھیں۔</string>
+    <string name="read_write_permission_label">Ankrimento ڈیٹا بیس کو پڑھیں اور لکھیں۔</string>
     <string name="read_write_permission_description">موجودہ نوٹوں، کارڈز، نوٹ کی اقسام، اور ڈیک تک رسائی حاصل کریں، اور ساتھ ہی نئے بنائیں</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">کارڈ براؤزر</string>
@@ -133,24 +133,24 @@
     <string name="sync_conflict_message_new">مجموعوں کو یکجا نہیں کیا جا سکتا۔\nآپ کون سا مجموعہ رکھنا چاہتے ہیں؟</string>
     <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">آنکی ڈیرائڈ</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">انکی ویب</string>
-    <string name="sync_conflict_remote_confirm_new">AnkiDroid پر اپنے کلیکشن کو AnkiWeb کے اپنے کلیکشن سے بدلیں؟</string>
-    <string name="sync_conflict_local_confirm_new">AnkiWeb پر اپنے کلیکشن کو AnkiDroid کے اپنے کلیکشن سے بدلیں؟</string>
+    <string name="sync_conflict_remote_confirm_new">Ankrimento پر اپنے کلیکشن کو AnkiWeb کے اپنے کلیکشن سے بدلیں؟</string>
+    <string name="sync_conflict_local_confirm_new">AnkiWeb پر اپنے کلیکشن کو Ankrimento کے اپنے کلیکشن سے بدلیں؟</string>
     <string name="sync_conflict_title_new">رکھنے کے لیے مجموعہ منتخب کریں۔</string>
     <string name="sync_conflict_replace_title">مجموعہ کو تبدیل کریں۔</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">فائل %s پر نہیں لکھ سکتا اور نہ ہی بنا سکتا ہے۔</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">ناقابل رسائی مجموعہ</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store کی پالیسی میں تبدیلی کی وجہ سے AnkiDroid کے ان انسٹال ہونے کے بعد ہم آپ کے کلیکشن تک رسائی حاصل کرنے سے قاصر ہیں\n\nآپ کا ڈیٹا محفوظ ہے اور اسے بحال کیا جا سکتا ہے۔ یہ پر واقع ہے\n%s\n\nبحال کرنے کے لیے نیچے ایک آپشن منتخب کریں:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">اینڈرائیڈ نے ایپ کی غیر فعالیت کی وجہ سے AnkiDroid کی %1$s کی اجازت ہٹا دی ہے۔\n\nآپ کا ڈیٹا محفوظ ہے اور اسے بحال کیا جا سکتا ہے۔ یہ \n%2$s پر واقع ہے\n\nبحال کرنے کے لیے نیچے ایک آپشن منتخب کریں:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store کی پالیسی میں تبدیلی کی وجہ سے Ankrimento کے ان انسٹال ہونے کے بعد ہم آپ کے کلیکشن تک رسائی حاصل کرنے سے قاصر ہیں\n\nآپ کا ڈیٹا محفوظ ہے اور اسے بحال کیا جا سکتا ہے۔ یہ پر واقع ہے\n%s\n\nبحال کرنے کے لیے نیچے ایک آپشن منتخب کریں:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">اینڈرائیڈ نے ایپ کی غیر فعالیت کی وجہ سے Ankrimento کی %1$s کی اجازت ہٹا دی ہے۔\n\nآپ کا ڈیٹا محفوظ ہے اور اسے بحال کیا جا سکتا ہے۔ یہ \n%2$s پر واقع ہے\n\nبحال کرنے کے لیے نیچے ایک آپشن منتخب کریں:</string>
     <string name="restore_data_from_ankiweb">AnkiWeb سے بحال کریں (تجویز کردہ)</string>
     <string name="install_non_play_store_ankidroid_recommended">فولڈر تک رسائی بحال کریں (تجویز کردہ)</string>
     <string name="install_non_play_store_ankidroid">فولڈر تک رسائی بحال کریں (جدید)</string>
     <string name="restore_data_from_backup">colpkg بیک اپ سے بحال کریں (جدید)</string>
     <string name="create_new_collection">ایک نیا مجموعہ بنائیں</string>
-    <string name="new_unsafe_collection">اگر آپ AnkiDroid کو ان انسٹال کرتے ہیں تو نیا مجموعہ آپ کے فون سے حذف ہو جائے گا۔</string>
+    <string name="new_unsafe_collection">اگر آپ Ankrimento کو ان انسٹال کرتے ہیں تو نیا مجموعہ آپ کے فون سے حذف ہو جائے گا۔</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid کو کام کرنے کے لیے کچھ اجازتوں کی ضرورت ہے۔</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid ان اجازتوں کے ساتھ بہترین طور پر کام کرتا ہے۔</string>
+    <string name="permissions_screen_headline">Ankrimento کو کام کرنے کے لیے کچھ اجازتوں کی ضرورت ہے۔</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento ان اجازتوں کے ساتھ بہترین طور پر کام کرتا ہے۔</string>
     <string name="storage_access_title">اسٹوریج تک رسائی</string>
     <string name="storage_access_summary">آپ کے مجموعہ کو ایک محفوظ جگہ پر محفوظ کرتا ہے جسے ایپ کے ان انسٹال ہونے پر حذف نہیں کیا جائے گا۔</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">تمام فائلوں تک رسائی</string>
@@ -168,7 +168,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Required for the app to work</string>
-    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <string name="permission_required_message">Please grant Ankrimento the ‘%s’ permission to continue</string>
     <!-- Multiple profile -->
     <string name="add_profile">Add profile</string>
 </resources>

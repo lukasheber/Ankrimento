@@ -35,7 +35,7 @@
     <string name="username">Էլ. փոստի հասցե</string>
     <string name="password">Գաղտնաբառ</string>
     <string name="sign_up_description">Չունե՞ք AnkiWeb հաշիվ։ Այն անվճար է։</string>
-    <string name="sign_up_not_affiliated">AnkiWeb-ը անկախ է AnkiDroid-ից</string>
+    <string name="sign_up_not_affiliated">AnkiWeb-ը անկախ է Ankrimento-ից</string>
     <string name="sign_up">Գրանցվել</string>
     <string name="logged_as">Logged in as</string>
     <string name="reset_password">Reset password</string>

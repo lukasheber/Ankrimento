@@ -27,9 +27,9 @@
     <string name="empty_string"></string>
     <string name="error_reporting_choice" maxLength="41">Ziņošanas par kļūdām veids</string>
     <string name="feedback_disclaimer">Atruna: mēs neievācam nekādu personīgo informāciju, piemēram, e-pasta adresi, tālruņa numuru vai tālruņa IMEI. Mēs ievācam atsevišķu informāciju par ierīci, piemēram, ražotājs, modelis un Android versija, kā arī ziņoto kļūdu apstākļi un soļi, kas pie tām noveda.</string>
-    <string name="feedback_title">AnkiDroid atgriezeniskā saite</string>
+    <string name="feedback_title">Ankrimento atgriezeniskā saite</string>
     <string name="feedback_default_text">Ievadi savu atsauksmi vai informāciju par jebkādu kļūdu, par kurām ziņo, apstākļiem.</string>
-    <string name="feedback_auto_toast_text">AnkiDroid saskārās ar ķibeli; par to izstrādātājiem tiek nosūtīts ziņojums&#8230;</string>
+    <string name="feedback_auto_toast_text">Ankrimento saskārās ar ķibeli; par to izstrādātājiem tiek nosūtīts ziņojums&#8230;</string>
     <string name="feedback_for_manual_toast_text">Tiek sagatavots izstrādātājiem paredzēts ziņojums par kļūdu&#8230;</string>
     <string name="feedback_report">Ziņot</string>
     <string name="feedback_report_automatically">Automātiski nosūtīt ziņojumus par kļūdām</string>

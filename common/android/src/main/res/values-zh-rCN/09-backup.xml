@@ -40,7 +40,7 @@
     <string name="backup_repair_deck_progress">修复数据库中&#8230;</string>
     <string name="backup_invalid_file_error">选中的备份文件无效</string>
     <string name="backup_restore_select_title">选择要还原的备份文件</string>
-    <string name="backup_restore_no_backups">此设备上没有本集合的可用备份。如果您在计算机上有备份，请手动复制它们到 AnkiDroid 文件夹。</string>
+    <string name="backup_restore_no_backups">此设备上没有本集合的可用备份。如果您在计算机上有备份，请手动复制它们到 Ankrimento 文件夹。</string>
     <string name="open_collection_failed_title">集合未打开</string>
     <string name="corrupt_db_message">您的集合已损坏。\n\n请点击“选项”从备份还原，如果依然无法正常工作，请参阅手动修复数据库：\n%1$s</string>
     <string name="access_collection_failed_message">访问您的集合时出现错误。它可能由无害的 bug 或其他问题造成。\n\n尝试点击“选项”按钮运行检查数据库，或从备份还原。如果您仍然看到此消息，请提交 bug 报告：\n%1$s</string>

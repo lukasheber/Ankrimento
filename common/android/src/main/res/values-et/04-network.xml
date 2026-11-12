@@ -35,7 +35,7 @@
     <string name="username">E-posti aadress</string>
     <string name="password">Parool</string>
     <string name="sign_up_description">Kas sul pole veel AnkiWebi kontot? See on tasuta!</string>
-    <string name="sign_up_not_affiliated">Märkus: AnkiWeb pole kuidagi seotud AnkiDroidiga</string>
+    <string name="sign_up_not_affiliated">Märkus: AnkiWeb pole kuidagi seotud Ankrimentoiga</string>
     <string name="sign_up">Loo konto</string>
     <string name="logged_as">Logitud sisse kui</string>
     <string name="reset_password">Lähtesta salasõna</string>

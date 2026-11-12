@@ -35,7 +35,7 @@
     <string name="username">E-poçt ünvanı</string>
     <string name="password">Şifrə</string>
     <string name="sign_up_description">AnkiWeb hesabınız yoxdur? Bu pulsuzdur!</string>
-    <string name="sign_up_not_affiliated">Qeyd: AnkiWeb AnkiDroid ilə əlaqəli deyil</string>
+    <string name="sign_up_not_affiliated">Qeyd: AnkiWeb Ankrimento ilə əlaqəli deyil</string>
     <string name="sign_up">Qeydiyyatdan keç</string>
     <string name="logged_as">Daxil olundu:</string>
     <string name="reset_password">Şifrəni dəyiş</string>

@@ -82,12 +82,12 @@
     <string name="menu_disable_voice_playback">Disable voice playback</string>
     <string name="menu_create_backup" maxLength="28">Create backup</string>
     <string name="new_dynamic_deck">Opret filtreret stak</string>
-    <string name="directory_inaccessible">AnkiDroid-mappen er utilgængelig</string>
+    <string name="directory_inaccessible">Ankrimento-mappen er utilgængelig</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">Tillad venligst AnkiDroid adgang til \'Lagring\' for at fortsætte</string>
+    <string name="startup_no_storage_permission">Tillad venligst Ankrimento adgang til \'Lagring\' for at fortsætte</string>
     <string name="rebuild_filtered_deck">Genopbygger filtreret stak&#8230;</string>
     <string name="empty_cram_label" maxLength="28">Tøm</string>
     <string name="create_subdeck">Opret understak</string>
@@ -124,33 +124,33 @@
     <string name="card_template_editor_save_error">Kan ikke gemme kortskabelonændringer: %s</string>
     <string name="template_for_current_card_deleted">Korttypen for det aktuelle kort blev slettet.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">Læse og skrive til AnkiDroid-databasen</string>
+    <string name="read_write_permission_label">Læse og skrive til Ankrimento-databasen</string>
     <string name="read_write_permission_description">tilgå eksisterende noter, kort, notetyper og stakke, og skabe nye</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Card browser</string>
     <string name="context_menu_anki_card_label">Anki kort</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">Samlingerne kan ikke kombineres.\nHvilken samling vil du beholde?</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">Erstat din samling på AnkiDroid med din samling fra AnkiWeb?</string>
-    <string name="sync_conflict_local_confirm_new">Erstat din samling på AnkiWeb med din samling fra AnkiDroid?</string>
+    <string name="sync_conflict_remote_confirm_new">Erstat din samling på Ankrimento med din samling fra AnkiWeb?</string>
+    <string name="sync_conflict_local_confirm_new">Erstat din samling på AnkiWeb med din samling fra Ankrimento?</string>
     <string name="sync_conflict_title_new">Vælg den samling, der skal bevares</string>
     <string name="sync_conflict_replace_title">Erstat samling</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">Kan ikke skrive til eller oprette filen %s</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">Utilgængelig samling</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Vi kan ikke tilgå din samling, når AnkiDroid er afinstalleret på grund af en ændring i Play Store Policy\n\nDine data er sikre og kan gendannes. Det er placeret på\n%s\n\nVælg en mulighed nedenfor for at gendanne:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android har fjernet AnkiDroids %1$s -tilladelse på grund af app-inaktivitet.\n\nDine data er sikre og kan gendannes. Det er placeret på\n%2$s\n\nVælg en mulighed nedenfor for at gendanne:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Vi kan ikke tilgå din samling, når Ankrimento er afinstalleret på grund af en ændring i Play Store Policy\n\nDine data er sikre og kan gendannes. Det er placeret på\n%s\n\nVælg en mulighed nedenfor for at gendanne:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android har fjernet Ankrimentos %1$s -tilladelse på grund af app-inaktivitet.\n\nDine data er sikre og kan gendannes. Det er placeret på\n%2$s\n\nVælg en mulighed nedenfor for at gendanne:</string>
     <string name="restore_data_from_ankiweb">Gendan fra AnkiWeb (anbefalet)</string>
     <string name="install_non_play_store_ankidroid_recommended">Gendan mappeadgang (anbefalet)</string>
     <string name="install_non_play_store_ankidroid">Gendan mappeadgang (avanceret)</string>
     <string name="restore_data_from_backup">Gendan fra .colpkg-backup (avanceret)</string>
     <string name="create_new_collection">Opret ny samling</string>
-    <string name="new_unsafe_collection">Den nye samling vil blive slettet fra din telefon, hvis du afinstallerer AnkiDroid</string>
+    <string name="new_unsafe_collection">Den nye samling vil blive slettet fra din telefon, hvis du afinstallerer Ankrimento</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid behøver nogle tilladelser for at fungere</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid fungerer bedst med disse tilladelser</string>
+    <string name="permissions_screen_headline">Ankrimento behøver nogle tilladelser for at fungere</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento fungerer bedst med disse tilladelser</string>
     <string name="storage_access_title">Lageradgang</string>
     <string name="storage_access_summary">Gemmer din samling på et sikkert sted, der ikke vil blive slettet, hvis appen er afinstalleret</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Adgang til alle filer</string>
@@ -168,7 +168,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Required for the app to work</string>
-    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <string name="permission_required_message">Please grant Ankrimento the ‘%s’ permission to continue</string>
     <!-- Multiple profile -->
     <string name="add_profile">Tilføj profil</string>
 </resources>

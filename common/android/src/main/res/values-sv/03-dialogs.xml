@@ -39,12 +39,12 @@
         <item quantity="other">%d kort återställda</item>
     </plurals>
     <string name="answering_error_title">Databasfel</string>
-    <string name="answering_error_message">Ett fel uppstod när data skrevs till samlingen. Detta kan bero på en korrupt databas eller otillräckligt diskutrymme.\n\nOm detta händer flera gånger, vänligen kontrollera databasen, reparera samlingen eller återställ den från en säkerhetskopia. Klicka på \'alternativ\' för det.\n\nAnnars kan detta också bero på en bug i AnkiDroid; vänligen rapportera felet så vi kan kontrollera detta.</string>
+    <string name="answering_error_message">Ett fel uppstod när data skrevs till samlingen. Detta kan bero på en korrupt databas eller otillräckligt diskutrymme.\n\nOm detta händer flera gånger, vänligen kontrollera databasen, reparera samlingen eller återställ den från en säkerhetskopia. Klicka på \'alternativ\' för det.\n\nAnnars kan detta också bero på en bug i Ankrimento; vänligen rapportera felet så vi kan kontrollera detta.</string>
     <string name="answering_error_report">Rapportera fel</string>
-    <string name="storage_full_message">Det finns inte nog med lagringsutrymme för att öppna AnkiDroid. Frigör lite utrymme för att fortsätta.</string>
+    <string name="storage_full_message">Det finns inte nog med lagringsutrymme för att öppna Ankrimento. Frigör lite utrymme för att fortsätta.</string>
     <string name="repair_deck_dialog">Vill du verkligen försöka reparera databasen?\n\nEn kopia kommer att skapas i mappen \'%s\' innan.</string>
     <string name="intent_aedict_empty">Kategori \'default\' är tom</string>
-    <string name="intent_aedict_category">För att lägga till kort till AnkiDroid, ta bort alla Notepadkategorier eller lägg till en som heter \'default\'</string>
+    <string name="intent_aedict_category">För att lägga till kort till Ankrimento, ta bort alla Notepadkategorier eller lägg till en som heter \'default\'</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Repetera kort som är glömda under de senaste x dagarna:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Lagring full</string>
     <string name="storage_almost_full_title">Lagring nästan full</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Inget utrymme</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid behöver %s ledigt lagringsutrymme för att fortsätta. Rensa lite utrymme</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento behöver %s ledigt lagringsutrymme för att fortsätta. Rensa lite utrymme</string>
     <string name="restore_backup_title">Återställ säkerhetskopia?</string>
     <string name="restore_backup">Din samling kommer att ersättas med en äldre kopia. Ej sparade framsteg kommer att gå förlorade.</string>
     <string name="restore_backup_choose_another">Välj en annan</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Databas låst</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">En annan AnkiDroid-app använder denna samling. Det kan uppstå konflikter även när den inte verkar köras.\n\nFör att fortsätta använda båda apparna, ändra \'%s\' i en av apparnas Avancerade inställningar.\n\nFör att använda denna app nu, tvångsavsluta den andra appen.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">En annan Ankrimento-app använder denna samling. Det kan uppstå konflikter även när den inte verkar köras.\n\nFör att fortsätta använda båda apparna, ändra \'%s\' i en av apparnas Avancerade inställningar.\n\nFör att använda denna app nu, tvångsavsluta den andra appen.</string>
     <string name="incompatible_database_version_title">Inkompatibel databasversion</string>
-    <string name="incompatible_database_version_summary">Databasen är en mer avancerad version än denna version av AnkiDroid kan arbeta med. Uppgradera AnkiDroid eller nedgradera databasen för att öppna den\n\nVersion som stöds: %1$d\nDatabasversion: %2$d\n\nFöljande återställningsalternativ kommer att skriva över din nuvarande samling, eventuellt med en kompatibel databasversion:</string>
+    <string name="incompatible_database_version_summary">Databasen är en mer avancerad version än denna version av Ankrimento kan arbeta med. Uppgradera Ankrimento eller nedgradera databasen för att öppna den\n\nVersion som stöds: %1$d\nDatabasversion: %2$d\n\nFöljande återställningsalternativ kommer att skriva över din nuvarande samling, eventuellt med en kompatibel databasversion:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Bakgrundsbild tillämpad</string>
     <string name="background_image_removed">Bakgrundsbild borttagen</string>

@@ -39,12 +39,12 @@
         <item quantity="other">%d ਕਾਰਡ ਰੀਸੈੱਟ</item>
     </plurals>
     <string name="answering_error_title">ਡਾਟਾਬੇਸ ਗਲਤੀ</string>
-    <string name="answering_error_message">Writing to the collection failed. The database could be corrupt or there may not to be enough empty space on disk.\n\nIf this happens more often, try checking the database, repairing the collection or restoring it from a backup. Touch “options” for that.\n\Or it could be an AnkiDroid bug as well; please report the error so that we can check this.</string>
+    <string name="answering_error_message">Writing to the collection failed. The database could be corrupt or there may not to be enough empty space on disk.\n\nIf this happens more often, try checking the database, repairing the collection or restoring it from a backup. Touch “options” for that.\n\Or it could be an Ankrimento bug as well; please report the error so that we can check this.</string>
     <string name="answering_error_report">ਇੱਕ ਬੱਗ ਦੀ ਰਿਪੋਰਟ ਕਰੋ</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">Do you really want to try to repair the database?\n\nBefore starting the attempt, a copy will be created in subfolder “%s”.</string>
     <string name="intent_aedict_empty">ਸ਼੍ਰੇਣੀ \"ਡਿਫਾਲਟ\" ਖਾਲੀ ਹੈ</string>
-    <string name="intent_aedict_category">To add cards to AnkiDroid remove all Notepad categories or add one named “default”</string>
+    <string name="intent_aedict_category">To add cards to Ankrimento remove all Notepad categories or add one named “default”</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">ਅੱਜ ਦੀ ਸਮੀਖਿਆ ਸੀਮਾ ਵਧਾਓ/ਘਟਾਓ (“-3”)</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">ਸਟੋਰੇਜ ਭਰੀ ਹੋਈ ਹੈ</string>
     <string name="storage_almost_full_title">ਸਟੋਰੇਜ ਲਗਭਗ ਭਰੀ ਹੋਈ ਹੈ</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">ਕੋਈ ਥਾਂ ਨਹੀਂ</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid ਨੂੰ ਜਾਰੀ ਰੱਖਣ ਲਈ %s ਖਾਲੀ ਸਟੋਰੇਜ ਸਪੇਸ ਦੀ ਲੋੜ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਕੁਝ ਥਾਂ ਖਾਲੀ ਕਰੋ</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento ਨੂੰ ਜਾਰੀ ਰੱਖਣ ਲਈ %s ਖਾਲੀ ਸਟੋਰੇਜ ਸਪੇਸ ਦੀ ਲੋੜ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਕੁਝ ਥਾਂ ਖਾਲੀ ਕਰੋ</string>
     <string name="restore_backup_title">ਕੀ ਤੁਸੀਂ ਬੈਕਅੱਪ ਰੀਸਟੋਰ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?</string>
     <string name="restore_backup">Your collection will be replaced with an older copy. Any unsaved progress will be lost.</string>
     <string name="restore_backup_choose_another">ਕੋਈ ਹੋਰ ਚੁਣੋ</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">ਡਾਟਾਬੇਸ ਲਾਕ ਕੀਤਾ</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">ਅਸੰਗਤ ਡਾਟਾਬੇਸ ਸੰਸਕਰਣ</string>
-    <string name="incompatible_database_version_summary">The database is a more advanced version than this version of AnkiDroid can work with. Upgrade AnkiDroid or downgrade the database to open it\n\nSupported version: %1$d\nDatabase version: %2$d\n\nThe following restore options will overwrite your current collection, possibly with a compatible database version:</string>
+    <string name="incompatible_database_version_summary">The database is a more advanced version than this version of Ankrimento can work with. Upgrade Ankrimento or downgrade the database to open it\n\nSupported version: %1$d\nDatabase version: %2$d\n\nThe following restore options will overwrite your current collection, possibly with a compatible database version:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">ਬੈਕਗ੍ਰਾਊਂਡ ਚਿੱਤਰ ਲਾਗੂ ਕੀਤਾ ਗਿਆ</string>
     <string name="background_image_removed">ਬੈਕਗ੍ਰਾਊਂਡ ਚਿੱਤਰ ਹਟਾਇਆ ਗਿਆ</string>

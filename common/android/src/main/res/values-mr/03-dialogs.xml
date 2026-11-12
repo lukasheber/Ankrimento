@@ -41,10 +41,10 @@
     <string name="answering_error_title">डेटाबेस त्रुटी</string>
     <string name="answering_error_message">संग्रहात लेखन अयशस्वी. डेटाबेस दूषित होऊ शकतो किंवा डिस्कवर पुरेशी रिक्त जागा असू शकत नाही. \N \n जर हे बर्‍याचदा घडले तर डेटाबेस तपासून पहा, संग्रह दुरुस्त करा किंवा बॅकअपमधून पुनर्संचयित करा. त्यासाठी “पर्याय” ला स्पर्श करा. \N\ किंवा हा अँकीड्रोइड बग देखील असू शकतो; कृपया त्रुटी नोंदवा जेणेकरुन आम्ही हे तपासू शकतो.</string>
     <string name="answering_error_report">अहवाल त्रुटी</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">आपण खरोखर डेटाबेस दुरुस्त करण्याचा प्रयत्न करू इच्छिता? \N\n प्रयत्न सुरू करण्यापूर्वी, एक प्रत सबफोल्डर \"%s\" मध्ये तयार केली जाईल.</string>
     <string name="intent_aedict_empty">वर्ग “डीफॉल्ट” रिक्त आहे</string>
-    <string name="intent_aedict_category">AnkiDroid वर कार्डे जोडण्यासाठी सर्व नोटपॅड श्रेण्या काढा किंवा “डीफॉल्ट” नावाची एक जोडा</string>
+    <string name="intent_aedict_category">Ankrimento वर कार्डे जोडण्यासाठी सर्व नोटपॅड श्रेण्या काढा किंवा “डीफॉल्ट” नावाची एक जोडा</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">गेल्या x दिवसात विसरलेल्या कार्डांचे पुनरावलोकन करा:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">स्टोरेज भरले आहे</string>
     <string name="storage_almost_full_title">स्टोरेज जवळजवळ भरले आहे</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">जागा नाही</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid ला सुरू ठेवण्यासाठी %s विनामूल्य स्टोरेज स्पेस आवश्यक आहे. कृपया थोडी जागा द्या</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento ला सुरू ठेवण्यासाठी %s विनामूल्य स्टोरेज स्पेस आवश्यक आहे. कृपया थोडी जागा द्या</string>
     <string name="restore_backup_title">बॅकअप पुनर्संचयित?</string>
     <string name="restore_backup">आपला संग्रह जुन्या प्रतीसह पुनर्स्थित केला जाईल. कोणतीही जतन न केलेली प्रगती गमावली जाईल.</string>
     <string name="restore_backup_choose_another">दुसरा निवडा</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">डेटाबेस लॉक केले</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">विसंगत डेटाबेस आवृत्ती</string>
-    <string name="incompatible_database_version_summary">डेटाबेस ही अँकीड्रॉइडच्या आवृत्तीसह कार्य करू शकते त्यापेक्षा अधिक प्रगत आवृत्ती आहे. AnkiDroid श्रेणीसुधारित करा किंवा ते उघडण्यासाठी डेटाबेस डाउनग्रेड करा \n\n समर्थित आवृत्ती:%1$d \ n डेटाबेस आवृत्ती:%2$d \n\n खालील पुनर्संचयित पर्याय आपल्या वर्तमान संग्रहास अधिलिखित करतील, शक्यतो सुसंगत डेटाबेस आवृत्तीसह:</string>
+    <string name="incompatible_database_version_summary">डेटाबेस ही अँकीड्रॉइडच्या आवृत्तीसह कार्य करू शकते त्यापेक्षा अधिक प्रगत आवृत्ती आहे. Ankrimento श्रेणीसुधारित करा किंवा ते उघडण्यासाठी डेटाबेस डाउनग्रेड करा \n\n समर्थित आवृत्ती:%1$d \ n डेटाबेस आवृत्ती:%2$d \n\n खालील पुनर्संचयित पर्याय आपल्या वर्तमान संग्रहास अधिलिखित करतील, शक्यतो सुसंगत डेटाबेस आवृत्तीसह:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">पार्श्वभूमी प्रतिमा लागू केली</string>
     <string name="background_image_removed">पार्श्वभूमी प्रतिमा काढली</string>

@@ -43,12 +43,12 @@
         <item quantity="other">%d kort. atkūrimas</item>
     </plurals>
     <string name="answering_error_title">Duomenų bazės klaida</string>
-    <string name="answering_error_message">Įrašymas į kolekciją nepavyko. Duomenų bazė gali būti sugadinta arba diske gali būti nepakankamai tuščios vietos.Jei taip nutinka dažniau, pabandykite patikrinti duomenų bazę, pataisyti kolekciją arba atkurti ją iš atsarginės kopijos. Tam palieskite \"parinktis\".\n\Nors tai gali būti ir AnkiDroid klaida; praneškite apie klaidą, kad galėtume tai patikrinti.</string>
+    <string name="answering_error_message">Įrašymas į kolekciją nepavyko. Duomenų bazė gali būti sugadinta arba diske gali būti nepakankamai tuščios vietos.Jei taip nutinka dažniau, pabandykite patikrinti duomenų bazę, pataisyti kolekciją arba atkurti ją iš atsarginės kopijos. Tam palieskite \"parinktis\".\n\Nors tai gali būti ir Ankrimento klaida; praneškite apie klaidą, kad galėtume tai patikrinti.</string>
     <string name="answering_error_report">Pranešti apie klaidą</string>
-    <string name="storage_full_message">Nėra pakankamai laisvos vietos, kad galėtumėte atidaryti \"AnkiDroid\". Atlaisvinkite šiek tiek vietos, kad galėtumėte tęsti.</string>
+    <string name="storage_full_message">Nėra pakankamai laisvos vietos, kad galėtumėte atidaryti \"Ankrimento\". Atlaisvinkite šiek tiek vietos, kad galėtumėte tęsti.</string>
     <string name="repair_deck_dialog">Ar tikrai norite taisyti duomenų bazę?\n\nPrieš tai atliekant, poaplankyje „%s“ bus sukurta kopija.</string>
     <string name="intent_aedict_empty">Kategorija „numatytieji“ yra tuščia</string>
-    <string name="intent_aedict_category">Norėdami „AnkiDroid“ programoje pridėti kortelių, pašalinkite visas „Notepad“ kategorijas arba pridėkite vieną, kuri vadintųsi „numatytoji“</string>
+    <string name="intent_aedict_category">Norėdami „Ankrimento“ programoje pridėti kortelių, pašalinkite visas „Notepad“ kategorijas arba pridėkite vieną, kuri vadintųsi „numatytoji“</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Peržiūrėti korteles, kurios buvo pamirštos per paskutines x dienų:</string>
@@ -58,7 +58,7 @@
     <string name="storage_full_title">Saugykla pilna</string>
     <string name="storage_almost_full_title">Saugykla beveik užpildyta</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Nėra vietos</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Norint tęsti \"AnkiDroid\" reikia %s laisvos vietos saugykloje. Prašome išvalyti šiek tiek vietos</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Norint tęsti \"Ankrimento\" reikia %s laisvos vietos saugykloje. Prašome išvalyti šiek tiek vietos</string>
     <string name="restore_backup_title">Atkurti atsarginę kopiją?</string>
     <string name="restore_backup">Jūsų rinkinys bus pakeistas senesne kopija. Bus prarasta bet kokia neišsaugota pažanga.</string>
     <string name="restore_backup_choose_another">Pasirinkite kitą</string>
@@ -123,9 +123,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Duomenų bazė užrakinta</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Nesuderinama duomenų bazės versija</string>
-    <string name="incompatible_database_version_summary">Duomenų bazė yra pažangesnė versija, nei su kuria gali dirbti ši \"AnkiDroid\" versija. Atnaujinkite \"AnkiDroid\" arba sumažinkite duomenų bazės lygį, kad ją atidarytumėte\n\nPalaikoma versija: %1$d\nDomenų bazės versija: %2$d\n\nNurodytos atkūrimo parinktys perrašys jūsų dabartinę kolekciją, galbūt su suderinama duomenų bazės versija:</string>
+    <string name="incompatible_database_version_summary">Duomenų bazė yra pažangesnė versija, nei su kuria gali dirbti ši \"Ankrimento\" versija. Atnaujinkite \"Ankrimento\" arba sumažinkite duomenų bazės lygį, kad ją atidarytumėte\n\nPalaikoma versija: %1$d\nDomenų bazės versija: %2$d\n\nNurodytos atkūrimo parinktys perrašys jūsų dabartinę kolekciją, galbūt su suderinama duomenų bazės versija:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Pritaikytas fono paveikslėlis</string>
     <string name="background_image_removed">Pašalintas fono paveikslėlis</string>

@@ -39,12 +39,12 @@
         <item quantity="other">%d કાર્ડ રીસેટ</item>
     </plurals>
     <string name="answering_error_title">ડેટાબેઝ ભૂલ</string>
-    <string name="answering_error_message">સંગ્રહમાં લખવાનું નિષ્ફળ થયું. ડેટાબેઝ દૂષિત હોઈ શકે છે અથવા ડિસ્ક પર પૂરતી ખાલી જગ્યા ન હોઈ શકે.\n\nજો આવું વધુ વખત થાય, તો ડેટાબેઝને તપાસવાનો, સંગ્રહને રિપેર કરવાનો અથવા તેને બેકઅપમાંથી પુનઃસ્થાપિત કરવાનો પ્રયાસ કરો. તેના માટે \"વિકલ્પો\" ને ટચ કરો.\n\અથવા તે AnkiDroid બગ પણ હોઈ શકે છે; કૃપા કરીને ભૂલની જાણ કરો જેથી અમે આ તપાસી શકીએ.</string>
+    <string name="answering_error_message">સંગ્રહમાં લખવાનું નિષ્ફળ થયું. ડેટાબેઝ દૂષિત હોઈ શકે છે અથવા ડિસ્ક પર પૂરતી ખાલી જગ્યા ન હોઈ શકે.\n\nજો આવું વધુ વખત થાય, તો ડેટાબેઝને તપાસવાનો, સંગ્રહને રિપેર કરવાનો અથવા તેને બેકઅપમાંથી પુનઃસ્થાપિત કરવાનો પ્રયાસ કરો. તેના માટે \"વિકલ્પો\" ને ટચ કરો.\n\અથવા તે Ankrimento બગ પણ હોઈ શકે છે; કૃપા કરીને ભૂલની જાણ કરો જેથી અમે આ તપાસી શકીએ.</string>
     <string name="answering_error_report">ભૂલની જાણ કરો</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">શું તમે ખરેખર ડેટાબેઝને રિપેર કરવાનો પ્રયાસ કરવા માંગો છો?\n\nપ્રયાસ શરૂ કરતા પહેલા, સબફોલ્ડર “%s” માં એક નકલ બનાવવામાં આવશે.</string>
     <string name="intent_aedict_empty">કેટેગરી \"ડિફોલ્ટ\" ખાલી છે</string>
-    <string name="intent_aedict_category">AnkiDroid માં કાર્ડ ઉમેરવા માટે નોટપેડની બધી કેટેગરી દૂર કરો અથવા \"ડિફોલ્ટ\" નામની એક ઉમેરો</string>
+    <string name="intent_aedict_category">Ankrimento માં કાર્ડ ઉમેરવા માટે નોટપેડની બધી કેટેગરી દૂર કરો અથવા \"ડિફોલ્ટ\" નામની એક ઉમેરો</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">છેલ્લા x દિવસમાં ભૂલી ગયેલા કાર્ડની સમીક્ષા કરો:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">સ્ટોરેજ ભરાઈ ગયું</string>
     <string name="storage_almost_full_title">સ્ટોરેજ લગભગ ભરાઈ ગયું છે</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">જગ્યા નથી</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid ને ચાલુ રાખવા માટે %s ફ્રી સ્ટોરેજ સ્પેસની જરૂર છે. કૃપા કરીને થોડી જગ્યા ખાલી કરો</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento ને ચાલુ રાખવા માટે %s ફ્રી સ્ટોરેજ સ્પેસની જરૂર છે. કૃપા કરીને થોડી જગ્યા ખાલી કરો</string>
     <string name="restore_backup_title">બેકઅપ પુનઃસ્થાપિત કરીએ?</string>
     <string name="restore_backup">તમારા સંગ્રહને જૂની નકલ સાથે બદલવામાં આવશે. કોઈપણ વણસાચવેલી પ્રગતિ ખોવાઈ જશે.</string>
     <string name="restore_backup_choose_another">બીજું પસંદ કરો</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">ડેટાબેઝ લોક</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">અસંગત ડેટાબેઝ સંસ્કરણ</string>
-    <string name="incompatible_database_version_summary">ડેટાબેઝ એ AnkiDroid ના આ વર્ઝન સાથે કામ કરી શકે છે તેના કરતાં વધુ અદ્યતન સંસ્કરણ છે. AnkiDroid ને અપગ્રેડ કરો અથવા તેને ખોલવા માટે ડેટાબેઝને ડાઉનગ્રેડ કરો\n\nઆધારિત સંસ્કરણ: %1$d\nડેટાબેઝ સંસ્કરણ: %2$d\n\nનીચેના પુનઃસ્થાપિત વિકલ્પો તમારા વર્તમાન સંગ્રહને ઓવરરાઈટ કરશે, સંભવતઃ સુસંગત ડેટાબેઝ સંસ્કરણ સાથે:</string>
+    <string name="incompatible_database_version_summary">ડેટાબેઝ એ Ankrimento ના આ વર્ઝન સાથે કામ કરી શકે છે તેના કરતાં વધુ અદ્યતન સંસ્કરણ છે. Ankrimento ને અપગ્રેડ કરો અથવા તેને ખોલવા માટે ડેટાબેઝને ડાઉનગ્રેડ કરો\n\nઆધારિત સંસ્કરણ: %1$d\nડેટાબેઝ સંસ્કરણ: %2$d\n\nનીચેના પુનઃસ્થાપિત વિકલ્પો તમારા વર્તમાન સંગ્રહને ઓવરરાઈટ કરશે, સંભવતઃ સુસંગત ડેટાબેઝ સંસ્કરણ સાથે:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">પૃષ્ઠભૂમિ છબી લાગુ કરી</string>
     <string name="background_image_removed">પૃષ્ઠભૂમિ છબી દૂર કરી</string>

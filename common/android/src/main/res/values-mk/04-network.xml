@@ -35,7 +35,7 @@
     <string name="username">Имејл адреса</string>
     <string name="password">Лозинка</string>
     <string name="sign_up_description">Немате профил на AnkiWeb? Бесплатно е!</string>
-    <string name="sign_up_not_affiliated">Забелешка: AnkiWeb не е поврзан со AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Забелешка: AnkiWeb не е поврзан со Ankrimento</string>
     <string name="sign_up">Пријавете се</string>
     <string name="logged_as">Логиран како</string>
     <string name="reset_password">Ресетирај лозинка</string>

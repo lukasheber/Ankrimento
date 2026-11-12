@@ -72,7 +72,7 @@
     <string name="card_browser_font_size" maxLength="41">Kartīšu pārlūka fonta mērogošana</string>
     <string name="card_browser_hide_media" maxLength="41">Kartīšu pārlūkā attēlot datņu nosaukumus</string>
     <string name="card_browser_hide_media_summary">Display audio filenames in the card browser question/answer fields</string>
-    <string name="col_path" maxLength="41">AnkiDroid mape</string>
+    <string name="col_path" maxLength="41">Ankrimento mape</string>
     <string name="fullscreen_review" maxLength="41">Pilnekrāna skats</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">Izslēgts</string>
     <string name="full_screen_system">Paslēpt sistēmas joslas</string>
@@ -312,9 +312,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Vispārīgi</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Meklēt</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">Palīdzi padarīt AnkiDroid labāku!</string>
+    <string name="analytics_dialog_title">Palīdzi padarīt Ankrimento labāku!</string>
     <string name="analytics_title" maxLength="41">Kopīgot iespēju lietojumu</string>
-    <string name="analytics_summ">Tu vari sniegt savu ieguldījumu AnkiDroid, palīdzot izstrādes komandai redzēt, kuras iespējas cilvēki izmanto</string>
+    <string name="analytics_summ">Tu vari sniegt savu ieguldījumu Ankrimento, palīdzot izstrādes komandai redzēt, kuras iespējas cilvēki izmanto</string>
     <string name="note_editor_replace_newlines" maxLength="41">Aizstāt pārejas jaunā rindā ar HTML</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">Pārslēgties uz \"Ierakstīt atbildi\"</string>
@@ -326,8 +326,8 @@
     <string name="about_contributors_description"><![CDATA[Šie ir mūsu lieliskie <a href=\"%1$s\">līdzdalībnieki</a>. Tu arī vari palīdzēt AnkiDroid ar programmēšanu, tulkošanu, ziedojumiem un <a href=\"%2$s\">vēl</a>.]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">Licence</string>
-    <string name="license_description"><![CDATA[AnkiDroid ir laista klajā ar <a href=\"%1$s\">GPL-3.0</a> un <a href=\"%2$s\">AGPL-3.0</a> licencēm, un pirmkods ir pieejams <a href=\"%3$s\">GitHub</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid izmanto arī trešo pušu bibliotēkas un ikonas, kas ir licencētas ar dažādām atvērtā pirmkoda <a href=\"%1$s\">licencēm</a>]]></string>
+    <string name="license_description"><![CDATA[Ankrimento ir laista klajā ar <a href=\"%1$s\">GPL-3.0</a> un <a href=\"%2$s\">AGPL-3.0</a> licencēm, un pirmkods ir pieejams <a href=\"%3$s\">GitHub</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento izmanto arī trešo pušu bibliotēkas un ikonas, kas ir licencētas ar dažādām atvērtā pirmkoda <a href=\"%1$s\">licencēm</a>]]></string>
     <string name="donate_description"><![CDATA[AnkiDroid izstrādi var atbalstīt ar <a href=\"%1$s\">ziedošanu</a>. Jebkāds daudzums tiks ļoti novērtēts.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">Pievienot kustību</string>
@@ -363,7 +363,7 @@
     <string name="bindings_already_bound">Jau ir piesaistīts \"%s\"</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Izmēģinājuma</string>
-    <string name="readtext_deprecation_warn">AnkiDroid ir ieviesta labāks TTS (teksta pārvēršanas runā) mehānisms, kas ir saderīgs ar citiem Anki klientiem un iekļauj vairāk balsu un valodas atskaņošanas uzlabojumiem.\n\nLūgums atjaunināt, tiklīdz tas ir iespējams, jo šis iestatījums drīz tiks noņemts</string>
+    <string name="readtext_deprecation_warn">Ankrimento ir ieviesta labāks TTS (teksta pārvēršanas runā) mehānisms, kas ir saderīgs ar citiem Anki klientiem un iekļauj vairāk balsu un valodas atskaņošanas uzlabojumiem.\n\nLūgums atjaunināt, tiklīdz tas ir iespējams, jo šis iestatījums drīz tiks noņemts</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Lūgums uzlabot uz jauno teksta pārveidošanas runā formātu</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -377,9 +377,9 @@
     <!-- #######################################################################################
          #################################### Backup options ###################################
          ####################################################################################### -->
-    <string name="pref__backups_help__summary"><![CDATA[        AnkiDroid laiku pa laikam veic krājumu rezerves kopēšanu
+    <string name="pref__backups_help__summary"><![CDATA[        Ankrimento laiku pa laikam veic krājumu rezerves kopēšanu
         Tiklīdz rezerves kopijas ir vecākas par vairāk kā divām dienām,
-        AnkiDroid sāks noņemt dažas no tām, lai atbrīvuto krātuves vietu.
+        Ankrimento sāks noņemt dažas no tām, lai atbrīvuto krātuves vietu.
         <br><br>
         Jāņem vērāk, ka informācijas nesēju datnes netiek iekļautas rezerves kopijās.
         Drošības dēļ lūgums laiku pa laikam vienādot savu krājumu vai saglabāt tā izguves.

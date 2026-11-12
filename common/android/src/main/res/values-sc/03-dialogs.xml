@@ -42,14 +42,14 @@
     <string name="answering_error_message">Iscritura in sa colletzione fallida. Sa base de datos diat pòdere èssere corrùmpida o bi diat pòdere no èssere logu bastante in su discu.\n
                                              \n
                                              Si custu acontesset prus de su sòlitu proa a verificare sa base de datos, ariparare sa colletzione o a la ripristinare dae una còpia de seguresa. Incarca in “optziones” pro lu fàghere.\n
-                                             \\O diat pòdere èssere fintzas unu problema de AnkiDroid; pro praghere sinnala s\'errore pro nos permìtere de lu verificare.</string>
+                                             \\O diat pòdere èssere fintzas unu problema de Ankrimento; pro praghere sinnala s\'errore pro nos permìtere de lu verificare.</string>
     <string name="answering_error_report">Sinnala una faddina</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">Cheres a beru proare a riparare sa base de datos?\n
                    \n
                    In antis de incumintzare cun sa proa s\'at a creare una còpia in sa suta-cartella “%s”.</string>
     <string name="intent_aedict_empty">Sa categoria “default” est bòida</string>
-    <string name="intent_aedict_category">Pro annànghere cartas a AnkiDroid boga totu sas categorias de Notepad o annanghe·nde una ponende·li “default” comente nùmene</string>
+    <string name="intent_aedict_category">Pro annànghere cartas a Ankrimento boga totu sas categorias de Notepad o annanghe·nde una ponende·li “default” comente nùmene</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Revisiona sas cartas ismentigadas in sas ùrtimas x dies:</string>
@@ -59,7 +59,7 @@
     <string name="storage_full_title">Memòria prena</string>
     <string name="storage_almost_full_title">Memòria belle prena</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Non b\'at ispàtziu</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid tenet bisòngiu de %s de memòria lìbera pro sighire. Lìbera unu pagu de ispàtziu</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento tenet bisòngiu de %s de memòria lìbera pro sighire. Lìbera unu pagu de ispàtziu</string>
     <string name="restore_backup_title">Ripristinare sa còpia de seguresa?</string>
     <string name="restore_backup">Sa colletzione tua s\'at a remplasare cun una còpia prus betza. Cale si siat progressu non sarvadu s\'at a pèrdere.</string>
     <string name="restore_backup_choose_another">Issèbera·nde un\'àteru</string>
@@ -124,9 +124,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Base de datos blocada</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Versione de sa base de datos non cumpatìbile</string>
-    <string name="incompatible_database_version_summary">Sa base de datos est una versione prus avantzada de sas chi custa versione de AnkiDroid potzat gestire. Atualiza AnkiDroid o cunverte sa base de datos a una versione prus betza pro l\'aberrere\n
+    <string name="incompatible_database_version_summary">Sa base de datos est una versione prus avantzada de sas chi custa versione de Ankrimento potzat gestire. Atualiza Ankrimento o cunverte sa base de datos a una versione prus betza pro l\'aberrere\n
                               \n
                               Versione suportada: %1$d\n
                               Versione de sa base de datos: %2$d\n

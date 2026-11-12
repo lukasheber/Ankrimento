@@ -123,7 +123,7 @@
         <item quantity="one">%1$d minūti</item>
         <item quantity="other">%1$d minūtes</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid kartīte</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento kartīte</string>
     <string name="note_editor_copy_note" maxLength="28">Kopēt piezīmi</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Pārkārtot</string>
     <string name="card_editor_reset_card" maxLength="28">Atiestatīt virzību</string>
@@ -135,7 +135,7 @@
     <string name="checks_action" maxLength="28">Pārbaudīt</string>
     <string name="unknown_type_field_warning">Atbildes ievadīšana: nezināms lauks %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Izdzēš kavu&#8230;</string>
-    <string name="info_rate">Novērtēt AnkiDroid</string>
+    <string name="info_rate">Novērtēt Ankrimento</string>
     <string name="import_title">Ievieto</string>
     <string name="import_preparing_file">Sagatavo datni ievietošanai&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Pievienot</string>
@@ -146,16 +146,16 @@
     <string name="import_error_handle_exception">Neizdevās ievietot datni\n\n%s</string>
     <string name="import_error_not_apkg_extension">Datnes nosaukumam \"%s\" nav paplašinājuma .apkg vai .colpkg</string>
     <string name="import_error_load_imported_database">Anki datubāze (.anki2) aizvietotāji vēl nav atbalstīti. Lūgums apskatīt rokasgrāmatu, lai iegūtu norādes par aizvietotājiem.</string>
-    <string name="import_error_content_provider">AnkiDroid nevarēja automātiski ievietot atlasīto datni. Lūgums apskatīt lietotāja rokasgrāmatu, lai uzzinātu, kā pašrocīgi ievietot Anki datnes: \n%s</string>
+    <string name="import_error_content_provider">Ankrimento nevarēja automātiski ievietot atlasīto datni. Lūgums apskatīt lietotāja rokasgrāmatu, lai uzzinātu, kā pašrocīgi ievietot Anki datnes: \n%s</string>
     <string name="import_error_copy_to_cache_title">Neizdevās kešot datni</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">This is often caused by a bug in the app you used to select the file. Please try the following fixes:\n\n%s</string>
-    <string name="import_interrupted">Ievietošana pārtraukta: AnkiDroid tika aizvērta</string>
+    <string name="import_interrupted">Ievietošana pārtraukta: Ankrimento tika aizvērta</string>
     <string name="export_ready_title">Izguve gatava</string>
     <string name="export_send_no_handlers">Nav pieejama neviena lietotne .apkg apstrādāšanai. Saglabā&#8230;</string>
     <string name="export_save_apkg_successful">Anki pakotne sekmīgi saglabāta</string>
     <string name="export_save_apkg_unsuccessful">Anki pakotnes saglabāšana neizdevās</string>
     <string name="export_share_title">Nosūtīt Anki pakotni ar</string>
-    <string name="export_email_subject">AnkiDroid izgūtās zibkartītes: %s</string>
+    <string name="export_email_subject">Ankrimento izgūtās zibkartītes: %s</string>
     <string name="export_email_text"><![CDATA[
         Sveiciens!
         <br/><br/>
@@ -202,7 +202,7 @@
     <string name="white_board_image_save_failed">Neizdevās saglabāt tāfeles attēlu. %s</string>
     <string name="white_board_image_saved">Tāfeles attēls saglabāts %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Tāfeles redaktors</string>
-    <string name="user_is_a_robot">Noteikta automatizēta pārbaude. Ja Tu esi cilvēks, sazinies ar AnkiDroid atbalstu</string>
+    <string name="user_is_a_robot">Noteikta automatizēta pārbaude. Ja Tu esi cilvēks, sazinies ar Ankrimento atbalstu</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Šajā kartītē ir izmantotas neatbalstītas AnkiDroid iespējas. Jāsazinās ar izstrādātāju %1$s vai jāapmeklē vikivietne. %2$s</string>
     <string name="invalid_json_data">Kartītē norādīti nederīgi dati. %s</string>
@@ -218,8 +218,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Meklēt kavas</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid paļaujas uz sistēmas WebView, kas nav pieejams. Tas var notikt, ja sistēma uzstāda atjauninājumus. Lūgums pēc dažām minūtēm mēģināt vēlreiz.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid cannot access storage due to an Android error.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento paļaujas uz sistēmas WebView, kas nav pieejams. Tas var notikt, ja sistēma uzstāda atjauninājumus. Lūgums pēc dažām minūtēm mēģināt vēlreiz.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento cannot access storage due to an Android error.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Burtu lielums</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -248,9 +248,9 @@
     <string name="note_editor_video_too_large">Video datne ir pārāk liela, lūgums pašrocīgi ievietot video</string>
     <string name="note_editor_audio_too_large">Skaņu datne ir pārāk liela, lūgums ievietot skaņu pašrocīgi</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Notiek Android rezerves kopēšana. Lūgums mēģināt vēlreiz</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Var būt nepieciešams izmantot iManager, lai ļautu AnkiDroid pievienot saīsnes</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Var būt nepieciešams izmantot iManager, lai ļautu Ankrimento pievienot saīsnes</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Sākuma ekrāns neļauj AnkiDroid pievienot saīsnes</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Sākuma ekrāns neļauj Ankrimento pievienot saīsnes</string>
     <string name="create_shortcut_error">Kļūda saīsnes pievienošanā: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Sākt teikumus ar lielo burtu</string>
     <!-- Dialog hints -->
@@ -321,7 +321,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">Vienādot no AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid vēl nav sāknēta. Lūgums atvērt AnkiDroid un mēģināt vēlreiz</string>
+    <string name="app_not_initialized_new">Ankrimento vēl nav sāknēta. Lūgums atvērt Ankrimento un mēģināt vēlreiz</string>
     <!-- Deck Creation -->
     <string name="deck_created">Kava izveidota</string>
     <string name="deck_renamed">Kava pārdēvēta</string>
@@ -341,7 +341,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internets</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Uzstādīt</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Neizdevās atvērt teksta pārveidošanas runā iestatījumus</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Apraksts</string>
     <string name="deck_description_saved">Description updated</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

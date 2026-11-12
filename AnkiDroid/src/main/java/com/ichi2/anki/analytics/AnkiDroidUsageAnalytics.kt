@@ -74,7 +74,7 @@ internal object AnkiDroidUsageAnalytics : UsageAnalytics {
     private val sharedPrefsListener =
         SharedPreferences.OnSharedPreferenceChangeListener { prefs, key ->
             if (key == PREF_ANALYTICS_OPTIN) {
-                val newOptIn = prefs.getBoolean(key, false)
+                val newOptIn = ::analyticsContext.isInitialized && trackingAvailable(analyticsContext) && prefs.getBoolean(key, false)
                 // [isEnabled] updates `optIn` before it writes, so an unchanged value
                 // means it's already handling this toggle: don't rebuild twice
                 if (newOptIn != optIn) {
@@ -127,7 +127,7 @@ internal object AnkiDroidUsageAnalytics : UsageAnalytics {
         // user's choice rather than the default.
         handlePreferences(analyticsContext)
 
-        if (analytics == null) {
+        if (analytics == null && trackingAvailable(analyticsContext)) {
             analytics =
                 GoogleAnalytics.builder {
                     measurementId = analyticsContext.getString(R.string.ga_trackingId)
@@ -145,9 +145,12 @@ internal object AnkiDroidUsageAnalytics : UsageAnalytics {
         initializePrefKeys(analyticsContext)
     }
 
+    /** Whether there is a property to report to; this build has none, so analytics stay off whatever the preference says. */
+    fun trackingAvailable(context: Context): Boolean = context.getString(R.string.ga_trackingId).isNotBlank()
+
     private fun handlePreferences(context: Context) {
         val userPrefs = context.sharedPrefs()
-        optIn = userPrefs.getBoolean(PREF_ANALYTICS_OPTIN, false)
+        optIn = trackingAvailable(context) && userPrefs.getBoolean(PREF_ANALYTICS_OPTIN, false)
         userPrefs.registerOnSharedPreferenceChangeListener(sharedPrefsListener)
     }
 

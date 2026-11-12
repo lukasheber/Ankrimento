@@ -37,12 +37,12 @@
         <item quantity="other">%d kad ditetap semula</item>
     </plurals>
     <string name="answering_error_title">Ralat pangkalan data</string>
-    <string name="answering_error_message">Menulis ke koleksi gagal. Pangkalan data mungkin rosak atau kehabisan ruang kosong pada cakera.\n\nJika ini berlaku kerap, cuba periksa pangkalan data, baiki koleksi atau pulih dari suatu sandaran. Sentuh \"tetapan\" untuk lakukannya.\n\Atau ia mungkin pepijat AnkiDroid; sila laporkannya agar kami boleh memeriksa ralat tersebut.</string>
+    <string name="answering_error_message">Menulis ke koleksi gagal. Pangkalan data mungkin rosak atau kehabisan ruang kosong pada cakera.\n\nJika ini berlaku kerap, cuba periksa pangkalan data, baiki koleksi atau pulih dari suatu sandaran. Sentuh \"tetapan\" untuk lakukannya.\n\Atau ia mungkin pepijat Ankrimento; sila laporkannya agar kami boleh memeriksa ralat tersebut.</string>
     <string name="answering_error_report">Lapor ralat</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">Adakah anda pasti mahu membaiki pangkalan data?\n\nSebelum mencuba, satu salinan akan dibuat dalam subfolder “%s”.</string>
     <string name="intent_aedict_empty">Kategori “lalai” kosong</string>
-    <string name="intent_aedict_category">Untuk tambah kad ke AnkiDroid buang semua kategori Papan Nota atau tambah satu bernama “default”</string>
+    <string name="intent_aedict_category">Untuk tambah kad ke Ankrimento buang semua kategori Papan Nota atau tambah satu bernama “default”</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Semak kad terlupa dalam x hari:</string>
@@ -52,7 +52,7 @@
     <string name="storage_full_title">Storan penuh</string>
     <string name="storage_almost_full_title">Storan hampir penuh</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Tiada ruang</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid memerlukan %s ruang storan kosong untuk teruskan. Sila kosongkan sedikit ruang</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento memerlukan %s ruang storan kosong untuk teruskan. Sila kosongkan sedikit ruang</string>
     <string name="restore_backup_title">Pulih sandaran?</string>
     <string name="restore_backup">Koleksi anda akan digantikan dengan salinan terdahulu. Mana-mana kemajuan yang belum disimpan akan dibuang.</string>
     <string name="restore_backup_choose_another">Pilih lagi satu</string>
@@ -114,9 +114,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Pangkalan Data Dikunci</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Versi Pangkalan Data Tidak Serasi</string>
-    <string name="incompatible_database_version_summary">Pangkalan data memiliki versi lebih lanjut daripada versi AnkiDoird yang boleh digunakannya. Naik taraf AnkiDroid atau turun taraf pangkalan data untuk membukanya.\n\nVersi disokong: %1$d\nVersi pangkalan data: %2$d\n\nPilihan pemulihan berikut akan tulis ganti koleksi anda, mungkin dengan versi pangkalan data yang serasi:</string>
+    <string name="incompatible_database_version_summary">Pangkalan data memiliki versi lebih lanjut daripada versi AnkiDoird yang boleh digunakannya. Naik taraf Ankrimento atau turun taraf pangkalan data untuk membukanya.\n\nVersi disokong: %1$d\nVersi pangkalan data: %2$d\n\nPilihan pemulihan berikut akan tulis ganti koleksi anda, mungkin dengan versi pangkalan data yang serasi:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Gambar latar belakang digunakan</string>
     <string name="background_image_removed">Gambar latar belakang dibuang</string>

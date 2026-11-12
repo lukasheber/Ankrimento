@@ -35,7 +35,7 @@
     <string name="username">Διεύθυνση email</string>
     <string name="password">Κωδικός</string>
     <string name="sign_up_description">Δεν διαθέτετε λογαριασμό AnkiWeb; Είναι δωρεάν!</string>
-    <string name="sign_up_not_affiliated">Σημείωση: Το AnkiWeb δεν σχετίζεται με το AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Σημείωση: Το AnkiWeb δεν σχετίζεται με το Ankrimento</string>
     <string name="sign_up">Εγγραφή</string>
     <string name="logged_as">Είστε συνδεδεμένοι ως</string>
     <string name="reset_password">Επαναφορά κωδικού πρόσβασης</string>

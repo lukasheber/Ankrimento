@@ -39,12 +39,12 @@
         <item quantity="other">%d ta karta qayta tiklandi</item>
     </plurals>
     <string name="answering_error_title">Maʼlumotlar bazasida xatolik</string>
-    <string name="answering_error_message">Kolleksiyaga yozib bölmadi. Maʼlumotlar bazasi buzilgan yoki diskda yetarliça böş joy bölmasligi mumkin.\n\nAgar bu tez-tez sodir böladigan bölsa, maʼlumotlar bazasini tekşirib köring, kolleksiyani tuzatib köring yoki zaxiradan tiklang. Buning uçun “Parametrlar” tugmasini bosing.\n\Yoki bu AnkiDroid bagi ham bölişi mumkin; Buni tekşirişimiz uçun xatolik haqida xabar bering.</string>
+    <string name="answering_error_message">Kolleksiyaga yozib bölmadi. Maʼlumotlar bazasi buzilgan yoki diskda yetarliça böş joy bölmasligi mumkin.\n\nAgar bu tez-tez sodir böladigan bölsa, maʼlumotlar bazasini tekşirib köring, kolleksiyani tuzatib köring yoki zaxiradan tiklang. Buning uçun “Parametrlar” tugmasini bosing.\n\Yoki bu Ankrimento bagi ham bölişi mumkin; Buni tekşirişimiz uçun xatolik haqida xabar bering.</string>
     <string name="answering_error_report">Xatolik haqida xabar beriş</string>
-    <string name="storage_full_message">AnkiDroidʼni oçiş uçun yetarliça böş joy mavjud emas. Davom etiş uçun qurilmangizda biroz joy böşating.</string>
+    <string name="storage_full_message">Ankrimentoʼni oçiş uçun yetarliça böş joy mavjud emas. Davom etiş uçun qurilmangizda biroz joy böşating.</string>
     <string name="repair_deck_dialog">Rostdan ham maʼlumotlar bazasini tuzatmoqçimisiz?\n\nUrinişni boşlaşdan oldin uni nusxasi “%s” ostjildiga köçiriladi.</string>
     <string name="intent_aedict_empty">“default” turkumi böş</string>
-    <string name="intent_aedict_category">AnkiDroidʼga kartalar qöşiş uçun barça Bloknot turkumlarini olib taşlang yoki \"default\" deb nomlangan turkumni qöşing</string>
+    <string name="intent_aedict_category">Ankrimentoʼga kartalar qöşiş uçun barça Bloknot turkumlarini olib taşlang yoki \"default\" deb nomlangan turkumni qöşing</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Ötgan x kun içida unutilgan kartalarni takrorlaş:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Saqlaş xotirasi töla</string>
     <string name="storage_almost_full_title">Saqlaş xotirasi deyarli töla</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Böş joy yöq</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid davom etişi uçun saqlaş xotirasida %s böş joy kerak. Iltimos, biroz joy böşating</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento davom etişi uçun saqlaş xotirasida %s böş joy kerak. Iltimos, biroz joy böşating</string>
     <string name="restore_backup_title">Zaxiradan tiklansinmi?</string>
     <string name="restore_backup">Kolleksiyangiz eski nusxa bilan almaştiriladi. Har qanday saqlanmagan progressingiz yöqoladi.</string>
     <string name="restore_backup_choose_another">Boşqasini tanlaş</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Maʼlumotlar bazasi qulflandi</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, çange the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, çange the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Mos kelmaydigan maʼlumotlar bazasi versiyasi</string>
-    <string name="incompatible_database_version_summary">Maʼlumotlar bazasi versiyasi AnkiDroid işlay oladigan versiyadan ança yuqori. Oçiş uçun AnkiDroidʼni yangilang yoki maʼlumotlar baza versiyasini tuşiring\n\nQöllab-quvvatlanadigan versiya: %1$d\nMaʼlumotlar bazasi versiyasi: %2$d\n\nQuyidagi tiklaş variantlar mavjud kolleksiyangizni mos keladigan maʼlumotlar bazasi versiyasi bilan qayta yozişi mumkin:</string>
+    <string name="incompatible_database_version_summary">Maʼlumotlar bazasi versiyasi Ankrimento işlay oladigan versiyadan ança yuqori. Oçiş uçun Ankrimentoʼni yangilang yoki maʼlumotlar baza versiyasini tuşiring\n\nQöllab-quvvatlanadigan versiya: %1$d\nMaʼlumotlar bazasi versiyasi: %2$d\n\nQuyidagi tiklaş variantlar mavjud kolleksiyangizni mos keladigan maʼlumotlar bazasi versiyasi bilan qayta yozişi mumkin:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Orqa fon rasmi qöllandi</string>
     <string name="background_image_removed">Orqa fon rasmi olib taşlandi</string>

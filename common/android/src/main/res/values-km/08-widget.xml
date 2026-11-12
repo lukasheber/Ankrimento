@@ -25,16 +25,16 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="other">%d AnkiDroid cards due</item>
+        <item quantity="other">%d Ankrimento cards due</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid តូច</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento តូច</string>
     <plurals name="widget_cards_due">
         <item quantity="other">%d cards due</item>
     </plurals>
     <plurals name="widget_eta">
         <item quantity="other">%d minutes remaining</item>
     </plurals>
-    <string name="widget_add_note_button">បន្ថែមកំណត់ត្រា AnkiDroid ថ្មី</string>
+    <string name="widget_add_note_button">បន្ថែមកំណត់ត្រា Ankrimento ថ្មី</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Deck Picker</string>
     <string name="card_analysis_extra_widget_description">Card Analysis</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

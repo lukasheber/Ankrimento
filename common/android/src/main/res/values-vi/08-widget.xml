@@ -25,16 +25,16 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="other">%d Thẻ AnkiDroid đến hạn</item>
+        <item quantity="other">%d Thẻ Ankrimento đến hạn</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid nhỏ</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento nhỏ</string>
     <plurals name="widget_cards_due">
         <item quantity="other">%d thẻ đến hạn</item>
     </plurals>
     <plurals name="widget_eta">
         <item quantity="other">%d phút còn lại</item>
     </plurals>
-    <string name="widget_add_note_button">Thêm ghi chú AnkiDroid mới</string>
+    <string name="widget_add_note_button">Thêm ghi chú Ankrimento mới</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Trình chọn bộ thẻ</string>
     <string name="card_analysis_extra_widget_description">Phân tích thẻ</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

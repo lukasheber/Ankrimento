@@ -120,7 +120,7 @@
         <item quantity="one">%1$d മിനിറ്റ്</item>
         <item quantity="other">%1$d മിനിറ്റുകൾ</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid കാർഡ്</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento കാർഡ്</string>
     <string name="note_editor_copy_note" maxLength="28">കുറിപ്പ് പകർത്തുക</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">സ്ഥാനം മാറ്റുക</string>
     <string name="card_editor_reset_card" maxLength="28">പുരോഗതി പുന et സജ്ജമാക്കുക</string>
@@ -143,7 +143,7 @@
     <string name="import_error_handle_exception">ഫയൽ ഇറക്കുമതി ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു\n\n%s</string>
     <string name="import_error_not_apkg_extension">“%s” എന്ന ഫയലിന്റെ പേരിന് .apkg അല്ലെങ്കിൽ .colpkg വിപുലീകരണം ഇല്ല</string>
     <string name="import_error_load_imported_database">അങ്കി ഡാറ്റാബേസ് (.anki2) മാറ്റിസ്ഥാപിക്കൽ ഇതുവരെ പിന്തുണയ്‌ക്കുന്നില്ല. മാറ്റിസ്ഥാപിക്കാനുള്ള നിർദ്ദേശങ്ങൾക്കായി മാനുവൽ കാണുക.</string>
-    <string name="import_error_content_provider">The selected file couldn’t be imported automatically by AnkiDroid. Please see the user manual for how to manually import Anki files: \n%s</string>
+    <string name="import_error_content_provider">The selected file couldn’t be imported automatically by Ankrimento. Please see the user manual for how to manually import Anki files: \n%s</string>
     <string name="import_error_copy_to_cache_title">ഫയൽ കാഷെ ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">This is often caused by a bug in the app you used to select the file. Please try the following fixes:\n\n%s</string>
     <string name="import_interrupted">ഇറക്കുമതി തടസ്സപ്പെട്ടു: അങ്കിഡ്രോയിഡ് അടച്ചു</string>
@@ -152,7 +152,7 @@
     <string name="export_save_apkg_successful">അങ്കി പാക്കേജ് വിജയകരമായി സംരക്ഷിച്ചു</string>
     <string name="export_save_apkg_unsuccessful">അങ്കി പാക്കേജ് സംരക്ഷിക്കുന്നത് പരാജയപ്പെട്ടു</string>
     <string name="export_share_title">ഉപയോഗിച്ച് അങ്കി പാക്കേജ് അയയ്ക്കുക</string>
-    <string name="export_email_subject">AnkiDroid എക്‌സ്‌പോർട്ടുചെയ്‌ത ഫ്ലാഷ് കാർഡുകൾ:%s</string>
+    <string name="export_email_subject">Ankrimento എക്‌സ്‌പോർട്ടുചെയ്‌ത ഫ്ലാഷ് കാർഡുകൾ:%s</string>
     <string name="export_email_text"><![CDATA[
         Hi!
         <br/><br/>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">തിരയൽ ഡെക്കുകൾ</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">ലഭ്യമല്ലാത്ത സിസ്റ്റം വെബ്‌വ്യൂവിനെ AnkiDroid ആശ്രയിക്കുന്നു. സിസ്റ്റം അപ്‌ഡേറ്റുകൾ‌ ഇൻ‌സ്റ്റാൾ‌ ചെയ്യുകയാണെങ്കിൽ‌ ഇത് സംഭവിക്കാം. കുറച്ച് മിനിറ്റിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക. \n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid cannot access storage due to an Android error.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">ലഭ്യമല്ലാത്ത സിസ്റ്റം വെബ്‌വ്യൂവിനെ Ankrimento ആശ്രയിക്കുന്നു. സിസ്റ്റം അപ്‌ഡേറ്റുകൾ‌ ഇൻ‌സ്റ്റാൾ‌ ചെയ്യുകയാണെങ്കിൽ‌ ഇത് സംഭവിക്കാം. കുറച്ച് മിനിറ്റിനുള്ളിൽ വീണ്ടും ശ്രമിക്കുക. \n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento cannot access storage due to an Android error.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">അക്ഷര വലിപ്പം</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">വീഡിയോ ഫയൽ വളരെ വലുതാണ്, വീഡിയോ നേരിട്ട് ചേർക്കുക</string>
     <string name="note_editor_audio_too_large">ഓഡിയോ ഫയൽ വളരെ വലുതാണ്, ഓഡിയോ നേരിട്ട് ചേർക്കുക</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Android backup in progress. Please try again</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">കുറുക്കുവഴികൾ ചേർക്കാൻ AnkiDroid-നെ അനുവദിക്കുന്നതിന് നിങ്ങൾ iManager ഉപയോഗിക്കേണ്ടി വന്നേക്കാം</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">കുറുക്കുവഴികൾ ചേർക്കാൻ Ankrimento-നെ അനുവദിക്കുന്നതിന് നിങ്ങൾ iManager ഉപയോഗിക്കേണ്ടി വന്നേക്കാം</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">കുറുക്കുവഴികൾ ചേർക്കാൻ നിങ്ങളുടെ ഹോം സ്‌ക്രീൻ AnkiDroid-നെ അനുവദിക്കുന്നില്ല</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">കുറുക്കുവഴികൾ ചേർക്കാൻ നിങ്ങളുടെ ഹോം സ്‌ക്രീൻ Ankrimento-നെ അനുവദിക്കുന്നില്ല</string>
     <string name="create_shortcut_error">കുറുക്കുവഴി ചേർക്കുന്നതിൽ പിശക്: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">വാക്യങ്ങൾ വലിയക്ഷരമാക്കുക</string>
     <!-- Dialog hints -->
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">Sync from AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid is not initialized yet. Please open AnkiDroid and try again</string>
+    <string name="app_not_initialized_new">Ankrimento is not initialized yet. Please open Ankrimento and try again</string>
     <!-- Deck Creation -->
     <string name="deck_created">ഡെക്ക് സൃഷ്ടിച്ചു</string>
     <string name="deck_renamed">Deck renamed</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Install</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Failed to open text to speech settings</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">വിവരണം</string>
     <string name="deck_description_saved">Description updated</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

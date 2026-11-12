@@ -85,7 +85,7 @@
     <string name="menu_disable_voice_playback">Онемогући аудио репродукцију</string>
     <string name="menu_create_backup" maxLength="28">Направи резервну копију</string>
     <string name="new_dynamic_deck">Направи филтриран шпил</string>
-    <string name="directory_inaccessible">Недоступан каталог AnkiDroid</string>
+    <string name="directory_inaccessible">Недоступан каталог Ankrimento</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
@@ -129,34 +129,34 @@
     <string name="card_template_editor_save_error">Грешка при чувању шаблона картице: %s</string>
     <string name="template_for_current_card_deleted">Тип картице за тренутну картицу је обрисан.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">Читати и писати у бази података AnkiDroid</string>
+    <string name="read_write_permission_label">Читати и писати у бази података Ankrimento</string>
     <string name="read_write_permission_description">Приступи постојећим белешкама, картицама, типовима белешки и сетовима и креирај нове</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Card browser</string>
     <string name="context_menu_anki_card_label">Anki card</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">Ове колекције није могуће објединити.\nЖелиш ли да сачуваш једну од њих?</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">Желиш ли да замениш своју колекцију на AnkiDroid-у колекцијом са AnkiWeb-а?</string>
-    <string name="sync_conflict_local_confirm_new">Желиш ли да замениш колекцију на AnkiWeb-у колекцијом са AnkiDroid-а?</string>
+    <string name="sync_conflict_remote_confirm_new">Желиш ли да замениш своју колекцију на Ankrimento-у колекцијом са AnkiWeb-а?</string>
+    <string name="sync_conflict_local_confirm_new">Желиш ли да замениш колекцију на AnkiWeb-у колекцијом са Ankrimento-а?</string>
     <string name="sync_conflict_title_new">Изабери колекцију коју желиш да сачуваш</string>
     <string name="sync_conflict_replace_title">Замени колекцију</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">Није могуће уписати или креирати датотеку %s</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">Колекција није доступна</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Након деинсталације AnkiDroid-а, због промене у политици Play продавнице\n\n. Немамо приступ твојој колекцији.
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Након деинсталације Ankrimento-а, због промене у политици Play продавнице\n\n. Немамо приступ твојој колекцији.
 Твоји подаци су безбедни и могу се вратити. Налазе се на локацији:\n%s\n\nИзабери опцију испод за враћање:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android је уклонио AnkiDroid-ову дозволу %1$s због неактивности апликације.\n\nТвоји подаци су безбедни и могу се вратити. Налазе се на локацији:\n%2$s\n\nИзабери опцију испод за враћање података:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android је уклонио Ankrimento-ову дозволу %1$s због неактивности апликације.\n\nТвоји подаци су безбедни и могу се вратити. Налазе се на локацији:\n%2$s\n\nИзабери опцију испод за враћање података:</string>
     <string name="restore_data_from_ankiweb">Поново омогући приступ AnkiWeb-у (препоручено)</string>
     <string name="install_non_play_store_ankidroid_recommended">Поновно омогући приступ фасцикли (препоручено)</string>
     <string name="install_non_play_store_ankidroid">Поновно омогући приступ фасцикли (напредно)</string>
     <string name="restore_data_from_backup">Врати из .colpkg резервне копије (напредно)</string>
     <string name="create_new_collection">Креирај нову колекцију</string>
-    <string name="new_unsafe_collection">Нова колекција ће бити избрисана са телефона ако деинсталираш AnkiDroid.</string>
+    <string name="new_unsafe_collection">Нова колекција ће бити избрисана са телефона ако деинсталираш Ankrimento.</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid-у су потребне неке дозволе како би радио.</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid ће боље радити уз ове дозволе.</string>
+    <string name="permissions_screen_headline">Ankrimento-у су потребне неке дозволе како би радио.</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento ће боље радити уз ове дозволе.</string>
     <string name="storage_access_title">Приступ складишту</string>
     <string name="storage_access_summary">Твоја колекција се чува на сигурном месту и не брише се приликом деинсталације.</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Приступ свим датотекама</string>
@@ -174,7 +174,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Интернет</string>
     <string name="permission_access_summary">Потребно за рад апликације</string>
-    <string name="permission_required_message">Да би наставио, додели апликацији AnkiDroid дозволу „%s“</string>
+    <string name="permission_required_message">Да би наставио, додели апликацији Ankrimento дозволу „%s“</string>
     <!-- Multiple profile -->
     <string name="add_profile">Додај профил</string>
 </resources>

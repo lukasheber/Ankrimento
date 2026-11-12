@@ -120,7 +120,7 @@
         <item quantity="one">%1$d مىنۇت</item>
         <item quantity="other">%1$d مىنۇت</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid كارتا</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento كارتا</string>
     <string name="note_editor_copy_note" maxLength="28">خاتىرە كۆچۈر</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">قايتا تەرتىپلە</string>
     <string name="card_editor_reset_card" maxLength="28">ئىلگىرىلەشنى ئەسلىگە قايتۇر</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">تەكشۈر</string>
     <string name="unknown_type_field_warning">جاۋاب كىرگۈزۈلىدۇ: يوچۇن بۆلەك %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">دەستە ئۆچۈرۈۋاتىدۇ&#8230;</string>
-    <string name="info_rate">AnkiDroid كە باھا بېرىڭ</string>
+    <string name="info_rate">Ankrimento كە باھا بېرىڭ</string>
     <string name="import_title">ئەكىرىۋاتىدۇ</string>
     <string name="import_preparing_file">ئەكىرىدىغان ھۆججەتنى تەييارلاۋاتىدۇ&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">قوش</string>
@@ -143,16 +143,16 @@
     <string name="import_error_handle_exception">ھۆججەتنى ئەكىرەلمىدى\n\n%s</string>
     <string name="import_error_not_apkg_extension">ھۆججەت «%s» نىڭ .apkg ياكى .colpkg كېڭەيتىلگەن نامى يوق</string>
     <string name="import_error_load_imported_database">Anki سانداق (.anki2) ئالماشتۇرۇشنى تېخى قوللىمايدۇ. ئالماشتۇرۇش كۆرسەتمىسىنى قوللانمىدىن كۆرۈڭ.</string>
-    <string name="import_error_content_provider">تاللانغان ھۆججەتنى AnkiDroid ئۆزلۈكىدىن ئەكىرەلمەيدۇ. ئىشلەتكۈچى قوللانمىسىدىن Anki ھۆججەتنى قانداق ئەكىرىشنى كۆرۈڭ: \n%s</string>
+    <string name="import_error_content_provider">تاللانغان ھۆججەتنى Ankrimento ئۆزلۈكىدىن ئەكىرەلمەيدۇ. ئىشلەتكۈچى قوللانمىسىدىن Anki ھۆججەتنى قانداق ئەكىرىشنى كۆرۈڭ: \n%s</string>
     <string name="import_error_copy_to_cache_title">ھۆججەتنى غەملىيەلمىدى</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">بۇ ئادەتتە سىز ھۆججەت تاللاشقا ئىشلىتىۋاتقان ئەپتىكى خاتالىق سەۋەبىدىن كېلىپ چىقىدۇ. تۆۋەندىكى ئوڭشاشنى سىناڭ:\n\n%s</string>
-    <string name="import_interrupted">ئەكىرىش ئۈزۈلدى: AnkiDroid تاقالغان</string>
+    <string name="import_interrupted">ئەكىرىش ئۈزۈلدى: Ankrimento تاقالغان</string>
     <string name="export_ready_title">چىقىرىشقا تەييار</string>
     <string name="export_send_no_handlers">apkg نى بىر تەرەپ قىلىدىغان ئەپ يوق. ساقلاۋاتىدۇ&#8230;</string>
     <string name="export_save_apkg_successful">Anki بولىقى مۇۋەپپەقىيەتلىك ساقلاندى</string>
     <string name="export_save_apkg_unsuccessful">Anki بولىقىنى ساقلىيالمىدى</string>
     <string name="export_share_title">Anki بولىقى يوللاش تاللىنىدۇ</string>
-    <string name="export_email_subject">AnkiDroid چىقارغان كارتا: %s</string>
+    <string name="export_email_subject">Ankrimento چىقارغان كارتا: %s</string>
     <string name="export_email_text"><![CDATA[
         سالام!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">ئاق دوسكا سۈرىتىنى ساقلىيالمىدى %s</string>
     <string name="white_board_image_saved">ئاق دوسكا سۈرىتى %s غا ساقلاندى</string>
     <string name="title_whiteboard_editor" maxLength="28">ئاق دوسكا تەھرىرلىگۈچ</string>
-    <string name="user_is_a_robot">ئاپتوماتلاشقان سىناق بايقالدى. ئەگەر ئىنسان بولسىڭىز، AnkiDroid قوللىغۇچىلىرى بىلەن ئالاقىلىشىڭ</string>
+    <string name="user_is_a_robot">ئاپتوماتلاشقان سىناق بايقالدى. ئەگەر ئىنسان بولسىڭىز، Ankrimento قوللىغۇچىلىرى بىلەن ئالاقىلىشىڭ</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">بۇ كارتىدا AnkiDroid قوللىمايدىغان ئىقتىدار ئىشلىتىلگەن. ئىجادكار %1$s بىلەن ئالاقىلىشىڭ ياكى ۋىكىنى زىيارەت قىلىڭ. %2$s</string>
     <string name="invalid_json_data">كارتا ئىناۋەتسىز سانلىق مەلۇمات بىلەن تەمىنلىدى. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">دەستە ئىزدە</string>
     <string name="ankidroid_init_failed_webview_title">ئېغىر خاتالىق</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid سىستېمىدىكى WebView غا تايىنىدۇ ئەمما ئۇنى ئىشلەتكىلى بولمايدۇ. بۇ سىستېما يېڭىلانمىنى ئورنىتىۋاتقاندا يۈز بېرىشى مۇمكىن. بىر قانچە مىنۇتتىن كېيىن قايتا سىناڭ.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">Android خاتالىقى سەۋەبىدىن AnkiDroid ساقلىغۇچنى زىيارەت قىلالمايدۇ.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento سىستېمىدىكى WebView غا تايىنىدۇ ئەمما ئۇنى ئىشلەتكىلى بولمايدۇ. بۇ سىستېما يېڭىلانمىنى ئورنىتىۋاتقاندا يۈز بېرىشى مۇمكىن. بىر قانچە مىنۇتتىن كېيىن قايتا سىناڭ.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Android خاتالىقى سەۋەبىدىن Ankrimento ساقلىغۇچنى زىيارەت قىلالمايدۇ.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">خەت چوڭلۇقى</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">سىن ھۆججىتى بەك چوڭ، سىننى قولدا قىستۇرۇڭ</string>
     <string name="note_editor_audio_too_large">ئۈن ھۆججىتى بەك چوڭ، ئۈننى قولدا قىستۇرۇڭ</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Android زاپاسلاش ئىجرا قىلىنىۋاتىدۇ. قايتا سىناڭ</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">iManager نى ئىشلىتىپ AnkiDroid نىڭ تېزلەتمە قوشۇشىغا يول قويۇڭ</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">iManager نى ئىشلىتىپ Ankrimento نىڭ تېزلەتمە قوشۇشىغا يول قويۇڭ</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">سىستېما تەڭشىكىدە %s نىڭ تېزلەتمە قوشۇشى ئۈچۈن «باش ئېكران تېزلەتمىسى» گە يول قويىدۇ</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">باش ئېكرانىڭىز AnkiDroid نىڭ تېزلەتمە قوشۇشىغا يول قويمايدۇ</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">باش ئېكرانىڭىز Ankrimento نىڭ تېزلەتمە قوشۇشىغا يول قويمايدۇ</string>
     <string name="create_shortcut_error">تېزلەتمە قوشۇش خاتالىقى: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">چوڭ ھەرپلىك جۈملە</string>
     <!-- Dialog hints -->
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">باشلاش</string>
     <string name="intro_sync_from_ankiweb">AnkiWeb دىن قەدەمداشلا</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid تېخى دەسلەپلەشتۈرۈلمىدى. AnkiDroid نى ئېچىپ قايتا سىناڭ</string>
+    <string name="app_not_initialized_new">Ankrimento تېخى دەسلەپلەشتۈرۈلمىدى. Ankrimento نى ئېچىپ قايتا سىناڭ</string>
     <!-- Deck Creation -->
     <string name="deck_created">دەستە قۇرۇلدى</string>
     <string name="deck_renamed">دەستە ئىسمى ئۆزگەرتىلدى</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">ئىنتېرنېت</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">ئورنات</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">تېكىستتىن ئاۋازغا تەڭشىكىنى ئاچالمىدى</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">چۈشەندۈرۈش</string>
     <string name="deck_description_saved">چۈشەندۈرۈش يېڭىلاندى</string>
     <string name="format_deck_description_as_markdown">Markdown سۈپىتىدە پىچىملاندۇرىدۇ</string>

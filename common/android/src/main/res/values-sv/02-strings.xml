@@ -120,7 +120,7 @@
         <item quantity="one">%1$d minut</item>
         <item quantity="other">%1$d minuter</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid-kort</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento-kort</string>
     <string name="note_editor_copy_note" maxLength="28">Kopiera anteckning</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Ompositionera</string>
     <string name="card_editor_reset_card" maxLength="28">Återställ framsteg</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">Kontrollera</string>
     <string name="unknown_type_field_warning">Skriv svar: okänt fält %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Raderar kortlek&#8230;</string>
-    <string name="info_rate">Betygsätt AnkiDroid</string>
+    <string name="info_rate">Betygsätt Ankrimento</string>
     <string name="import_title">Importera</string>
     <string name="import_preparing_file">Förbereder fil för importering&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Lägg till</string>
@@ -143,16 +143,16 @@
     <string name="import_error_handle_exception">Misslyckades med att importera filen\n\n%s</string>
     <string name="import_error_not_apkg_extension">Filnamnet \"%s\" har varken .apkg eller .colpkg suffix</string>
     <string name="import_error_load_imported_database">Anki Database (.anki2) ersättningar stöds inte än. Se manualen för ersättningsinstruktioner.</string>
-    <string name="import_error_content_provider">Den valda filen kunde inte importeras automatiskt av AnkiDroid. Vänligen se användarmanualen för information om manuell import av Anki-filer: \n %s</string>
+    <string name="import_error_content_provider">Den valda filen kunde inte importeras automatiskt av Ankrimento. Vänligen se användarmanualen för information om manuell import av Anki-filer: \n %s</string>
     <string name="import_error_copy_to_cache_title">Misslyckades att cacha filen</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Detta orsakas ofta av en bugg i appen du använde för att välja filen. Försök med följande rättelser:\n\n%s</string>
-    <string name="import_interrupted">Import avbruten: AnkiDroid stängdes</string>
+    <string name="import_interrupted">Import avbruten: Ankrimento stängdes</string>
     <string name="export_ready_title">Export redo</string>
     <string name="export_send_no_handlers">Inga program tillgängliga för att hantera apkg. Sparar&#8230;</string>
     <string name="export_save_apkg_successful">Anki-paketet sparades</string>
     <string name="export_save_apkg_unsuccessful">Anki-paketet kunde inte sparas</string>
     <string name="export_share_title">Skicka Anki-paketet med</string>
-    <string name="export_email_subject">AnkiDroid exporterade flashcards: %s</string>
+    <string name="export_email_subject">Ankrimento exporterade flashcards: %s</string>
     <string name="export_email_text"><![CDATA[
         Hej!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">Det gick inte att spara whiteboardbilden. %s</string>
     <string name="white_board_image_saved">Whiteboard-bild sparad till %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Redigerare för whiteboard</string>
-    <string name="user_is_a_robot">Upptäckte automatiskt test. Om du är en människa, kontakta AnkiDroid support</string>
+    <string name="user_is_a_robot">Upptäckte automatiskt test. Om du är en människa, kontakta Ankrimento support</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Detta kort använder AnkiDroid-funktioner som inte stöds. Kontakta utvecklaren %1$s, eller visa wiki. %2$s</string>
     <string name="invalid_json_data">Kortet angav ogiltig data. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Sök kortlekar</string>
     <string name="ankidroid_init_failed_webview_title">Allvarligt fel</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid använder sig av System WebView vilket inte är tillgängligt. Detta kan hända om systemet håller på att installera uppdateringar. Försök igen om några minuter.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid kan inte komma åt lagring på grund av ett Android-fel.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento använder sig av System WebView vilket inte är tillgängligt. Detta kan hända om systemet håller på att installera uppdateringar. Försök igen om några minuter.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento kan inte komma åt lagring på grund av ett Android-fel.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Teckenstorlek</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">Videofilen är för stor, lägg till videon manuellt</string>
     <string name="note_editor_audio_too_large">Ljudfilen är för stor, lägg till ljudet manuellt</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Säkerhetskopiering av Android pågår. Försök igen</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Du kan behöva använda iManager för att tillåta AnkiDroid att lägga till genvägar</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Du kan behöva använda iManager för att tillåta Ankrimento att lägga till genvägar</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Tillåt ‘Startskärmen genvägar’ i systeminställningar för %s att lägga till genvägar</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Din startskärm tillåter inte AnkiDroid att lägga till genvägar</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Din startskärm tillåter inte Ankrimento att lägga till genvägar</string>
     <string name="create_shortcut_error">Kunde inte lägga till genväg: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Versalisera meningar</string>
     <!-- Dialog hints -->
@@ -317,7 +317,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Kom igång</string>
     <string name="intro_sync_from_ankiweb">Synka från AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid är inte initierat än. Öppna AnkiDroid och försök igen</string>
+    <string name="app_not_initialized_new">Ankrimento är inte initierat än. Öppna Ankrimento och försök igen</string>
     <!-- Deck Creation -->
     <string name="deck_created">Kortlek skapad</string>
     <string name="deck_renamed">Kortlek namnändrad</string>
@@ -337,7 +337,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Installera</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Det gick inte att öppna text till talinställningarna</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Beskrivning</string>
     <string name="deck_description_saved">Beskrivningen har uppdaterats</string>
     <string name="format_deck_description_as_markdown">Formatera som markdown</string>

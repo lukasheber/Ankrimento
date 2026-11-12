@@ -43,12 +43,12 @@
         <item quantity="other">%d картки скинуті</item>
     </plurals>
     <string name="answering_error_title">Помилка бази даних</string>
-    <string name="answering_error_message">Під час запису в колекцію сталася помилка. Причиною може бути пошкоджена база даних або відсутність місця на диску.\n\nЯкщо це трапляється частіше, будь ласка, спробуйте перевірити базу даних, полагодити колекцію, або відновити її з резервної копії. Для цього натисніть на «налаштування».\n\nОднак, це також може бути недолік AnkiDroid; будь ласка, надішліть звіт для перевірки цього.</string>
+    <string name="answering_error_message">Під час запису в колекцію сталася помилка. Причиною може бути пошкоджена база даних або відсутність місця на диску.\n\nЯкщо це трапляється частіше, будь ласка, спробуйте перевірити базу даних, полагодити колекцію, або відновити її з резервної копії. Для цього натисніть на «налаштування».\n\nОднак, це також може бути недолік Ankrimento; будь ласка, надішліть звіт для перевірки цього.</string>
     <string name="answering_error_report">Повідомити про помилку</string>
-    <string name="storage_full_message">Недостатньо вільного місця, щоб відкрити AnkiDroid. Звільніть трохи пам\'яті, аби продовжити.</string>
+    <string name="storage_full_message">Недостатньо вільного місця, щоб відкрити Ankrimento. Звільніть трохи пам\'яті, аби продовжити.</string>
     <string name="repair_deck_dialog">Ви дійсно бажаєте спробувати відновити базу даних?\n\nПеред початком спроби в підкаталозі \'%s\' буде створена копія.</string>
     <string name="intent_aedict_empty">Категорія  \"стандартна\"  порожня</string>
-    <string name="intent_aedict_category">Щоб додати картки до AnkiDroid, видаліть всі категорії Notepad або додайте категорію \'default\'</string>
+    <string name="intent_aedict_category">Щоб додати картки до Ankrimento, видаліть всі категорії Notepad або додайте категорію \'default\'</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Повторити картки забуті за останні x днів:</string>
@@ -58,7 +58,7 @@
     <string name="storage_full_title">Сховище заповнено</string>
     <string name="storage_almost_full_title">Сховище майже заповнено</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Пам\'ять заповнена</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid потрібно %s вільного місця, щоб продовжити. Будь ласка, очистіть трохи пам\'ять</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento потрібно %s вільного місця, щоб продовжити. Будь ласка, очистіть трохи пам\'ять</string>
     <string name="restore_backup_title">Відновити резервну копію?</string>
     <string name="restore_backup">Вашу колекцію замінить стара копія. Будь-який незбережений прогрес буде втрачено.</string>
     <string name="restore_backup_choose_another">Вибрати інший</string>
@@ -123,9 +123,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">База даних заблокована</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Несумісна версія бази даних</string>
-    <string name="incompatible_database_version_summary">Версія бази даних занадто нова, і ця версія AnkiDroid несумісна з нею. Оновіть AnkiDroid або скористайтеся більш старою версією бази даних, щоб відкрити її\n\nПідтримувана версія: %1$d\nВерсія бази даних: %2$d\n\nНаступні варіанти відновлення перезапишуть поточну колекцію,, можливо, з сумісною версією бази даних:</string>
+    <string name="incompatible_database_version_summary">Версія бази даних занадто нова, і ця версія Ankrimento несумісна з нею. Оновіть Ankrimento або скористайтеся більш старою версією бази даних, щоб відкрити її\n\nПідтримувана версія: %1$d\nВерсія бази даних: %2$d\n\nНаступні варіанти відновлення перезапишуть поточну колекцію,, можливо, з сумісною версією бази даних:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Фонове зображення встановлено</string>
     <string name="background_image_removed">Фонове зображення видалено</string>

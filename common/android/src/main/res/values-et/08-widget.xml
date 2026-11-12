@@ -25,10 +25,10 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="one">%d AnkiDroid kaardi tõttu</item>
-        <item quantity="other">%d AnkiDroid kaardi tõttu</item>
+        <item quantity="one">%d Ankrimento kaardi tõttu</item>
+        <item quantity="other">%d Ankrimento kaardi tõttu</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid väike</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento väike</string>
     <plurals name="widget_cards_due">
         <item quantity="one">%d kaart ootel</item>
         <item quantity="other">%d kaarti ootel</item>
@@ -37,7 +37,7 @@
         <item quantity="one">%d minut jäänud</item>
         <item quantity="other">%d minutit jäänud</item>
     </plurals>
-    <string name="widget_add_note_button">Lisa uus AnkiDroid märge</string>
+    <string name="widget_add_note_button">Lisa uus Ankrimento märge</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Kaardipaki valija</string>
     <string name="card_analysis_extra_widget_description">Kaardi analüüs</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

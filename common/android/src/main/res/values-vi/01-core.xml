@@ -79,12 +79,12 @@
     <string name="menu_disable_voice_playback">Tắt phát âm thanh</string>
     <string name="menu_create_backup" maxLength="28">Tạo bản sao lưu</string>
     <string name="new_dynamic_deck">Tạo bộ thẻ đã lọc</string>
-    <string name="directory_inaccessible">Không thể truy cập thư mục AnkiDroid</string>
+    <string name="directory_inaccessible">Không thể truy cập thư mục Ankrimento</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">Cấp quyền \"Lưu trữ\" cho AnkiDroid để có thể tiếp tục</string>
+    <string name="startup_no_storage_permission">Cấp quyền \"Lưu trữ\" cho Ankrimento để có thể tiếp tục</string>
     <string name="rebuild_filtered_deck">Đang xây dựng lại bộ thẻ đã lọc</string>
     <string name="empty_cram_label" maxLength="28">Dọn trống</string>
     <string name="create_subdeck">Tạo bộ thẻ phụ</string>
@@ -119,33 +119,33 @@
     <string name="card_template_editor_save_error">Không thể lưu thay đổi mẫu thẻ: %s</string>
     <string name="template_for_current_card_deleted">Loại thẻ cho thẻ hiện tại đã bị xóa</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">Đọc và ghi vào cơ sở dữ liệu AnkiDroid</string>
+    <string name="read_write_permission_label">Đọc và ghi vào cơ sở dữ liệu Ankrimento</string>
     <string name="read_write_permission_description">truy cập các ghi chú, thẻ, loại ghi chú và các bộ thẻ hiện có, cũng như tạo mới chúng</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Card browser</string>
     <string name="context_menu_anki_card_label">Anki card</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">Các bộ sưu tập không thể đồng nhất.\nBạn muốn giữ lại bộ sưu tập nào?</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">Thay thế bộ thẻ trên AnkiDroid bằng bộ thẻ từ AnkiWeb?</string>
-    <string name="sync_conflict_local_confirm_new">Thay thế bộ thẻ của bạn trên AnkiWeb bằng bộ thẻ của bạn từ AnkiDroid?</string>
+    <string name="sync_conflict_remote_confirm_new">Thay thế bộ thẻ trên Ankrimento bằng bộ thẻ từ AnkiWeb?</string>
+    <string name="sync_conflict_local_confirm_new">Thay thế bộ thẻ của bạn trên AnkiWeb bằng bộ thẻ của bạn từ Ankrimento?</string>
     <string name="sync_conflict_title_new">Chọn bộ thẻ cần giữ lại</string>
     <string name="sync_conflict_replace_title">Thay thế bộ thẻ</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">Không thể ghi hoặc tạo tệp %s</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">Bộ sưu tập không thể truy cập được</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Chúng tôi không thể truy cập vào bộ sưu tập của bạn sau khi gỡ cài đặt AnkiDroid do thay đổi trong Chính sách của Cửa hàng Play\n\nDữ liệu của bạn an toàn và có thể được khôi phục. Nó hiện ở \n%s\n\nLựa chọn 1 tùy chọn ở dưới để khôi phục:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android đã xóa quyền %1$s của AnkiDroid do ứng dụng không hoạt động.\n\nDữ liệu của bạn an toàn và có thể được khôi phục. Nó nằm ở\n%2$s\n\nChọn một tùy chọn bên dưới để khôi phục:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Chúng tôi không thể truy cập vào bộ sưu tập của bạn sau khi gỡ cài đặt Ankrimento do thay đổi trong Chính sách của Cửa hàng Play\n\nDữ liệu của bạn an toàn và có thể được khôi phục. Nó hiện ở \n%s\n\nLựa chọn 1 tùy chọn ở dưới để khôi phục:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android đã xóa quyền %1$s của Ankrimento do ứng dụng không hoạt động.\n\nDữ liệu của bạn an toàn và có thể được khôi phục. Nó nằm ở\n%2$s\n\nChọn một tùy chọn bên dưới để khôi phục:</string>
     <string name="restore_data_from_ankiweb">Khôi phục từ AnkiWeb (khuyến nghị)</string>
     <string name="install_non_play_store_ankidroid_recommended">Khôi phục quyền truy cập thư mục (khuyến nghị)</string>
     <string name="install_non_play_store_ankidroid">Khôi phục quyền truy cập thư mục (nâng cao)</string>
     <string name="restore_data_from_backup">Khôi phục từ bản sao lưu .colpkg (nâng cao)</string>
     <string name="create_new_collection">Tạo 1 bộ sưu tập mới</string>
-    <string name="new_unsafe_collection">Bộ sưu tập mới sẽ bị xóa khỏi thiết bị của bạn khi bạn xóa AnkiDroid</string>
+    <string name="new_unsafe_collection">Bộ sưu tập mới sẽ bị xóa khỏi thiết bị của bạn khi bạn xóa Ankrimento</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid cần một số quyền để hoạt động</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid hoạt động tốt nhất với những quyền này</string>
+    <string name="permissions_screen_headline">Ankrimento cần một số quyền để hoạt động</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento hoạt động tốt nhất với những quyền này</string>
     <string name="storage_access_title">Truy cập bộ nhớ</string>
     <string name="storage_access_summary">Lưu bộ sưu tập của bạn ở nơi an toàn sẽ không bị xóa nếu gỡ cài đặt ứng dụng</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Quyền truy cập vào mọi tệp</string>
@@ -163,7 +163,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Cần thiết để ứng dụng hoạt động</string>
-    <string name="permission_required_message">Vui lòng cấp cho AnkiDroid quyền ‘%s’ để tiếp tục</string>
+    <string name="permission_required_message">Vui lòng cấp cho Ankrimento quyền ‘%s’ để tiếp tục</string>
     <!-- Multiple profile -->
     <string name="add_profile">Add profile</string>
 </resources>

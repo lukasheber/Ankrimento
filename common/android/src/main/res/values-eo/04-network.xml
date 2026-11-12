@@ -35,7 +35,7 @@
     <string name="username">Retpoŝta adreso</string>
     <string name="password">Pasvorto</string>
     <string name="sign_up_description">Ĉu vi ne havas AnkiWeb-konton? Ĝi estas senkosta!</string>
-    <string name="sign_up_not_affiliated">Atentigo: AnkiWeb ne estas rilata al AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Atentigo: AnkiWeb ne estas rilata al Ankrimento</string>
     <string name="sign_up">Aliĝi</string>
     <string name="logged_as">Ensalutata kiel</string>
     <string name="reset_password">Restarigi pasvorton</string>

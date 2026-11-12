@@ -82,12 +82,12 @@
     <string name="menu_disable_voice_playback">Անջատել ձայնի նվագարկումը</string>
     <string name="menu_create_backup" maxLength="28">Ստեղծել պահեստային ֆայլ</string>
     <string name="new_dynamic_deck">Ստեղծել զտված կապուկ</string>
-    <string name="directory_inaccessible">AnkiDroid-ի պանակը անհասանելի է</string>
+    <string name="directory_inaccessible">Ankrimento-ի պանակը անհասանելի է</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">Շարունակելու համար թույլատրեք AnkiDroid-ին «Ֆայլեր» թույլտվությունը</string>
+    <string name="startup_no_storage_permission">Շարունակելու համար թույլատրեք Ankrimento-ին «Ֆայլեր» թույլտվությունը</string>
     <string name="rebuild_filtered_deck">Վերակառուցվում է զտված կապուկը&#8230;</string>
     <string name="empty_cram_label" maxLength="28">Դատարկ</string>
     <string name="create_subdeck">Ստեղծել ենթակապուկ</string>
@@ -124,33 +124,33 @@
     <string name="card_template_editor_save_error">Չստացվեց պահպանել քարտի կաղապարի փոփոխությունները. %s</string>
     <string name="template_for_current_card_deleted">Ներկայիս քարտի տեսակը ջնջվել է։</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">Կարդալ և գրել AnkiDroid-ի շտեմարանի մեջ</string>
+    <string name="read_write_permission_label">Կարդալ և գրել Ankrimento-ի շտեմարանի մեջ</string>
     <string name="read_write_permission_description">մատչել առկա գրառումները, քարտերը, գրառումների տեսակները և կապուկները, ինչպես նաև նորերը ստեղծելը</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Card browser</string>
     <string name="context_menu_anki_card_label">Anki card</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">Հավաքածուները չեն կարող իրար միանալ։ Ո՞ր հավաքածուն եք ուզում պահպանել։</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">Փոխարինե՞լ ձեր AnkiDroid-ի հավաքածուն ձեր AnkiWeb-ի հավաքածուով։</string>
-    <string name="sync_conflict_local_confirm_new">Փոխարինե՞լ ձեր AnkiWeb-ի հավաքածուն ձեր AnkiDroid-ի հավաքածուով։</string>
+    <string name="sync_conflict_remote_confirm_new">Փոխարինե՞լ ձեր Ankrimento-ի հավաքածուն ձեր AnkiWeb-ի հավաքածուով։</string>
+    <string name="sync_conflict_local_confirm_new">Փոխարինե՞լ ձեր AnkiWeb-ի հավաքածուն ձեր Ankrimento-ի հավաքածուով։</string>
     <string name="sync_conflict_title_new">Ընտրել պահպանվող հավաքածուն</string>
     <string name="sync_conflict_replace_title">Փոխարինել հավաքածուն</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">Չստացվեց խմբագրել կամ ստեղծել %s ֆայլը</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">Հավաքածուն անհասանելի է</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Խանութի փոփոխությունների պատճառով AnkiDroid-ը ջնջելուց հետո այն չի կարող բացել ձեր հավաքածուն։\n\nՁեր տվյալները ապահով են և կարող են վերականգնվել։ Նրանք գտնվում են հետևյալ վայրում`\n%s\n\nՎերականգնելու համար ընտրեք տարբերակներից մեկը.</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android-ը հեռացրել է AnkiDroid-ի %1$s թույլտվությունը` ծրագրի քիչ օգտագործման պատճառով։\n\nՁեր տվյալները ապահով են և կարող են վերականգնվել։ Նրանք գտնվում են հետևյալ վայրում`\n%2$s\n\nՎերականգնելու համար ընտրեք տարբերակներից մեկը.</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Խանութի փոփոխությունների պատճառով Ankrimento-ը ջնջելուց հետո այն չի կարող բացել ձեր հավաքածուն։\n\nՁեր տվյալները ապահով են և կարող են վերականգնվել։ Նրանք գտնվում են հետևյալ վայրում`\n%s\n\nՎերականգնելու համար ընտրեք տարբերակներից մեկը.</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android-ը հեռացրել է Ankrimento-ի %1$s թույլտվությունը` ծրագրի քիչ օգտագործման պատճառով։\n\nՁեր տվյալները ապահով են և կարող են վերականգնվել։ Նրանք գտնվում են հետևյալ վայրում`\n%2$s\n\nՎերականգնելու համար ընտրեք տարբերակներից մեկը.</string>
     <string name="restore_data_from_ankiweb">Վերականգնել AnkiWeb-ից (նախընտրելի)</string>
     <string name="install_non_play_store_ankidroid_recommended">Վերականգնել թղթապանակի հասանելիությունը (նախընտրելի)</string>
     <string name="install_non_play_store_ankidroid">Վերականգնել թղթապանակի հասանելիությունը (խորացված)</string>
     <string name="restore_data_from_backup">Վերականգնել .colpkg պատճենից (խորացված)</string>
     <string name="create_new_collection">Ստեղծել նոր հավաքածու</string>
-    <string name="new_unsafe_collection">AnkiDroid-ը ձեր հեռախոսից ջնջելու դեպքում կջնջվի նաև նոր հավաքածուն</string>
+    <string name="new_unsafe_collection">Ankrimento-ը ձեր հեռախոսից ջնջելու դեպքում կջնջվի նաև նոր հավաքածուն</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid-ի աշխատանքի համար հարկավոր է մի քանի թույլտվություն</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid-ը աշխատում է ամենալավը այս թույլատվություններով</string>
+    <string name="permissions_screen_headline">Ankrimento-ի աշխատանքի համար հարկավոր է մի քանի թույլտվություն</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento-ը աշխատում է ամենալավը այս թույլատվություններով</string>
     <string name="storage_access_title">Հիշողություն</string>
     <string name="storage_access_summary">Պահպանում է ձեր հավաքածուն ապահով վայրում, որը ծրագիրը ջնջելու դեպքում չի ջնջվի</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Բոլոր ֆայլերի հասանելիություն</string>
@@ -168,7 +168,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Ինտերնետ</string>
     <string name="permission_access_summary">Պարտադիր է ծրագրի աշխատելու համար</string>
-    <string name="permission_required_message">Խնդրում ենք թույլ տալ AnkiDroid-ին \'%s\' թուլատվությունը շարունակելու համար</string>
+    <string name="permission_required_message">Խնդրում ենք թույլ տալ Ankrimento-ին \'%s\' թուլատվությունը շարունակելու համար</string>
     <!-- Multiple profile -->
     <string name="add_profile">Ավելացնել պրոֆիլ</string>
 </resources>

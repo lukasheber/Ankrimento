@@ -25,10 +25,10 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="one">%d AnkiDroid kártya határideje</item>
-        <item quantity="other">%d AnkiDroid kártyák határideje</item>
+        <item quantity="one">%d Ankrimento kártya határideje</item>
+        <item quantity="other">%d Ankrimento kártyák határideje</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid kicsi</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento kicsi</string>
     <plurals name="widget_cards_due">
         <item quantity="one">%d kártya esedékes</item>
         <item quantity="other">%d kártyák esedékesek</item>
@@ -37,7 +37,7 @@
         <item quantity="one">%d perc maradt</item>
         <item quantity="other">%d perc maradt</item>
     </plurals>
-    <string name="widget_add_note_button">Új AnkiDroid megjegyzés hozzáadása</string>
+    <string name="widget_add_note_button">Új Ankrimento megjegyzés hozzáadása</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Pakli választó</string>
     <string name="card_analysis_extra_widget_description">Card Analysis</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

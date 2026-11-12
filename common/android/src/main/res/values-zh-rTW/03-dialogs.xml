@@ -37,12 +37,12 @@
         <item quantity="other">%d 卡片已重設</item>
     </plurals>
     <string name="answering_error_title">資料庫錯誤</string>
-    <string name="answering_error_message">寫入資料庫時發生錯誤。可能是資料庫毀損或是記憶卡空間不足。\n\n如果這經常發生的話，請嘗試檢查資料庫，修復你的集合或從備份中還原。\n當然這也可能是 AnkiDroid 的程式錯誤，請回報錯誤讓我們知道。</string>
+    <string name="answering_error_message">寫入資料庫時發生錯誤。可能是資料庫毀損或是記憶卡空間不足。\n\n如果這經常發生的話，請嘗試檢查資料庫，修復你的集合或從備份中還原。\n當然這也可能是 Ankrimento 的程式錯誤，請回報錯誤讓我們知道。</string>
     <string name="answering_error_report">回報錯誤</string>
-    <string name="storage_full_message">此設備沒用充足的容量以開啟 AnkiDroid 。請重新編排容量以繼續</string>
+    <string name="storage_full_message">此設備沒用充足的容量以開啟 Ankrimento 。請重新編排容量以繼續</string>
     <string name="repair_deck_dialog">你真的想要修復資料庫嗎？\n\n在開始修復之前，會先複製一份備份檔案放置於資料夾\'%s\'中。</string>
     <string name="intent_aedict_empty">\'default\'類別是空的</string>
-    <string name="intent_aedict_category">若要增加新卡片至 AnkiDroid，刪除所有的記事本類別或新增一個 \'default\' 牌組</string>
+    <string name="intent_aedict_category">若要增加新卡片至 Ankrimento，刪除所有的記事本類別或新增一個 \'default\' 牌組</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">過去 x 天內忘記的複習卡:</string>
@@ -52,7 +52,7 @@
     <string name="storage_full_title">存儲已滿</string>
     <string name="storage_almost_full_title">存儲空間幾乎滿了</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">沒有空間</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid 需要%s可用儲存空間以繼續。請清除一些空間</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento 需要%s可用儲存空間以繼續。請清除一些空間</string>
     <string name="restore_backup_title">回復備份嗎？</string>
     <string name="restore_backup">你的集合將會被較舊的版本給覆蓋。任何尚未儲存的進度都會遺失。</string>
     <string name="restore_backup_choose_another">選擇其他時間</string>
@@ -114,9 +114,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">資料庫已鎖定</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">不相容的資料庫版本</string>
-    <string name="incompatible_database_version_summary">該資料庫比此版本的 AnkiDroid 可以使用的更高。升級 AnkiDroid 或降級資料庫以開啟它\n\n支援的版本：%1$d\n資料庫版本：%2$d\n\n以下還原選項將覆蓋您當前的集合，通過使用可能相容的資料庫版本：</string>
+    <string name="incompatible_database_version_summary">該資料庫比此版本的 Ankrimento 可以使用的更高。升級 Ankrimento 或降級資料庫以開啟它\n\n支援的版本：%1$d\n資料庫版本：%2$d\n\n以下還原選項將覆蓋您當前的集合，通過使用可能相容的資料庫版本：</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">背景圖像已套用</string>
     <string name="background_image_removed">背景圖像已移除</string>

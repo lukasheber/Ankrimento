@@ -120,7 +120,7 @@
         <item quantity="one">%1$d minuto</item>
         <item quantity="other">%1$d minutos</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Tarxeta AnkiDroid</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Tarxeta Ankrimento</string>
     <string name="note_editor_copy_note" maxLength="28">Copiar nota</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Reposicionar</string>
     <string name="card_editor_reset_card" maxLength="28">Esquecer progreso</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">Comprobar</string>
     <string name="unknown_type_field_warning">Escribe a resposta: campo descoñecido %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Eliminando a baralla&#8230;</string>
-    <string name="info_rate">Valora AnkiDroid</string>
+    <string name="info_rate">Valora Ankrimento</string>
     <string name="import_title">Importando</string>
     <string name="import_preparing_file">Preparando a importación do ficheiro&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Engadir</string>
@@ -146,13 +146,13 @@
     <string name="import_error_content_provider">O ficheiro seleccionado non se puido importar automaticamente. Consulta o manual do usuario para ver como importar manualmente ficheiros Anki: \n%s</string>
     <string name="import_error_copy_to_cache_title">Non se puido gardar o ficheiro na caché</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Isto adoita ocorrer por fallos na aplicación usada para seleccionar o ficheiro. Proba coas seguintes solucións:\n\n%s</string>
-    <string name="import_interrupted">Importación interrompida: pechouse AnkiDroid</string>
+    <string name="import_interrupted">Importación interrompida: pechouse Ankrimento</string>
     <string name="export_ready_title">Listo para exportar</string>
     <string name="export_send_no_handlers">Non hai aplicacións dispoñíbeis para manexar apkg. Gardando&#8230;</string>
     <string name="export_save_apkg_successful">Paquete Anki gardado correctamente</string>
     <string name="export_save_apkg_unsuccessful">Fallo ao gardar o paquete Anki</string>
     <string name="export_share_title">Enviar paquete Anki usando</string>
-    <string name="export_email_subject">Tarxetas exportadas por AnkiDroid: %s</string>
+    <string name="export_email_subject">Tarxetas exportadas por Ankrimento: %s</string>
     <string name="export_email_text"><![CDATA[
         Ola!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">Fallo ao gardar a imaxe do encerado. %s</string>
     <string name="white_board_image_saved">Imaxe do encerado gardada en %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Editor do encerado</string>
-    <string name="user_is_a_robot">Detectouse un test automático. Se es humano, contacta co soporte do AnkiDroid</string>
+    <string name="user_is_a_robot">Detectouse un test automático. Se es humano, contacta co soporte do Ankrimento</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Esta tarxeta emprega funcionalidades non compatíbeis co AnkiDroid. Contacta co desenvolvedor %1$s, ou consulta a wiki. %2$s</string>
     <string name="invalid_json_data">A tarxeta forneceu datos incorrectos. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Buscar barallas</string>
     <string name="ankidroid_init_failed_webview_title">Erro fatal</string>
-    <string name="ankidroid_init_failed_webview">O sistema WebView, do cal depende AnkiDroid, non se encontra dispoñíbel. Isto pode ocorrer durante a instalación de actualizacións. Téntao de novo nuns minutos.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">O AnkiDroid non puido acceder ao almacenamento por mor dun erro no Android.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">O sistema WebView, do cal depende Ankrimento, non se encontra dispoñíbel. Isto pode ocorrer durante a instalación de actualizacións. Téntao de novo nuns minutos.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">O Ankrimento non puido acceder ao almacenamento por mor dun erro no Android.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Tamaño da letra</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Disposición da barra de ferramentas</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">O ficheiro de vídeo é moi grande. Insire o vídeo manualmente</string>
     <string name="note_editor_audio_too_large">O ficheiro de son é moi grande. Insire o son manualmente</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Copia de seguranza do Android en progreso. Téntao de novo</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Usa iManager para permitir que AnkiDroid engada atallos</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Usa iManager para permitir que Ankrimento engada atallos</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Permitir «Atallos na pantalla de inicio» nas configuracións do sistema para que %s poida engadir atallos</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">A túa pantalla de inicio non permite que AnkiDroid engada atallos</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">A túa pantalla de inicio non permite que Ankrimento engada atallos</string>
     <string name="create_shortcut_error">Erro ao engadir atallo: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Comezar frases con maiúscula</string>
     <!-- Dialog hints -->
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Comeza agora</string>
     <string name="intro_sync_from_ankiweb">Sincronizar desde AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid aínda non está inicializado. Abre AnkiDroid e téntao de novo</string>
+    <string name="app_not_initialized_new">Ankrimento aínda non está inicializado. Abre Ankrimento e téntao de novo</string>
     <!-- Deck Creation -->
     <string name="deck_created">Baralla creada</string>
     <string name="deck_renamed">Renomeouse a baralla</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Instalar</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Non se puido abrir a configuración de texto a voz</string>
-    <string name="shared_decks_ankiweb_login_limit">As barallas compartidas están aloxadas no AnkiWeb, un servizo de balde independente do AnkiDroid. AnkiWeb pídeche que accedas para continuar.</string>
+    <string name="shared_decks_ankiweb_login_limit">As barallas compartidas están aloxadas no AnkiWeb, un servizo de balde independente do Ankrimento. AnkiWeb pídeche que accedas para continuar.</string>
     <string name="deck_description_field_hint">Descrición</string>
     <string name="deck_description_saved">Actualizouse a descrición</string>
     <string name="format_deck_description_as_markdown">Dar formato Markdown</string>

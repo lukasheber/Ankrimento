@@ -35,7 +35,7 @@
     <string name="username">Adresa de e-mail</string>
     <string name="password">Parolă</string>
     <string name="sign_up_description">Nu aveţi un cont AnkiWeb? Este gratuit!</string>
-    <string name="sign_up_not_affiliated">Notă: AnkiWeb nu este afiliat cu AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Notă: AnkiWeb nu este afiliat cu Ankrimento</string>
     <string name="sign_up">Inregistreaza-te</string>
     <string name="logged_as">Autentificat ca</string>
     <string name="reset_password">Resetare parolă</string>

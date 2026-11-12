@@ -311,7 +311,7 @@
     <!-- analytics options -->
     <string name="analytics_dialog_title">𐌷𐌹𐌻𐍀 𐌰𐌽𐌺𐌴𐌹𐌳𐍂𐌰𐌿𐌳𐍃 𐌲𐌰𐌱𐍉𐍄𐌾𐌰𐌽!</string>
     <string name="analytics_title" maxLength="41">Share feature usage</string>
-    <string name="analytics_summ">You can contribute to AnkiDroid by helping the development team see which features people use</string>
+    <string name="analytics_summ">You can contribute to Ankrimento by helping the development team see which features people use</string>
     <string name="note_editor_replace_newlines" maxLength="41">𐌽𐌹𐌿𐌾𐌰𐍃𐍄𐍂𐌹𐌺𐌰𐌽𐍃 𐌼𐌹𐌸𐍃𐌰𐍄𐌾𐌰𐌽 𐌼𐌹𐌸 𐌷𐍄𐌼𐌻</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">Focus ‘type in answer’</string>
@@ -361,7 +361,7 @@
     <string name="bindings_already_bound">𐌳𐌿 ’%s’ 𐌾𐌿 𐌱𐌿𐌽𐌳𐌰𐌽 𐌹𐍃𐍄</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Experimental</string>
-    <string name="readtext_deprecation_warn">AnkiDroid has introduced a better TTS mechanism which is compatible with other Anki clients and includes more voices and improvements to language playback!\n\nPlease upgrade as soon as possible, as this setting will be removed soon</string>
+    <string name="readtext_deprecation_warn">Ankrimento has introduced a better TTS mechanism which is compatible with other Anki clients and includes more voices and improvements to language playback!\n\nPlease upgrade as soon as possible, as this setting will be removed soon</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Please upgrade to the new text to speech format</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -376,9 +376,9 @@
          #################################### Backup options ###################################
          ####################################################################################### -->
     <string name="pref__backups_help__summary"><![CDATA[
-        AnkiDroid periodically backs up your collection.
+        Ankrimento periodically backs up your collection.
         After backups are more than two days old,
-        AnkiDroid will start removing some of them to free up disk space.
+        Ankrimento will start removing some of them to free up disk space.
         <br><br>
         Note that media files are not backed up.
         To be safe, please periodically synchronize your collection, or back up exports of it.

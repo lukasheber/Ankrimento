@@ -118,7 +118,7 @@
     <plurals name="in_minutes">
         <item quantity="other">%1$d분</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid 카드</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento 카드</string>
     <string name="note_editor_copy_note" maxLength="28">노트 복사하기</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">위치 변경</string>
     <string name="card_editor_reset_card" maxLength="28">학습 진도 재설정</string>
@@ -130,7 +130,7 @@
     <string name="checks_action" maxLength="28">확인</string>
     <string name="unknown_type_field_warning">정답 입력: 알 수 없는 필드 %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">카드 묶음 삭제 중&#8230;\n 잠시만 기다리세요.</string>
-    <string name="info_rate">AnkiDroid 평가하기</string>
+    <string name="info_rate">Ankrimento 평가하기</string>
     <string name="import_title">가져오는 중</string>
     <string name="import_preparing_file">불러올 파일 준비 중&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">추가</string>
@@ -141,16 +141,16 @@
     <string name="import_error_handle_exception">패키지를 가져오는데 실패했습니다.\n\n%s</string>
     <string name="import_error_not_apkg_extension">apkg, colpkg 확장자를 가진 \"%s\" 파일이 없습니다.</string>
     <string name="import_error_load_imported_database">Anki 데이터베이스 (.anki2)의 덮어쓰기는 아직 지원되지 않습니다. 덮어쓰려면 설명서를 참조해주십시오.</string>
-    <string name="import_error_content_provider">선택된 파일은 AnkiDroid가 자동적으로 가져올 수 없습니다. Anki 파일을 수동으로 가져오는 방법은 사용자 설명서를 참조하세요. \n %s</string>
+    <string name="import_error_content_provider">선택된 파일은 Ankrimento가 자동적으로 가져올 수 없습니다. Anki 파일을 수동으로 가져오는 방법은 사용자 설명서를 참조하세요. \n %s</string>
     <string name="import_error_copy_to_cache_title">파일 캐시 실패</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">파일 선택 앱의 버그로 인한 경우가 많습니다. 다음을 시도해 보세요:\n\n%s</string>
-    <string name="import_interrupted">불러오기 중단됨: AnkiDroid가 닫힘</string>
+    <string name="import_interrupted">불러오기 중단됨: Ankrimento가 닫힘</string>
     <string name="export_ready_title">내보내기 준비 완료</string>
     <string name="export_send_no_handlers">apkg. 파일을 처리할 수 있는 응용 프로그램이 없습니다. 저장 중&#8230;</string>
     <string name="export_save_apkg_successful">Anki 패키지 저장 성공</string>
     <string name="export_save_apkg_unsuccessful">Anki 패키지 저장 실패</string>
     <string name="export_share_title">사용 중인 패키지 보내기</string>
-    <string name="export_email_subject">AnkiDroid로 보내진 플래시 카드: %s</string>
+    <string name="export_email_subject">Ankrimento로 보내진 플래시 카드: %s</string>
     <string name="export_email_text"><![CDATA[
         안녕하세요!
         <br/><br/>
@@ -197,7 +197,7 @@
     <string name="white_board_image_save_failed">화이트보드 이미지 저장에 실패했습니다. %s</string>
     <string name="white_board_image_saved">%s에 화이트보드 이미지가 저장되었습니다.</string>
     <string name="title_whiteboard_editor" maxLength="28">화이트보드 편집기</string>
-    <string name="user_is_a_robot">자동 테스트를 감지했습니다. 만약 당신이 로봇이 아니라면 AnkiDroid 지원부에 연락하세요.</string>
+    <string name="user_is_a_robot">자동 테스트를 감지했습니다. 만약 당신이 로봇이 아니라면 Ankrimento 지원부에 연락하세요.</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">이 카드는 AnkiDroid에서 지원하지 않은 기능을 이용합니다. 개발자에게 문의하거나(%1$s), wiki를 확인해주십시오. %2$s</string>
     <string name="invalid_json_data">잘못된 카드 데이터입니다. %s</string>
@@ -213,8 +213,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">덱 검색하기</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid이 필요한 시스템 WebView를 사용할 수 없습니다. 이 문제는 시스템이 업데이트를 설치하는 경우 발생할 수도 있습니다. 잠시 후 다시 시도하십시오.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">Android 오류로 인해 AnkiDroid가 저장소에 접근할 수 없습니다.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento이 필요한 시스템 WebView를 사용할 수 없습니다. 이 문제는 시스템이 업데이트를 설치하는 경우 발생할 수도 있습니다. 잠시 후 다시 시도하십시오.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Android 오류로 인해 Ankrimento가 저장소에 접근할 수 없습니다.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">글꼴 크기</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -243,9 +243,9 @@
     <string name="note_editor_video_too_large">영상 파일이 너무 큽니다. 수동으로 넣어 주세요.</string>
     <string name="note_editor_audio_too_large">오디오 파일이 너무 큽니다. 수동으로 넣어 주세요.</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Android 백업중입니다. 다시 시도하십시오.</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">AnkiDroid 바로가기를 추가하려면 iManager가 필요할 수 있습니다.</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Ankrimento 바로가기를 추가하려면 iManager가 필요할 수 있습니다.</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">%s의 \'홈 화면 바로가기\'를 시스템 설정에서 허용하세요</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">홈 화면에 AnkiDroid 바로 가기를 추가할 수 없습니다.</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">홈 화면에 Ankrimento 바로 가기를 추가할 수 없습니다.</string>
     <string name="create_shortcut_error">바로가기 생성 오류: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">대문자로 시작</string>
     <!-- Dialog hints -->
@@ -312,7 +312,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">시작하기</string>
     <string name="intro_sync_from_ankiweb">AnkiWeb에서 동기화</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid가 초기화되지 않았습니다. AnkiDroid를 열어 다시 시도해 주세요.</string>
+    <string name="app_not_initialized_new">Ankrimento가 초기화되지 않았습니다. Ankrimento를 열어 다시 시도해 주세요.</string>
     <!-- Deck Creation -->
     <string name="deck_created">생성된 덱</string>
     <string name="deck_renamed">이름이 변경된 덱</string>
@@ -332,7 +332,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">인터넷</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">설치</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">TTS 설정 열기 실패</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">설명</string>
     <string name="deck_description_saved">설명이 업데이트되었습니다.</string>
     <string name="format_deck_description_as_markdown">마크다운 형식</string>

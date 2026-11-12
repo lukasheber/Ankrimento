@@ -43,12 +43,12 @@
         <item quantity="other">%d karet obnoveno</item>
     </plurals>
     <string name="answering_error_title">Chyba databáze</string>
-    <string name="answering_error_message">Zápis do kolekce se nezdařil. Databáze může být poškozena nebo nemusí být dostatek prázdného místa na disku.\n\nPokud se to děje častěji, zkuste zkontrolovat databázi, opravit kolekci nebo ji obnovit ze zálohy. Klepněte na „možnosti“.\n\nNebo to může být také chyba AnkiDroid, prosím nahlaste chybu, abychom to mohli zkontrolovat.</string>
+    <string name="answering_error_message">Zápis do kolekce se nezdařil. Databáze může být poškozena nebo nemusí být dostatek prázdného místa na disku.\n\nPokud se to děje častěji, zkuste zkontrolovat databázi, opravit kolekci nebo ji obnovit ze zálohy. Klepněte na „možnosti“.\n\nNebo to může být také chyba Ankrimento, prosím nahlaste chybu, abychom to mohli zkontrolovat.</string>
     <string name="answering_error_report">Nahlásit chybu</string>
-    <string name="storage_full_message">Není dostatek volného místa v úložišti pro otevření AnkiDroid. Uvolněte nějaké místo, abyste mohli pokračovat.</string>
+    <string name="storage_full_message">Není dostatek volného místa v úložišti pro otevření Ankrimento. Uvolněte nějaké místo, abyste mohli pokračovat.</string>
     <string name="repair_deck_dialog">Opravdu se chcete pokusit opravit databázi?\n\nPřed obnovou bude vytvořena kopie v podadresáři „%s“.</string>
     <string name="intent_aedict_empty">Kategorie „výchozí“ je prázdná</string>
-    <string name="intent_aedict_category">Chcete-li přidat karty do AnkiDroid, odstraňte všechny kategorie Poznámkového bloku nebo přidejte jednu s názvem „default“</string>
+    <string name="intent_aedict_category">Chcete-li přidat karty do Ankrimento, odstraňte všechny kategorie Poznámkového bloku nebo přidejte jednu s názvem „default“</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Opakovat zapomenuté karty z posledních x dnů:</string>
@@ -58,7 +58,7 @@
     <string name="storage_full_title">Úložiště je plné</string>
     <string name="storage_almost_full_title">Úložiště téměř plné</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Není místo</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid potřebuje %s volného místa v úložišti, abyste mohli pokračovat. Uvolněte prosím nějaké místo</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento potřebuje %s volného místa v úložišti, abyste mohli pokračovat. Uvolněte prosím nějaké místo</string>
     <string name="restore_backup_title">Obnovit zálohu?</string>
     <string name="restore_backup">Vaše kolekce bude nahrazena starší kopií. Všechny neuložené změny budou ztraceny.</string>
     <string name="restore_backup_choose_another">Vybrat jinou</string>
@@ -123,9 +123,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Databáze uzamčena</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Nekompatibilní verze databáze</string>
-    <string name="incompatible_database_version_summary">Databáze je pokročilejší verze, než se kterou může tato verze AnkiDroid pracovat. Aktualizujte AnkiDroid nebo ponižte databázi, abyste ji otevřeli\n\nPodporovaná verze: %1$d\nVerze databáze: %2$d\n\nNásledující možnosti obnovení přepíšou vaši současnou kolekci snad kompatibilní verzí databáze:</string>
+    <string name="incompatible_database_version_summary">Databáze je pokročilejší verze, než se kterou může tato verze Ankrimento pracovat. Aktualizujte Ankrimento nebo ponižte databázi, abyste ji otevřeli\n\nPodporovaná verze: %1$d\nVerze databáze: %2$d\n\nNásledující možnosti obnovení přepíšou vaši současnou kolekci snad kompatibilní verzí databáze:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Obrázek na pozadí byl použit</string>
     <string name="background_image_removed">Obrázek na pozadí byl odstraněn</string>

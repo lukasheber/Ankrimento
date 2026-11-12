@@ -82,12 +82,12 @@
     <string name="menu_disable_voice_playback">غیرفعال کردن پخش صدا</string>
     <string name="menu_create_backup" maxLength="28">ایجاد پشتیبان</string>
     <string name="new_dynamic_deck">ایجاد دسته فیلتر شده</string>
-    <string name="directory_inaccessible">فهرست AnkiDroid غیرقابل دسترس است</string>
+    <string name="directory_inaccessible">فهرست Ankrimento غیرقابل دسترس است</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">برای ادامه لطفاً به AnkiDroid اجازه دسترسی به \"حافظه\" بدهید</string>
+    <string name="startup_no_storage_permission">برای ادامه لطفاً به Ankrimento اجازه دسترسی به \"حافظه\" بدهید</string>
     <string name="rebuild_filtered_deck">درحال بازسازی دسته‌ی کارت فیلتر شده&#8230;</string>
     <string name="empty_cram_label" maxLength="28">تخلیه</string>
     <string name="create_subdeck">ایجاد زیردسته</string>
@@ -124,7 +124,7 @@
     <string name="card_template_editor_save_error">نمیتوان تغییرات قالب کارت را ذخیره کرد: %s</string>
     <string name="template_for_current_card_deleted">نوع کارت برای کارت فعلی حذف شد.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">بخوان و به پایگاه داده AnkiDroid پیام بده</string>
+    <string name="read_write_permission_label">بخوان و به پایگاه داده Ankrimento پیام بده</string>
     <string name="read_write_permission_description">دسترسی به یادداشت‌ها، کارت‌ها، انواع یادداشت‌ها و دسته‌های موجود، و همچنین ایجاد موارد جدید</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">مرورگر کارت</string>
@@ -133,23 +133,23 @@
     <string name="sync_conflict_message_new">مجموعه‌ها نمی‌توانند ترکیب شوند.\nکدام مجموعه را می‌خواهید نگه دارید؟</string>
     <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">انکی دروید</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">آیا می‌خواهید مجموعه موجود در AnkiWeb را به جای مجموعه موجود در AnkiDroid قراردهید؟</string>
-    <string name="sync_conflict_local_confirm_new">آیا می‌خواهید مجموعه موجود در AnkiDroid را به جای مجموعه موجود در AnkiWeb قراردهید؟</string>
+    <string name="sync_conflict_remote_confirm_new">آیا می‌خواهید مجموعه موجود در AnkiWeb را به جای مجموعه موجود در Ankrimento قراردهید؟</string>
+    <string name="sync_conflict_local_confirm_new">آیا می‌خواهید مجموعه موجود در Ankrimento را به جای مجموعه موجود در AnkiWeb قراردهید؟</string>
     <string name="sync_conflict_title_new">مجموعه‌ای که می‌خواهید نگه دارید را انتخاب کنید</string>
     <string name="sync_conflict_replace_title">جایگزین کردن مجموعه</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">نمیتوان فایلی نوشت یا ساخت %s</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">مجموعه خارج از دسترس</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">ما به دلیل تغییرات قوانین Play Store، پس از پاک کردن اپلیکیشن AnkiDroid، امکان دسترسی به مجموعه‌های شما را نداریم\n\nداده‌های شما امن است و امکان بازیابی آن وجود دارد. این داده‌ها در آدرس %s\n\nهستند یکی از گزینه‌های زیر را برای بازیابی انتخاب کنید:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">اندروید مجوز %1$s برنامه AnkiDroid را به دلیل عدم فعالیت برنامه حذف کرده است.\n\nداده‌های شما امن هستند و می‌توانند بازیابی شوند. آنها در\n%2$s\nقرار دارند.\n\nگزینه‌ای را در زیر انتخاب کنید تا بازیابی شود:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">ما به دلیل تغییرات قوانین Play Store، پس از پاک کردن اپلیکیشن Ankrimento، امکان دسترسی به مجموعه‌های شما را نداریم\n\nداده‌های شما امن است و امکان بازیابی آن وجود دارد. این داده‌ها در آدرس %s\n\nهستند یکی از گزینه‌های زیر را برای بازیابی انتخاب کنید:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">اندروید مجوز %1$s برنامه Ankrimento را به دلیل عدم فعالیت برنامه حذف کرده است.\n\nداده‌های شما امن هستند و می‌توانند بازیابی شوند. آنها در\n%2$s\nقرار دارند.\n\nگزینه‌ای را در زیر انتخاب کنید تا بازیابی شود:</string>
     <string name="restore_data_from_ankiweb">بازیابی از AnkiWeb (توصیه شده)</string>
     <string name="install_non_play_store_ankidroid_recommended">بازیابی دسترسی به پوشه (توصیه شده)</string>
     <string name="install_non_play_store_ankidroid">بازیابی دسترسی به پوشه (پیشرفته)</string>
     <string name="restore_data_from_backup">بازیابی از پشتیبان .colpkg (پیشرفته)</string>
     <string name="create_new_collection">ایجاد یک مجموعه جدید</string>
-    <string name="new_unsafe_collection">اگر اپلیکیشن AnkiDroid را از تلفن خود پاک کنید، مجموعه جدید نیز پاک خواهد شد</string>
+    <string name="new_unsafe_collection">اگر اپلیکیشن Ankrimento را از تلفن خود پاک کنید، مجموعه جدید نیز پاک خواهد شد</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid برای کار کردن بعضی اجازه ها را احتیاج دارد</string>
+    <string name="permissions_screen_headline">Ankrimento برای کار کردن بعضی اجازه ها را احتیاج دارد</string>
     <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">انکی دروید با این مجوز ها بهترین عملکرد را دارد.</string>
     <string name="storage_access_title">دسترسی به حافظه</string>
     <string name="storage_access_summary">مجموعه‌ی شما را جای امن ذخیره کرده که حذف نشود وقتی برنامه حذف میشود</string>

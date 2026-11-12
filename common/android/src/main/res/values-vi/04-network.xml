@@ -35,7 +35,7 @@
     <string name="username">Địa chỉ email</string>
     <string name="password">Mật khẩu</string>
     <string name="sign_up_description">Không có tài khoản AnkiWeb? Nó miễn phí đấy!</string>
-    <string name="sign_up_not_affiliated">Lưu ý: AnkiWeb không liên quan gì đến AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Lưu ý: AnkiWeb không liên quan gì đến Ankrimento</string>
     <string name="sign_up">Đăng ký</string>
     <string name="logged_as">Đăng nhập với</string>
     <string name="reset_password">Đặt lại mật khẩu</string>

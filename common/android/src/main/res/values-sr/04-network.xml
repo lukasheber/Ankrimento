@@ -35,7 +35,7 @@
     <string name="username">Адреса е-поште</string>
     <string name="password">Лозинка</string>
     <string name="sign_up_description">Немате AnkiWeb налог? Бесплатан је!</string>
-    <string name="sign_up_not_affiliated">Note: AnkiWeb is not affiliated with AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Note: AnkiWeb is not affiliated with Ankrimento</string>
     <string name="sign_up">Региструј</string>
     <string name="logged_as">Prijavljen kao</string>
     <string name="reset_password">Ресетујте лозинку</string>

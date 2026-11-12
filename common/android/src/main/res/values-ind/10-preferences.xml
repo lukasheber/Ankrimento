@@ -70,7 +70,7 @@
     <string name="card_browser_font_size" maxLength="41">Skala fon penelusur kartu</string>
     <string name="card_browser_hide_media" maxLength="41">Tampilkan nama berkas di penelusur kartu</string>
     <string name="card_browser_hide_media_summary">Display audio filenames in the card browser question/answer fields</string>
-    <string name="col_path" maxLength="41">Direktori AnkiDroid</string>
+    <string name="col_path" maxLength="41">Direktori Ankrimento</string>
     <string name="fullscreen_review" maxLength="41">Mode layar penuh</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">Mati</string>
     <string name="full_screen_system">Sembunyikan bar sistem</string>
@@ -304,9 +304,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">Umum</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">Cari</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">Bantu AnkiDroid jadi lebih baik!</string>
+    <string name="analytics_dialog_title">Bantu Ankrimento jadi lebih baik!</string>
     <string name="analytics_title" maxLength="41">Bagikan data penggunaan fitur</string>
-    <string name="analytics_summ">Kamu bisa berkontribusi ke AnkiDroid dengan membantu tim pengembangan tahu fitur mana yang orang gunakan</string>
+    <string name="analytics_summ">Kamu bisa berkontribusi ke Ankrimento dengan membantu tim pengembangan tahu fitur mana yang orang gunakan</string>
     <string name="note_editor_replace_newlines" maxLength="41">Ganti newlines dengan HTML</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">Fokus \'ketik di jawaban\'</string>
@@ -318,8 +318,8 @@
     <string name="about_contributors_description"><![CDATA[Ini merupakan <a href=\"%1$s\">para kontributor</a> keren kami. Anda dapat membantu AnkiDroid juga dengan pemrograman, penerjemahan, donasi, dan <a href=\"%2$s\">masih banyak lagi</a>!]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">Lisensi</string>
-    <string name="license_description"><![CDATA[AnkiDroid dirilis di bawah lisensi <a href=\"%1$s\">GPL-3.0</a> dan <a href=\"%2$s\">AGPL-3.0</a>, dengan kode sumbernya tersedia <a href=\"%3$s\">di GitHub</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
+    <string name="license_description"><![CDATA[Ankrimento dirilis di bawah lisensi <a href=\"%1$s\">GPL-3.0</a> dan <a href=\"%2$s\">AGPL-3.0</a>, dengan kode sumbernya tersedia <a href=\"%3$s\">di GitHub</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
     <string name="donate_description"><![CDATA[Anda dapat mendukung pengembangan AnkiDroid dengan <a href=\"%1$s\">berdonasi</a>. Berapa pun jumlahnya akan sangat kami hargai.]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">Tambahkan gestur</string>
@@ -355,7 +355,7 @@
     <string name="bindings_already_bound">Sudah terikat ke \'%s\'</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">Eksperimental</string>
-    <string name="readtext_deprecation_warn">AnkiDroid telah memperkenalkan mekanisme teks ke suara yang lebih baik, kompatibel dengan klien Anki lainnya, dan memiliki lebih banyak suara dan peningkatan pada pemutaran bahasa!\n\nSilakan meningkatkan segera mungkin karena pengaturan ini akan dihapus dalam waktu mendatang</string>
+    <string name="readtext_deprecation_warn">Ankrimento telah memperkenalkan mekanisme teks ke suara yang lebih baik, kompatibel dengan klien Anki lainnya, dan memiliki lebih banyak suara dan peningkatan pada pemutaran bahasa!\n\nSilakan meningkatkan segera mungkin karena pengaturan ini akan dihapus dalam waktu mendatang</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">Silakan meningkatkan ke format teks ke suara baru</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -369,9 +369,9 @@
     <!-- #######################################################################################
          #################################### Backup options ###################################
          ####################################################################################### -->
-    <string name="pref__backups_help__summary"><![CDATA[        AnkiDroid mencadangkan koleksi Anda secara berkala.
+    <string name="pref__backups_help__summary"><![CDATA[        Ankrimento mencadangkan koleksi Anda secara berkala.
         Setelah cadangannya tersimpan lebih dari dua hari,
-        AnkiDroid akan menghapus beberapa cadangan untuk membebaskan ruang penyimpanan.
+        Ankrimento akan menghapus beberapa cadangan untuk membebaskan ruang penyimpanan.
         <br><br>
         Dicatat bahwa berkas media tidak dicadangkan.
         Untuk berjaga-jaga, silakan sinkronisasikan koleksi Anda secara berkala, atau buat cadangan pengeksporannya.

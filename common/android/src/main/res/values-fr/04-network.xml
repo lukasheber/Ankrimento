@@ -35,7 +35,7 @@
     <string name="username">Adresse électronique</string>
     <string name="password">Mot de passe</string>
     <string name="sign_up_description">Vous n\'avez pas de compte AnkiWeb ? C\'est gratuit !</string>
-    <string name="sign_up_not_affiliated">Remarque : AnkiWeb n’est pas affilié à AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Remarque : AnkiWeb n’est pas affilié à Ankrimento</string>
     <string name="sign_up">S\'inscrire</string>
     <string name="logged_as">Connecté en tant que</string>
     <string name="reset_password">Réinitialiser le mot de passe</string>

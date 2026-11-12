@@ -86,7 +86,7 @@
     <string name="ankrimento_priority">Incremento priority…</string>
     <string name="ankrimento_priority_message">0 to 100. With Incremento\'s default settings, lower numbers are more important.</string>
     <string name="ankrimento_profile">Incremento profile</string>
-    <string name="ankrimento_profile_message">The Anki profile name used on your computer (for syncing). Takes effect after restarting AnkiDroid.</string>
+    <string name="ankrimento_profile_message">The Anki profile name used on your computer (for syncing). Takes effect after restarting Ankrimento.</string>
     <!-- Reader screen -->
     <string name="ankrimento_navigate_up" comment="Accessibility label of the top bar's back arrow">Back</string>
     <string name="ankrimento_more_options">More options</string>
@@ -534,10 +534,10 @@
     <string name="ankrimento_restore_contents">Backup of profile “%1$s”: %2$d cards, %3$d media files, %4$d Incremento files.</string>
     <string name="ankrimento_restore_other_profile">It comes from a profile with another name; its files take this profile\'s place.</string>
     <string name="ankrimento_restore_missing_covers">%d PDF or EPUB covers are missing from it; those documents show without a cover.</string>
-    <string name="ankrimento_restore_replaces">This replaces the cards, media and Incremento files on this device, including anything newer. AnkiDroid backs up the collection first. AnkiWeb isn\'t checked: when you next sync, choose whether to upload the restored collection.</string>
+    <string name="ankrimento_restore_replaces">This replaces the cards, media and Incremento files on this device, including anything newer. Ankrimento backs up the collection first. AnkiWeb isn\'t checked: when you next sync, choose whether to upload the restored collection.</string>
     <string name="ankrimento_restore_confirm">Replace</string>
     <string name="ankrimento_restore_working">Restoring…</string>
-    <string name="ankrimento_restore_no_safety_backup">AnkiDroid could not back up the collection first</string>
+    <string name="ankrimento_restore_no_safety_backup">Ankrimento could not back up the collection first</string>
     <string name="ankrimento_restore_failed">Restore failed; nothing was replaced: %s</string>
     <string name="ankrimento_restore_done">Backup restored. The app restarts now.</string>
     <plurals name="ankrimento_backup_saved">

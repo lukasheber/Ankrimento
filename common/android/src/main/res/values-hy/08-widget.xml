@@ -25,10 +25,10 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="one">%d AnkiDroid քարտ կրկնելիք է</item>
-        <item quantity="other">%d AnkiDroid քարտ կրկնելիք է</item>
+        <item quantity="one">%d Ankrimento քարտ կրկնելիք է</item>
+        <item quantity="other">%d Ankrimento քարտ կրկնելիք է</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid փոքր</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento փոքր</string>
     <plurals name="widget_cards_due">
         <item quantity="one">%d քարտ կրկնելիք է</item>
         <item quantity="other">%d քարտ կրկնելիք է</item>
@@ -37,7 +37,7 @@
         <item quantity="one">մնաց %d րոպե</item>
         <item quantity="other">մնաց %d րոպե</item>
     </plurals>
-    <string name="widget_add_note_button">Ավելացնել AnkiDroid գրառում</string>
+    <string name="widget_add_note_button">Ավելացնել Ankrimento գրառում</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Deck Picker</string>
     <string name="card_analysis_extra_widget_description">Card Analysis</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

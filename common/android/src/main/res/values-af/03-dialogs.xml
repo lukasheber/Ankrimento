@@ -39,12 +39,12 @@
         <item quantity="other">%d kaarte herstel</item>
     </plurals>
     <string name="answering_error_title">Databasis fout</string>
-    <string name="answering_error_message">Skryf na die versameling het misluk. Die databasis kan korrup wees of daar mag nie genoeg leë spasie op die skyf wees nie.\n\nAs dit meer gereeld gebeur, probeer om die databasis na te gaan, die versameling te herstel of dit van \'n rugsteun te herstel. Raak “opsies” aan daarvoor.\n\Of dit kan ook \'n AnkiDroid-fout wees; rapporteer asseblief die fout sodat ons dit kan nagaan.</string>
+    <string name="answering_error_message">Skryf na die versameling het misluk. Die databasis kan korrup wees of daar mag nie genoeg leë spasie op die skyf wees nie.\n\nAs dit meer gereeld gebeur, probeer om die databasis na te gaan, die versameling te herstel of dit van \'n rugsteun te herstel. Raak “opsies” aan daarvoor.\n\Of dit kan ook \'n Ankrimento-fout wees; rapporteer asseblief die fout sodat ons dit kan nagaan.</string>
     <string name="answering_error_report">Rapporteer fout</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">Wil jy regtig probeer om die databasis te herstel?\n\nVoor die poging begin, sal \'n kopie in subgids “%s” geskep word.</string>
     <string name="intent_aedict_empty">Kategorie “verstek” is leeg</string>
-    <string name="intent_aedict_category">Om kaarte by AnkiDroid te voeg, verwyder alle Notepad-kategorieë of voeg een by met die naam “verstek”</string>
+    <string name="intent_aedict_category">Om kaarte by Ankrimento te voeg, verwyder alle Notepad-kategorieë of voeg een by met die naam “verstek”</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Hersien kaarte wat in die laaste x dae vergeet is</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Stoor is vol</string>
     <string name="storage_almost_full_title">Stoor is amper vol</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Geen stoorplek</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">AnkiDroid benodig %s vrye stoorplek om voort te gaan. Maak asseblief plek skoon</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Ankrimento benodig %s vrye stoorplek om voort te gaan. Maak asseblief plek skoon</string>
     <string name="restore_backup_title">Herstel rugsteun?</string>
     <string name="restore_backup">Jou versameling sal vervang word met \'n ouer kopie. Enige ongestoorde vordering sal verlore gaan.</string>
     <string name="restore_backup_choose_another">Kies \'n ander</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Databasis Is Vergrendel</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Onversoenbare Databasis-Weergawe</string>
-    <string name="incompatible_database_version_summary">Die databasis is \'n meer gevorderde weergawe as wat hierdie weergawe van AnkiDroid mee kan werk. Opgradeer AnkiDroid of downgrade die databasis om dit oop te maak\n\nOndersteunde weergawe: %1$d\nDatabasis weergawe: %2$d\n\nDie volgende herstelopsies sal jou huidige versameling oorskryf, moontlik met \'n versoenbare databasisweergawe:</string>
+    <string name="incompatible_database_version_summary">Die databasis is \'n meer gevorderde weergawe as wat hierdie weergawe van Ankrimento mee kan werk. Opgradeer Ankrimento of downgrade die databasis om dit oop te maak\n\nOndersteunde weergawe: %1$d\nDatabasis weergawe: %2$d\n\nDie volgende herstelopsies sal jou huidige versameling oorskryf, moontlik met \'n versoenbare databasisweergawe:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Agtergrondbeeld toegepas</string>
     <string name="background_image_removed">Agtergrondbeeld verwyder</string>

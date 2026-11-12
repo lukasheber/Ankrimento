@@ -35,7 +35,7 @@
     <string name="username">Email address</string>
     <string name="password">Password</string>
     <string name="sign_up_description">Walang kang AnkiWeb na account? Ito ay libre!</string>
-    <string name="sign_up_not_affiliated">Note: Ang AnkiWeb ay hindi kasapi ng AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Note: Ang AnkiWeb ay hindi kasapi ng Ankrimento</string>
     <string name="sign_up">Mag Sign up</string>
     <string name="logged_as">Naka-login bilang</string>
     <string name="reset_password">I-reset ang password</string>

@@ -82,12 +82,12 @@
     <string name="menu_disable_voice_playback">Ovoz ijrosini öçiriş</string>
     <string name="menu_create_backup" maxLength="28">Zaxira yaratiş</string>
     <string name="new_dynamic_deck">Filtrlangan dasta yaratiş</string>
-    <string name="directory_inaccessible">AnkiDroid katalogiga kiriş imkonsiz</string>
+    <string name="directory_inaccessible">Ankrimento katalogiga kiriş imkonsiz</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">Iltimos davom etiş uçun AnkiDroid ga \'Saqlaş\' ruxsatini bering</string>
+    <string name="startup_no_storage_permission">Iltimos davom etiş uçun Ankrimento ga \'Saqlaş\' ruxsatini bering</string>
     <string name="rebuild_filtered_deck">Filtrlangan dasta qayta qurilmoqda&#8230;</string>
     <string name="empty_cram_label" maxLength="28">Böş</string>
     <string name="create_subdeck">Içki dasta yaratiş</string>
@@ -124,33 +124,33 @@
     <string name="card_template_editor_save_error">Karta şablon özgarişlarini saqlab bölmadi: %s</string>
     <string name="template_for_current_card_deleted">Joriy kartaning karta turi öçirilgan.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">AnkiDroid maʼlumotlar bazasidan oʼqiş va yoziş</string>
+    <string name="read_write_permission_label">Ankrimento maʼlumotlar bazasidan oʼqiş va yoziş</string>
     <string name="read_write_permission_description">mavjud qaydlarga, kartalarga, qayd turlariga va dastalarga, şuningdek, yangilarini yaratişga ruxsat</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Karta brauzeri</string>
     <string name="context_menu_anki_card_label">Anki card</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">Kolleksiyalarni birlaştirib bölmadi.\n Qaysi kolleksiyani qoldirmoqçisiz?</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">AnkiDroidʼdagi kolleksiyangizni AnkiWeb kolleksiyasi bilan almaştirmoqçimisiz?</string>
-    <string name="sync_conflict_local_confirm_new">AnkiWebʼdagi kolleksiyangizni AnkiDroid kolleksiyasi bilan almaştirmoqçimisiz?</string>
+    <string name="sync_conflict_remote_confirm_new">Ankrimentoʼdagi kolleksiyangizni AnkiWeb kolleksiyasi bilan almaştirmoqçimisiz?</string>
+    <string name="sync_conflict_local_confirm_new">AnkiWebʼdagi kolleksiyangizni Ankrimento kolleksiyasi bilan almaştirmoqçimisiz?</string>
     <string name="sync_conflict_title_new">Saqlaş uçun kolleksiyani tanlang</string>
     <string name="sync_conflict_replace_title">Kolleksiyani almaştiriş</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">%s fayliga yozib yoki yaratib bölmadi</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">Kolleksiyani oçib bölmadi</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store siyosatidagi özgarişlar tufayli AnkiDroid öçirib taşlanganidan keyin kolleksiyangizga kira olmaymiz\n\nMaʼlumotlaringiz bus-butun va qayta tiklaş mumkin. \n%s manzilida joylaşgan\n\nQayta tiklaş uçun quyidagi variantlardan birini tanlang:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Ilova nofaolligi sababli Android AnkiDroidʼni %1$s ruxsatini olib taşladi.\n\nMaʼlumotlaringiz bus-butun va qayta tiklaş mumkin. \n%2$s manzilida joylaşgan\n\nQayta tiklaş uçun quyidagi variantlardan birini tanlang:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Play Store siyosatidagi özgarişlar tufayli Ankrimento öçirib taşlanganidan keyin kolleksiyangizga kira olmaymiz\n\nMaʼlumotlaringiz bus-butun va qayta tiklaş mumkin. \n%s manzilida joylaşgan\n\nQayta tiklaş uçun quyidagi variantlardan birini tanlang:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Ilova nofaolligi sababli Android Ankrimentoʼni %1$s ruxsatini olib taşladi.\n\nMaʼlumotlaringiz bus-butun va qayta tiklaş mumkin. \n%2$s manzilida joylaşgan\n\nQayta tiklaş uçun quyidagi variantlardan birini tanlang:</string>
     <string name="restore_data_from_ankiweb">AnkiWebʼdan tiklaş (tavsiya etiladi)</string>
     <string name="install_non_play_store_ankidroid_recommended">Jildga ruxsatni tiklaş (tavsiya etiladi)</string>
     <string name="install_non_play_store_ankidroid">Jildga ruxsatni tiklaş (kengaytirilgan)</string>
     <string name="restore_data_from_backup">.colpkg zaxira nusxasidan qayta tiklaş (kengaytirilgan)</string>
     <string name="create_new_collection">Yangi kolleksiya yaratiş</string>
-    <string name="new_unsafe_collection">AnkiDroidʼni öçirib taşlasangiz, yangi kolleksiya telefoningizdan öçiriladi</string>
+    <string name="new_unsafe_collection">Ankrimentoʼni öçirib taşlasangiz, yangi kolleksiya telefoningizdan öçiriladi</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid işlaşi uçun baʼzi ruxsatlar kerak</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid quyidagi ruxsatlar bilan eng yaxşi işlaydi</string>
+    <string name="permissions_screen_headline">Ankrimento işlaşi uçun baʼzi ruxsatlar kerak</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento quyidagi ruxsatlar bilan eng yaxşi işlaydi</string>
     <string name="storage_access_title">Saqlaş xotirasiga ruxsat</string>
     <string name="storage_access_summary">Kolleksiyangizni xavfsiz joyda saqlaydi. Agar ilova öçirilib taşlansa, kolleksiyangiz öçirilmaydi</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Barça fayllarga ruxsat</string>
@@ -168,7 +168,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Ilova işlaşi uçun kerak</string>
-    <string name="permission_required_message">Davom etiş uçun AnkiDroidʼga ‘%s’ ruxsatini bering</string>
+    <string name="permission_required_message">Davom etiş uçun Ankrimentoʼga ‘%s’ ruxsatini bering</string>
     <!-- Multiple profile -->
     <string name="add_profile">Profil qöşiş</string>
 </resources>

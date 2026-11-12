@@ -39,12 +39,12 @@
         <item quantity="other">Επαναφορά %d καρτών</item>
     </plurals>
     <string name="answering_error_title">Σφάλμα βάσης δεδομένων</string>
-    <string name="answering_error_message">Παρουσιάστηκε σφάλμα κατά την εγγραφή στη συλλογή. Αυτό θα μπορεί να σχετίζεται με κατεστραμμένη βάση δεδομένων ή ανεπαρκή αποθηκευτικό χώρο.\n\nΑν συμβαίνει συχνά, προσπαθήστε να ελέγξετε τη βάση δεδομένων, να επιδιορθώσετε τη συλλογή ή να την επαναφέρετε από ένα αντίγραφο. Κάντε κλικ στις σχετικές «επιλογές».\n\nΕκτός αυτού, μπορεί να είναι και σφάλμα του AnkiDroid· παρακαλούμε αναφέρετε το σφάλμα ώστε να το ελέγξουμε.</string>
+    <string name="answering_error_message">Παρουσιάστηκε σφάλμα κατά την εγγραφή στη συλλογή. Αυτό θα μπορεί να σχετίζεται με κατεστραμμένη βάση δεδομένων ή ανεπαρκή αποθηκευτικό χώρο.\n\nΑν συμβαίνει συχνά, προσπαθήστε να ελέγξετε τη βάση δεδομένων, να επιδιορθώσετε τη συλλογή ή να την επαναφέρετε από ένα αντίγραφο. Κάντε κλικ στις σχετικές «επιλογές».\n\nΕκτός αυτού, μπορεί να είναι και σφάλμα του Ankrimento· παρακαλούμε αναφέρετε το σφάλμα ώστε να το ελέγξουμε.</string>
     <string name="answering_error_report">Αναφορά σφάλματος</string>
-    <string name="storage_full_message">There is not enough free storage space to open AnkiDroid. Free up some space to continue.</string>
+    <string name="storage_full_message">There is not enough free storage space to open Ankrimento. Free up some space to continue.</string>
     <string name="repair_deck_dialog">Είστε βέβαιοι ότι θέλετε να επιδιορθώσετε τη βάση δεδομένων;\n\nΠριν να ξεκινήσει η απόπειρα, θα δημιουργηθεί ένα αντίγραφο στον υποφάκελο \'%s\'.</string>
     <string name="intent_aedict_empty">Η κατηγορία «προεπιλεγμένο» είναι κενή</string>
-    <string name="intent_aedict_category">Για να προσθέσετε κάρτες στο AnkiDroid, καταργήστε όλες τις κατηγορίες σημειωματάριου (Notepad) ή προσθέστε μία με το όνομα «default»</string>
+    <string name="intent_aedict_category">Για να προσθέσετε κάρτες στο Ankrimento, καταργήστε όλες τις κατηγορίες σημειωματάριου (Notepad) ή προσθέστε μία με το όνομα «default»</string>
     <string name="custom_study_extend_limits_title">Extend daily limits</string>
     <string name="custom_study_increase">Increase</string>
     <string name="custom_study_forgotten">Επανάληψη ξεχασμένων καρτών στις τελευταίες x μέρες:</string>
@@ -54,7 +54,7 @@
     <string name="storage_full_title">Γεμάτος χώρος αποθήκευσης</string>
     <string name="storage_almost_full_title">Χώρος αποθήκευσης σχεδόν πλήρης</string>
     <string name="no_space_to_downgrade_title" tools:ignore="UnusedResources">Χωρίς αποθηκευτικό χώρο</string>
-    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Το AnkiDroid χρειάζεται %s ελεύθερου αποθηκευτικού χώρου για να συνεχίσει. Απελευθερώστε μερικό χώρο</string>
+    <string name="no_space_to_downgrade_content" tools:ignore="UnusedResources">Το Ankrimento χρειάζεται %s ελεύθερου αποθηκευτικού χώρου για να συνεχίσει. Απελευθερώστε μερικό χώρο</string>
     <string name="restore_backup_title">Επαναφορά αντιγράφου ασφαλείας;</string>
     <string name="restore_backup">Η συλλογή σας θα αντικατασταθεί με παλαιότερο αντίγραφο. Οποιαδήποτε μη αποθηκευμένη πρόοδος θα χαθεί.</string>
     <string name="restore_backup_choose_another">Επιλέξτε ένα άλλο</string>
@@ -117,9 +117,9 @@
     <!-- Deck Options -->
     <!-- Database Errors-->
     <string name="database_locked_title">Βάση Δεδομένων Κλειδωμένη</string>
-    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another AnkiDroid app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
+    <string name="database_locked_summary_new" comment="%s is the name of the \'AnkiDroid directory\' setting">Another Ankrimento app is using this collection. It may conflict even when it is not visibly running.\n\nTo keep using both apps, change the ‘%s’ in one app\'s Advanced settings.\n\nTo use this app now, force-stop the conflicting app.</string>
     <string name="incompatible_database_version_title">Ασύμβατη έκδοση βάσης δεδομένων.</string>
-    <string name="incompatible_database_version_summary">Η βάση δεδομένων είναι μια πιο προηγμένη έκδοση από αυτή με την οποία το AnkiDroid μπορεί να λειτουργήσει. Αναβάθμιση του AnkiDroid ή υποβάθμιση της βάσης δεδομένων για να την ανοίξετε\n\nΥποστηριζόμενη έκδοση: %1$d\nΈκδοση Βάσης Δεδομένων: %2$d\n\nΟι παρακάτω επιλογές επαναφοράς θα αντικαταστήσουν την τρέχουσα συλλογή σας, ενδεχομένως με συμβατή έκδοση βάσης δεδομένων:</string>
+    <string name="incompatible_database_version_summary">Η βάση δεδομένων είναι μια πιο προηγμένη έκδοση από αυτή με την οποία το Ankrimento μπορεί να λειτουργήσει. Αναβάθμιση του Ankrimento ή υποβάθμιση της βάσης δεδομένων για να την ανοίξετε\n\nΥποστηριζόμενη έκδοση: %1$d\nΈκδοση Βάσης Δεδομένων: %2$d\n\nΟι παρακάτω επιλογές επαναφοράς θα αντικαταστήσουν την τρέχουσα συλλογή σας, ενδεχομένως με συμβατή έκδοση βάσης δεδομένων:</string>
     <!-- Deck Picker Background-->
     <string name="background_image_applied">Η εικόνα φόντου εφαρμόστηκε</string>
     <string name="background_image_removed">Η εικόνα φόντου αφαιρέθηκε</string>

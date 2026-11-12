@@ -35,7 +35,7 @@
     <string name="username">E-poçta manzili</string>
     <string name="password">Parol</string>
     <string name="sign_up_description">AnkiWeb akkauntingiz yöqmi? U bepul!</string>
-    <string name="sign_up_not_affiliated">Eslatma: AnkiWeb AnkiDroid bilan boğliq emas</string>
+    <string name="sign_up_not_affiliated">Eslatma: AnkiWeb Ankrimento bilan boğliq emas</string>
     <string name="sign_up">Röyxatdan ötiş</string>
     <string name="logged_as">Şu orqali tizimga kirgansiz</string>
     <string name="reset_password">Parolni tiklaş</string>

@@ -44,6 +44,7 @@ class TextReaderActivity : ReaderActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        segmentOpened = savedInstanceState?.getBoolean(STATE_SEGMENT_OPENED) ?: false
         val stored = getSharedPreferences(PREFERENCES, MODE_PRIVATE)
         textScale = stored.getFloat(PREF_SCALE, 1f).toDouble()
         appearance = stored.getString(PREF_APPEARANCE, null) ?: "original"
@@ -213,7 +214,7 @@ class TextReaderActivity : ReaderActivity() {
                     url: String,
                 ) {
                     applyReading()
-                    if (editing) beginTyping()
+                    if (editing) beginTyping() else openVideoSegment()
                 }
             }
         webView.loadDataWithBaseURL(CardPage.BASE_URL, html, "text/html", "utf-8", null)
@@ -235,6 +236,32 @@ class TextReaderActivity : ReaderActivity() {
         if (editing) return false
         webView.evaluateJavascript(scrollScreenJs(forward), null)
         return true
+    }
+
+    // -- A video extract in a session plays by itself --
+
+    private var segmentOpened = false
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(STATE_SEGMENT_OPENED, segmentOpened)
+    }
+
+    /**
+     * A topic that is a video extract (a link to a moment or a segment, with little else) plays it when it comes up in
+     * a session, once; Back from the player returns here to grade the topic. Opened from the library or the tree it
+     * just shows the link.
+     */
+    private fun openVideoSegment() {
+        if (segmentOpened || editing || !inSession) return
+        webView.evaluateJavascript(VIDEO_LINK_JS) { result ->
+            val message = decodeJsString(result)
+            if (!message.startsWith("incremento_open_video:") || segmentOpened) return@evaluateJavascript
+            SourceLinks.intentFor(this, message)?.let {
+                segmentOpened = true
+                startActivity(it)
+            }
+        }
     }
 
     private fun applyReading() {
@@ -294,6 +321,15 @@ class TextReaderActivity : ReaderActivity() {
             "#ankrimento-editor { outline: none; min-height: 60vh; padding-bottom: 40vh; caret-color: currentColor; }" +
                 " .ankrimento-source { display: inline-block; padding: 2px 10px; margin: 2px 0; border-radius: 12px;" +
                 " background: rgba(127,127,127,.2); font-size: .85em; user-select: none; -webkit-user-select: none; }"
+
+        private const val STATE_SEGMENT_OPENED = "segment_opened"
+
+        /** The `incremento_open_video:…` command of the topic's video link, when the topic is little more than that link. */
+        private const val VIDEO_LINK_JS =
+            "(function () { var a = document.querySelector('a[onclick*=\"incremento_open_video:\"]'); if (!a) return null;" +
+                " var rest = (document.body.innerText || '').length - (a.innerText || '').length; if (rest > 120) return null;" +
+                " var m = (a.getAttribute('onclick') || '').match(/incremento_open_video:[0-9.:]+/);" +
+                " return m ? m[0] : null; })()"
 
         private const val SELECTION_JS = "String(window.getSelection ? window.getSelection() : '')"
 

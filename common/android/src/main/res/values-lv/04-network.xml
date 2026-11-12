@@ -35,7 +35,7 @@
     <string name="username">E-pasta adrese</string>
     <string name="password">Parole</string>
     <string name="sign_up_description">Nav AnkiWeb konta? Tas ir bez maksas.</string>
-    <string name="sign_up_not_affiliated">Piebilde: AnkiWeb nav saistīta ar AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Piebilde: AnkiWeb nav saistīta ar Ankrimento</string>
     <string name="sign_up">Reģistrēties</string>
     <string name="logged_as">Pieteicies kā</string>
     <string name="reset_password">Atiestatīt paroli</string>

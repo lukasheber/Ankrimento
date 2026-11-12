@@ -117,7 +117,7 @@
     <plurals name="in_minutes">
         <item quantity="other">%1$d menit</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Kartu AnkiDroid</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Kartu Ankrimento</string>
     <string name="note_editor_copy_note" maxLength="28">Salin Catatan</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Pindah posisi</string>
     <string name="card_editor_reset_card" maxLength="28">Reset kemajuan</string>
@@ -129,7 +129,7 @@
     <string name="checks_action" maxLength="28">Periksa</string>
     <string name="unknown_type_field_warning">Ketik jawaban: bidang %s tidak diketahui</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Menghapus dek&#8230;</string>
-    <string name="info_rate">Beri AnkiDroid rating</string>
+    <string name="info_rate">Beri Ankrimento rating</string>
     <string name="import_title">Mengimpor</string>
     <string name="import_preparing_file">Menyiapkan file untuk impor&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Tambah</string>
@@ -140,7 +140,7 @@
     <string name="import_error_handle_exception">Gagal mengimpor file\n\n%s</string>
     <string name="import_error_not_apkg_extension">Berkas bernama “%s” tidak memiliki ekstensi .apkg atau .colpkg</string>
     <string name="import_error_load_imported_database">Pengganti basisdata Anki (.anki2) belum didukung. Harap lihat panduan untuk langkah penggantian</string>
-    <string name="import_error_content_provider">Berkas yang dipilih tidak dapat diimpor secara otomatis oleh AnkiDroid. Silakan lihat panduan pengguna tentang cara mengimpor berkas Anki secara manual: \n%s</string>
+    <string name="import_error_content_provider">Berkas yang dipilih tidak dapat diimpor secara otomatis oleh Ankrimento. Silakan lihat panduan pengguna tentang cara mengimpor berkas Anki secara manual: \n%s</string>
     <string name="import_error_copy_to_cache_title">Gagal cache file</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Hal ini disebabkan oleh bug di aplikasi yang anda gunakan untuk memilih file. Silahkan coba solusi berikut: \n\n%s</string>
     <string name="import_interrupted">Impor terganggu</string>
@@ -149,7 +149,7 @@
     <string name="export_save_apkg_successful">Berhasil menyimpan paket Anki</string>
     <string name="export_save_apkg_unsuccessful">Paket Anki gagal disimpan</string>
     <string name="export_share_title">Kirim paket Anki menggunakan</string>
-    <string name="export_email_subject">Flashcard AnkiDroid terekspor: %s</string>
+    <string name="export_email_subject">Flashcard Ankrimento terekspor: %s</string>
     <string name="export_email_text"><![CDATA[
         Hai!
         <br/><br/>
@@ -196,7 +196,7 @@
     <string name="white_board_image_save_failed">Gagal menyimpan gambar di whiteboard. %s</string>
     <string name="white_board_image_saved">Gambar whiteboard disimpan ke %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Editor papan tulis</string>
-    <string name="user_is_a_robot">Tes otomatis terdeteksi. Jika kamu manusia, kontak dukungan AnkiDroid</string>
+    <string name="user_is_a_robot">Tes otomatis terdeteksi. Jika kamu manusia, kontak dukungan Ankrimento</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Kartu ini menggunakan fitur yang tidak didukung AnkiDroid. Kontak pengembang %1$s, atau kunjungi wiki. %2$s</string>
     <string name="invalid_json_data">Kartu memiliki data yang tidak valid. %s</string>
@@ -212,8 +212,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Cari dek</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid membutuhkan System Webview yang sekarang sedang tidak ada. Hal ini dapat terjadi karena sistem sedang meng-install pembaruan. Mohon mencoba lagi dalam beberapa menit.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid tidak dapat mengakses penyimpanan karena kesalahan Android.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento membutuhkan System Webview yang sekarang sedang tidak ada. Hal ini dapat terjadi karena sistem sedang meng-install pembaruan. Mohon mencoba lagi dalam beberapa menit.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento tidak dapat mengakses penyimpanan karena kesalahan Android.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Ukuran font</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -242,9 +242,9 @@
     <string name="note_editor_video_too_large">File video terlalu besar, mohon masukkan video secara manual</string>
     <string name="note_editor_audio_too_large">File audio terlalu besar, mohon masukkan audio secara manual</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Backup Android sedang berlangsung. Mohon coba kembali.</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Anda mungkin perlu menggunakan iManager untuk memperbolehkan AnkiDroid menambah pintasan</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Anda mungkin perlu menggunakan iManager untuk memperbolehkan Ankrimento menambah pintasan</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Layar utama Anda tidak memperbolehkan AnkiDroid untuk menambah pintasan</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Layar utama Anda tidak memperbolehkan Ankrimento untuk menambah pintasan</string>
     <string name="create_shortcut_error">Gagal menambah shortcut: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Mengkapitalkan kalimat-kalimat</string>
     <!-- Dialog hints -->
@@ -311,7 +311,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">Sinkronkan dari AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid belum dimulai. Silakan buka AnkiDroid dan coba lagi</string>
+    <string name="app_not_initialized_new">Ankrimento belum dimulai. Silakan buka Ankrimento dan coba lagi</string>
     <!-- Deck Creation -->
     <string name="deck_created">Dek dibuat</string>
     <string name="deck_renamed">Dek diubah namanya</string>
@@ -331,7 +331,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Pasang</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Gagal membuka pengaturan teks ke suara</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Deskripsi</string>
     <string name="deck_description_saved">Deskripsi diperbarui</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

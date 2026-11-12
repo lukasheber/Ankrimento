@@ -30,7 +30,7 @@
         <item quantity="many">%d kart do przejrzenia</item>
         <item quantity="other">%d kart do przejrzenia</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid Mały</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento Mały</string>
     <plurals name="widget_cards_due">
         <item quantity="one">%d karta do przejrzenia</item>
         <item quantity="few">%d karty do przejrzenia</item>
@@ -43,7 +43,7 @@
         <item quantity="many">Pozostało %d minut</item>
         <item quantity="other">Pozostało %d minut</item>
     </plurals>
-    <string name="widget_add_note_button">Dodaj nową notatkę AnkiDroid</string>
+    <string name="widget_add_note_button">Dodaj nową notatkę Ankrimento</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Wybór talii</string>
     <string name="card_analysis_extra_widget_description">Analiza karty</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

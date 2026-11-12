@@ -25,10 +25,10 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="one">%d AnkiDroid ਕਾਰਡ ਬਕਾਇਆ ਹੈ</item>
-        <item quantity="other">%d AnkiDroid ਕਾਰਡ ਬਕਾਇਆ ਹੈ</item>
+        <item quantity="one">%d Ankrimento ਕਾਰਡ ਬਕਾਇਆ ਹੈ</item>
+        <item quantity="other">%d Ankrimento ਕਾਰਡ ਬਕਾਇਆ ਹੈ</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid ਛੋਟਾ</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento ਛੋਟਾ</string>
     <plurals name="widget_cards_due">
         <item quantity="one">%d ਕਾਰਡ ਬਕਾਇਆ ਹੈ</item>
         <item quantity="other">%d ਕਾਰਡ ਬਕਾਇਆ ਹਨ</item>
@@ -37,7 +37,7 @@
         <item quantity="one">%d ਮਿੰਟ ਬਾਕੀ</item>
         <item quantity="other">%d ਮਿੰਟ ਬਾਕੀ</item>
     </plurals>
-    <string name="widget_add_note_button">ਨਵਾਂ AnkiDroid ਨੋਟ ਸ਼ਾਮਲ ਕਰੋ</string>
+    <string name="widget_add_note_button">ਨਵਾਂ Ankrimento ਨੋਟ ਸ਼ਾਮਲ ਕਰੋ</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">ਡੈੱਕ ਚੋਣਕਾਰ</string>
     <string name="card_analysis_extra_widget_description">ਕਾਰਡ ਵਿਸ਼ਲੇਸ਼ਣ</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

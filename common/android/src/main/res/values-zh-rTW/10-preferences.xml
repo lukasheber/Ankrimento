@@ -70,7 +70,7 @@
     <string name="card_browser_font_size" maxLength="41">卡片瀏覽器字型縮放</string>
     <string name="card_browser_hide_media" maxLength="41">在卡片瀏覽器展示檔案名</string>
     <string name="card_browser_hide_media_summary">Display audio filenames in the card browser question/answer fields</string>
-    <string name="col_path" maxLength="41">AnkiDroid 路徑</string>
+    <string name="col_path" maxLength="41">Ankrimento 路徑</string>
     <string name="fullscreen_review" maxLength="41">全螢幕模式</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">關閉</string>
     <string name="full_screen_system">隱藏系統狀態欄</string>
@@ -304,9 +304,9 @@
     <string name="deck_conf_general" maxLength="41" comment="Label of the submenu for the general options of new deck">一般</string>
     <string name="deck_conf_cram_search" maxLength="41" comment="Label of a text field that contains a search query.">搜尋</string>
     <!-- analytics options -->
-    <string name="analytics_dialog_title">幫助 AnkiDroid 做得更好！</string>
+    <string name="analytics_dialog_title">幫助 Ankrimento 做得更好！</string>
     <string name="analytics_title" maxLength="41">分享功能使用方式</string>
-    <string name="analytics_summ">你可以通過幫助開發團隊看看人們在用什麼功能，來為 AnkiDroid 做出貢獻</string>
+    <string name="analytics_summ">你可以通過幫助開發團隊看看人們在用什麼功能，來為 Ankrimento 做出貢獻</string>
     <string name="note_editor_replace_newlines" maxLength="41">以HTML取代新列</string>
     <string name="note_editor_replace_newlines_summ">In the note editor, convert any instances of &lt;br&gt; to newlines when editing a card.</string>
     <string name="type_in_answer_focus" maxLength="41">聚焦“輸入答案”</string>
@@ -318,8 +318,8 @@
     <string name="about_contributors_description"><![CDATA[這些是我們非常棒的<a href=\“%1$s\”>貢獻者</a>。 您也可以通過貢獻程式碼、翻譯、捐贈和<a href=\“%2$s\”>更多</a>來幫助AnkiDroid！]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[These are our awesome <a href=\"%1$s\">contributors</a>. You can help AnkiDroid too by programming, translating and <a href=\"%2$s\">more</a>!]]></string>
     <string name="license">許可證</string>
-    <string name="license_description"><![CDATA[AnkiDroid 在<a href=\"%1$s\">GPL-3.0</a>和<a href=\"%2$s\">AGPL-3.0</a>許可證下發佈，原始程式碼位於<a href=\"%3$s\">Github上</a>]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroid also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
+    <string name="license_description"><![CDATA[Ankrimento 在<a href=\"%1$s\">GPL-3.0</a>和<a href=\"%2$s\">AGPL-3.0</a>許可證下發佈，原始程式碼位於<a href=\"%3$s\">Github上</a>]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimento also uses third-party libraries and icons, which are licensed under various open source <a href=\"%1$s\">licenses</a>]]></string>
     <string name="donate_description"><![CDATA[您可以通過<a href=\"%1$s\">捐贈</a>支持AnkiDroid的開發。 我們感謝任何數額的捐贈。]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">新增手勢</string>
@@ -355,7 +355,7 @@
     <string name="bindings_already_bound">已經和%s關聯</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">實驗性功能</string>
-    <string name="readtext_deprecation_warn">AnkiDroid 引入了更好的 TTS 機制，與其他 Anki 客戶端相容，並包含更多的語音和語言播放的改進！\n\n請儘快升級，因為此設定將很快移除。</string>
+    <string name="readtext_deprecation_warn">Ankrimento 引入了更好的 TTS 機制，與其他 Anki 客戶端相容，並包含更多的語音和語言播放的改進！\n\n請儘快升級，因為此設定將很快移除。</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">請升級至新的文字轉語音格式</string>
     <string name="allow_templates_to_record_audio" maxLength="41">Allow templates to record audio</string>
     <string name="template_is_trying_to_record_audio">This template is trying to record audio</string>
@@ -370,9 +370,9 @@
          #################################### Backup options ###################################
          ####################################################################################### -->
     <string name="pref__backups_help__summary"><![CDATA[
-        AnkiDroid 週期性備份你的集合。
+        Ankrimento 週期性備份你的集合。
         在備份久於兩日後，
-        AnkiDroid 會將其中部分移除以節省磁碟空間。
+        Ankrimento 會將其中部分移除以節省磁碟空間。
         <br><br>
         請注意媒體檔案將不會備份。
         為保證安全性，請週期性同步你的集合，或者備份其匯出檔案。

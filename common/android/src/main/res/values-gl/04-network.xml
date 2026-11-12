@@ -35,7 +35,7 @@
     <string name="username">Enderezo de correo electrónico</string>
     <string name="password">Contrasinal</string>
     <string name="sign_up_description">Non tes unha conta de AnkiWeb? É de balde!</string>
-    <string name="sign_up_not_affiliated">Nota: AnkiWeb non está afiliada a AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Nota: AnkiWeb non está afiliada a Ankrimento</string>
     <string name="sign_up">Rexistrarse</string>
     <string name="logged_as">Conectado como</string>
     <string name="reset_password">Restabelecer contrasinal</string>

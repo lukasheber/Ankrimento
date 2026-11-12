@@ -120,7 +120,7 @@
         <item quantity="one">%1$d minuto</item>
         <item quantity="other">%1$d minuti</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Carta AnkiDroid</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Carta Ankrimento</string>
     <string name="note_editor_copy_note" maxLength="28">Copia nota</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Riposiziona</string>
     <string name="card_editor_reset_card" maxLength="28">Reimposta progresso</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">Verifica</string>
     <string name="unknown_type_field_warning">Digita la risposta: campo sconosciuto %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Eliminazione mazzo in corso&#8230;</string>
-    <string name="info_rate">Valuta AnkiDroid</string>
+    <string name="info_rate">Valuta Ankrimento</string>
     <string name="import_title">Importazione in corso</string>
     <string name="import_preparing_file">Preparazione del file per l\'importazione&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Aggiungi</string>
@@ -143,7 +143,7 @@
     <string name="import_error_handle_exception">Impossibile importare il file\n\n%s</string>
     <string name="import_error_not_apkg_extension">Il file \"%s\" non ha estensione .apkg o .colpkg</string>
     <string name="import_error_load_imported_database">Le sostituzioni di Anki Database (.anki2) non sono ancora supportate. Consultare il manuale per le istruzioni di sostituzione.</string>
-    <string name="import_error_content_provider">Il file selezionato non ha potuto essere importato automaticamente da AnkiDroid. Consulta il manuale utente per importare manualmente i file Anki: \n %s</string>
+    <string name="import_error_content_provider">Il file selezionato non ha potuto essere importato automaticamente da Ankrimento. Consulta il manuale utente per importare manualmente i file Anki: \n %s</string>
     <string name="import_error_copy_to_cache_title">Impossibile cache del file</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">Questo è spesso causato da un bug nell\'app che hai usato per selezionare il file. Si prega di provare le seguenti correzioni:\n\n%s</string>
     <string name="import_interrupted">Importazione interrotta</string>
@@ -152,7 +152,7 @@
     <string name="export_save_apkg_successful">Pacchetto di Anki salvato con successo</string>
     <string name="export_save_apkg_unsuccessful">Salvataggio pacchetto di Anki fallito</string>
     <string name="export_share_title">Invia pacchetto Anki usando</string>
-    <string name="export_email_subject">AnkiDroid ha esportato le carte: %s</string>
+    <string name="export_email_subject">Ankrimento ha esportato le carte: %s</string>
     <string name="export_email_text"><![CDATA[
         Ciao!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">Salvataggio dell\'immagine della lavagna fallito. %s</string>
     <string name="white_board_image_saved">Immagine lavagna salvata in %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Editor di lavagna bianca</string>
-    <string name="user_is_a_robot">Rilevato test automatico. Se sei umano, contatta il supporto AnkiDroid</string>
+    <string name="user_is_a_robot">Rilevato test automatico. Se sei umano, contatta il supporto Ankrimento</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Questa carta utilizza funzioni AnkiDroid non supportate. Contatta lo sviluppatore %1$s, o visualizza la wiki. %2$s</string>
     <string name="invalid_json_data">La scheda fornisce dati non validi. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Cerca mazzi</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">AnkiDroid si basa sulla WebView di Sistema che non è disponibile. Questo può verificarsi se il sistema sta installando aggiornamenti. Sei pregato di riprovare tra qualche minuto.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid non può accedere all\'archivio a causa di un errore di Android.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Ankrimento si basa sulla WebView di Sistema che non è disponibile. Questo può verificarsi se il sistema sta installando aggiornamenti. Sei pregato di riprovare tra qualche minuto.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento non può accedere all\'archivio a causa di un errore di Android.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Dimensione Carattere</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">Il file video è troppo grande, per favore inserisci il video manualmente.</string>
     <string name="note_editor_audio_too_large">Il file audio è troppo grande,  inserisci manualmente il file audio.</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Backup di Android in corso. Per favore riprova</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Utilizza iManager per consentire ad AnkiDroid di aggiungere scorciatoie</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Utilizza iManager per consentire ad Ankrimento di aggiungere scorciatoie</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">La tua schermata iniziale non consente ad AnkiDroid di aggiungere scorciatoie</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">La tua schermata iniziale non consente ad Ankrimento di aggiungere scorciatoie</string>
     <string name="create_shortcut_error">Errore nell\'aggiunta della scorciatoia: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">Frasi in maiuscole</string>
     <!-- Dialog hints -->
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">Sincronizza da AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">AnkiDroid non è ancora inizializzato. Aprirlo e riprovare</string>
+    <string name="app_not_initialized_new">Ankrimento non è ancora inizializzato. Aprirlo e riprovare</string>
     <!-- Deck Creation -->
     <string name="deck_created">Mazzo creato</string>
     <string name="deck_renamed">Mazzo rinominato</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Installa</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Non è stato possibile aprire le impostazioni della voce</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Descrizione</string>
     <string name="deck_description_saved">Descrizione aggiornata</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

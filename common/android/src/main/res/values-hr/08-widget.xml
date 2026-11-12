@@ -25,11 +25,11 @@
 <resources>
     <!-- Widget -->
     <plurals name="widget_minimum_cards_due_notification_ticker_text">
-        <item quantity="one">%d AnkiDroid card due</item>
-        <item quantity="few">%d AnkiDroid cards due</item>
-        <item quantity="other">%d AnkiDroid cards due</item>
+        <item quantity="one">%d Ankrimento card due</item>
+        <item quantity="few">%d Ankrimento cards due</item>
+        <item quantity="other">%d Ankrimento cards due</item>
     </plurals>
-    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">AnkiDroid malo</string>
+    <string name="widget_small" comment="Label of the small ankidroid widget. This text can\'t be found directly in AnkiDroid">Ankrimento malo</string>
     <plurals name="widget_cards_due">
         <item quantity="one">%d karticu potrebno dovršiti</item>
         <item quantity="few">%d kartice potrebno dovršiti</item>
@@ -40,7 +40,7 @@
         <item quantity="few">Preostale %d minute</item>
         <item quantity="other">Preostalo %d minuta</item>
     </plurals>
-    <string name="widget_add_note_button">Dodaj novu AnkiDroid bilješku</string>
+    <string name="widget_add_note_button">Dodaj novu Ankrimento bilješku</string>
     <string name="deck_picker_widget_description" comment="Title of the Deck Picker Widget. Displayed to the user in Android\'s Widget Selection menu">Izbor špila</string>
     <string name="card_analysis_extra_widget_description">Analiza kartica</string>
     <!-- Strings to explain usage in Deck Picker and Card Analysis Widget Configuration screen -->

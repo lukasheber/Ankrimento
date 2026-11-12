@@ -35,7 +35,7 @@
     <string name="username">電子郵件地址</string>
     <string name="password">密碼</string>
     <string name="sign_up_description">沒有 AnkiWeb 帳號嗎？它是免費的！</string>
-    <string name="sign_up_not_affiliated">注 ︰ AnkiWeb不屬於AnkiDroid</string>
+    <string name="sign_up_not_affiliated">注 ︰ AnkiWeb不屬於Ankrimento</string>
     <string name="sign_up">註冊</string>
     <string name="logged_as">登入為</string>
     <string name="reset_password">忘記密碼</string>

@@ -14,7 +14,8 @@
         BuildConfig.ANALYTICS_API_KEY (see AnkiDroid/build.gradle.kts). Create it
         under the same Data Stream -> Measurement Protocol API secrets.
     -->
-    <string name="ga_trackingId" translatable="false">G-XY625S5VVE</string>
+    <!-- Empty: usage analytics are off in Ankrimento (AnkiDroid's property is not ours) -->
+    <string name="ga_trackingId" translatable="false"></string>
     <!--
         Percentage of events actually sent; the rest are dropped client-side to cap volume.
         GA4 quotas: https://support.google.com/analytics/answer/9267744

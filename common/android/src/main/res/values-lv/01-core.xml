@@ -85,12 +85,12 @@
     <string name="menu_disable_voice_playback">Atspējot balss atskaņošanu</string>
     <string name="menu_create_backup" maxLength="28">Izveidot rezerves kopiju</string>
     <string name="new_dynamic_deck">Izveidot pielāgotu kavu</string>
-    <string name="directory_inaccessible">AnkiDroid krātuve nav pieejama</string>
+    <string name="directory_inaccessible">Ankrimento krātuve nav pieejama</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">Lūgums piešķirt AnkiDroid atļauju \"Krātuve\", lai turpinātu</string>
+    <string name="startup_no_storage_permission">Lūgums piešķirt Ankrimento atļauju \"Krātuve\", lai turpinātu</string>
     <string name="rebuild_filtered_deck">Pārveido pielāgoto kavu&#8230;</string>
     <string name="empty_cram_label" maxLength="28">Tukšs</string>
     <string name="create_subdeck">Izveidot apakškavu</string>
@@ -129,33 +129,33 @@
     <string name="card_template_editor_save_error">Nav iespējams saglabāt kartīšu veidnes izmaiņas: %s</string>
     <string name="template_for_current_card_deleted">Pašreizējās kartītes veids tika izdzēsts.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">Lasīt un rakstīt AnkiDroid datubāzē</string>
+    <string name="read_write_permission_label">Lasīt un rakstīt Ankrimento datubāzē</string>
     <string name="read_write_permission_description">Piekļūt esošajām piezīmēm, kartītēm, piezīmju veidiem un kavām, kā arī izveidot jaunas</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Card browser</string>
     <string name="context_menu_anki_card_label">Anki card</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">Krājumus nevar apvienot.\nKuru krājumu paturēt?</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">Aizstāt AnkiDroid krājumu ar AnkiWeb krājumu?</string>
-    <string name="sync_conflict_local_confirm_new">Aizstāt AnkiWeb krājumu ar AnkiDroid krājumu?</string>
+    <string name="sync_conflict_remote_confirm_new">Aizstāt Ankrimento krājumu ar AnkiWeb krājumu?</string>
+    <string name="sync_conflict_local_confirm_new">Aizstāt AnkiWeb krājumu ar Ankrimento krājumu?</string>
     <string name="sync_conflict_title_new">Paturamā krājuma atlasīšana</string>
     <string name="sync_conflict_replace_title">Aizstāt krājumu</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">Nevar ierakstīt datnē %s vai izveidot to</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">Nepieejams krājums</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Mēs nespējam piekļūt tavam krājumam pēc AnkiDroid noņemšanas Play Store pamatnostādņu dēļ\n\nTavi dati ir drošībā, un tos var atjaunot. Tie atrodas\n%s\n\nIzvēlies atjaunošanas veidu:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android noņēma AnkiDroid atļauju \"%1$s\" lietotnes neizmantošanas dēļ.\n\nTavi dati ir drošībā, un tos var atjaunot. Tie atrodas\n%2$s\n\nIzvēlies atjaunošanas veidu:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Mēs nespējam piekļūt tavam krājumam pēc Ankrimento noņemšanas Play Store pamatnostādņu dēļ\n\nTavi dati ir drošībā, un tos var atjaunot. Tie atrodas\n%s\n\nIzvēlies atjaunošanas veidu:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android noņēma Ankrimento atļauju \"%1$s\" lietotnes neizmantošanas dēļ.\n\nTavi dati ir drošībā, un tos var atjaunot. Tie atrodas\n%2$s\n\nIzvēlies atjaunošanas veidu:</string>
     <string name="restore_data_from_ankiweb">Atjaunot no AnkiWeb (ieteicams)</string>
     <string name="install_non_play_store_ankidroid_recommended">Atjaunot mapju piekļuvi (ieteicams)</string>
     <string name="install_non_play_store_ankidroid">Atgūt mapju piekļuvi (padziļināti)</string>
     <string name="restore_data_from_backup">Atjaunot no .colpkg rezerves kopijas (padziļināti)</string>
     <string name="create_new_collection">Izveidot jaunu krājumu</string>
-    <string name="new_unsafe_collection">Jaunais krājums tiks izdzēsts no tālruņa, ja AnkiDroid tiks noņemta</string>
+    <string name="new_unsafe_collection">Jaunais krājums tiks izdzēsts no tālruņa, ja Ankrimento tiks noņemta</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid ir nepiciešamas dažas atļaujas, lai darbotos</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid vislabāk darbojas ar šīm atļaujām</string>
+    <string name="permissions_screen_headline">Ankrimento ir nepiciešamas dažas atļaujas, lai darbotos</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento vislabāk darbojas ar šīm atļaujām</string>
     <string name="storage_access_title">Piekļuve krātuvei</string>
     <string name="storage_access_summary">Saglabā krājumu drošā vietā, kas netiks izdzēsta, ja lietotne tiks noņemta</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Piekļuve visām datnēm</string>
@@ -173,7 +173,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Required for the app to work</string>
-    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <string name="permission_required_message">Please grant Ankrimento the ‘%s’ permission to continue</string>
     <!-- Multiple profile -->
     <string name="add_profile">Add profile</string>
 </resources>

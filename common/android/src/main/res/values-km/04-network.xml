@@ -35,7 +35,7 @@
     <string name="username">Email address</string>
     <string name="password">ពាក្យសម្ងាត់</string>
     <string name="sign_up_description">មិនមានគណនី AnkiWeb? វា free ទេ!</string>
-    <string name="sign_up_not_affiliated">Note: AnkiWeb is not affiliated with AnkiDroid</string>
+    <string name="sign_up_not_affiliated">Note: AnkiWeb is not affiliated with Ankrimento</string>
     <string name="sign_up">Sign up</string>
     <string name="logged_as">Logged in as</string>
     <string name="reset_password">Reset password</string>

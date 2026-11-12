@@ -80,12 +80,12 @@
     <string name="menu_disable_voice_playback">關閉聲音重放功能</string>
     <string name="menu_create_backup" maxLength="28">Create backup</string>
     <string name="new_dynamic_deck">新增篩選牌組</string>
-    <string name="directory_inaccessible">無法存取 AnkiDroid 目錄</string>
+    <string name="directory_inaccessible">無法存取 Ankrimento 目錄</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">請授予 AnkiDroid ‘儲存空間’ 權限以繼續</string>
+    <string name="startup_no_storage_permission">請授予 Ankrimento ‘儲存空間’ 權限以繼續</string>
     <string name="rebuild_filtered_deck">重建已篩選牌組中&#8230;</string>
     <string name="empty_cram_label" maxLength="28">清空</string>
     <string name="create_subdeck">建立子牌組</string>
@@ -120,34 +120,34 @@
     <string name="card_template_editor_save_error">無法儲存卡片模板變更：%s</string>
     <string name="template_for_current_card_deleted">當前卡片的卡片類型已被刪除。</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">讀寫 AnkiDroid 資料庫</string>
+    <string name="read_write_permission_label">讀寫 Ankrimento 資料庫</string>
     <string name="read_write_permission_description">瀏覽現有的筆記、卡片、筆記類型和牌組，或者自己動手建立新的~</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Card browser</string>
     <string name="context_menu_anki_card_label">Anki card</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">收藏無法合併。 \n您要保留哪個收藏？</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">用來自你的 AnkiWeb 的收藏替換 AnkiDroid 上的收藏嗎？</string>
-    <string name="sync_conflict_local_confirm_new">用來自你的 AnkiDroid 的收藏替換 AnkiWeb 上的收藏嗎？</string>
+    <string name="sync_conflict_remote_confirm_new">用來自你的 AnkiWeb 的收藏替換 Ankrimento 上的收藏嗎？</string>
+    <string name="sync_conflict_local_confirm_new">用來自你的 Ankrimento 的收藏替換 AnkiWeb 上的收藏嗎？</string>
     <string name="sync_conflict_title_new">選擇要保留的收藏</string>
     <string name="sync_conflict_replace_title">取代收藏</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">無法寫入或建立檔案 %s</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">無法存取收藏</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">AnkiDroid 被卸載後，由於 Google Play 政策有改動，我們不能讀取你的收藏\n\n您的資料安全有能修復，您的資料置於\n%s\n\n選擇以下一項選項以修復資料：</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android 已移除 AnkiDroid 的 %1$s 權限，原因是應用程式不活動。
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Ankrimento 被卸載後，由於 Google Play 政策有改動，我們不能讀取你的收藏\n\n您的資料安全有能修復，您的資料置於\n%s\n\n選擇以下一項選項以修復資料：</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android 已移除 Ankrimento 的 %1$s 權限，原因是應用程式不活動。
 您的資料是安全的，並且可以還原。它位於 %2$s 選擇下面的選項進行還原：</string>
     <string name="restore_data_from_ankiweb">從 AnkiWeb 回復 (推薦)</string>
     <string name="install_non_play_store_ankidroid_recommended">還原資料夾存取權限 (建議)</string>
     <string name="install_non_play_store_ankidroid">還原資料夾存取權限 (進階)</string>
     <string name="restore_data_from_backup">從 .colpkg 備份中回復 (進階使用者)</string>
     <string name="create_new_collection">建立新的收藏</string>
-    <string name="new_unsafe_collection">這個新牌組會在解除安裝 AnkiDroid 後刪除</string>
+    <string name="new_unsafe_collection">這個新牌組會在解除安裝 Ankrimento 後刪除</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid 需要一些權限才能運作</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid在這些權限下運行效果最佳</string>
+    <string name="permissions_screen_headline">Ankrimento 需要一些權限才能運作</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento在這些權限下運行效果最佳</string>
     <string name="storage_access_title">存取儲存空間</string>
     <string name="storage_access_summary">將收藏儲存到安全的地方，即使應用程式卸載也不會被刪除</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">存取所有檔案</string>
@@ -165,7 +165,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Required for the app to work</string>
-    <string name="permission_required_message">Please grant AnkiDroid the ‘%s’ permission to continue</string>
+    <string name="permission_required_message">Please grant Ankrimento the ‘%s’ permission to continue</string>
     <!-- Multiple profile -->
     <string name="add_profile">Add profile</string>
 </resources>

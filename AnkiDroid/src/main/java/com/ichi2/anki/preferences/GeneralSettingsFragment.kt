@@ -6,11 +6,13 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.preference.ListPreference
 import androidx.preference.SwitchPreferenceCompat
+import com.ichi2.anki.BuildConfig
 import com.ichi2.anki.CollectionManager
 import com.ichi2.anki.CollectionManager.TR
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.CommonString
 import com.ichi2.anki.R
+import com.ichi2.anki.analytics.AnkiDroidUsageAnalytics
 import com.ichi2.anki.common.crashreporting.CrashReportService
 import com.ichi2.anki.common.utils.ext.AddingDefaultsMode
 import com.ichi2.anki.common.utils.ext.addingDefaultsMode
@@ -52,9 +54,16 @@ class GeneralSettingsFragment : SettingsFragment() {
             }
         }
         // Error reporting mode
-        requirePreference<ListPreference>(R.string.error_reporting_mode_key).setOnPreferenceChangeListener { newValue ->
-            CrashReportService.onPreferenceChanged(requireContext(), newValue)
+        requirePreference<ListPreference>(R.string.error_reporting_mode_key).apply {
+            // Hidden when this build has nowhere to send reports (Ankrimento's).
+            isVisible = BuildConfig.ACRA_URL.isNotEmpty()
+            setOnPreferenceChangeListener { newValue ->
+                CrashReportService.onPreferenceChanged(requireContext(), newValue)
+            }
         }
+        // Usage analytics: hidden where there is no property to report to (Ankrimento's build).
+        requirePreference<SwitchPreferenceCompat>(R.string.analytics_opt_in_key).isVisible =
+            AnkiDroidUsageAnalytics.trackingAvailable(requireContext())
         // Anki card context menu
         requirePreference<SwitchPreferenceCompat>(R.string.anki_card_external_context_menu_key).apply {
             title =

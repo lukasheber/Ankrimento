@@ -70,7 +70,7 @@
     <string name="card_browser_font_size" maxLength="41">カードブラウザのフォントサイズ</string>
     <string name="card_browser_hide_media" maxLength="41">リストにファイル名も表示</string>
     <string name="card_browser_hide_media_summary">カードブラウザのリスト画面の質問欄と解答欄に、メディア（画像・音声・動画）ファイル名も表示します</string>
-    <string name="col_path" maxLength="41">AnkiDroidディレクトリ</string>
+    <string name="col_path" maxLength="41">Ankrimentoディレクトリ</string>
     <string name="fullscreen_review" maxLength="41">フルスクリーンモード</string>
     <string name="full_screen_off" comment="Value of the fullscreen mode preference meaning fullscreen is not used">オフ</string>
     <string name="full_screen_system">ステータスバー（通知バー）を隠す</string>
@@ -108,7 +108,7 @@
     <string name="gestures_four_finger_tap" maxLength="41">4点同時タップ</string>
     <string name="gestures_shake" maxLength="41">デバイスを振る</string>
     <string name="card_browser_enable_external_context_menu" maxLength="41">メニュー項目に「%s」を追加</string>
-    <string name="card_browser_enable_external_context_menu_summary">AnkiDroidおよび他のアプリ（ウェブブラウザなど）で、文字列を選択した際に表示されるコンテキストメニューに「%s」という項目を追加します</string>
+    <string name="card_browser_enable_external_context_menu_summary">Ankrimentoおよび他のアプリ（ウェブブラウザなど）で、文字列を選択した際に表示されるコンテキストメニューに「%s」という項目を追加します</string>
     <string name="double_scrolling_gap" maxLength="41">ダブルスクロール</string>
     <string name="double_scrolling_gap_summ">eReader とのスクロールのギャップを 2 倍にする場合、これを有効にします</string>
     <string name="swipe_sensitivity" maxLength="41">スワイプ感度</string>
@@ -136,7 +136,7 @@
     <string name="notification_pref" maxLength="41">通知</string>
     <string name="notification_pref_title" maxLength="41">通知のタイミング</string>
     <string name="never_notify">通知しない</string>
-    <string name="notify_when_pending">待機状態（AnkiDroidを表示していない間に進行していたデータ処理（例: 同期、バックアップ）が完了し、ユーザーが操作を再開できる状態）</string>
+    <string name="notify_when_pending">待機状態（Ankrimentoを表示していない間に進行していたデータ処理（例: 同期、バックアップ）が完了し、ユーザーが操作を再開できる状態）</string>
     <string name="notification_minimum_cards_due" comment="Consider keeping the unbreakable space after the digit">待機状態の時と、　課題のカードが%d枚以上の時</string>
     <string name="notification_minimum_cards_due_vibrate" maxLength="41">振動でも通知</string>
     <string name="notification_minimum_cards_due_blink" maxLength="41">LEDランプ点滅でも通知</string>
@@ -306,20 +306,20 @@
     <!-- analytics options -->
     <string name="analytics_dialog_title">機能向上のためご協力ください</string>
     <string name="analytics_title" maxLength="41">設定の情報提供を許可する</string>
-    <string name="analytics_summ">各機能の使用傾向を開発チームが把握しやすくなり、AnkiDroidの機能向上に役立ちます</string>
+    <string name="analytics_summ">各機能の使用傾向を開発チームが把握しやすくなり、Ankrimentoの機能向上に役立ちます</string>
     <string name="note_editor_replace_newlines" maxLength="41">改行タグを改行に置き換えて表示</string>
     <string name="note_editor_replace_newlines_summ">「ノートを編集」画面のフィールドで、改行を表すHTMLタグ &lt;br&gt; を表示せず、実際に改行に置き換えた状態で表示します。新たに改行を行った場合も、その箇所に &lt;br&gt; タグを挿入しますが、そのタグは表示しません</string>
     <string name="type_in_answer_focus" maxLength="41">文字入力欄にフォーカス</string>
     <string name="type_in_answer_focus_summ">答えをキーボード入力するタイプのカードを学習画面に表示したときに、あらかじめ文字入力欄を選択してキーボードを表示した状態にします</string>
     <!-- About -->
     <string name="open_changelog">変更履歴を開く</string>
-    <string name="pref_cat_about_title" maxLength="41">AnkiDroidについて</string>
+    <string name="pref_cat_about_title" maxLength="41">Ankrimentoについて</string>
     <string name="contributors_title">コントリビューター</string>
     <string name="about_contributors_description"><![CDATA[AnkiDroidの開発を支えているのは、一人一人の<a href=\"%1$s\">コントリビューター</a>です。誰もが、プログラミング、翻訳、寄付、<a href=\"%2$s\">その他の方法</a>によってAnkiDroidの開発に貢献するコントリビューターになることができます。]]></string>
     <string name="about_contributors_description_no_donate"><![CDATA[AnkiDroidの開発を支えているのは、一人一人の<a href=\"%1$s\">コントリビューター</a>です。誰もが、プログラミング、翻訳、<a href=\"%2$s\">その他の方法</a>によってAnkiDroidの開発に貢献するコントリビューターになることができます。]]></string>
     <string name="license">ライセンス</string>
-    <string name="license_description"><![CDATA[AnkiDroidは<a href=\"%1$s\">GPL-3.0</a>および<a href=\"%2$s\">AGPL-3.0</a>のライセンスの下でリリースされています。<a href=\"%3$s\">ソースコード</a>はGitHubで公開されています。]]></string>
-    <string name="other_licenses"><![CDATA[AnkiDroidはさまざまなオープンソース<a href=\"%1$s\">ライセンス</a>に基づき、サードパーティのライブラリやアイコンを使用しています。]]></string>
+    <string name="license_description"><![CDATA[Ankrimentoは<a href=\"%1$s\">GPL-3.0</a>および<a href=\"%2$s\">AGPL-3.0</a>のライセンスの下でリリースされています。<a href=\"%3$s\">ソースコード</a>はGitHubで公開されています。]]></string>
+    <string name="other_licenses"><![CDATA[Ankrimentoはさまざまなオープンソース<a href=\"%1$s\">ライセンス</a>に基づき、サードパーティのライブラリやアイコンを使用しています。]]></string>
     <string name="donate_description"><![CDATA[<a href=\"%1$s\">寄付</a>することでAnkiDroidの開発を支援することができます。]]></string>
     <!-- Controls -->
     <string name="binding_add_gesture">ジェスチャーを追加</string>
@@ -355,7 +355,7 @@
     <string name="bindings_already_bound">すでに「%s」の操作に割り当て済みです</string>
     <!-- Advanced -->
     <string name="pref_cat_experimental" maxLength="41" tools:ignore="UnusedResources">試験運用機能</string>
-    <string name="readtext_deprecation_warn">AnkiDroidは、他のAnkiクライアント（デスクトップ版Anki、AnkiMobile）と互換性がある、より優れたTTS（テキスト読み上げ）システムを導入しました。新システムでは、より多くの音声や、品質の向上した再生機能が利用できます。\n\n従来のTTSシステムを対象とするこのオプションは近い将来に削除され、利用できなくなります。そうなる前に、できるだけ早く、ノートタイプ内のカードテンプレートを新しいTTSシステムに対応したものに変更することをおすすめします。</string>
+    <string name="readtext_deprecation_warn">Ankrimentoは、他のAnkiクライアント（デスクトップ版Anki、AnkiMobile）と互換性がある、より優れたTTS（テキスト読み上げ）システムを導入しました。新システムでは、より多くの音声や、品質の向上した再生機能が利用できます。\n\n従来のTTSシステムを対象とするこのオプションは近い将来に削除され、利用できなくなります。そうなる前に、できるだけ早く、ノートタイプ内のカードテンプレートを新しいTTSシステムに対応したものに変更することをおすすめします。</string>
     <string name="readtext_reviewer_warn" tools:ignore="UnusedResources">テキスト読み上げ（TTS）の新しいフォーマットにアップグレードしてください</string>
     <string name="allow_templates_to_record_audio" maxLength="41">テンプレートに音声の録音を許可</string>
     <string name="template_is_trying_to_record_audio">このテンプレートは音声を録音しようとしています</string>
@@ -370,7 +370,7 @@
          #################################### Backup options ###################################
          ####################################################################################### -->
     <string name="pref__backups_help__summary"><![CDATA[
-        AnkiDroidは一定時間（分）ごとにコレクションのバックアップを作成しています。
+        Ankrimentoは一定時間（分）ごとにコレクションのバックアップを作成しています。
         各期間（日／週／月）の代表として保管するバックアップ以外のバックアップは、
         ストレージ容量を圧迫しないよう、作成から2日以上経過した後に削除していきます。
         <br><br>

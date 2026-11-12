@@ -120,7 +120,7 @@
         <item quantity="one">%1$d minuto</item>
         <item quantity="other">%1$d minuto</item>
     </plurals>
-    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">AnkiDroid kard</string>
+    <string name="fact_adder_intent_title" comment="Label of the \'Add Note\' window. This title can\'t be seen in AnkiDroid directly.">Ankrimento kard</string>
     <string name="note_editor_copy_note" maxLength="28">Kopyahin ang tala</string>
     <string name="card_editor_reposition_card" comment="reposition a card in the new queue" maxLength="28">Muling iposisyon</string>
     <string name="card_editor_reset_card" maxLength="28">I-reset ang pag-unlad</string>
@@ -132,7 +132,7 @@
     <string name="checks_action" maxLength="28">Suriin</string>
     <string name="unknown_type_field_warning">I-type ang sagot: hindi kilalang patlang %s</string>
     <string name="delete_deck" comment="Message on a progress bar starting a deck is being deleted.">Tinatanggal ang deck&#8230;</string>
-    <string name="info_rate">I-rate ang AnkiDroid</string>
+    <string name="info_rate">I-rate ang Ankrimento</string>
     <string name="import_title">Nag-aangkat</string>
     <string name="import_preparing_file">Preparing file for import&#8230;</string>
     <string name="import_message_add" comment="Adding a new deck to the collection (import)">Magdagdag</string>
@@ -143,16 +143,16 @@
     <string name="import_error_handle_exception">Bigo sa pag-import sa file\n\n%s</string>
     <string name="import_error_not_apkg_extension">Ang filename na \"%s\" ay walang extension na .apkg o .colpkg</string>
     <string name="import_error_load_imported_database">Hindi pa suportado ang mga pamalit na Anki Database (.anki2). Mangyaring tingnan ang manual para sa tagubilin sa pagpapalit.</string>
-    <string name="import_error_content_provider">Ang napiling file ay hindi awtomatikong ma-import ng AnkiDroid. Pakitingnan ang user manwal kung paano ang manwal na pag-import ng mga Anki file: \n%s</string>
+    <string name="import_error_content_provider">Ang napiling file ay hindi awtomatikong ma-import ng Ankrimento. Pakitingnan ang user manwal kung paano ang manwal na pag-import ng mga Anki file: \n%s</string>
     <string name="import_error_copy_to_cache_title">Bigo sa pag-cache sa file</string>
     <string name="import_error_copy_to_cache_explanation" comment="The substitution is a list of suggested fixes in bullet point form">This is often caused by a bug in the app you used to select the file. Please try the following fixes:\n\n%s</string>
-    <string name="import_interrupted">Naudlot ang pag-angkat: Nasara ang AnkiDroid</string>
+    <string name="import_interrupted">Naudlot ang pag-angkat: Nasara ang Ankrimento</string>
     <string name="export_ready_title">Handa na ang pag-export</string>
     <string name="export_send_no_handlers">Walang magagamit na mga aplikasyon upang pangasiwaan ang apkg. Sini-save&#8230;</string>
     <string name="export_save_apkg_successful">Matagumpay na na-isave ang Anki package</string>
     <string name="export_save_apkg_unsuccessful">Bigo sa pag-save ng Anki package</string>
     <string name="export_share_title">Ipadala ng Anki package gamit ang</string>
-    <string name="export_email_subject">Na-export ang AnkiDroid flashcards:%s</string>
+    <string name="export_email_subject">Na-export ang Ankrimento flashcards:%s</string>
     <string name="export_email_text"><![CDATA[
         Kumusta!
         <br/><br/>
@@ -199,7 +199,7 @@
     <string name="white_board_image_save_failed">Bigo sa pag-save ng litrato ng puting pisara. %s</string>
     <string name="white_board_image_saved">Isinave ang litrato ng puting pisara sa %s</string>
     <string name="title_whiteboard_editor" maxLength="28">Editor ng puting pisara</string>
-    <string name="user_is_a_robot">Natumbukan ang isang awtomatikong pagte-test. Kung ikaw ay isang tao, mangyaring kontakin ang AnkiDroid support.</string>
+    <string name="user_is_a_robot">Natumbukan ang isang awtomatikong pagte-test. Kung ikaw ay isang tao, mangyaring kontakin ang Ankrimento support.</string>
     <!-- JS api -->
     <string name="api_version_developer_contact">Gumagamit ang card na ito ng mga feature na hindi suportado ng AnkiDroid. Mangyaring kontakin ang developer %1$s, o tingnan ang wiki. %2$s</string>
     <string name="invalid_json_data">Nagbigay ang card ng hindi wasto na dta. %s</string>
@@ -215,8 +215,8 @@
     <!-- Deck Picker -->
     <string name="search_decks" maxLength="28">Maghanap ng mga deck</string>
     <string name="ankidroid_init_failed_webview_title">Fatal error</string>
-    <string name="ankidroid_init_failed_webview">Umaasa ang AnkiDroid sa Pansistemang WebView kung saan ito ay hindi magamit. Nangyayari ito kung nag-iinstall ng update ang sistema. Mangyaring subukan muli makaraan ang ilang minuto.\n\n%s</string>
-    <string name="ankidroid_init_failed_storage">AnkiDroid cannot access storage due to an Android error.\n\n%s</string>
+    <string name="ankidroid_init_failed_webview">Umaasa ang Ankrimento sa Pansistemang WebView kung saan ito ay hindi magamit. Nangyayari ito kung nag-iinstall ng update ang sistema. Mangyaring subukan muli makaraan ang ilang minuto.\n\n%s</string>
+    <string name="ankidroid_init_failed_storage">Ankrimento cannot access storage due to an Android error.\n\n%s</string>
     <!-- A Menu item to change the Font Size (currently in the Note Editor) -->
     <string name="menu_font_size" maxLength="28">Laki ng font</string>
     <string name="note_editor_toolbar_layout" maxLength="28">Toolbar layout</string>
@@ -245,9 +245,9 @@
     <string name="note_editor_video_too_large">Ang video file ay masyadong malaki, pakilagay ang video nang mano-mano</string>
     <string name="note_editor_audio_too_large">Ang audio file ay masyadong malaki, pakilagay ang audio nang mano-mano</string>
     <string name="ankidroid_cannot_open_after_backup_try_again" comment="After an Android backup is restored, AnkiDroid opens and shows this message.         Opening AnkiDroid again will work correctly">Android backup in progress. Please try again</string>
-    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Maaring kailangang gumamit ng iManager upang payagan ang AnkiDroid na magdagdag ng mga gitis.</string>
+    <string name="create_shortcut_error_vivo" comment="iManager is an app on Vivo phones">Maaring kailangang gumamit ng iManager upang payagan ang Ankrimento na magdagdag ng mga gitis.</string>
     <string name="create_shortcut_error_miui" comment="Keep the message as short, as this is shown in a toast. %s is the app name: \'AnkiDroid\'">Allow ‘Home screen shortcuts’ in system settings for %s to add shortcuts</string>
-    <string name="create_shortcut_failed" comment="home screen == launcher">Hindi pinpayagan ang AnkiDroid na maglagay ng gitis sa iyong home screen.</string>
+    <string name="create_shortcut_failed" comment="home screen == launcher">Hindi pinpayagan ang Ankrimento na maglagay ng gitis sa iyong home screen.</string>
     <string name="create_shortcut_error">Kamalian sa pagdagdag ng gitis: %s</string>
     <string name="note_editor_capitalize" comment="This is for a switch with a checkbox - on: enabled" maxLength="28">I-capitalize ang mga pangungusap</string>
     <!-- Dialog hints -->
@@ -316,7 +316,7 @@
     <string name="intro_get_started" comment="Action to start AnkiDroid for the first time without syncing from AnkiWeb">Get started</string>
     <string name="intro_sync_from_ankiweb">Mag-sync mula sa AnkiWeb</string>
     <!-- IntentHandler -->
-    <string name="app_not_initialized_new">Hindi pa na-initialize ang AnkiDroid. Mangyaring buksan ulit ang AnkiDroid at subukan muli</string>
+    <string name="app_not_initialized_new">Hindi pa na-initialize ang Ankrimento. Mangyaring buksan ulit ang Ankrimento at subukan muli</string>
     <!-- Deck Creation -->
     <string name="deck_created">Nailikha ang deck</string>
     <string name="deck_renamed">Napangalanan muli ang deck</string>
@@ -336,7 +336,7 @@
     <string name="tts_voices_chip_filter_to_internet" comment="     Filters a list of text to speech voices, to enable/disable voices which require the internet to     function.     This is on a chip control, so keep the text short, ideally one word">Internet</string>
     <string name="tts_voices_chip_filter_to_installable_audio" comment="     Displays a list of Text to Speech voices which should be downloaded/installed before use     This is on a chip control, so keep the text short, ideally one word">Install</string>
     <string name="tts_voices_failed_opening_tts_system_settings" comment="error message if opening the system text to speech settings fails">Failed to open text to speech settings</string>
-    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from AnkiDroid. AnkiWeb asks you to log in to continue.</string>
+    <string name="shared_decks_ankiweb_login_limit">Shared decks are hosted on AnkiWeb, a free service separate from Ankrimento. AnkiWeb asks you to log in to continue.</string>
     <string name="deck_description_field_hint">Paglalarawan</string>
     <string name="deck_description_saved">Description updated</string>
     <string name="format_deck_description_as_markdown">Format as Markdown</string>

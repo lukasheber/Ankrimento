@@ -35,7 +35,7 @@
     <string name="username">Eposta adresi</string>
     <string name="password">Parola</string>
     <string name="sign_up_description">AnkiWeb hesabınız yok mu? Ücretsiz edinin!</string>
-    <string name="sign_up_not_affiliated">Not: AnkiWeb, AnkiDroid\'le bağlı değildir</string>
+    <string name="sign_up_not_affiliated">Not: AnkiWeb, Ankrimento\'le bağlı değildir</string>
     <string name="sign_up">Kaydol</string>
     <string name="logged_as">Şu adla giriş yapıldı:</string>
     <string name="reset_password">Parolayı Sıfırla</string>

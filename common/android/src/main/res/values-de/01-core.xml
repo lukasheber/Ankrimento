@@ -82,12 +82,12 @@
     <string name="menu_disable_voice_playback">Sprachausgabe deaktivieren</string>
     <string name="menu_create_backup" maxLength="28">Backup erstellen</string>
     <string name="new_dynamic_deck">Gefilterten Stapel erstellen</string>
-    <string name="directory_inaccessible">Auf das AnkiDroid-Verzeichnis kann nicht zugegriffen werden</string>
+    <string name="directory_inaccessible">Auf das Ankrimento-Verzeichnis kann nicht zugegriffen werden</string>
     <!--This is shown when AnkiDroid starts up with no storage permissions.
     The user is taken to the "App Info" screen, and needs to click "Permissions" and
     grant AnkiDroid the \'Storage\' permission. This needs to be a fairly generic message as implementations
     of the permissions/app info screen will differ between devices. -->
-    <string name="startup_no_storage_permission">Bitte erteilen Sie AnkiDroid die Berechtigung »Speicher«, um fortzufahren</string>
+    <string name="startup_no_storage_permission">Bitte erteilen Sie Ankrimento die Berechtigung »Speicher«, um fortzufahren</string>
     <string name="rebuild_filtered_deck">Gefilterter Stapel wird wiederhergestellt &#8230;</string>
     <string name="empty_cram_label" maxLength="28">Leeren</string>
     <string name="create_subdeck">Unterstapel erstellen</string>
@@ -124,33 +124,33 @@
     <string name="card_template_editor_save_error">Änderungen an Kartenvorlagen konnten nicht gespeichert werden: %s</string>
     <string name="template_for_current_card_deleted">Der Kartentyp der aktuellen Karte wurde gelöscht.</string>
     <!-- Permissions -->
-    <string name="read_write_permission_label">AnkiDroid-Datenbank lesen und schreiben</string>
+    <string name="read_write_permission_label">Ankrimento-Datenbank lesen und schreiben</string>
     <string name="read_write_permission_description">Zugriff auf bereits vorhandene Notizen, Karten, Notiztypen und Stapel, sowie deren Neuerstellung</string>
     <!-- Context Menu -->
     <string name="card_browser_context_menu" comment="The value which appears in the system context menu.">Karteikarten suchen</string>
     <string name="context_menu_anki_card_label">Anki-Karteikarte</string>
     <!-- Sync conflict -->
     <string name="sync_conflict_message_new">Die Sammlungen können nicht zusammengeführt werden.\nWelche Sammlung möchten Sie behalten?</string>
-    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">AnkiDroid</string>
+    <string name="sync_conflict_keep_local_new" comment="Select AnkiDroid files to keep while syncing">Ankrimento</string>
     <string name="sync_conflict_keep_remote_new" comment="Select AnkiWeb files to keep while syncing">AnkiWeb</string>
-    <string name="sync_conflict_remote_confirm_new">Soll Ihre Sammlung auf AnkiDroid durch die Sammlung auf AnkiWeb ersetzt werden?</string>
-    <string name="sync_conflict_local_confirm_new">Soll Ihre Sammlung auf AnkiWeb durch die Sammlung auf AnkiDroid ersetzt werden?</string>
+    <string name="sync_conflict_remote_confirm_new">Soll Ihre Sammlung auf Ankrimento durch die Sammlung auf AnkiWeb ersetzt werden?</string>
+    <string name="sync_conflict_local_confirm_new">Soll Ihre Sammlung auf AnkiWeb durch die Sammlung auf Ankrimento ersetzt werden?</string>
     <string name="sync_conflict_title_new">Zu behaltende Sammlung auswählen</string>
     <string name="sync_conflict_replace_title">Sammlung ersetzen</string>
     <!-- Generic errors -->
     <string name="error__etc__cannot_write_to_or_create_file">Die Datei %s kann nicht erstellt oder überschrieben werden</string>
     <string name="directory_inaccessible_after_uninstall" comment="Dialog title if AnkiDroid can\'t access the collection once the app is installed">Unzugängliche Sammlung</string>
-    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Wir können nicht auf deine Sammlung zugreifen, da eine PlayStore-Richtlinie geändert wurde, nachdem AnkiDroid deinstalliert wurde.\n\nDeine Daten sind sicher und können wiederhergestellt werden. Sie befinden sich hier: \n%s\n\nWähle unten eine Wiederherstellungsmöglichkeit aus:</string>
-    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android hat aufgrund von App-Inaktivität den Zugriff von AnkiDroid auf %1$s entfernt \n\nDeine Daten sind sicher und können wiederhergestellt werden. Sie befinden sich hier: \n%2$s\n\nWähle unten eine Möglichkeit aus, um sie wiederherzustellen:</string>
+    <string name="directory_inaccessible_after_uninstall_summary" comment="the parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Wir können nicht auf deine Sammlung zugreifen, da eine PlayStore-Richtlinie geändert wurde, nachdem Ankrimento deinstalliert wurde.\n\nDeine Daten sind sicher und können wiederhergestellt werden. Sie befinden sich hier: \n%s\n\nWähle unten eine Wiederherstellungsmöglichkeit aus:</string>
+    <string name="directory_revoked_after_inactivity" comment="the first parameter is WRITE_EXTERNAL_STORAGE the second parameter is the path to the AnkiDroid folder. Typically /storage/emulated/0/AnkiDroid">Android hat aufgrund von App-Inaktivität den Zugriff von Ankrimento auf %1$s entfernt \n\nDeine Daten sind sicher und können wiederhergestellt werden. Sie befinden sich hier: \n%2$s\n\nWähle unten eine Möglichkeit aus, um sie wiederherzustellen:</string>
     <string name="restore_data_from_ankiweb">Von AnkiWeb wiederherstellen (empfohlen)</string>
     <string name="install_non_play_store_ankidroid_recommended">Ordnerzugriff wiederherstellen (empfohlen)</string>
     <string name="install_non_play_store_ankidroid">Ordnerzugriff wiederherstellen (erweitert)</string>
     <string name="restore_data_from_backup">aus .colpkg-Backup wiederherstellen (erweitert)</string>
     <string name="create_new_collection">Neue Sammlung erstellen</string>
-    <string name="new_unsafe_collection">Die neue Sammlung wird von deinem Telefon gelöscht, wenn du AnkiDroid deinstallierst.</string>
+    <string name="new_unsafe_collection">Die neue Sammlung wird von deinem Telefon gelöscht, wenn du Ankrimento deinstallierst.</string>
     <!-- Permissions screen -->
-    <string name="permissions_screen_headline">AnkiDroid benötigt einige Berechtigungen, um zu funktionieren</string>
-    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">AnkiDroid funktioniert am besten mit diesen Berechtigungen</string>
+    <string name="permissions_screen_headline">Ankrimento benötigt einige Berechtigungen, um zu funktionieren</string>
+    <string name="permissions_screen_optional_headline" comment="Explains that there are optional permissions that can be granted to AnkiDroid.">Ankrimento funktioniert am besten mit diesen Berechtigungen</string>
     <string name="storage_access_title">Speicherzugang</string>
     <string name="storage_access_summary">Speichert Ihre Sammlung an einem sicheren Ort, der nicht gelöscht wird, wenn die App deinstalliert wird</string>
     <string name="all_files_access_title" comment="Name of the “All files access” permission from Android 10 and after. See [android.permission.MANAGE_EXTERNAL_STORAGE] on https://developer.android.com/training/data-storage/manage-all-files for context.">Zugriff auf alle Dateien</string>
@@ -168,7 +168,7 @@
     <!-- Internet Permissions -->
     <string name="internet_access_title" comment="used for notifying user to unable internet access">Internet</string>
     <string name="permission_access_summary">Benötigt für die Funktion der App</string>
-    <string name="permission_required_message">Bitte erteilen Sie AnkiDroid die Berechtigung »%s«, um fortzufahren</string>
+    <string name="permission_required_message">Bitte erteilen Sie Ankrimento die Berechtigung »%s«, um fortzufahren</string>
     <!-- Multiple profile -->
     <string name="add_profile">Profil hinzufügen</string>
 </resources>

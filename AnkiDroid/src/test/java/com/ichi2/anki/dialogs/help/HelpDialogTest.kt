@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBackUnconditionally
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -202,11 +203,8 @@ class HelpDialogTest {
             // the feedback url is being shown
             onView(withText(CommonString.help_item_report_bug)).inRoot(isDialog()).perform(click())
             verify(exactly = 1) { mockActionDispatcher.onOpenUrl(AnkiDroidApp.feedbackUrl) }
-            // a report is sent
-            onView(withText(CommonString.help_title_send_exception))
-                .inRoot(isDialog())
-                .perform(click())
-            verify(exactly = 1) { mockActionDispatcher.onSendReport() }
+            // there is no "send a report" item: this build has nowhere to send one
+            onView(withText(CommonString.help_title_send_exception)).check(doesNotExist())
         }
     }
 

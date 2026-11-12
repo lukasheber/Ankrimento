@@ -29,7 +29,7 @@
     <string name="feedback_disclaimer">Отказ от ответственности: мы не собираем личную информацию, например, ваш адрес электронной почты, номер телефона или IMEI телефона. Мы собираем некоторую информацию о вашем устройстве, например, название производителя, модель и версию Android, а также описание ошибок и последовательность шагов, приведших к их появлению.</string>
     <string name="feedback_title">Обратная связь</string>
     <string name="feedback_default_text">Напишите отзыв или опишите, как и когда появляется ошибка.</string>
-    <string name="feedback_auto_toast_text">У AnkiDroid возникла проблема. Отправляется отчёт&#8230;</string>
+    <string name="feedback_auto_toast_text">У Ankrimento возникла проблема. Отправляется отчёт&#8230;</string>
     <string name="feedback_for_manual_toast_text">Подготавливается отчет об ошибке для разработчиков&#8230;</string>
     <string name="feedback_report">Отправить</string>
     <string name="feedback_report_automatically">Автоматически отправлять отчёты об ошибках</string>

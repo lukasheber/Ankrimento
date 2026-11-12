@@ -47,9 +47,10 @@ class AcraCrashReporterAnalyticsTest : AndroidTest {
     }
 
     @Test
-    fun `an ordinary exception is still reported`() {
+    fun `no exception is reported while this build has no server to report to`() {
+        // Ankrimento's build has an empty report URL: reports are never made, asked about or sent.
         CrashReportService.sendExceptionReport(IllegalStateException("safe"), "test", null, false, targetContext)
 
-        verify(exactly = 1) { Analytics.sendAnalyticsException(any(), any()) }
+        verify(exactly = 0) { Analytics.sendAnalyticsException(any(), any()) }
     }
 }

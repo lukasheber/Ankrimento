@@ -27,9 +27,9 @@
     <string name="empty_string"></string>
     <string name="error_reporting_choice" maxLength="41">Hibák jelentése</string>
     <string name="feedback_disclaimer">Megjegyzés: Nem küldünk személyes adatokat, például az e-mail címed, telefonszámod vagy az eszközöd IMEI számát. Csak néhány információt gyűjtünk össze. Ilyen például az Android verzió száma, az eszközöd márkája/típusa, és magáról a hibákról.</string>
-    <string name="feedback_title">AnkiDroid visszajelzés</string>
+    <string name="feedback_title">Ankrimento visszajelzés</string>
     <string name="feedback_default_text">Írd be a visszajelzésedet, vagy a jelentett hiba természetére vonatkozó információkat.</string>
-    <string name="feedback_auto_toast_text">Probléma volt az AnkiDroidban; egy jelentést küldünk a fejlesztőknek&#8230;</string>
+    <string name="feedback_auto_toast_text">Probléma volt az Ankrimentoban; egy jelentést küldünk a fejlesztőknek&#8230;</string>
     <string name="feedback_for_manual_toast_text">Hiba riport készül a fejlesztőknek&#8230;</string>
     <string name="feedback_report">Probléma bejelentése</string>
     <string name="feedback_report_automatically">Hibajelentések automatikus küldése</string>
