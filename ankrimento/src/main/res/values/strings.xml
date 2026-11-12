@@ -672,4 +672,5 @@
     <string name="ankrimento_settings_sync_addon_help">Syncs Incremento\'s own data with a hub on your network. Off: Incremento runs without it and nothing syncs; the sync data on this device is kept, so turning it on resumes.</string>
     <string name="ankrimento_sync_hub_pairing">Looking for the hub…</string>
     <string name="ankrimento_sync_hub_paired">Paired with the hub</string>
+    <string name="ankrimento_video_tip">Tip: + extracts the moment you are at, the bracket marks a segment, the bookmark saves your place. Tap the video for its controls.</string>
 </resources>

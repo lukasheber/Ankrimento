@@ -691,4 +691,5 @@
     <string name="ankrimento_settings_sync_addon_help">Sinkronizira Incrementove podatke s hubom na vašoj mreži. Isključeno: Incremento radi bez toga i ništa se ne sinkronizira; podaci sinkronizacije na ovom uređaju ostaju, pa ponovno uključivanje nastavlja.</string>
     <string name="ankrimento_sync_hub_pairing">Tražim hub…</string>
     <string name="ankrimento_sync_hub_paired">Upareno s hubom</string>
+    <string name="ankrimento_video_tip">Savjet: + izdvaja trenutak u kojem ste, zagrada označava isječak, zabilješka pamti mjesto. Dodirnite videozapis za kontrole.</string>
 </resources>

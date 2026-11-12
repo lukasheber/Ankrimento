@@ -73,6 +73,11 @@ class WebReaderActivity : ReaderActivity() {
                             view: WebView,
                             url: String,
                         ) {
+                            // The page's own title in the bar, not its address (what the card is called).
+                            view.title
+                                ?.trim()
+                                ?.takeIf { it.isNotEmpty() && it != url }
+                                ?.let(::showTitle)
                             lifecycleScope.launch {
                                 val script = withCol { Ankrimento.webScript(cardId, nonce, url) }
                                 webView.evaluateJavascript(script, null)

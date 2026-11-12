@@ -380,18 +380,17 @@ class EpubReaderActivity : ReaderActivity() {
     ) {
         this.chapterRatio = chapterRatio.coerceIn(0.0, 1.0)
         val fraction = (current.index + chapterRatio.coerceIn(0.0, 1.0)) / current.count.coerceAtLeast(1)
+        // The bar and the chapter only: Viewed / Marked read are in the Reading marks sheet, not beside the percentage.
         progress =
             ReaderProgress(
                 fraction.toFloat(),
                 getString(R.string.ankrimento_epub_chapter, current.index + 1, current.count),
-                coverage?.label,
             )
     }
 
-    /** Desktop's figures under the progress bar: what was viewed, and what was marked read. */
+    /** Desktop's figures, "Viewed 40% · Marked read 10%": kept for the Reading marks sheet. */
     private fun showCoverage(figures: Ankrimento.Coverage) {
         coverage = figures
-        progress?.let { progress = ReaderProgress(it.fraction, it.label, figures.label) }
     }
 
     /** The selected passage with its place in the chapter, quoted into a writing topic with a link back to it. */

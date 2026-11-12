@@ -46,6 +46,11 @@ class AnkrimentoSettings(
         get() = preferences.getBoolean(PREF_QUICK_EXTRACT, true)
         set(value) = preferences.edit { putBoolean(PREF_QUICK_EXTRACT, value) }
 
+    /** The one-time hint about the video reader's icons has been shown. */
+    var videoTipShown: Boolean
+        get() = preferences.getBoolean(PREF_VIDEO_TIP, false)
+        set(value) = preferences.edit { putBoolean(PREF_VIDEO_TIP, value) }
+
     /** The one-time hint that selecting text extracts it has been shown. */
     var extractTipShown: Boolean
         get() = preferences.getBoolean(PREF_EXTRACT_TIP, false)
@@ -81,6 +86,7 @@ class AnkrimentoSettings(
         const val PREF_SYNC_ADDON = "sync_addon_enabled"
         const val PREF_VOLUME_KEYS = "volume_keys_turn_pages"
         const val PREF_EXTRACT_TIP = "extract_tip_shown"
+        const val PREF_VIDEO_TIP = "video_tip_shown"
 
         /** Upstream's default session deck name. */
         const val DEFAULT_SESSION_DECK = "Incremento Session"

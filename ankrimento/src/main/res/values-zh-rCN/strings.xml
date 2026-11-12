@@ -653,4 +653,5 @@
     <string name="ankrimento_settings_sync_addon_help">与你网络中的同步中心同步 Incremento 自己的数据。关闭后 Incremento 不带同步运行，也不会同步；此设备上的同步数据会保留，重新开启后继续。</string>
     <string name="ankrimento_sync_hub_pairing">正在查找同步中心…</string>
     <string name="ankrimento_sync_hub_paired">已与同步中心配对</string>
+    <string name="ankrimento_video_tip">提示：+ 摘录当前时刻，括号标记一个片段，书签保存位置。点按视频可显示控制按钮。</string>
 </resources>

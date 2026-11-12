@@ -132,6 +132,11 @@ abstract class ReaderActivity : ComponentActivity() {
     /** The card's own title, for "added under …"; [title] may be a plainer word in a session. */
     private var cardName = ""
 
+    /** Shows [text] in the bar in place of the card's title (a web page's own title); the card keeps its name. */
+    protected fun showTitle(text: String) {
+        title = text
+    }
+
     /** What the bar says in a session instead of the card's title (an item's text is on the card already). */
     protected open fun sessionTitle(): String? = null
 
@@ -277,7 +282,7 @@ abstract class ReaderActivity : ComponentActivity() {
                 }
             }.onSuccess { (cardTitle, buttons) ->
                 cardName = cardTitle
-                showExtractTip()
+                showTip()
                 title = sessionTitle()?.takeIf { inSession } ?: cardTitle
                 answerButtons = buttons.orEmpty()
             }.onFailure { Timber.w(it, "Loading the reader's card failed") }
@@ -487,14 +492,23 @@ abstract class ReaderActivity : ComponentActivity() {
 
     private val snackbars = SnackbarHostState()
 
-    /** Once, the first time a document or topic opens in a session: what selecting text does. */
-    private fun showExtractTip() {
+    /**
+     * Once, the first time it applies: what selecting text does (a document or topic in a session), or what the video
+     * reader's icons are (they have no words on the bar).
+     */
+    private fun showTip() {
         val device = AnkrimentoSettings(this)
-        if (!inSession || device.extractTipShown || readerKind !in setOf("text", "epub", "pdf", "web")) return
-        device.extractTipShown = true
+        val video = readerKind == "video"
+        val seen = if (video) device.videoTipShown else device.extractTipShown
+        val applies = video || (inSession && readerKind in setOf("text", "epub", "pdf", "web"))
+        if (seen || !applies) return
+        if (video) device.videoTipShown = true else device.extractTipShown = true
         lifecycleScope.launch {
             delay(EXTRACT_TIP_DELAY_MS)
-            snackbars.showSnackbar(getString(R.string.ankrimento_extract_tip), duration = SnackbarDuration.Long)
+            snackbars.showSnackbar(
+                getString(if (video) R.string.ankrimento_video_tip else R.string.ankrimento_extract_tip),
+                duration = SnackbarDuration.Long,
+            )
         }
     }
 

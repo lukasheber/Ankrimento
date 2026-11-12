@@ -685,4 +685,5 @@
     <string name="ankrimento_settings_sync_addon_help">Sincroniza os dados do próprio Incremento com um hub na sua rede. Desligado: o Incremento roda sem ele e nada sincroniza; os dados de sincronização deste aparelho são mantidos, então ligar de novo retoma.</string>
     <string name="ankrimento_sync_hub_pairing">Procurando o hub…</string>
     <string name="ankrimento_sync_hub_paired">Pareado com o hub</string>
+    <string name="ankrimento_video_tip">Dica: + extrai o momento atual, o colchete marca um trecho, o marcador guarda o lugar. Toque no vídeo para ver os controles.</string>
 </resources>
