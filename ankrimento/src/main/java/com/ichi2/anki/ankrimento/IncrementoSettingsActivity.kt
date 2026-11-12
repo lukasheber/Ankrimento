@@ -764,6 +764,11 @@ class IncrementoSettingsActivity : ComponentActivity() {
         ) {
             set("use_fail_pass_on_items", it)
         }
+        Toggle(
+            R.string.ankrimento_settings_parent_context,
+            v.optBoolean("reviewer_parent_context_enabled", true),
+            R.string.ankrimento_settings_parent_context_help,
+        ) { set("reviewer_parent_context_enabled", it) }
         TextRow(R.string.ankrimento_settings_done_tag, v.optString("topic_done_tag")) { set("topic_done_tag", it) }
         Header(R.string.ankrimento_settings_topic_pace)
         PercentSlider(

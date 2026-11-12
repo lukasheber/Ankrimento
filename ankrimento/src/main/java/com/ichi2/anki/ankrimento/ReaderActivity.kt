@@ -520,7 +520,9 @@ abstract class ReaderActivity : ComponentActivity() {
             }
             add(ReaderTool(getString(R.string.ankrimento_timer_title)) { timerSheet = true })
             reviewKind?.let { add(ReaderTool(getString(R.string.ankrimento_document_review)) { showDocumentReview() }) }
-            add(ReaderTool(getString(R.string.ankrimento_parent)) { ParentContextSheet.show(this@ReaderActivity, cardId) })
+            if (Ankrimento.parentContextEnabled) {
+                add(ReaderTool(getString(R.string.ankrimento_parent)) { ParentContextSheet.show(this@ReaderActivity, cardId) })
+            }
             add(
                 ReaderTool(
                     getString(R.string.ankrimento_tree_show),

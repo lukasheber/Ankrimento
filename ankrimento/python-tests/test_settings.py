@@ -50,3 +50,17 @@ def test_review_buttons_are_shown_or_hidden_as_desktop_stores_it(rt):
         assert config["reviewer_button_group_visible"] is False
     finally:
         mw.addonManager.writeConfig("incremento", saved)
+
+
+def test_the_parent_context_switch_is_desktops_setting(rt):
+    from aqt import mw
+
+    saved = mw.addonManager.getConfig("incremento")
+    try:
+        assert facade.parent_context_enabled() is True  # desktop's default
+        assert json.loads(facade.set_setting("reviewer_parent_context_enabled", "false")) is False
+        assert facade.parent_context_enabled() is False
+        assert mw.addonManager.getConfig("incremento")["reviewer_parent_context_enabled"] is False
+        assert json.loads(facade.settings_values())["reviewer_parent_context_enabled"] is False
+    finally:
+        mw.addonManager.writeConfig("incremento", saved)

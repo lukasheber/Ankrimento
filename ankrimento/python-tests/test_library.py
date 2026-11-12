@@ -110,3 +110,31 @@ def test_a_document_never_opened_shows_no_progress_yet(rt, tmp_path):
     entry = next(e for e in json.loads(facade.library()) if e["card_id"] == card_id)
 
     assert entry["viewed_percent"] == 0.0 and entry["marked_percent"] == 0.0
+
+
+def test_several_documents_take_one_priority_at_once(rt):
+    first = json.loads(facade.import_link("https://example.org/bulk-one", "Bulk one"))["card_id"]
+    second = json.loads(facade.import_link("https://example.org/bulk-two", "Bulk two"))["card_id"]
+    other = json.loads(facade.import_link("https://example.org/bulk-other", "Bulk other"))["card_id"]
+
+    facade.set_priorities(json.dumps([first, second]), 12.0)
+
+    entries = {entry["card_id"]: entry for entry in json.loads(facade.library())}
+    assert entries[first]["priority"] == 12.0
+    assert entries[second]["priority"] == 12.0
+    assert entries[other]["priority"] == 50.0
+
+
+def test_a_batch_naming_a_card_that_is_gone_changes_nothing(rt):
+    # Desktop checks every card still exists before it saves any (`_set_entry_priorities`).
+    first = json.loads(facade.import_link("https://example.org/gone-one", "Gone one"))["card_id"]
+
+    try:
+        facade.set_priorities(json.dumps([first, 987654321]), 7.0)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("a missing card should refuse the batch")
+
+    entries = {entry["card_id"]: entry for entry in json.loads(facade.library())}
+    assert entries[first]["priority"] == 50.0

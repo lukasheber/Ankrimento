@@ -8,12 +8,15 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +40,7 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -68,6 +72,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.IncrementoTheme
+import com.ichi2.anki.ankrimento.ui.PriorityDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -89,6 +94,10 @@ class IncrementoHubActivity : ComponentActivity() {
     private var lowerIsMoreImportant = true
     private var recentOrder = emptyList<Long>()
     private var adding by mutableStateOf(false)
+
+    /** The documents picked with a long press, for one priority; empty outside selection. */
+    private var selected by mutableStateOf<Set<Long>>(emptySet())
+    private var askPriority by mutableStateOf(false)
     private var askLink by mutableStateOf(false)
     private var askArticle by mutableStateOf(false)
     private var askWebsite by mutableStateOf(false)
@@ -321,31 +330,53 @@ class IncrementoHubActivity : ComponentActivity() {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(stringResource(R.string.ankrimento_library)) },
+                    title = {
+                        Text(
+                            if (selecting) {
+                                stringResource(R.string.ankrimento_library_selected, selected.size)
+                            } else {
+                                stringResource(R.string.ankrimento_library)
+                            },
+                        )
+                    },
                     navigationIcon = {
-                        IconButton(onClick = ::finish) {
-                            Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_navigate_up))
+                        if (selecting) {
+                            IconButton(onClick = { selected = emptySet() }) {
+                                Icon(IncrementoIcons.Close, contentDescription = stringResource(android.R.string.cancel))
+                            }
+                        } else {
+                            IconButton(onClick = ::finish) {
+                                Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_navigate_up))
+                            }
                         }
                     },
                     actions = {
-                        IconButton(onClick = { startActivity(SearchAllActivity.intent(this@IncrementoHubActivity)) }) {
-                            Icon(IncrementoIcons.Search, contentDescription = stringResource(R.string.ankrimento_search_all))
-                        }
-                        IconButton(onClick = { startActivity(StatisticsActivity.intent(this@IncrementoHubActivity)) }) {
-                            Icon(IncrementoIcons.Chart, contentDescription = stringResource(R.string.ankrimento_statistics_title))
-                        }
-                        IconButton(onClick = { startActivity(KnowledgeTreeActivity.intent(this@IncrementoHubActivity)) }) {
-                            Icon(IncrementoIcons.Tree, contentDescription = stringResource(R.string.ankrimento_knowledge_tree_title))
+                        if (selecting) {
+                            TextButton(onClick = { askPriority = true }) {
+                                Text(stringResource(R.string.ankrimento_library_set_priority))
+                            }
+                        } else {
+                            IconButton(onClick = { startActivity(SearchAllActivity.intent(this@IncrementoHubActivity)) }) {
+                                Icon(IncrementoIcons.Search, contentDescription = stringResource(R.string.ankrimento_search_all))
+                            }
+                            IconButton(onClick = { startActivity(StatisticsActivity.intent(this@IncrementoHubActivity)) }) {
+                                Icon(IncrementoIcons.Chart, contentDescription = stringResource(R.string.ankrimento_statistics_title))
+                            }
+                            IconButton(onClick = { startActivity(KnowledgeTreeActivity.intent(this@IncrementoHubActivity)) }) {
+                                Icon(IncrementoIcons.Tree, contentDescription = stringResource(R.string.ankrimento_knowledge_tree_title))
+                            }
                         }
                     },
                 )
             },
             floatingActionButton = {
-                ExtendedFloatingActionButton(
-                    onClick = { adding = true },
-                    icon = { Icon(IncrementoIcons.Add, contentDescription = null) },
-                    text = { Text(stringResource(R.string.ankrimento_add)) },
-                )
+                if (!selecting) {
+                    ExtendedFloatingActionButton(
+                        onClick = { adding = true },
+                        icon = { Icon(IncrementoIcons.Add, contentDescription = null) },
+                        text = { Text(stringResource(R.string.ankrimento_add)) },
+                    )
+                }
             },
         ) { padding ->
             val all = documents
@@ -377,7 +408,17 @@ class IncrementoHubActivity : ComponentActivity() {
                 items(shown, key = { it.cardId }) { entry -> DocumentRow(entry) }
             }
         }
+        BackHandler(enabled = selecting) { selected = emptySet() }
         if (adding) AddSheet()
+        if (askPriority) {
+            val chosen = documents.orEmpty().filter { it.cardId in selected }
+            // Several documents with one priority start there; with different ones, at the middle.
+            val start = chosen.map { it.priority }.distinct().singleOrNull() ?: DEFAULT_PRIORITY
+            PriorityDialog(start, onDismiss = { askPriority = false }) { priority ->
+                askPriority = false
+                setPriorities(chosen.map { it.cardId }, priority)
+            }
+        }
         offered?.let { (uri, kind) ->
             AlertDialog(
                 onDismissRequest = { offered = null },
@@ -516,9 +557,38 @@ class IncrementoHubActivity : ComponentActivity() {
         }
     }
 
+    private val selecting get() = selected.isNotEmpty()
+
+    private fun setPriorities(
+        cardIds: List<Long>,
+        priority: Double,
+    ) {
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.setPriorities(cardIds, priority) } }
+                .onSuccess {
+                    selected = emptySet()
+                    load()
+                    toast(getString(R.string.ankrimento_library_priority_set, priority.roundToInt(), cardIds.size))
+                }.onFailure { error ->
+                    Timber.w(error, "Setting the priority failed")
+                    toast(getString(R.string.ankrimento_library_priority_failed))
+                    load()
+                }
+        }
+    }
+
+    /** Tap opens a document, or toggles it while some are picked; a long press starts picking. */
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     private fun DocumentRow(entry: Ankrimento.LibraryEntry) {
+        val picked = entry.cardId in selected
         ListItem(
+            colors =
+                if (picked) {
+                    ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                } else {
+                    ListItemDefaults.colors()
+                },
             headlineContent = { Text(entry.title, maxLines = 2, overflow = TextOverflow.Ellipsis) },
             supportingContent = {
                 Column {
@@ -533,8 +603,16 @@ class IncrementoHubActivity : ComponentActivity() {
                 } else {
                     null
                 },
-            modifier = Modifier.clickable { open(entry) },
+            modifier =
+                Modifier.combinedClickable(
+                    onClick = { if (selecting) toggle(entry) else open(entry) },
+                    onLongClick = { toggle(entry) },
+                ),
         )
+    }
+
+    private fun toggle(entry: Ankrimento.LibraryEntry) {
+        selected = if (entry.cardId in selected) selected - entry.cardId else selected + entry.cardId
     }
 
     /**
@@ -667,6 +745,7 @@ class IncrementoHubActivity : ComponentActivity() {
         private val MARKDOWN_TYPES = arrayOf("text/markdown", "text/x-markdown", "text/plain", "application/octet-stream")
 
         private const val RECENT = 8
+        private const val DEFAULT_PRIORITY = 50.0
         private const val SORT_PRIORITY = "priority"
         private const val SORT_TITLE = "title"
         private const val SORT_RECENT = "recent"

@@ -649,4 +649,10 @@
     <string name="ankrimento_guide_backup_title">5. Napravite sigurnosnu kopiju</string>
     <string name="ankrimento_guide_backup_body">Napravite potpunu sigurnosnu kopiju prije velikog uvoza ili promjene tijeka rada. Postavke mogu i automatski stvarati kopije u mapu koju odaberete.</string>
     <string name="ankrimento_guide_backup_action">Otvori postavke sigurnosnih kopija…</string>
+    <string name="ankrimento_library_selected">Odabrano: %d</string>
+    <string name="ankrimento_library_set_priority">Postavi prioritet</string>
+    <string name="ankrimento_library_priority_set">Prioritet %1$d postavljen na dokumentima: %2$d</string>
+    <string name="ankrimento_library_priority_failed">Odabrani dokument više ne postoji, pa prioritet nije promijenjen.</string>
+    <string name="ankrimento_settings_parent_context">Prikaži izvor</string>
+    <string name="ankrimento_settings_parent_context_help">Dodaje Prikaži izvor u izbornike ponavljanja i čitača: izvornik prikazane kartice, samo za čitanje.</string>
 </resources>

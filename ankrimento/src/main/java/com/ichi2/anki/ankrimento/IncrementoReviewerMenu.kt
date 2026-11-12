@@ -46,7 +46,9 @@ class IncrementoReviewerMenu(
                 add(Menu.NONE, R.id.ankrimento_topic_revisit_12, Menu.NONE, R.string.ankrimento_topic_revisit_12)
             }
         }
-        menu.add(Menu.NONE, R.id.ankrimento_parent, Menu.CATEGORY_SECONDARY, R.string.ankrimento_parent)
+        if (Ankrimento.parentContextEnabled) {
+            menu.add(Menu.NONE, R.id.ankrimento_parent, Menu.CATEGORY_SECONDARY, R.string.ankrimento_parent)
+        }
         menu.add(Menu.NONE, R.id.ankrimento_priority, Menu.CATEGORY_SECONDARY, R.string.ankrimento_priority)
     }
 

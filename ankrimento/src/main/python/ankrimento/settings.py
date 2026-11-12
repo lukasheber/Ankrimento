@@ -27,6 +27,7 @@ SETTINGS: dict[str, Any] = {
     "learning_leech_enabled": "bool",
     "learning_leech_threshold": "int",
     "learning_leech_tag": "text",
+    "reviewer_parent_context_enabled": "bool",
     # Extraction and priority
     "extract_default_type": ("item", "topic"),
     "extract_copy_source_tags": "bool",
@@ -102,6 +103,13 @@ def set_value(key: str, value: Any) -> Any:
     config[key] = _checked(key, value)
     saved = save_addon_config(mw.addonManager, _ADDON, config)
     return saved.get(key)
+
+
+def parent_context_enabled() -> bool:
+    """Desktop's **Show parent context icon** (Settings → Review → Reviewer Controls), on unless switched off."""
+    from incremento.backend.config_service import configured_reviewer_parent_context_enabled
+
+    return bool(configured_reviewer_parent_context_enabled(_config()))
 
 
 def review_buttons() -> dict[str, bool]:

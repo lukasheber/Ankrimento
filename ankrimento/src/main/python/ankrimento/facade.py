@@ -799,6 +799,12 @@ def set_setting(key: str, value_json: str) -> str:
     return _dumps(settings.set_value(str(key), json.loads(value_json)))
 
 
+def parent_context_enabled() -> bool:
+    from ankrimento import settings
+
+    return settings.parent_context_enabled()
+
+
 def review_buttons() -> str:
     """Desktop's review buttons (group, done, postpone, extract) and whether each is shown."""
     from ankrimento import settings
@@ -1477,6 +1483,24 @@ def set_priority(card_id: int, priority: float) -> None:
 
     rt = runtime.current()
     _set_priority(str(rt.addon_dir), rt.profile, int(card_id), float(priority))
+
+
+def set_priorities(card_ids_json: str, priority: float) -> None:
+    """One priority for several cards, all or none (desktop's bookshelf **Set Priority…**, ``_set_entry_priorities``).
+
+    Every card must still exist, as desktop checks before it saves; upstream's ``set_priorities`` writes the rows in one
+    transaction.
+    """
+    from incremento.backend.priority_manager import set_priorities as _set_priorities
+
+    rt = runtime.current()
+    ids = tuple(dict.fromkeys(int(card_id) for card_id in json.loads(str(card_ids_json))))
+    for start in range(0, len(ids), 900):
+        chunk = ids[start : start + 900]
+        marks = ",".join("?" for _ in chunk)
+        if set(rt.col.db.list(f"SELECT id FROM cards WHERE id IN ({marks})", *chunk)) != set(chunk):
+            raise ValueError("Selected document cards no longer exist")
+    _set_priorities(str(rt.addon_dir), rt.profile, ((card_id, float(priority)) for card_id in ids))
 
 
 def pdf_choose_color(card_id: int, data_json: str, selected: str) -> str:

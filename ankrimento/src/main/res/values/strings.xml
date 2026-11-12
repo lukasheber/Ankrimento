@@ -632,4 +632,10 @@
     <string name="ankrimento_guide_backup_title">5. Create a backup</string>
     <string name="ankrimento_guide_backup_body">Make a full backup before a large import or a change of workflow. Settings can also back up automatically into a folder you choose.</string>
     <string name="ankrimento_guide_backup_action">Open backup settings…</string>
+    <string name="ankrimento_library_selected">%d selected</string>
+    <string name="ankrimento_library_set_priority">Set priority</string>
+    <string name="ankrimento_library_priority_set">Priority %1$d set on %2$d documents</string>
+    <string name="ankrimento_library_priority_failed">A selected document is gone, so no priority was changed.</string>
+    <string name="ankrimento_settings_parent_context">Show parent</string>
+    <string name="ankrimento_settings_parent_context_help">Adds Show parent to the reviewer and reader menus: the original parent of the card on screen, read-only.</string>
 </resources>

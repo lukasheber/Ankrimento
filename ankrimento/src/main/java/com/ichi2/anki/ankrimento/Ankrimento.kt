@@ -709,9 +709,18 @@ object Ankrimento {
     fun questionShown(cardId: Long) {
         if (!isStarted) return
         requireFacade().callAttr("question_shown", cardId)
+        parentContextEnabled = requireFacade().callAttr("parent_context_enabled").toBoolean()
         shownTopicCardId = if (requireFacade().callAttr("is_topic", cardId).toBoolean()) cardId else null
         shownReaderCardId = if (cardReader(cardId).isNotEmpty()) cardId else null
     }
+
+    /**
+     * Desktop's **Show parent context icon** setting, kept here so menus can read it on the main thread. Refreshed when
+     * a card is shown and when the setting is saved.
+     */
+    @Volatile
+    var parentContextEnabled: Boolean = true
+        private set
 
     /** The card on screen in the reviewer, if it opens in an Incremento reader. */
     @Volatile
@@ -754,6 +763,15 @@ object Ankrimento {
         priority: Double,
     ) {
         requireFacade().callAttr("set_priority", cardId, priority)
+    }
+
+    /** One priority for several cards at once (desktop's bookshelf **Set Priority…**); none change if one is gone. */
+    @WorkerThread
+    fun setPriorities(
+        cardIds: List<Long>,
+        priority: Double,
+    ) {
+        requireFacade().callAttr("set_priorities", JSONArray(cardIds).toString(), priority)
     }
 
     /** Reviewer hook: a card's answer is on screen. */
@@ -826,7 +844,10 @@ object Ankrimento {
 
     /** The Incremento settings shown on mobile (upstream's config keys), as JSON. */
     @WorkerThread
-    fun settingsValues(): JSONObject = JSONObject(requireFacade().callAttr("settings_values").toString())
+    fun settingsValues(): JSONObject =
+        JSONObject(requireFacade().callAttr("settings_values").toString()).also {
+            parentContextEnabled = it.optBoolean("reviewer_parent_context_enabled", true)
+        }
 
     /** Saves one setting; returns the value upstream kept after normalizing it. */
     @WorkerThread
@@ -841,6 +862,7 @@ object Ankrimento {
                 .removePrefix("{\"v\":")
                 .removeSuffix("}")
         val kept = requireFacade().callAttr("set_setting", key, json).toString()
+        if (key == "reviewer_parent_context_enabled") parentContextEnabled = kept.toBoolean()
         return JSONObject("{\"v\":$kept}").get("v")
     }
 

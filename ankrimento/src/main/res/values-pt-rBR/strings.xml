@@ -645,4 +645,10 @@
     <string name="ankrimento_guide_backup_title">5. Crie um backup</string>
     <string name="ankrimento_guide_backup_body">Faça um backup completo antes de uma importação grande ou de uma mudança de fluxo. As configurações também podem fazer backup automático em uma pasta que você escolher.</string>
     <string name="ankrimento_guide_backup_action">Abrir configurações de backup…</string>
+    <string name="ankrimento_library_selected">%d selecionados</string>
+    <string name="ankrimento_library_set_priority">Definir prioridade</string>
+    <string name="ankrimento_library_priority_set">Prioridade %1$d definida em %2$d documentos</string>
+    <string name="ankrimento_library_priority_failed">Um documento selecionado não existe mais, então nenhuma prioridade foi alterada.</string>
+    <string name="ankrimento_settings_parent_context">Ver origem</string>
+    <string name="ankrimento_settings_parent_context_help">Adiciona Ver origem aos menus do revisor e dos leitores: a origem do cartão na tela, somente leitura.</string>
 </resources>
