@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -60,6 +61,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.ichi2.anki.CollectionManager.withCol
@@ -311,14 +313,16 @@ class IncrementoSettingsActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun Settings() {
-        var page by rememberSaveable { mutableStateOf<Page?>(null) }
-        BackHandler(enabled = page != null) { page = null }
+        // Opened straight on This device (from the session card's Sync when nothing is set up): Back leaves.
+        val direct = intent.getBooleanExtra(EXTRA_DEVICE_PAGE, false)
+        var page by rememberSaveable { mutableStateOf<Page?>(if (direct) Page.DEVICE else null) }
+        BackHandler(enabled = page != null && !direct) { page = null }
         Scaffold(
             topBar = {
                 TopAppBar(
                     title = { Text(stringResource(page?.title ?: R.string.ankrimento_settings)) },
                     navigationIcon = {
-                        IconButton(onClick = { if (page != null) page = null else finish() }) {
+                        IconButton(onClick = { if (page != null && !direct) page = null else finish() }) {
                             Icon(IncrementoIcons.Back, contentDescription = stringResource(R.string.ankrimento_navigate_up))
                         }
                     },
@@ -1030,6 +1034,8 @@ class IncrementoSettingsActivity : ComponentActivity() {
             value = "",
             message = R.string.ankrimento_sync_hub_message,
             shown = hubSummary(syncHubCode) ?: stringResource(R.string.ankrimento_sync_hub_none),
+            // Digits first; a phone pad also has the comma and the dot for the address after the code.
+            keyboard = KeyboardType.Phone,
         ) { typed -> pairHub(typed) }
     }
 
@@ -1170,6 +1176,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
         message: Int? = null,
         numeric: Boolean = false,
         shown: String? = null,
+        keyboard: KeyboardType = KeyboardType.Unspecified,
         onChange: (String) -> Unit,
     ) {
         var editing by remember { mutableStateOf(false) }
@@ -1196,6 +1203,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
                         value = text,
                         onValueChange = { text = if (numeric) it.filter(Char::isDigit) else it },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = keyboard),
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
@@ -1228,6 +1236,12 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 168 to R.string.ankrimento_auto_backup_week,
             )
 
-        fun intent(context: Context) = Intent(context, IncrementoSettingsActivity::class.java)
+        private const val EXTRA_DEVICE_PAGE = "device_page"
+
+        /** The settings; with [devicePage] straight on "This device", where syncing is set up. */
+        fun intent(
+            context: Context,
+            devicePage: Boolean = false,
+        ) = Intent(context, IncrementoSettingsActivity::class.java).putExtra(EXTRA_DEVICE_PAGE, devicePage)
     }
 }

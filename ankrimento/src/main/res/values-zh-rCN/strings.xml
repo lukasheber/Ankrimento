@@ -54,7 +54,6 @@
     <string name="ankrimento_extract_added">卡片已添加</string>
     <string name="ankrimento_extract_failed">添加卡片失败：%s</string>
     <string name="ankrimento_sync_now">同步 Incremento 数据</string>
-    <string name="ankrimento_sync_no_hub">请先在 Incremento 设置中与同步中心配对</string>
     <string name="ankrimento_sync_up_to_date">Incremento 数据已是最新</string>
     <string name="ankrimento_sync_failed">同步 Incremento 数据失败：%s</string>
     <string name="ankrimento_sync_done">Incremento 数据已同步：已发送 %1$d 项，已接收 %2$d 项</string>
@@ -63,7 +62,7 @@
     <string name="ankrimento_sync_working">正在同步 Incremento 数据… 已发送 %1$d 项，已接收 %2$d 项</string>
     <string name="ankrimento_sync_hub">同步中心</string>
     <string name="ankrimento_sync_hub_none">未设置。与你网络中的同步中心配对，即可同步 Incremento 数据</string>
-    <string name="ankrimento_sync_hub_message">输入运行同步中心的电脑上显示的 6 位数字码（Incremento Sync，scripts/sync_hub.py serve）。如果找不到中心，请在码后面加上它的地址，例如 483 920 192.168.1.5。留空则停止同步。</string>
+    <string name="ankrimento_sync_hub_message">输入运行同步中心的电脑上显示的 6 位数字码（Incremento Sync，scripts/sync_hub.py serve）。如果找不到中心，请在码后面用逗号加上它的地址，例如 483920,192.168.1.5。留空则停止同步。</string>
     <string name="ankrimento_sync_hub_summary">%1$s（%2$s）</string>
     <string name="ankrimento_sync_hub_invalid">配对码无效</string>
     <string name="ankrimento_statistics_title">Incremento 统计</string>

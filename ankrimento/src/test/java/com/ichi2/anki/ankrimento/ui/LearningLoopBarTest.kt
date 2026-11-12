@@ -3,9 +3,11 @@
 package com.ichi2.anki.ankrimento.ui
 
 import android.content.Context
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
@@ -69,14 +71,14 @@ class LearningLoopBarTest {
     }
 
     @Test
-    fun `the topic menu says what Done and Postpone do, and Revisit puts the topic aside`() {
+    fun `Done is on the bar itself and Postpone and Revisit wait under More, each saying what it does`() {
         val done = mutableListOf<String>()
         show(
             ReviewBarState(
                 topicButtons,
                 topicActions =
                     listOf(
-                        ReaderTool("Done", description = "Stop reviewing it") { done += "done" },
+                        ReaderTool("Done", IncrementoIcons.Check, "Stop reviewing it") { done += "done" },
                         ReaderTool("Postpone", description = "Not now") { done += "postpone" },
                     ),
                 revisitOptions = listOf(ReaderTool("In 3 months") { done += "3 months" }),
@@ -85,15 +87,17 @@ class LearningLoopBarTest {
             ) {},
         )
 
-        compose.onNodeWithText(text(R.string.ankrimento_topic_menu)).performClick()
-        compose.onNodeWithText("Stop reviewing it").assertIsDisplayed()
+        // Done needs no menu; the rest is not in the way until More is opened.
+        compose.onAllNodesWithText("Not now").assertCountEquals(0)
+        compose.onNodeWithText("Done").assertIsDisplayed().performClick()
+        compose.onNodeWithContentDescription(text(R.string.ankrimento_topic_menu)).performClick()
         compose.onNodeWithText("Not now").assertIsDisplayed()
         compose.onNodeWithText(text(R.string.ankrimento_revisit_hint)).assertIsDisplayed()
-        compose.onNodeWithText("Done").performClick()
-        compose.onNodeWithText(text(R.string.ankrimento_topic_menu)).performClick()
+        compose.onNodeWithText("Postpone").performClick()
+        compose.onNodeWithContentDescription(text(R.string.ankrimento_topic_menu)).performClick()
         compose.onNodeWithText("In 3 months").performClick()
 
-        assertEquals(listOf("done", "3 months"), done)
+        assertEquals(listOf("done", "postpone", "3 months"), done)
     }
 
     @Test

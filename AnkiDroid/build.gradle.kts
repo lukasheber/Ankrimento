@@ -98,7 +98,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.ichi2.anki"
+        applicationId = "com.memoria.ankrimento"
         buildConfigField("Boolean", "CI", (System.getenv("CI") == "true").toString())
         buildConfigField("String", "ACRA_URL", "\"https://ankidroid.org/acra/report\"")
         buildConfigField("String", "BACKEND_VERSION", "\"${libs.versions.ankiBackend.get()}\"")
@@ -107,7 +107,7 @@ android {
         buildConfigField("long", "BUILD_TIME", buildTimeMillis.get())
         // whether UI elements linking to external donation pages are shown ('play' hides them)
         buildConfigField("Boolean", "SHOW_DONATE_LINKS", "true")
-        resValue("string", "app_name", "AnkiDroid")
+        resValue("string", "app_name", "Ankrimento")
 
         // The version number is of the form:
         // <major>.<minor>.<maintenance>[dev|alpha<build>|beta<build>|]

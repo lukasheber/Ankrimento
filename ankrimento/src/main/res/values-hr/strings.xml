@@ -62,7 +62,6 @@
     <string name="ankrimento_extract_added">Karta je dodana</string>
     <string name="ankrimento_extract_failed">Dodavanje karte nije uspjelo: %s</string>
     <string name="ankrimento_sync_now">Sinkroniziraj Incremento podatke</string>
-    <string name="ankrimento_sync_no_hub">Prvo uparite sinkronizacijski hub u postavkama Incrementa</string>
     <string name="ankrimento_sync_up_to_date">Incremento podaci su ažurni</string>
     <string name="ankrimento_sync_failed">Sinkronizacija Incremento podataka nije uspjela: %s</string>
     <string name="ankrimento_sync_done">Incremento podaci sinkronizirani: %1$d poslano, %2$d primljeno</string>
@@ -71,7 +70,7 @@
     <string name="ankrimento_sync_working">Sinkronizacija Incremento podataka… dosad poslano %1$d, primljeno %2$d</string>
     <string name="ankrimento_sync_hub">Središte za sinkronizaciju</string>
     <string name="ankrimento_sync_hub_none">Nije postavljeno. Uparite s hubom na svojoj mreži za sinkronizaciju podataka Incrementa</string>
-    <string name="ankrimento_sync_hub_message">Upišite 6-znamenkasti kod koji sinkronizacijski hub prikazuje na računalu na kojem radi (Incremento Sync, scripts/sync_hub.py serve). Ako ne može pronaći hub, dodajte njegovu adresu iza koda, npr. 483 920 192.168.1.5. Ostavite prazno za prestanak sinkronizacije.</string>
+    <string name="ankrimento_sync_hub_message">Upišite 6-znamenkasti kod koji sinkronizacijski hub prikazuje na računalu na kojem radi (Incremento Sync, scripts/sync_hub.py serve). Ako ne može pronaći hub, dodajte njegovu adresu iza zareza, npr. 483920,192.168.1.5. Ostavite prazno za prestanak sinkronizacije.</string>
     <string name="ankrimento_sync_hub_summary">%1$s na %2$s</string>
     <string name="ankrimento_sync_hub_invalid">Nije valjan kod za uparivanje</string>
     <string name="ankrimento_statistics_title">Incremento statistika</string>

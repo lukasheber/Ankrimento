@@ -150,7 +150,7 @@ both the card and Incremento's state.
 ```bash
 ./gradlew :AnkiDroid:assemblePlayDebug -Pandroid.injected.build.abi=x86_64
 adb install -r -t AnkiDroid/build/intermediates/apk/play/debug/AnkiDroid-play-x86_64-debug.apk
-adb shell am start -n com.ichi2.anki.debug/com.ichi2.anki.ankrimento.debug.AnkrimentoSmokeTestActivity
+adb shell am start -n com.memoria.ankrimento.debug/com.ichi2.anki.ankrimento.debug.AnkrimentoSmokeTestActivity
 adb logcat -s AnkrimentoSmoke python.stderr
 ```
 

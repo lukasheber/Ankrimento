@@ -43,6 +43,5 @@ branch.
 ## Licence and credit
 
 GPL-3.0-or-later, as AnkiDroid (`COPYING`, `LICENSES/`). AnkiDroid is the work of its contributors; its original README is
-kept as `README.AnkiDroid.md`. Incremento is Paulo's (BaskovicP) work and is used with his agreement (2026-11-12) for an APK
-build published on GitHub under the same licence as AnkiDroid; Incremento's code stays under Incremento's own terms and
+kept as `README.AnkiDroid.md`. Incremento is Paulo's (BaskovicP) work; Incremento's code stays under Incremento's own terms and
 is loaded from its repository, not changed. This project is not affiliated with or endorsed by AnkiDroid or Anki.

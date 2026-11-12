@@ -7,7 +7,7 @@ tests also run. Follow these steps for every new desktop version, in order. Plan
 Markdown toolbar and two stand-in rewrites.
 
 Needed: the Python environment (`ankrimento/.venv`, built as in `README.md`, **including `pypdf`**), network for Gradle
-(Chaquopy installs `pypdf` from PyPI), and the tablet with the debug app (`com.ichi2.anki.debug`, never the installed
+(Chaquopy installs `pypdf` from PyPI), and the tablet with the debug app (`com.memoria.ankrimento.debug`, never the installed
 AnkiDroid) for step 8.
 
 ## 1. Move the submodule

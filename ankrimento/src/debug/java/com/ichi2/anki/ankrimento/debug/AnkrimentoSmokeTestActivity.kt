@@ -38,7 +38,7 @@ import java.nio.ByteOrder
  * Debug builds only: runs Ankrimento's review flow on the device's real
  * collection and logs each step under the `AnkrimentoSmoke` tag.
  *
- * `adb shell am start -n com.ichi2.anki.debug/com.ichi2.anki.ankrimento.debug.AnkrimentoSmokeTestActivity`
+ * `adb shell am start -n com.memoria.ankrimento.debug/com.ichi2.anki.ankrimento.debug.AnkrimentoSmokeTestActivity`
  *
  * Adds a few notes tagged `ankrimento-smoke` to the "Topics" and "Default" decks.
  */

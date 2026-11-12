@@ -58,7 +58,6 @@
     <string name="ankrimento_extract_added">Card added</string>
     <string name="ankrimento_extract_failed">Adding the card failed: %s</string>
     <string name="ankrimento_sync_now">Sync Incremento data</string>
-    <string name="ankrimento_sync_no_hub">Pair with a sync hub in Incremento settings first</string>
     <string name="ankrimento_sync_up_to_date">Incremento data is up to date</string>
     <string name="ankrimento_sync_failed">Syncing Incremento data failed: %s</string>
     <string name="ankrimento_sync_done">Incremento data synced: %1$d sent, %2$d received</string>
@@ -67,7 +66,7 @@
     <string name="ankrimento_sync_working">Syncing Incremento data… %1$d sent, %2$d received so far</string>
     <string name="ankrimento_sync_hub">Sync hub</string>
     <string name="ankrimento_sync_hub_none">Not set. Pair with a hub on your network to sync Incremento data</string>
-    <string name="ankrimento_sync_hub_message">Type the 6-digit code the sync hub shows on the computer that runs it (Incremento Sync, scripts/sync_hub.py serve). If it can\'t find the hub, add its address after the code, like 483 920 192.168.1.5. Leave empty to stop syncing.</string>
+    <string name="ankrimento_sync_hub_message">Type the 6-digit code the sync hub shows on the computer that runs it (Incremento Sync, scripts/sync_hub.py serve). If it can\'t find the hub, add its address after a comma, like 483920,192.168.1.5. Leave empty to stop syncing.</string>
     <string name="ankrimento_sync_hub_summary">%1$s on %2$s</string>
     <string name="ankrimento_sync_hub_invalid">Not a valid pairing code</string>
     <string name="ankrimento_statistics_title">Incremento statistics</string>
