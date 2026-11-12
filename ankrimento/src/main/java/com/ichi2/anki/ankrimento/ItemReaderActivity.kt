@@ -48,6 +48,8 @@ class ItemReaderActivity : ReaderActivity() {
 
     override val answerAlreadyShown = true
 
+    override fun sessionTitle() = getString(R.string.ankrimento_extract_item)
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +76,8 @@ class ItemReaderActivity : ReaderActivity() {
                     }
                 },
             )
+        // A tap on the question shows the answer, as a tap on a flashcard does; a typed answer needs its Show answer.
+        webView.onTap = { if (!asksTypedAnswer) revealAction?.invoke() }
         // Fix a typo or reword the item where it is studied, as AnkiDroid's study screen allows.
         tools = listOf(ReaderTool(getString(R.string.ankrimento_edit_card), IncrementoIcons.Edit, onClick = ::editNote))
         lifecycleScope.launch { load() }
@@ -147,7 +151,7 @@ class ItemReaderActivity : ReaderActivity() {
                 val stored = getSharedPreferences(TextReaderActivity.PREFERENCES, MODE_PRIVATE)
                 val scale = stored.getFloat(TextReaderActivity.PREF_SCALE, 1f).toDouble()
                 val appearance = stored.getString(TextReaderActivity.PREF_APPEARANCE, null) ?: "original"
-                view.evaluateJavascript(CardPage.pageScript(scale, appearance, alignStart = false), null)
+                view.evaluateJavascript(CardPage.pageScript(scale, appearance, alignStart = false, comfort = true), null)
                 val side = pendingAutoplay ?: return
                 pendingAutoplay = null
                 card?.let { player?.autoplay(it, side) }

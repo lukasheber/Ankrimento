@@ -1279,6 +1279,17 @@ def extract_cloze(source_card_id: int, before: str, selected: str, after: str) -
     mw.notify_host("extract_draft", card_id=int(source_card_id))
 
 
+def extract_cloze_in(source_card_id: int, text: str, start: int, end: int, stop: int) -> None:
+    """A cloze from the selection ``text[start:end]`` of a reader block; ``stop`` is where the block's
+    source link begins (-1 for none). The host shows the extract sheet."""
+    from aqt import mw
+
+    from ankrimento import extract
+
+    extract.cloze_in(int(source_card_id), str(text), int(start), int(end), int(stop))
+    mw.notify_host("extract_draft", card_id=int(source_card_id))
+
+
 def extract_draft(source_card_id: int) -> str:
     """The pending extract from a document, with the dialog's defaults."""
     from ankrimento import extract
@@ -1298,6 +1309,41 @@ def create_extract(source_card_id: int, fields_json: str, note_type: str, kind: 
     note_id = extract.create(source_card_id, list(json.loads(fields_json)), note_type, kind, float(priority))
     script = pdf_reader.page_cards_script(source_card_id, page) if card_reader(source_card_id) == "pdf" else ""
     return _dumps({"note_id": note_id, "script": script})
+
+
+def topic_editable(card_id: int) -> str:
+    """A topic's text for the in-app editor: formatted text with its source link as a chip."""
+    from ankrimento import topic_editor
+
+    return _dumps(topic_editor.editable(int(card_id)))
+
+
+def topic_save(card_id: int, html: str) -> None:
+    """Saves the editor's text, the topic's source link as it was (see ``topic_editor.save``)."""
+    from ankrimento import topic_editor
+
+    topic_editor.save(int(card_id), str(html))
+
+
+def undo_extract(source_card_id: int, note_id: int) -> str:
+    """Takes back an extract just added: its note goes, the source stays. Returns JavaScript refreshing
+    the reader's page cards (empty outside a PDF). A note that is already gone is not an error."""
+    from aqt import mw
+    from aqt.operations import on_op_finished
+
+    from ankrimento import pdf_reader
+
+    rt = runtime.current()
+    source_card_id = int(source_card_id)
+    page = None
+    if rt.col.find_notes(f"nid:{int(note_id)}"):
+        changes = rt.col.remove_notes([int(note_id)])
+        on_op_finished(mw, changes, None)
+    if card_reader(source_card_id) == "pdf":
+        from ankrimento import extract
+
+        page = extract.draft(source_card_id)["page"] or 1
+    return pdf_reader.page_cards_script(source_card_id, page) if page else ""
 
 
 def discard_extract(source_card_id: int) -> None:

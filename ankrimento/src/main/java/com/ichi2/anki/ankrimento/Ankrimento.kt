@@ -932,15 +932,19 @@ object Ankrimento {
         title: String,
     ): Long = requireFacade().callAttr("import_audio", path, title).toLong()
 
-    /** A cloze from the reader's selection: [selected] hidden in its sentence ([before], [after]); the extract sheet follows. */
+    /**
+     * A cloze from the reader's selection, `text[start, end)` of its block, hidden in its sentence; [stop] is where
+     * the block's source link begins (-1 for none). The extract sheet follows.
+     */
     @WorkerThread
     fun extractCloze(
         cardId: Long,
-        before: String,
-        selected: String,
-        after: String,
+        text: String,
+        start: Int,
+        end: Int,
+        stop: Int,
     ) {
-        requireFacade().callAttr("extract_cloze", cardId, before, selected, after)
+        requireFacade().callAttr("extract_cloze_in", cardId, text, start, end, stop)
     }
 
     /** A Markdown file as a study document, read in the EPUB reader (desktop's Markdown import). */
@@ -1776,12 +1780,49 @@ object Ankrimento {
         noteType: String,
         isTopic: Boolean,
         priority: Double,
-    ): String {
+    ): String = createExtractNote(sourceCardId, fields, noteType, isTopic, priority).script
+
+    /** An extract just added: its note (to take back) and the script that marks it on the source's page. */
+    class CreatedExtract(
+        val noteId: Long,
+        val script: String,
+    )
+
+    @WorkerThread
+    fun createExtractNote(
+        sourceCardId: Long,
+        fields: List<String>,
+        noteType: String,
+        isTopic: Boolean,
+        priority: Double,
+    ): CreatedExtract {
         val kind = if (isTopic) "topic" else "item"
         val result =
-            requireFacade().callAttr("create_extract", sourceCardId, JSONArray(fields).toString(), noteType, kind, priority)
-        return JSONObject(result.toString()).getString("script")
+            JSONObject(
+                requireFacade().callAttr("create_extract", sourceCardId, JSONArray(fields).toString(), noteType, kind, priority).toString(),
+            )
+        return CreatedExtract(result.getLong("note_id"), result.getString("script"))
     }
+
+    /** A topic's text for the in-app editor: formatted text, its source link a chip. */
+    @WorkerThread
+    fun topicEditable(cardId: Long): String = JSONObject(requireFacade().callAttr("topic_editable", cardId).toString()).getString("html")
+
+    /** Saves the editor's text; the topic's source link stays as it was. */
+    @WorkerThread
+    fun topicSave(
+        cardId: Long,
+        html: String,
+    ) {
+        requireFacade().callAttr("topic_save", cardId, html)
+    }
+
+    /** Takes back the extract [noteId] added under [sourceCardId]; returns the script refreshing the page's marks. */
+    @WorkerThread
+    fun undoExtract(
+        sourceCardId: Long,
+        noteId: Long,
+    ): String = requireFacade().callAttr("undo_extract", sourceCardId, noteId).toString()
 
     @WorkerThread
     fun discardExtract(sourceCardId: Long) {
@@ -2067,6 +2108,10 @@ object Ankrimento {
         val type: String,
         val mode: String,
         val tag: String,
+        /** How the card was picked: "priority" or "random" (empty if unknown). */
+        val modeKey: String = "",
+        /** Whether [tag] names a real tag rather than "no tag". */
+        val hasTag: Boolean = true,
     )
 
     /** The next session's cards, as desktop's dialog previews them, and how many the session asks for. */
@@ -2090,6 +2135,8 @@ object Ankrimento {
                     e.optString("type"),
                     e.optString("mode"),
                     e.optString("tag"),
+                    e.optString("mode_key"),
+                    e.optBoolean("has_tag", true),
                 )
             },
         )

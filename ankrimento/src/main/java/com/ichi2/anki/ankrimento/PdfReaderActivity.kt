@@ -593,7 +593,8 @@ class PdfReaderActivity : ReaderActivity() {
     /** Desktop's figures, "Viewed 40% · Marked read 10%", in a strip under the page. */
     private fun showCoverage(figures: Ankrimento.Coverage) {
         coverage = figures
-        progress = ReaderProgress(if (pages > 0) page.toFloat() / pages else 0f, figures.label)
+        // Only the bar: "Page 1 of 3" is in the pager, and the viewed/read figures are in the Reading marks sheet.
+        progress = ReaderProgress(if (pages > 0) page.toFloat() / pages else 0f, "")
     }
 
     /** Desktop's "Mark this page read", "Unmark this page" and "Mark pages read" in one sheet, the range as from and to. */
@@ -631,6 +632,12 @@ class PdfReaderActivity : ReaderActivity() {
                     }
                 }.onFailure { Timber.w(it, "Marking the pages failed") }
         }
+    }
+
+    override fun turnPage(forward: Boolean): Boolean {
+        if (pages < 1) return false
+        goToPage(page + if (forward) 1 else -1)
+        return true
     }
 
     /** Turns pages as upstream's arrows do, so its daily page limit still applies. */

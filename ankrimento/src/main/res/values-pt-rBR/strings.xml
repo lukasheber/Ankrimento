@@ -172,7 +172,7 @@
     <string name="ankrimento_topic_sooner">Antes</string>
     <string name="ankrimento_topic_later">Depois</string>
     <string name="ankrimento_topic_returns">Ler de novo em %s</string>
-    <string name="ankrimento_topic_menu">Tópico</string>
+    <string name="ankrimento_topic_menu">Mais</string>
     <string name="ankrimento_done_hint">Para de revisá-lo; os extratos continuam</string>
     <string name="ankrimento_postpone_hint">Agora não: ele volta mais tarde</string>
     <string name="ankrimento_revisit_hint">Deixá-lo de lado até lá</string>
@@ -651,4 +651,37 @@
     <string name="ankrimento_library_priority_failed">Um documento selecionado não existe mais, então nenhuma prioridade foi alterada.</string>
     <string name="ankrimento_settings_parent_context">Ver origem</string>
     <string name="ankrimento_settings_parent_context_help">Adiciona Ver origem aos menus do revisor e dos leitores: a origem do cartão na tela, somente leitura.</string>
+    <string name="ankrimento_extract_undo">Desfazer</string>
+    <string name="ankrimento_extract_undone">Extrato removido</string>
+    <string name="ankrimento_settings_quick_extract">Extrair com um toque</string>
+    <string name="ankrimento_settings_quick_extract_help">O texto selecionado vira um tópico, ou um cloze vira um item, na hora, com Desfazer por alguns instantes. Desative para revisar a folha de extração antes.</string>
+    <string name="ankrimento_preview_mode_priority">Por prioridade</string>
+    <string name="ankrimento_preview_mode_random">Sorteado</string>
+    <string name="ankrimento_session_preview_start_new">Começar uma nova sessão</string>
+    <plurals name="ankrimento_session_resume">
+        <item quantity="one">Retomar sessão · %d cartão restante</item>
+        <item quantity="other">Retomar sessão · %d cartões restantes</item>
+    </plurals>
+    <plurals name="ankrimento_session_preview_in_progress">
+        <item quantity="one">Há uma sessão em andamento com %d cartão restante. Isto é o que a próxima teria.</item>
+        <item quantity="other">Há uma sessão em andamento com %d cartões restantes. Isto é o que a próxima teria.</item>
+    </plurals>
+    <string name="ankrimento_edit_save">Salvar</string>
+    <string name="ankrimento_edit_discard_title">Descartar suas alterações?</string>
+    <string name="ankrimento_edit_discard">Descartar</string>
+    <string name="ankrimento_edit_keep_editing">Continuar editando</string>
+    <string name="ankrimento_edit_all_fields">Editar todos os campos…</string>
+    <string name="ankrimento_edit_bold">Negrito</string>
+    <string name="ankrimento_edit_italic">Itálico</string>
+    <string name="ankrimento_edit_underline">Sublinhado</string>
+    <string name="ankrimento_edit_bullets">Lista com marcadores</string>
+    <string name="ankrimento_edit_numbers">Lista numerada</string>
+    <string name="ankrimento_edit_undo">Desfazer</string>
+    <string name="ankrimento_edit_redo">Refazer</string>
+    <string name="ankrimento_edit_clear">Limpar formatação</string>
+    <string name="ankrimento_extract_tip">Dica: selecione um texto para extraí-lo, ou use Cloze para ocultar uma palavra.</string>
+    <string name="ankrimento_extract_added_topic">Tópico adicionado</string>
+    <string name="ankrimento_extract_added_item">Item adicionado</string>
+    <string name="ankrimento_settings_volume_keys">Teclas de volume viram páginas</string>
+    <string name="ankrimento_settings_volume_keys_help">Nos leitores de PDF, EPUB, texto e web. Desligado: elas mudam o volume.</string>
 </resources>

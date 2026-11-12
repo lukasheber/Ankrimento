@@ -162,7 +162,7 @@
     <string name="ankrimento_topic_sooner">提前</string>
     <string name="ankrimento_topic_later">推后</string>
     <string name="ankrimento_topic_returns">%s后再读</string>
-    <string name="ankrimento_topic_menu">主题</string>
+    <string name="ankrimento_topic_menu">更多</string>
     <string name="ankrimento_done_hint">不再复习它；它的摘录照常复习</string>
     <string name="ankrimento_postpone_hint">现在不读：稍后再出现</string>
     <string name="ankrimento_revisit_hint">暂时搁置，到时再读</string>
@@ -621,4 +621,35 @@
     <string name="ankrimento_library_priority_failed">所选文档已不存在，因此未更改任何优先级。</string>
     <string name="ankrimento_settings_parent_context">查看来源</string>
     <string name="ankrimento_settings_parent_context_help">在复习和阅读器菜单中加入“查看来源”：只读地查看当前卡片的原始来源。</string>
+    <string name="ankrimento_extract_undo">撤销</string>
+    <string name="ankrimento_extract_undone">摘录已移除</string>
+    <string name="ankrimento_settings_quick_extract">一键摘录</string>
+    <string name="ankrimento_settings_quick_extract_help">选中的文字立即成为主题，填空成为条目，并在片刻内可撤销。关闭后会先显示摘录面板。</string>
+    <string name="ankrimento_preview_mode_priority">按优先级</string>
+    <string name="ankrimento_preview_mode_random">随机抽取</string>
+    <string name="ankrimento_session_preview_start_new">改为开始新的学习</string>
+    <plurals name="ankrimento_session_resume">
+        <item quantity="other">继续学习 · 剩余 %d 张卡片</item>
+    </plurals>
+    <plurals name="ankrimento_session_preview_in_progress">
+        <item quantity="other">有一次学习正在进行，剩余 %d 张卡片。下面是下一次学习的内容。</item>
+    </plurals>
+    <string name="ankrimento_edit_save">保存</string>
+    <string name="ankrimento_edit_discard_title">放弃所做的更改？</string>
+    <string name="ankrimento_edit_discard">放弃</string>
+    <string name="ankrimento_edit_keep_editing">继续编辑</string>
+    <string name="ankrimento_edit_all_fields">编辑全部字段…</string>
+    <string name="ankrimento_edit_bold">粗体</string>
+    <string name="ankrimento_edit_italic">斜体</string>
+    <string name="ankrimento_edit_underline">下划线</string>
+    <string name="ankrimento_edit_bullets">项目符号列表</string>
+    <string name="ankrimento_edit_numbers">编号列表</string>
+    <string name="ankrimento_edit_undo">撤销</string>
+    <string name="ankrimento_edit_redo">重做</string>
+    <string name="ankrimento_edit_clear">清除格式</string>
+    <string name="ankrimento_extract_tip">提示：选中文字即可摘录；使用“填空”可隐藏一个词。</string>
+    <string name="ankrimento_extract_added_topic">已添加主题</string>
+    <string name="ankrimento_extract_added_item">已添加条目</string>
+    <string name="ankrimento_settings_volume_keys">音量键翻页</string>
+    <string name="ankrimento_settings_volume_keys_help">适用于 PDF、EPUB、文本和网页阅读器。关闭时音量键调节音量。</string>
 </resources>

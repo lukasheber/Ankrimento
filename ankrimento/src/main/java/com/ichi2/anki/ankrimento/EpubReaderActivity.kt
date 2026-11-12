@@ -346,6 +346,11 @@ class EpubReaderActivity : ReaderActivity() {
 
     private fun runScript(script: String) = webView.evaluateJavascript(script, null)
 
+    override fun turnPage(forward: Boolean): Boolean {
+        runScript("window.__ankrimentoTurn && window.__ankrimentoTurn($forward);")
+        return true
+    }
+
     /** Upstream's page reports its position shortly after a scroll. */
     override fun reportPosition() = runScript("window.dispatchEvent(new Event('scroll'));")
 

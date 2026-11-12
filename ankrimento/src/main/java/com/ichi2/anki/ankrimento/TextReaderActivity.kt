@@ -8,6 +8,10 @@ import android.os.Bundle
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.edit
 import androidx.lifecycle.lifecycleScope
 import androidx.webkit.WebViewAssetLoader
@@ -16,6 +20,7 @@ import com.ichi2.anki.CollectionManager.withCol
 import com.ichi2.anki.ankrimento.ui.IncrementoIcons
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReadingSettingsSheet
+import com.ichi2.anki.ankrimento.ui.TopicEditorBar
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import timber.log.Timber
@@ -67,13 +72,96 @@ class TextReaderActivity : ReaderActivity() {
                 ReaderTool(getString(R.string.ankrimento_extract_selection)) {
                     webView.evaluateJavascript(SELECTION_JS) { extract(decodeJsString(it)) }
                 },
-                ReaderTool(getString(R.string.ankrimento_edit_topic), IncrementoIcons.Edit, onClick = ::editNote),
+                ReaderTool(getString(R.string.ankrimento_edit_topic), IncrementoIcons.Edit, onClick = ::startEditing),
+                ReaderTool(getString(R.string.ankrimento_edit_all_fields), onClick = ::editNote),
             )
         lifecycleScope.launch { load() }
     }
 
     override fun onNoteEdited() {
         lifecycleScope.launch { load() }
+    }
+
+    // ── Editing where it is read ────────────────────────────────────────────
+
+    private var editing = false
+    private var editedFrom = ""
+    private var readingTools: List<ReaderTool> = emptyList()
+    private var readingSelection: List<ReaderWebView.SelectionAction> = emptyList()
+
+    /** Makes the topic's text editable in place, with formatting tools; the source link is a chip that stays. */
+    private fun startEditing() {
+        if (editing) return
+        editing = true
+        readingTools = tools
+        readingSelection = webView.selectionActions
+        webView.selectionActions = emptyList()
+        webView.onTap = null
+        tools = listOf(ReaderTool(getString(R.string.ankrimento_edit_save), IncrementoIcons.Check, onClick = ::saveEditing))
+        backIntercept = {
+            if (editing) cancelEditing()
+            editing
+        }
+        editBar = {
+            TopicEditorBar { command ->
+                webView.evaluateJavascript(command, null)
+                webView.requestFocus()
+            }
+        }
+        lifecycleScope.launch { load() }
+    }
+
+    private fun stopEditing() {
+        editing = false
+        editBar = null
+        backIntercept = null
+        tools = readingTools
+        webView.selectionActions = readingSelection
+        toggleBarsOnTap(webView)
+        getSystemService(android.view.inputmethod.InputMethodManager::class.java)?.hideSoftInputFromWindow(webView.windowToken, 0)
+        lifecycleScope.launch { load() }
+    }
+
+    private fun editorHtml(then: (String) -> Unit) {
+        webView.evaluateJavascript("document.getElementById('ankrimento-editor').innerHTML") { then(decodeJsString(it)) }
+    }
+
+    private fun saveEditing() {
+        editorHtml { html ->
+            lifecycleScope.launch {
+                runCatching { withCol { Ankrimento.topicSave(cardId, html) } }
+                    .onSuccess { stopEditing() }
+                    .onFailure { error ->
+                        Timber.w(error, "Saving the topic failed")
+                        toast(error.message ?: error.javaClass.simpleName)
+                    }
+            }
+        }
+    }
+
+    /** Back while editing: leaves at once when nothing changed, otherwise asks. */
+    private fun cancelEditing() {
+        editorHtml { html ->
+            if (html == editedFrom) {
+                stopEditing()
+            } else {
+                sheet = {
+                    AlertDialog(
+                        onDismissRequest = { sheet = null },
+                        title = { Text(stringResource(R.string.ankrimento_edit_discard_title)) },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                sheet = null
+                                stopEditing()
+                            }) { Text(stringResource(R.string.ankrimento_edit_discard)) }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { sheet = null }) { Text(stringResource(R.string.ankrimento_edit_keep_editing)) }
+                        },
+                    )
+                }
+            }
+        }
     }
 
     private suspend fun load() {
@@ -84,7 +172,12 @@ class TextReaderActivity : ReaderActivity() {
                     val output = card.renderOutput(this, reload = true)
                     // In AnkiDroid's look (night mode); the page colour setting still overrides it.
                     val look = AnkrimentoApp.cardDisplay?.look(this@TextReaderActivity, card)
-                    CardPage.html(output.css, output.answerText, look = look) to media.dir
+                    if (editing) {
+                        val body = "<div id=\"ankrimento-editor\" contenteditable=\"true\">${Ankrimento.topicEditable(cardId)}</div>"
+                        CardPage.html(output.css + EDITOR_CSS, body, look = look) to media.dir
+                    } else {
+                        CardPage.html(output.css, output.answerText, look = look) to media.dir
+                    }
                 }
             }.getOrElse { error ->
                 Timber.w(error, "Rendering a topic failed")
@@ -118,9 +211,30 @@ class TextReaderActivity : ReaderActivity() {
                 override fun onPageFinished(
                     view: WebView,
                     url: String,
-                ) = applyReading()
+                ) {
+                    applyReading()
+                    if (editing) beginTyping()
+                }
             }
         webView.loadDataWithBaseURL(CardPage.BASE_URL, html, "text/html", "utf-8", null)
+    }
+
+    /** The editor takes the cursor at its end, with the keyboard up, and remembers the text it started with. */
+    private fun beginTyping() {
+        webView.requestFocus()
+        webView.evaluateJavascript(
+            "(function () { var e = document.getElementById('ankrimento-editor'); e.focus();" +
+                " var r = document.createRange(); r.selectNodeContents(e); r.collapse(false);" +
+                " var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); return e.innerHTML; })()",
+        ) { editedFrom = decodeJsString(it) }
+        getSystemService(android.view.inputmethod.InputMethodManager::class.java)
+            ?.showSoftInput(webView, 0)
+    }
+
+    override fun turnPage(forward: Boolean): Boolean {
+        if (editing) return false
+        webView.evaluateJavascript(scrollScreenJs(forward), null)
+        return true
     }
 
     private fun applyReading() {
@@ -175,6 +289,12 @@ class TextReaderActivity : ReaderActivity() {
     private fun decodeJsString(result: String): String = runCatching { JSONArray("[$result]").getString(0) }.getOrDefault("")
 
     companion object {
+        /** The editable page: room to write, a visible chip for the source link, no outline around the text. */
+        private const val EDITOR_CSS =
+            "#ankrimento-editor { outline: none; min-height: 60vh; padding-bottom: 40vh; caret-color: currentColor; }" +
+                " .ankrimento-source { display: inline-block; padding: 2px 10px; margin: 2px 0; border-radius: 12px;" +
+                " background: rgba(127,127,127,.2); font-size: .85em; user-select: none; -webkit-user-select: none; }"
+
         private const val SELECTION_JS = "String(window.getSelection ? window.getSelection() : '')"
 
         /** Shared with the item reader, which shows cards in the same text size and page colour. */

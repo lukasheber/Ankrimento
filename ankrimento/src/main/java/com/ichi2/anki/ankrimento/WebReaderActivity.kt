@@ -112,6 +112,11 @@ class WebReaderActivity : ReaderActivity() {
     /** Upstream's web bridge reports the position when the page is hidden. */
     override fun reportPosition() = webView.evaluateJavascript("window.dispatchEvent(new Event('pagehide'));", null)
 
+    override fun turnPage(forward: Boolean): Boolean {
+        webView.evaluateJavascript(scrollScreenJs(forward), null)
+        return true
+    }
+
     private fun extractSelection() {
         webView.evaluateJavascript(SELECTION_JS) { result -> extract(decodeJsString(result)) }
     }

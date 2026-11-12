@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
@@ -15,6 +16,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -124,6 +128,13 @@ abstract class ReaderActivity : ComponentActivity() {
 
     private var content by mutableStateOf<View?>(null)
     private var title by mutableStateOf("")
+
+    /** The card's own title, for "added under …"; [title] may be a plainer word in a session. */
+    private var cardName = ""
+
+    /** What the bar says in a session instead of the card's title (an item's text is on the card already). */
+    protected open fun sessionTitle(): String? = null
+
     private var answerButtons by mutableStateOf<List<Ankrimento.AnswerButton>>(emptyList())
     private var editedPriority by mutableStateOf<Double?>(null)
     private var choosingRevisitDate by mutableStateOf(false)
@@ -146,6 +157,8 @@ abstract class ReaderActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        // Reading and thinking take longer than the screen's timeout; it stays on while a reader is open.
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContent {
             IncrementoTheme {
                 val timer by FocusTimer.state.collectAsState()
@@ -164,13 +177,15 @@ abstract class ReaderActivity : ComponentActivity() {
                             tools.filterNot { it.label == getString(R.string.ankrimento_extract_selection) }
                         },
                     menu = menu(),
-                    review = reviewBar(),
-                    onBack = ::leave,
+                    review = if (editBar == null) reviewBar() else null,
+                    onBack = ::onBackRequested,
+                    editBar = editBar,
                     chromeVisible = chromeVisible,
                     priority = priority,
                     onPriority = ::editPriority,
                     progress = progress,
                     pager = pager,
+                    snackbar = snackbars,
                     timer =
                         if (timer.active || queuedExtracts > 0) {
                             {
@@ -228,7 +243,7 @@ abstract class ReaderActivity : ComponentActivity() {
         }
         RecentDocuments.record(this, cardId)
         // Readers add their own callbacks after this one, which run first.
-        onBackPressedDispatcher.addCallback(this) { leave() }
+        onBackPressedDispatcher.addCallback(this) { onBackRequested() }
         lifecycleScope.launch {
             runCatching {
                 withCol {
@@ -254,12 +269,16 @@ abstract class ReaderActivity : ComponentActivity() {
                                     R.string.ankrimento_extract_as_topic
                                 },
                             )
-                        sessionLine = kind + " · " + resources.getQuantityString(R.plurals.ankrimento_session_remaining, left, left)
+                        val remaining = resources.getQuantityString(R.plurals.ankrimento_session_remaining, left, left)
+                        // An item's title already says what it is.
+                        sessionLine = if (sessionTitle() != null) remaining else "$kind · $remaining"
                     }
                     Ankrimento.cardTitle(cardId) to if (inSession) answerButtonsFor(this) else null
                 }
             }.onSuccess { (cardTitle, buttons) ->
-                title = cardTitle
+                cardName = cardTitle
+                showExtractTip()
+                title = sessionTitle()?.takeIf { inSession } ?: cardTitle
                 answerButtons = buttons.orEmpty()
             }.onFailure { Timber.w(it, "Loading the reader's card failed") }
             if (inSession) canGoBack = runCatching { LearnLoop.canGoBack() }.getOrDefault(false)
@@ -332,6 +351,15 @@ abstract class ReaderActivity : ComponentActivity() {
                         return@launch
                     }
             val draft = ExtractNoteTypes.choose(this@ReaderActivity, readerKind, loaded)
+            if (AnkrimentoSettings(this@ReaderActivity).quickExtract && canAddAtOnce(draft)) {
+                // One tap: the extract is added as the draft stands, with Undo a moment after.
+                addExtract(
+                    ExtractChoice(draft.fields, draft.noteType, draft.isTopic, draft.priority),
+                    rememberType = !draft.noteTypeConfigured,
+                    undoable = true,
+                )
+                return@launch
+            }
             sheet = {
                 ExtractSheet(
                     mediaDir = mediaDir,
@@ -451,22 +479,68 @@ abstract class ReaderActivity : ComponentActivity() {
         }
     }
 
+    /** What is added without asking: a topic, or an item that is complete as it stands (a cloze, or with its back filled in). */
+    private fun canAddAtOnce(draft: Ankrimento.ExtractDraft): Boolean {
+        if (draft.fields.firstOrNull().isNullOrBlank()) return false
+        return draft.isTopic || "{{c" in draft.fields[0] || draft.fields.drop(1).any { it.isNotBlank() }
+    }
+
+    private val snackbars = SnackbarHostState()
+
+    /** Once, the first time a document or topic opens in a session: what selecting text does. */
+    private fun showExtractTip() {
+        val device = AnkrimentoSettings(this)
+        if (!inSession || device.extractTipShown || readerKind !in setOf("text", "epub", "pdf", "web")) return
+        device.extractTipShown = true
+        lifecycleScope.launch {
+            delay(EXTRACT_TIP_DELAY_MS)
+            snackbars.showSnackbar(getString(R.string.ankrimento_extract_tip), duration = SnackbarDuration.Long)
+        }
+    }
+
     private fun addExtract(
         choice: ExtractChoice,
         rememberType: Boolean = true,
+        undoable: Boolean = false,
     ) {
         if (rememberType) ExtractNoteTypes.remember(this, readerKind, choice.noteType)
         lifecycleScope.launch {
             runCatching {
-                withCol { Ankrimento.createExtract(cardId, choice.fields, choice.noteType, choice.isTopic, choice.priority) }
-            }.onSuccess { script ->
-                onExtractCreated(script)
+                withCol { Ankrimento.createExtractNote(cardId, choice.fields, choice.noteType, choice.isTopic, choice.priority) }
+            }.onSuccess { created ->
+                onExtractCreated(created.script)
                 // Where it went: under this document in the knowledge tree.
-                toast(getString(R.string.ankrimento_extract_added_under, title))
+                if (!undoable) {
+                    toast(getString(R.string.ankrimento_extract_added_under, cardName))
+                } else {
+                    snackbars.currentSnackbarData?.dismiss()
+                    val answer =
+                        snackbars.showSnackbar(
+                            getString(
+                                if (choice.isTopic) R.string.ankrimento_extract_added_topic else R.string.ankrimento_extract_added_item,
+                            ),
+                            actionLabel = getString(R.string.ankrimento_extract_undo),
+                            duration = SnackbarDuration.Long,
+                        )
+                    if (answer == SnackbarResult.ActionPerformed) undoExtract(created.noteId)
+                }
             }.onFailure { error ->
                 Timber.w(error, "Adding an extract failed")
                 toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
             }
+        }
+    }
+
+    private fun undoExtract(noteId: Long) {
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.undoExtract(cardId, noteId) } }
+                .onSuccess { script ->
+                    onExtractCreated(script)
+                    toast(getString(R.string.ankrimento_extract_undone))
+                }.onFailure { error ->
+                    Timber.w(error, "Taking back an extract failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
         }
     }
 
@@ -652,6 +726,45 @@ abstract class ReaderActivity : ComponentActivity() {
         }
     }
 
+    /** Turns the document a screen (the volume keys, when chosen); true when this reader did. */
+    protected open fun turnPage(forward: Boolean): Boolean = false
+
+    private var volumeKeyHandled = false
+
+    override fun onKeyDown(
+        keyCode: Int,
+        event: KeyEvent,
+    ): Boolean {
+        val volume = keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+        if (volume && editBar == null && AnkrimentoSettings(this).volumeKeysTurnPages) {
+            if (event.repeatCount == 0) volumeKeyHandled = turnPage(forward = keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+            if (volumeKeyHandled) return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(
+        keyCode: Int,
+        event: KeyEvent,
+    ): Boolean {
+        val volume = keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN
+        if (volume && volumeKeyHandled) {
+            volumeKeyHandled = false
+            return true
+        }
+        return super.onKeyUp(keyCode, event)
+    }
+
+    /** Formatting tools shown at the bottom while a topic is edited; null the rest of the time. */
+    protected var editBar by mutableStateOf<(@Composable () -> Unit)?>(null)
+
+    /** A reader that is busy (editing) takes Back first: return true when it did. */
+    protected var backIntercept: (() -> Boolean)? = null
+
+    private fun onBackRequested() {
+        if (backIntercept?.invoke() != true) leave()
+    }
+
     /** Back: in a session, ends it; the reviewer closes too. */
     private fun leave() {
         lifecycleScope.launch {
@@ -695,9 +808,10 @@ abstract class ReaderActivity : ComponentActivity() {
                 withCol {
                     Ankrimento.extractCloze(
                         cardId,
-                        parts.optString("before"),
-                        parts.optString("selected"),
-                        parts.optString("after"),
+                        parts.optString("text"),
+                        parts.optInt("start"),
+                        parts.optInt("end"),
+                        parts.optInt("stop", -1),
                     )
                 }
             }.onFailure { error ->
@@ -801,15 +915,20 @@ abstract class ReaderActivity : ComponentActivity() {
         /** Desktop's limit for a quoted passage. */
         internal const val MAX_EXCERPT_CHARS = 2000
 
+        /** A screen down or up the page, for readers whose text is one scrolling page. */
+        internal fun scrollScreenJs(forward: Boolean) =
+            "window.scrollBy({ top: ${if (forward) "" else "-"}Math.max(window.innerHeight - 48, window.innerHeight * 0.8), behavior: 'smooth' });"
+
+        private const val EXTRACT_TIP_DELAY_MS = 1200L
+
         /** The selected text, or null when nothing is selected. */
         internal const val SELECTED_TEXT_JS =
             "(function () { var s = window.getSelection(); return s && !s.isCollapsed ? s.toString() : null; })()"
 
         /**
-         * The selection and its sentence: the text of the paragraph around it, from the end of the sentence
-         * before to the end of its own; as JSON (before, selected, after). A sentence ends at ".", "!" or "?"
-         * followed by a capital letter or an opening quote ("et al. (2013)" and "e.g. 90%" do not end one),
-         * or at "。", "！", "？".
+         * The selection in the text of the block around it, as JSON: the block's text, where the selection
+         * starts and ends in it, and where its source link begins after it (-1 for none). Finding the sentence
+         * is the backend's (`extract.sentence_around`), so the link's caption never lands in a cloze.
          */
         internal const val CLOZE_JS =
             "(function () { var s = window.getSelection(); if (!s || !s.rangeCount || s.isCollapsed) return null;" +
@@ -817,12 +936,11 @@ abstract class ReaderActivity : ComponentActivity() {
                 " block = (block && block.closest('p,li,dd,dt,blockquote,h1,h2,h3,h4,h5,h6,td,div')) || document.body;" +
                 " var head = document.createRange(); head.selectNodeContents(block); head.setEnd(r.startContainer, r.startOffset);" +
                 " var start = head.toString().length; var selected = r.toString(); var text = block.textContent || '';" +
-                " var end = Math.min(text.length, start + selected.length);" +
-                " var ends = /([.!?]+[\"”’')\\]]*)\\s+(?=[\\p{Lu}\\p{Lo}\"“‘'«¿¡\\[])|[。！？]+/gu;" +
-                " var from = 0, to = text.length, m;" +
-                " while ((m = ends.exec(text))) { var close = m.index + (m[1] ? m[1].length : m[0].length);" +
-                " var next = m.index + m[0].length; if (next <= start) { from = next; } else if (close >= end) { to = close; break; } }" +
-                " return JSON.stringify({before: text.slice(from, start), selected: selected, after: text.slice(end, to)}); })()"
+                " var end = Math.min(text.length, start + selected.length); var stop = -1;" +
+                " var links = block.querySelectorAll('a[onclick*=\"incremento_\"]');" +
+                " for (var i = 0; i < links.length && stop < 0; i++) { var h = document.createRange(); h.selectNodeContents(block);" +
+                " h.setEndBefore(links[i]); var at = h.toString().length; if (at >= end) stop = at; }" +
+                " return JSON.stringify({text: text, start: start, end: end, stop: stop, selected: selected}); })()"
 
         const val EXTRA_CARD_ID = "card_id"
 

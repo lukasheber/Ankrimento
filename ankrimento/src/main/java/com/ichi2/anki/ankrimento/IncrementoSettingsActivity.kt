@@ -769,6 +769,16 @@ class IncrementoSettingsActivity : ComponentActivity() {
             v.optBoolean("reviewer_parent_context_enabled", true),
             R.string.ankrimento_settings_parent_context_help,
         ) { set("reviewer_parent_context_enabled", it) }
+        var quick by remember { mutableStateOf(device.quickExtract) }
+        Toggle(R.string.ankrimento_settings_quick_extract, quick, R.string.ankrimento_settings_quick_extract_help) {
+            quick = it
+            device.quickExtract = it
+        }
+        var volume by remember { mutableStateOf(device.volumeKeysTurnPages) }
+        Toggle(R.string.ankrimento_settings_volume_keys, volume, R.string.ankrimento_settings_volume_keys_help) {
+            volume = it
+            device.volumeKeysTurnPages = it
+        }
         TextRow(R.string.ankrimento_settings_done_tag, v.optString("topic_done_tag")) { set("topic_done_tag", it) }
         Header(R.string.ankrimento_settings_topic_pace)
         PercentSlider(

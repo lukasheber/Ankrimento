@@ -84,3 +84,61 @@ def test_the_draft_names_each_note_types_fields_for_the_sheets_labels(rt, topic)
     assert draft["field_names"][draft["note_type"]] == ["Text", "Back Extra"]
     assert draft["field_names"]["Basic"] == ["Front", "Back"]
     assert json.loads(facade.new_card_defaults())["field_names"]["Basic"] == ["Front", "Back"]
+
+
+# ── The sentence around a selection, found from the block's text ─────────────
+
+from ankrimento import extract  # noqa: E402
+
+
+def _around(text: str, word: str, stop: int | None = None):
+    start = text.index(word)
+    return extract.sentence_around(text, start, start + len(word), stop)
+
+
+def test_the_sentence_is_cut_at_the_sentence_ends_around_the_selection():
+    text = "First one. Spacing beats cramming. Last one."
+    assert _around(text, "cramming") == ("Spacing beats ", "cramming", ".")
+
+
+def test_abbreviations_do_not_end_a_sentence():
+    text = "See Smith et al. (2013) on e.g. 90% recall. Next."
+    assert _around(text, "recall") == ("See Smith et al. (2013) on e.g. 90% ", "recall", ".")
+
+
+def test_the_source_link_after_the_text_is_never_part_of_the_cloze():
+    text = "Spaced repetitionPage 4. of sample"
+    link_at = text.index("Page 4")
+    assert _around(text, "repetition", link_at) == ("Spaced ", "repetition", "")
+
+
+def test_a_selection_inside_the_source_link_text_keeps_no_stop():
+    # The stop only counts when it lies after the selection.
+    text = "Spaced repetitionPage 4. of sample"
+    assert _around(text, "sample", 5) == ("Spaced repetitionPage 4. of ", "sample", "")
+
+
+def test_a_cloze_from_a_block_makes_the_draft(rt, topic):
+    text = "Spaced repetitionPage 4. of sample"
+    start = text.index("repetition")
+    facade.extract_cloze_in(topic, text, start, start + len("repetition"), text.index("Page 4"))
+    draft = json.loads(facade.extract_draft(topic))
+    assert draft["fields"][0] == "Spaced {{c1::repetition}}"
+
+
+# ── Undoing an extract ───────────────────────────────────────────────────────
+
+
+def test_an_extract_can_be_undone_and_the_source_stays(rt, topic):
+    facade.web_extract(topic, "A passing thought")
+    draft = json.loads(facade.extract_draft(topic))
+    made = json.loads(facade.create_extract(topic, json.dumps(draft["fields"]), draft["note_type"], "topic", 50.0))
+    note_id = made["note_id"]
+    assert rt.col.get_note(note_id)
+    facade.undo_extract(topic, note_id)
+    assert rt.col.find_notes(f"nid:{note_id}") == []
+    assert facade.is_topic(topic)
+
+
+def test_undoing_an_extract_that_is_already_gone_is_harmless(rt, topic):
+    facade.undo_extract(topic, 123456789)

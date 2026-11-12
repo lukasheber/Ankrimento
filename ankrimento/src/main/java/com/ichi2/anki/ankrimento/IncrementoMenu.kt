@@ -53,7 +53,10 @@ class IncrementoMenu(
     /** The preview's Start: the session starts here, where its review opens. */
     private val preview =
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) activity.lifecycleScope.launch { startSession() }
+            when (result.resultCode) {
+                Activity.RESULT_OK -> activity.lifecycleScope.launch { startSession() }
+                SessionPreviewActivity.RESULT_RESUME -> activity.lifecycleScope.launch { continueOrStartSession() }
+            }
         }
 
     init {
@@ -128,7 +131,7 @@ class IncrementoMenu(
                 activity.startActivity(GettingStartedActivity.intent(activity))
             },
             SessionCardAction(IncrementoIcons.Contents, R.string.ankrimento_session_preview) {
-                preview.launch(SessionPreviewActivity.intent(activity))
+                preview.launch(SessionPreviewActivity.intent(activity, sessionRemaining ?: 0))
             },
             SessionCardAction(IncrementoIcons.Search, R.string.ankrimento_search_all) {
                 activity.startActivity(SearchAllActivity.intent(activity))

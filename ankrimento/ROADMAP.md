@@ -281,7 +281,7 @@ Things desktop has:
 32. ~~Audio import; check audio cards~~ (done).
 33. ~~Video bookmarks, Vimeo, fuller playback controls~~ (done). Captions: the providers' own; desktop's subtitle files wait for sync. Extract at a moment works (its card links back to that second); a segment of a video (start to end) can be marked for an extract and plays from the parent video, with no clip made; videos can be added from a file.
 34. ~~More of upstream's settings (writing, PDF details)~~ (done).
-35. Getting Started guide. (Deferred)
+35. ~~Getting Started guide~~ (done).
 
 Upkeep and rarely used:
 
@@ -301,9 +301,22 @@ From desktop v2026.11.11 (taken in; no schema change, parity check clean):
 
 44. ~~Document priority from the Library, and a switch for the parent context icon~~ (done).
 
+Learning-loop UX review (2026-11-12, on the tablet), done in one pass:
+
+45. ~~Cloze took the source link's caption into the card~~ (fixed: the sentence is found in the backend from the block's text, stopping where the source link begins; tests first).
+46. ~~Extract took six decisions every time~~ (one tap: a topic, or a cloze/complete item, is added at once with Undo for a moment; the sheet is still there for an item that needs its back, and a setting turns the quick path off).
+47. ~~Topics were edited as raw HTML~~ (in-place editor on the topic's own screen: formatted text, bold/italic/underline/lists/undo, the source link a protected chip; Save, and Back asks only when something changed; "Edit all fields…" keeps AnkiDroid's editor).
+48. ~~Done / Postpone hidden behind "Topic ▾"~~ (Done is a visible button on the topic bar; Postpone and Revisit under a "More" menu).
+49. ~~Topic screen's two progress figures~~ (the bar and "Page n of N" only; Viewed / Marked read stay in the Reading marks sheet).
+50. ~~Item card: repeated text, small, top-heavy~~ (title says "Item", larger text centred between the bars, tap the card to show the answer).
+51. ~~Session preview~~ (rows open the card; plain labels "By priority" / "Picked at random", no "no-tag"; Resume shown first with the cards left when a session is under way, "Start a new session instead" beneath).
+52. ~~One-time hint~~ that selecting text extracts it.
+53. Not offered: Cloze for PDF (a PDF's text cannot carry a cloze); a Highlight action in the text and web readers (they have no highlight feature to call).
+
+Not covered by that review (still to look at): the video and web topic bars; long cards (the test collection has one-word items); accessibility and large font sizes; whether Extract on a PDF selection gives the whole selection ("sentence to" showed as "sentence"); keeping the screen on while reading and volume-key page turns (not built); labels on the reader's top-bar icons.
+
 To check rather than build: the leech notice (it reuses AnkiDroid's own check; reaching it needs a card's seventh lapse) and the
-automatic backup folder picker on a device (the empty-session dialog was checked); native review of each translation;
-UI/UX tests for the learning loop for incremental reading/studying, and improvements, think how mobile users use the features and how buttons and itens are shown. Think about about an incremental reading learning loop like the one in supermemo. user see topic, edit topics easily, make cloze to generate itens, etc.
+automatic backup folder picker on a device (the empty-session dialog was checked); native review of each translation.
 
 ~~Create procedure to implement upstream changes to guard compatibility with desktop Incremento~~ (done: `UPSTREAM.md`, and `tools/parity_check.py`, also run by the Python tests, which lists desktop messages, compiled names, translation keys, shipped files and mirrored functions the phone relies on, and the known gaps).
 

@@ -160,13 +160,23 @@ object CardPage {
         scale: Double,
         appearance: String,
         alignStart: Boolean,
+        comfort: Boolean = false,
     ): String {
-        val options = JSONObject().put("scale", scale).put("mode", appearance).put("start", alignStart)
+        val options =
+            JSONObject()
+                .put("scale", scale)
+                .put("mode", appearance)
+                .put("start", alignStart)
+                .put("comfort", comfort)
         return "(function (o) {" +
             " var style = document.getElementById('ankrimento-page');" +
             " if (!style) { style = document.createElement('style'); style.id = 'ankrimento-page'; document.head.appendChild(style); }" +
             " var css = 'html { font-size: ' + Math.round(o.scale * 100) + '% !important; }';" +
             // A topic reads like a page; flashcard templates usually centre their text.
+            // A flashcard fills the screen: larger, airy, and centred between the bars rather than stuck to the top.
+            " if (o.comfort) css += ' .card { font-size: 1.3em !important; line-height: 1.5 !important; }'" +
+            " + ' body { min-height: 100vh; margin: 0; padding: 24px 20px; box-sizing: border-box;" +
+            " display: flex; flex-direction: column; justify-content: center; }';" +
             " if (o.start) css += ' body, .card { text-align: start !important; }';" +
             " if (o.mode !== 'original') { var bg = o.mode === 'night' ? '#15120f' : '#1e1e1e';" +
             " var fg = o.mode === 'night' ? '#d9c7a4' : '#dedede';" +

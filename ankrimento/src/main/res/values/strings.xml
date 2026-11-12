@@ -167,7 +167,7 @@
     <string name="ankrimento_topic_sooner" comment="Topic answer bar: the topic comes back sooner">Sooner</string>
     <string name="ankrimento_topic_later" comment="Topic session button: bring the topic back less often (desktop's Less)">Later</string>
     <string name="ankrimento_topic_returns">Read again in %s</string>
-    <string name="ankrimento_topic_menu" comment="Session bar menu with a topic's actions (Done, Postpone, Revisit)">Topic</string>
+    <string name="ankrimento_topic_menu" comment="Session bar menu with a topic's actions (Done, Postpone, Revisit)">More</string>
     <string name="ankrimento_done_hint">Stop reviewing it; its extracts keep going</string>
     <string name="ankrimento_postpone_hint">Not now: it comes back later</string>
     <string name="ankrimento_revisit_hint">Put it aside until then</string>
@@ -638,4 +638,37 @@
     <string name="ankrimento_library_priority_failed">A selected document is gone, so no priority was changed.</string>
     <string name="ankrimento_settings_parent_context">Show parent</string>
     <string name="ankrimento_settings_parent_context_help">Adds Show parent to the reviewer and reader menus: the original parent of the card on screen, read-only.</string>
+    <string name="ankrimento_extract_undo">Undo</string>
+    <string name="ankrimento_extract_undone">Extract removed</string>
+    <string name="ankrimento_settings_quick_extract">Extract in one tap</string>
+    <string name="ankrimento_settings_quick_extract_help">Selected text becomes a topic, or a cloze an item, at once, with Undo for a moment. Turn off to review the extract sheet first.</string>
+    <string name="ankrimento_preview_mode_priority">By priority</string>
+    <string name="ankrimento_preview_mode_random">Picked at random</string>
+    <string name="ankrimento_session_preview_start_new">Start a new session instead</string>
+    <plurals name="ankrimento_session_resume">
+        <item quantity="one">Resume session · %d card left</item>
+        <item quantity="other">Resume session · %d cards left</item>
+    </plurals>
+    <plurals name="ankrimento_session_preview_in_progress">
+        <item quantity="one">A session is under way with %d card left. This is what the next one would hold.</item>
+        <item quantity="other">A session is under way with %d cards left. This is what the next one would hold.</item>
+    </plurals>
+    <string name="ankrimento_edit_save">Save</string>
+    <string name="ankrimento_edit_discard_title">Discard your changes?</string>
+    <string name="ankrimento_edit_discard">Discard</string>
+    <string name="ankrimento_edit_keep_editing">Keep editing</string>
+    <string name="ankrimento_edit_all_fields">Edit all fields…</string>
+    <string name="ankrimento_edit_bold">Bold</string>
+    <string name="ankrimento_edit_italic">Italic</string>
+    <string name="ankrimento_edit_underline">Underline</string>
+    <string name="ankrimento_edit_bullets">Bulleted list</string>
+    <string name="ankrimento_edit_numbers">Numbered list</string>
+    <string name="ankrimento_edit_undo">Undo</string>
+    <string name="ankrimento_edit_redo">Redo</string>
+    <string name="ankrimento_edit_clear">Clear formatting</string>
+    <string name="ankrimento_extract_tip">Tip: select text to extract it, or use Cloze to hide a word.</string>
+    <string name="ankrimento_extract_added_topic">Topic added</string>
+    <string name="ankrimento_extract_added_item">Item added</string>
+    <string name="ankrimento_settings_volume_keys">Volume keys turn pages</string>
+    <string name="ankrimento_settings_volume_keys_help">In the PDF, EPUB, text and web readers. Off: they change the volume.</string>
 </resources>

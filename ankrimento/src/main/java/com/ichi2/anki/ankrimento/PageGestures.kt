@@ -81,6 +81,12 @@ object PageGestures {
             " scrollToY(Math.max(0, scrolled() - window.innerHeight)); var top = cutLine(1);" +
             " if (top !== null && top < 0) scrollToY(Math.max(0, scrolled() + top)); }" +
             " window.dispatchEvent(new Event('scroll')); }" +
+            // For the volume keys: a screen on, as the page turns and swipes do.
+            " window.__ankrimentoTurn = function (forward) {" +
+            " if (window.__ankrimentoPaged) { turnPage(forward); return; }" +
+            " if (forward && atBottom()) { next(); return; } if (!forward && atTop()) { previous(); return; }" +
+            " var step = Math.max(window.innerHeight - 48, window.innerHeight * 0.8);" +
+            " window.scrollBy({ top: forward ? step : -step, behavior: 'smooth' }); };" +
             " window.addEventListener('click', function (e) {" +
             " if (!window.__ankrimentoPaged || selected() || !e.isTrusted) return;" +
             " var t = e.target; if (t && t.closest && t.closest('a[href],button,input,textarea,select," +

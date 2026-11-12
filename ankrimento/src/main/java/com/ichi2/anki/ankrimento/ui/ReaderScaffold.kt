@@ -41,6 +41,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -135,9 +137,12 @@ internal fun ReaderScaffold(
     progress: ReaderProgress? = null,
     pager: ReaderPager? = null,
     timer: (@Composable () -> Unit)? = null,
+    snackbar: SnackbarHostState? = null,
+    editBar: (@Composable () -> Unit)? = null,
     content: @Composable (Modifier) -> Unit,
 ) {
     Scaffold(
+        snackbarHost = { if (snackbar != null) SnackbarHost(snackbar) },
         topBar = {
             AnimatedVisibility(chromeVisible, enter = expandVertically(), exit = shrinkVertically()) {
                 TopAppBar(
@@ -168,6 +173,13 @@ internal fun ReaderScaffold(
         },
         bottomBar = {
             AnimatedVisibility(chromeVisible, enter = expandVertically(expandFrom = Alignment.Top), exit = shrinkVertically()) {
+                if (editBar != null) {
+                    // Editing a topic: its formatting tools, above the keyboard, in place of the reading bars.
+                    Surface(tonalElevation = 3.dp, shadowElevation = 3.dp) {
+                        Column(Modifier.navigationBarsPadding().imePadding()) { editBar() }
+                    }
+                    return@AnimatedVisibility
+                }
                 Column {
                     if (progress != null) ProgressStrip(progress, insetBottom = review == null)
                     if (pager != null) PagerStrip(pager, insetBottom = review == null)
@@ -245,28 +257,31 @@ private fun ProgressStrip(
                 drawStopIndicator = {},
                 gapSize = 0.dp,
             )
-            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        progress.label,
-                        style = MaterialTheme.typography.labelMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    progress.detail?.let {
+            // A strip with no words is only the bar: the figures live in the Reading marks sheet.
+            if (progress.label.isNotBlank()) {
+                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
+                    Column(Modifier.weight(1f)) {
                         Text(
-                            it,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            progress.label,
+                            style = MaterialTheme.typography.labelMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
+                        progress.detail?.let {
+                            Text(
+                                it,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
                     }
+                    Text(
+                        stringResource(R.string.ankrimento_book_progress, (progress.fraction.coerceIn(0f, 1f) * 100).roundToInt()),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
                 }
-                Text(
-                    stringResource(R.string.ankrimento_book_progress, (progress.fraction.coerceIn(0f, 1f) * 100).roundToInt()),
-                    style = MaterialTheme.typography.labelMedium,
-                )
             }
         }
     }
@@ -333,7 +348,16 @@ private fun TopicBar(state: ReviewBarState) {
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.weight(1f),
         )
-        if (state.topicActions.isNotEmpty() || state.revisitOptions.isNotEmpty()) TopicMenu(state)
+        // Done is the one topic action worth a tap of its own; Postpone and Revisit wait under More.
+        val done = state.topicActions.firstOrNull { it.icon != null }
+        if (done != null) {
+            TextButton(onClick = done.onClick) {
+                Icon(IncrementoIcons.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.size(6.dp))
+                Text(done.label)
+            }
+        }
+        if (state.topicActions.any { it !== done } || state.revisitOptions.isNotEmpty()) TopicMenu(state, skip = done)
     }
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp),
@@ -370,17 +394,20 @@ private fun PaceLabel(
 
 /** Done, Postpone and Revisit in…, each with a line on what it does. */
 @Composable
-private fun TopicMenu(state: ReviewBarState) {
+private fun TopicMenu(
+    state: ReviewBarState,
+    skip: ReaderTool? = null,
+) {
     var expanded by remember { mutableStateOf(false) }
+    val actions = state.topicActions.filter { it !== skip }
     Box {
-        TextButton(onClick = { expanded = true }) {
-            Text(stringResource(R.string.ankrimento_topic_menu))
-            Icon(IncrementoIcons.ExpandMore, contentDescription = null, modifier = Modifier.size(18.dp))
+        IconButton(onClick = { expanded = true }) {
+            Icon(IncrementoIcons.More, contentDescription = stringResource(R.string.ankrimento_topic_menu))
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             // Rows without an icon keep its room, so the labels line up.
-            val iconRoom = state.topicActions.any { it.icon != null }
-            state.topicActions.forEach { action ->
+            val iconRoom = actions.any { it.icon != null }
+            actions.forEach { action ->
                 DropdownMenuItem(
                     text = { MenuLine(action.label, action.description) },
                     leadingIcon =
@@ -393,7 +420,7 @@ private fun TopicMenu(state: ReviewBarState) {
                 )
             }
             if (state.revisitOptions.isNotEmpty()) {
-                if (state.topicActions.isNotEmpty()) HorizontalDivider()
+                if (actions.isNotEmpty()) HorizontalDivider()
                 MenuLine(
                     stringResource(R.string.ankrimento_revisit),
                     stringResource(R.string.ankrimento_revisit_hint),

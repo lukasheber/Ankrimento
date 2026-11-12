@@ -261,6 +261,43 @@ def _cloze_note_type() -> str | None:
     return None
 
 
+_SENTENCE_END = re.compile(r"([.!?]+[\"”’')\]]*)\s+(?=(.))|[。！？]+", re.S)
+_SENTENCE_OPENERS = "\"“‘'«¿¡["
+
+
+def sentence_around(text: str, start: int, end: int, stop: int | None = None) -> tuple[str, str, str]:
+    """The selection ``text[start:end]`` with the rest of its sentence, as (before, selected, after).
+
+    A sentence ends at ".", "!" or "?" followed by a capital letter or an opening quote ("et al. (2013)"
+    and "e.g. 90%" do not end one), or at "。", "！", "？". ``stop`` is where the block's source link
+    begins: its caption is not the sentence's text, so nothing after it counts (unless the selection
+    itself lies at or after it)."""
+    if stop is not None and stop >= end:
+        text = text[:stop]
+    lo, hi = 0, len(text)
+    for match in _SENTENCE_END.finditer(text):
+        if match.group(1) is not None:
+            following = match.group(2)
+            if not (following.isupper() or following in _SENTENCE_OPENERS or (following.isalpha() and not following.islower() and not following.isupper())):
+                continue
+            close = match.start() + len(match.group(1))
+        else:
+            close = match.end()
+        following_start = match.end()
+        if following_start <= start:
+            lo = following_start
+        elif close >= end:
+            hi = close
+            break
+    return text[lo:start], text[start:end], text[end:hi]
+
+
+def cloze_in(source_card_id: int, text: str, start: int, end: int, stop: int | None = None) -> None:
+    """A cloze from the selection ``text[start:end]`` of a reader block (see ``sentence_around``)."""
+    before, selected, after = sentence_around(str(text), int(start), int(end), None if stop is None or int(stop) < 0 else int(stop))
+    cloze(source_card_id, before, selected, after)
+
+
 def cloze(source_card_id: int, before: str, selected: str, after: str) -> None:
     """SuperMemo's cloze from the reader: the sentence around the selection, the selection hidden
     as Anki's ``{{c1::…}}``, as a new extract draft (an item, linked to its source like any extract)."""

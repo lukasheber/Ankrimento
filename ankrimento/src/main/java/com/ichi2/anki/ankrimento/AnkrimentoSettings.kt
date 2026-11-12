@@ -48,6 +48,21 @@ class AnkrimentoSettings(
         get() = preferences.getInt(PREF_ONBOARDING_VERSION, 0)
         set(value) = preferences.edit { putInt(PREF_ONBOARDING_VERSION, value) }
 
+    /** Whether Extract adds at once (with a way to undo) rather than opening the sheet first. */
+    var quickExtract: Boolean
+        get() = preferences.getBoolean(PREF_QUICK_EXTRACT, true)
+        set(value) = preferences.edit { putBoolean(PREF_QUICK_EXTRACT, value) }
+
+    /** The one-time hint that selecting text extracts it has been shown. */
+    var extractTipShown: Boolean
+        get() = preferences.getBoolean(PREF_EXTRACT_TIP, false)
+        set(value) = preferences.edit { putBoolean(PREF_EXTRACT_TIP, value) }
+
+    /** Whether the volume keys turn pages (off: they change the volume, as everywhere else). */
+    var volumeKeysTurnPages: Boolean
+        get() = preferences.getBoolean(PREF_VOLUME_KEYS, false)
+        set(value) = preferences.edit { putBoolean(PREF_VOLUME_KEYS, value) }
+
     /** The filtered deck sessions fill, as upstream names it; known once Incremento has started. */
     var sessionDeckName: String
         get() = preferences.getString(PREF_SESSION_DECK, null) ?: DEFAULT_SESSION_DECK
@@ -65,6 +80,9 @@ class AnkrimentoSettings(
         const val PREF_HAS_STARTED = "has_started"
         const val PREF_SESSION_DECK = "session_deck"
         const val PREF_ONBOARDING_VERSION = "onboarding_version"
+        const val PREF_QUICK_EXTRACT = "quick_extract"
+        const val PREF_VOLUME_KEYS = "volume_keys_turn_pages"
+        const val PREF_EXTRACT_TIP = "extract_tip_shown"
 
         /** Upstream's default session deck name. */
         const val DEFAULT_SESSION_DECK = "Incremento Session"

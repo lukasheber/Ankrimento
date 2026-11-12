@@ -103,6 +103,12 @@ def _mode_label(value: object) -> str:
     return t(message_id) if message_id else key
 
 
+def _no_tags_key() -> str:
+    from incremento.backend.scheduler_config import NO_TAGS_KEY
+
+    return NO_TAGS_KEY
+
+
 def _tag_label(value: object) -> str:
     """Mirrors ``_preview_tag_label``."""
     from incremento.backend.i18n import t
@@ -154,6 +160,9 @@ def preview() -> dict[str, Any]:
                 "type": _type_label(meta.get("card_type")),
                 "mode": _mode_label(meta.get("mode")),
                 "tag": _tag_label(meta.get("tag")),
+                # Raw values, so the phone words them itself (the labels are desktop's, "Random" and "no-tag").
+                "mode_key": str(meta.get("mode") or ""),
+                "has_tag": bool(meta.get("tag")) and meta.get("tag") != _no_tags_key(),
             }
         )
     return {"count": len(entries), "target": int(cfg.session_card_count), "entries": entries}

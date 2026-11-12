@@ -172,7 +172,7 @@
     <string name="ankrimento_topic_sooner">Ranije</string>
     <string name="ankrimento_topic_later">Kasnije</string>
     <string name="ankrimento_topic_returns">Ponovno čitanje za %s</string>
-    <string name="ankrimento_topic_menu">Tema</string>
+    <string name="ankrimento_topic_menu">Više</string>
     <string name="ankrimento_done_hint">Prestani je ponavljati; izvadci se nastavljaju</string>
     <string name="ankrimento_postpone_hint">Ne sada: vraća se kasnije</string>
     <string name="ankrimento_revisit_hint">Ostavi je po strani do tada</string>
@@ -655,4 +655,39 @@
     <string name="ankrimento_library_priority_failed">Odabrani dokument više ne postoji, pa prioritet nije promijenjen.</string>
     <string name="ankrimento_settings_parent_context">Prikaži izvor</string>
     <string name="ankrimento_settings_parent_context_help">Dodaje Prikaži izvor u izbornike ponavljanja i čitača: izvornik prikazane kartice, samo za čitanje.</string>
+    <string name="ankrimento_extract_undo">Poništi</string>
+    <string name="ankrimento_extract_undone">Izdvojak uklonjen</string>
+    <string name="ankrimento_settings_quick_extract">Izdvajanje jednim dodirom</string>
+    <string name="ankrimento_settings_quick_extract_help">Odabrani tekst odmah postaje tema, a cloze stavka, uz kratko Poništi. Isključite za pregled lista izdvajanja prije dodavanja.</string>
+    <string name="ankrimento_preview_mode_priority">Po prioritetu</string>
+    <string name="ankrimento_preview_mode_random">Nasumično odabrano</string>
+    <string name="ankrimento_session_preview_start_new">Umjesto toga započni novu sesiju</string>
+    <plurals name="ankrimento_session_resume">
+        <item quantity="one">Nastavi sesiju · preostala %d kartica</item>
+        <item quantity="few">Nastavi sesiju · preostalo %d kartica</item>
+        <item quantity="other">Nastavi sesiju · preostalo %d kartica</item>
+    </plurals>
+    <plurals name="ankrimento_session_preview_in_progress">
+        <item quantity="one">Sesija je u tijeku, preostala je %d kartica. Ovo bi sadržavala sljedeća.</item>
+        <item quantity="few">Sesija je u tijeku, preostalo je %d kartica. Ovo bi sadržavala sljedeća.</item>
+        <item quantity="other">Sesija je u tijeku, preostalo je %d kartica. Ovo bi sadržavala sljedeća.</item>
+    </plurals>
+    <string name="ankrimento_edit_save">Spremi</string>
+    <string name="ankrimento_edit_discard_title">Odbaciti promjene?</string>
+    <string name="ankrimento_edit_discard">Odbaci</string>
+    <string name="ankrimento_edit_keep_editing">Nastavi uređivati</string>
+    <string name="ankrimento_edit_all_fields">Uredi sva polja…</string>
+    <string name="ankrimento_edit_bold">Podebljano</string>
+    <string name="ankrimento_edit_italic">Kurziv</string>
+    <string name="ankrimento_edit_underline">Podcrtano</string>
+    <string name="ankrimento_edit_bullets">Popis s grafičkim oznakama</string>
+    <string name="ankrimento_edit_numbers">Numerirani popis</string>
+    <string name="ankrimento_edit_undo">Poništi</string>
+    <string name="ankrimento_edit_redo">Ponovi</string>
+    <string name="ankrimento_edit_clear">Ukloni oblikovanje</string>
+    <string name="ankrimento_extract_tip">Savjet: odaberite tekst da ga izdvojite ili upotrijebite Cloze za skrivanje riječi.</string>
+    <string name="ankrimento_extract_added_topic">Tema dodana</string>
+    <string name="ankrimento_extract_added_item">Stavka dodana</string>
+    <string name="ankrimento_settings_volume_keys">Tipke glasnoće listaju stranice</string>
+    <string name="ankrimento_settings_volume_keys_help">U čitačima PDF-a, EPUB-a, teksta i weba. Isključeno: mijenjaju glasnoću.</string>
 </resources>
