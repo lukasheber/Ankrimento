@@ -62,9 +62,7 @@
     <string name="ankrimento_extract_added">Cartão adicionado</string>
     <string name="ankrimento_extract_failed">Não foi possível adicionar o cartão: %s</string>
     <string name="ankrimento_sync_now">Sincronizar dados do Incremento</string>
-    <string name="ankrimento_sync_folder">Pasta de sincronização</string>
-    <string name="ankrimento_sync_folder_none">Não definida. Escolha uma pasta para sincronizar os dados do Incremento com seus outros aparelhos</string>
-    <string name="ankrimento_sync_no_folder">Escolha primeiro uma pasta de sincronização do Incremento</string>
+    <string name="ankrimento_sync_no_hub">Primeiro pareie com um hub de sincronização nas configurações do Incremento</string>
     <string name="ankrimento_sync_up_to_date">Os dados do Incremento estão atualizados</string>
     <string name="ankrimento_sync_failed">A sincronização dos dados do Incremento falhou: %s</string>
     <string name="ankrimento_sync_done">Dados do Incremento sincronizados: %1$d enviados, %2$d recebidos</string>
@@ -72,8 +70,8 @@
     <string name="ankrimento_sync_problems">%1$d arquivos da pasta de sincronização foram ignorados</string>
     <string name="ankrimento_sync_working">Sincronizando os dados do Incremento… %1$d enviados, %2$d recebidos até agora</string>
     <string name="ankrimento_sync_hub">Hub de sincronização</string>
-    <string name="ankrimento_sync_hub_none">Não definido. Um hub na sua rede sincroniza sem uma pasta na nuvem</string>
-    <string name="ankrimento_sync_hub_message">Cole o código de pareamento exibido por scripts/sync_hub.py na máquina que executa o hub. Deixe vazio para usar a pasta de sincronização.</string>
+    <string name="ankrimento_sync_hub_none">Não definido. Pareie com um hub na sua rede para sincronizar os dados do Incremento</string>
+    <string name="ankrimento_sync_hub_message">Cole o código de pareamento mostrado pelo hub de sincronização no computador que o executa (Incremento Sync, scripts/sync_hub.py). Deixe vazio para parar de sincronizar.</string>
     <string name="ankrimento_sync_hub_summary">%1$s em %2$s</string>
     <string name="ankrimento_sync_hub_invalid">Código de pareamento inválido</string>
     <string name="ankrimento_statistics_title">Estatísticas do Incremento</string>
@@ -242,7 +240,7 @@
     <string name="ankrimento_settings_backup_auto_on">Backups automáticos ligados</string>
     <string name="ankrimento_settings_backup_auto_off">Backups automáticos desligados</string>
     <string name="ankrimento_settings_device_summary">Perfil %1$s · %2$s</string>
-    <string name="ankrimento_settings_no_sync_folder">sem pasta de sincronização</string>
+    <string name="ankrimento_settings_no_sync_hub">sem hub de sincronização</string>
     <string name="ankrimento_settings_maintenance">Manutenção</string>
     <string name="ankrimento_settings_size_mix">Tamanho e mistura</string>
     <string name="ankrimento_settings_which_cards">Quais cartões</string>

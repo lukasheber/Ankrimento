@@ -1476,7 +1476,7 @@ def set_sync_addon_enabled(enabled: bool) -> bool:
 
 
 def engine_sync(store: Any, label: str, publish_only: bool = False, budget_seconds: float | None = None) -> str:
-    """Sync Incremento's data with the sync folder ``store`` through the sync engine.
+    """Sync Incremento's data with the library in ``store`` (the hub) through the sync engine.
 
     ``label`` names the folder (its URI): the profile is set up for it the first time, or when the user picked
     another folder. Joining a library of another Anki collection raises ``SyncSetupError``. Returns the result as

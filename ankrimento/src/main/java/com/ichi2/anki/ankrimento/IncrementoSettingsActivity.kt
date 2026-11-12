@@ -95,7 +95,6 @@ class IncrementoSettingsActivity : ComponentActivity() {
     private var confirmingFormats by mutableStateOf(false)
     private val device by lazy { AnkrimentoSettings(this) }
     private var profile by mutableStateOf("")
-    private var syncFolder by mutableStateOf<Uri?>(null)
     private var syncHubCode by mutableStateOf("")
     private var backingUp by mutableStateOf(false)
     private var automaticBackups by mutableStateOf(AutomaticBackups.Policy())
@@ -126,22 +125,10 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 }
         }
 
-    private val pickSyncFolder =
-        registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-            if (uri == null) return@registerForActivityResult
-            runCatching { Ankrimento.setSyncFolder(this, uri) }
-                .onSuccess { syncFolder = device.syncFolder }
-                .onFailure { error ->
-                    Timber.w(error, "Choosing the sync folder failed")
-                    toast(error.message ?: error.javaClass.simpleName)
-                }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         profile = device.profile
-        syncFolder = device.syncFolder
         syncHubCode = device.syncHubCode
         automaticBackups = AutomaticBackups.load(this)
         setContent { IncrementoTheme { Settings() } }
@@ -319,7 +306,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
 
     /**
      * Desktop's many settings, kept apart: a home list of seven pages, each saying what it holds now
-     * (the session's size, whether backups run, the sync folder), and a page per group.
+     * (the session's size, whether backups run, the sync hub), and a page per group.
      */
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -670,7 +657,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 stringResource(
                     R.string.ankrimento_settings_device_summary,
                     profile,
-                    hubSummary(syncHubCode) ?: syncFolder?.let(::folderName) ?: stringResource(R.string.ankrimento_settings_no_sync_folder),
+                    hubSummary(syncHubCode) ?: stringResource(R.string.ankrimento_settings_no_sync_hub),
                 )
             Page.UPKEEP ->
                 formatUpdates?.let { updates ->
@@ -1037,13 +1024,6 @@ class IncrementoSettingsActivity : ComponentActivity() {
             }
         }
         if (!syncAddon) return
-        ListItem(
-            headlineContent = { Text(stringResource(R.string.ankrimento_sync_folder)) },
-            supportingContent = {
-                Text(syncFolder?.let(::folderName) ?: stringResource(R.string.ankrimento_sync_folder_none))
-            },
-            modifier = Modifier.clickable { pickSyncFolder.launch(syncFolder) },
-        )
         TextRow(
             label = R.string.ankrimento_sync_hub,
             value = syncHubCode,

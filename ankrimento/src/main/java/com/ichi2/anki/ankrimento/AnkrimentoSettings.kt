@@ -4,7 +4,6 @@ package com.ichi2.anki.ankrimento
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Build
 import androidx.core.content.edit
 
@@ -24,15 +23,9 @@ class AnkrimentoSettings(
         get() = preferences.getString(PREF_PROFILE, null) ?: Ankrimento.DEFAULT_PROFILE
         set(value) = preferences.edit { putString(PREF_PROFILE, value.trim().ifEmpty { Ankrimento.DEFAULT_PROFILE }) }
 
-    /** The folder Incremento data is synced through, or null when not syncing. */
-    var syncFolder: Uri?
-        get() = preferences.getString(PREF_SYNC_FOLDER, null)?.let(Uri::parse)
-        set(value) = preferences.edit { putString(PREF_SYNC_FOLDER, value?.toString()) }
-
     /**
      * The pairing code of a hub on the network that Incremento data is synced through, or empty. It holds the
-     * device's key, so it is kept only here, in the app's private storage. When set, it is used instead of
-     * [syncFolder].
+     * device's key, so it is kept only here, in the app's private storage.
      */
     var syncHubCode: String
         get() = preferences.getString(PREF_SYNC_HUB, null).orEmpty()
@@ -79,7 +72,6 @@ class AnkrimentoSettings(
 
     private companion object {
         const val PREF_PROFILE = "profile"
-        const val PREF_SYNC_FOLDER = "sync_folder"
         const val PREF_SYNC_HUB = "sync_hub"
         const val PREF_DEVICE_NAME = "device_name"
         const val PREF_HAS_STARTED = "has_started"

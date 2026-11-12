@@ -54,9 +54,7 @@
     <string name="ankrimento_extract_added">卡片已添加</string>
     <string name="ankrimento_extract_failed">添加卡片失败：%s</string>
     <string name="ankrimento_sync_now">同步 Incremento 数据</string>
-    <string name="ankrimento_sync_folder">同步文件夹</string>
-    <string name="ankrimento_sync_folder_none">未设置。选择一个文件夹，与你的其他设备同步 Incremento 数据</string>
-    <string name="ankrimento_sync_no_folder">请先选择 Incremento 同步文件夹</string>
+    <string name="ankrimento_sync_no_hub">请先在 Incremento 设置中与同步中心配对</string>
     <string name="ankrimento_sync_up_to_date">Incremento 数据已是最新</string>
     <string name="ankrimento_sync_failed">同步 Incremento 数据失败：%s</string>
     <string name="ankrimento_sync_done">Incremento 数据已同步：已发送 %1$d 项，已接收 %2$d 项</string>
@@ -64,8 +62,8 @@
     <string name="ankrimento_sync_problems">同步文件夹中有 %1$d 个文件被跳过</string>
     <string name="ankrimento_sync_working">正在同步 Incremento 数据… 已发送 %1$d 项，已接收 %2$d 项</string>
     <string name="ankrimento_sync_hub">同步中心</string>
-    <string name="ankrimento_sync_hub_none">未设置。网络中的同步中心无需云文件夹即可同步</string>
-    <string name="ankrimento_sync_hub_message">粘贴运行同步中心的电脑上 scripts/sync_hub.py 输出的配对码。留空则改用同步文件夹。</string>
+    <string name="ankrimento_sync_hub_none">未设置。与你网络中的同步中心配对，即可同步 Incremento 数据</string>
+    <string name="ankrimento_sync_hub_message">粘贴运行同步中心的电脑上显示的配对码（Incremento Sync，scripts/sync_hub.py）。留空则停止同步。</string>
     <string name="ankrimento_sync_hub_summary">%1$s（%2$s）</string>
     <string name="ankrimento_sync_hub_invalid">配对码无效</string>
     <string name="ankrimento_statistics_title">Incremento 统计</string>
@@ -230,7 +228,7 @@
     <string name="ankrimento_settings_backup_auto_on">自动备份已开启</string>
     <string name="ankrimento_settings_backup_auto_off">自动备份已关闭</string>
     <string name="ankrimento_settings_device_summary">配置文件 %1$s · %2$s</string>
-    <string name="ankrimento_settings_no_sync_folder">未设置同步文件夹</string>
+    <string name="ankrimento_settings_no_sync_hub">无同步中心</string>
     <string name="ankrimento_settings_maintenance">维护</string>
     <string name="ankrimento_settings_size_mix">数量和比例</string>
     <string name="ankrimento_settings_which_cards">哪些卡片</string>

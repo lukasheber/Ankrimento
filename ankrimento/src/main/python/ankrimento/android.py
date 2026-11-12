@@ -32,14 +32,6 @@ def _budget(seconds: float) -> float | None:
     return None if seconds < 0 else seconds
 
 
-def sync_folder(kotlin_exchange: Any, label: str, publish_only: bool = False, budget_seconds: float = -1.0) -> str:
-    """Sync Incremento's data with the folder behind ``SafExchange`` (see ``facade.engine_sync``)."""
-    from ankrimento import facade
-    from ankrimento.safstore import KotlinStore
-
-    return facade.engine_sync(KotlinStore(kotlin_exchange), label, publish_only, _budget(budget_seconds))
-
-
 def sync_hub(code: str, publish_only: bool = False, budget_seconds: float = -1.0) -> str:
     """Sync Incremento's data through the hub paired with ``code`` (see ``facade.engine_sync_hub``)."""
     from ankrimento import facade

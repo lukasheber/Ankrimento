@@ -3,8 +3,6 @@
 package com.ichi2.anki.ankrimento
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.util.Base64
 import androidx.annotation.WorkerThread
@@ -106,8 +104,6 @@ object Ankrimento {
     val isStarted: Boolean
         get() = facade != null
 
-    private var syncExchange: SafExchange? = null
-    private var syncFolderLabel = ""
     private var syncHubCode = ""
 
     /**
@@ -165,12 +161,11 @@ object Ankrimento {
         syncAddonEnabled = settings.syncAddonEnabled
         facade = python.getModule("ankrimento.facade")
         ChangeManager.subscribe(operationListener)
-        settings.syncFolder?.let { useSyncFolder(context, it) }
         syncHubCode = settings.syncHubCode
         Timber.i("Ankrimento started for profile '%s'", profile)
     }
 
-    /** The profile's folder name in user_files/ and in the sync folder. */
+    /** The profile's folder name in user_files/ and in the sync hub's library. */
     private fun profileStorageName(): String = requireFacade().callAttr("profile_name").toString()
 
     /** What a full backup holds: cards (with scheduling and media), Incremento files, and the archive's size. */
@@ -275,7 +270,7 @@ object Ankrimento {
         private set
 
     val isSyncConfigured: Boolean
-        get() = syncAddonEnabled && (syncHubCode.isNotEmpty() || syncExchange != null)
+        get() = syncAddonEnabled && syncHubCode.isNotEmpty()
 
     /**
      * Switches the sync add-on on or off. Off puts Incremento back as it was (the sync data on this device stays,
@@ -294,28 +289,9 @@ object Ankrimento {
         }
     }
 
-    private fun useSyncFolder(
-        context: Context,
-        folder: Uri,
-    ) {
-        syncExchange = SafExchange(context.applicationContext, folder)
-        syncFolderLabel = "saf:$folder"
-    }
-
-    /** Use [folder] (picked with ACTION_OPEN_DOCUMENT_TREE) to sync Incremento data. */
-    fun setSyncFolder(
-        context: Context,
-        folder: Uri,
-    ) {
-        val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-        context.contentResolver.takePersistableUriPermission(folder, flags)
-        AnkrimentoSettings(context).syncFolder = folder
-        if (isStarted) useSyncFolder(context, folder)
-    }
-
     /**
-     * Use the hub paired with [code] (empty: no hub, back to the sync folder). The code is checked when it is
-     * used: [sync] throws for one that is not a pairing code.
+     * Use the hub paired with [code] (empty: no hub). The code is checked when it is used: [sync] throws for one
+     * that is not a pairing code.
      */
     fun setSyncHub(
         context: Context,
@@ -341,8 +317,7 @@ object Ankrimento {
     }
 
     /**
-     * Sync with the hub on the network if one is paired, else with the sync folder, through the sync engine; null
-     * when neither is set. With [publishOnly] this device's changes are sent and nothing is received (quick, for a
+     * Sync with the hub on the network through the sync engine; null when none is paired. With [publishOnly] this device's changes are sent and nothing is received (quick, for a
      * closing screen). Throws when the hub cannot be reached or the library there is another Anki collection's.
      */
     @WorkerThread
@@ -356,8 +331,7 @@ object Ankrimento {
             if (syncHubCode.isNotEmpty()) {
                 android.callAttr("sync_hub", syncHubCode, publishOnly, budgetSeconds)
             } else {
-                val exchange = syncExchange ?: return null
-                android.callAttr("sync_folder", exchange, syncFolderLabel, publishOnly, budgetSeconds)
+                return null
             }
         val json = JSONObject(result.toString())
         val problems = json.getJSONArray("problems")
@@ -805,7 +779,7 @@ object Ankrimento {
         if (isStarted) requireFacade().callAttr("answer_shown", cardId)
     }
 
-    /** Reviewer hook: the reviewer is closing; also pushes to the sync folder. */
+    /** Reviewer hook: the reviewer is closing; also pushes to the sync hub. */
     fun reviewerClosed() {
         if (!isStarted) return
         operationScope.launch {

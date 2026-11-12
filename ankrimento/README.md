@@ -105,8 +105,9 @@ video watch time and the last seven days.
 AnkiWeb syncs the cards; Incremento's own data (priorities, the knowledge tree, bookmarks and positions, highlights,
 links between documents, local files and the documents themselves) is synced by the separate
 [**Incremento Sync**](https://github.com/lukasheber/incremento-sync) add-on, the same one desktop Anki uses. It
-works through a shared folder (Dropbox, Syncthing, Google Drive…, picked with the Storage Access Framework) or a
-small hub on your own network (a pairing code in *Incremento settings → This device*).
+works through a shared folder on desktop, and on the phone through a small hub on your own network (a pairing code in
+*Incremento settings → This device*). The phone does not sync through a folder: that was never tried with Drive, Dropbox
+or Syncthing on a device, so it is not offered.
 
 On the phone the add-on is vendored as `vendor/incremento-sync` and installed beside Incremento
 (`<filesDir>/ankrimento/addons21/incremento_sync/`), as on desktop. It extends Incremento's backend while it is on

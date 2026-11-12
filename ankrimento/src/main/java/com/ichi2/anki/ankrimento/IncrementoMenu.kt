@@ -142,8 +142,8 @@ class IncrementoMenu(
             SessionCardAction(IncrementoIcons.Chart, R.string.ankrimento_statistics_menu) {
                 activity.startActivity(StatisticsActivity.intent(activity))
             },
-            // The folder or hub is chosen in settings; a session start syncs too.
-            (settings.syncFolder ?: settings.syncHubCode.takeIf { it.isNotEmpty() })?.let {
+            // The hub is paired in settings; a session start syncs too.
+            settings.syncHubCode.takeIf { it.isNotEmpty() }?.let {
                 SessionCardAction(IncrementoIcons.Sync, R.string.ankrimento_sync_now) { activity.lifecycleScope.launch { syncNow() } }
             },
         )
@@ -238,7 +238,7 @@ class IncrementoMenu(
         runCatching {
             CollectionManager.withCol { Ankrimento.start(activity, this) }
             if (!Ankrimento.isSyncConfigured) {
-                toast(activity.getString(R.string.ankrimento_sync_no_folder))
+                toast(activity.getString(R.string.ankrimento_sync_no_hub))
                 return
             }
             sync(reportUpToDate = true)
@@ -248,7 +248,7 @@ class IncrementoMenu(
         }
     }
 
-    /** Syncs with the sync folder, reporting what changed. Records changed on two devices keep this device's value. */
+    /** Syncs with the sync hub, reporting what changed. Records changed on two devices keep this device's value. */
     private suspend fun sync(reportUpToDate: Boolean) {
         val result =
             Ankrimento.syncInSlices { progress, slice ->
