@@ -6,7 +6,7 @@ your decks and cards in AnkiDroid and adds what Incremento adds to Anki on the d
 items, a reader for PDFs, EPUBs, web pages, video and text, extracts and clozes made from what you read, priorities, the
 knowledge tree, statistics, writing, and backups.
 
-**Status: beta.** [0.1.0 beta 1](https://github.com/lukasheber/Ankrimento/releases) is out for 64-bit Android devices. It is
+**Status: beta.** [0.1.0 beta 2](https://github.com/lukasheber/Ankrimento/releases) is out for 64-bit Android devices. It is
 tested on one tablet only, so expect rough edges; `ankrimento/ROADMAP.md` lists what is done, what is deliberately not on the
 phone, and what is left, and `ankrimento/RELEASE_CHECKLIST.md` what stands between this and a store release.
 
