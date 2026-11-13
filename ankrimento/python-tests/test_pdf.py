@@ -121,7 +121,7 @@ def test_extract_creates_a_linked_card(rt, extract_source):
     link = json.loads(command[len("incremento_open_pdf_ref:"):])
     assert (link["card_id"], link["page"], link["highlight_id"], link["excerpt"]) == (card_id, 1, "hx", "Spaced repetition")
     assert draft["note_type"] == "Basic"
-    assert draft["kind"] == "item"
+    assert draft["kind"] == "topic"  # the phone's default for a new extract (upstream's is an item)
     assert draft["priority"] == pytest.approx(49.0)  # source 50 x desktop's default 0.98
 
     created = json.loads(facade.create_extract(card_id, json.dumps(draft["fields"]), "Basic", "item", 49.0))

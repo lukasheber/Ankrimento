@@ -212,7 +212,7 @@
     <string name="ankrimento_settings_session_summary">%1$d 个元素 · %2$d%% 主题</string>
     <string name="ankrimento_settings_topics_items">主题和条目</string>
     <string name="ankrimento_settings_topics_items_summary">回答按钮、主题如何回来、难记卡</string>
-    <string name="ankrimento_settings_extraction_summary">新摘录的类型、高亮、标签、优先级顺序</string>
+    <string name="ankrimento_settings_extraction_summary">新摘录的类型、一键摘录、高亮、标签、优先级顺序</string>
     <string name="ankrimento_settings_reading_writing">阅读和写作</string>
     <string name="ankrimento_settings_reading_writing_summary">PDF 页面颜色和细节、写作备份和字数统计</string>
     <string name="ankrimento_settings_backup_restore">备份和恢复</string>
@@ -608,9 +608,10 @@
     <string name="ankrimento_settings_parent_context">查看来源</string>
     <string name="ankrimento_settings_parent_context_help">在复习和阅读器菜单中加入“查看来源”：只读地查看当前卡片的原始来源。</string>
     <string name="ankrimento_extract_undo">撤销</string>
+    <string name="ankrimento_extract_show_topic">查看主题</string>
     <string name="ankrimento_extract_undone">摘录已移除</string>
     <string name="ankrimento_settings_quick_extract">一键摘录</string>
-    <string name="ankrimento_settings_quick_extract_help">选中的文字立即成为主题，填空成为条目，并在片刻内可撤销。关闭后会先显示摘录面板。</string>
+    <string name="ankrimento_settings_quick_extract_help">选中的文字立即成为主题，填空成为条目，并在片刻内可撤销或查看主题。关闭后会先显示摘录面板。</string>
     <string name="ankrimento_preview_mode_priority">按优先级</string>
     <string name="ankrimento_preview_mode_random">随机抽取</string>
     <string name="ankrimento_session_preview_start_new">改为开始新的学习</string>

@@ -760,11 +760,6 @@ class IncrementoSettingsActivity : ComponentActivity() {
             v.optBoolean("reviewer_parent_context_enabled", true),
             R.string.ankrimento_settings_parent_context_help,
         ) { set("reviewer_parent_context_enabled", it) }
-        var quick by remember { mutableStateOf(device.quickExtract) }
-        Toggle(R.string.ankrimento_settings_quick_extract, quick, R.string.ankrimento_settings_quick_extract_help) {
-            quick = it
-            device.quickExtract = it
-        }
         var volume by remember { mutableStateOf(device.volumeKeysTurnPages) }
         Toggle(R.string.ankrimento_settings_volume_keys, volume, R.string.ankrimento_settings_volume_keys_help) {
             volume = it
@@ -824,8 +819,13 @@ class IncrementoSettingsActivity : ComponentActivity() {
         Choice(
             R.string.ankrimento_settings_extract_type,
             listOf("item" to R.string.ankrimento_extract_item, "topic" to R.string.ankrimento_extract_as_topic),
-            v.optString("extract_default_type", "item"),
+            v.optString("extract_default_type", "topic"),
         ) { set("extract_default_type", it) }
+        var quick by remember { mutableStateOf(device.quickExtract) }
+        Toggle(R.string.ankrimento_settings_quick_extract, quick, R.string.ankrimento_settings_quick_extract_help) {
+            quick = it
+            device.quickExtract = it
+        }
         Toggle(
             R.string.ankrimento_settings_highlight_extract,
             v.optBoolean("highlight_when_extracting", true),

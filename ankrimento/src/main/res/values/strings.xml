@@ -218,7 +218,7 @@
     <string name="ankrimento_settings_session_summary">%1$d elements · %2$d%% topics</string>
     <string name="ankrimento_settings_topics_items">Topics and items</string>
     <string name="ankrimento_settings_topics_items_summary">Answer buttons, how topics come back, leeches</string>
-    <string name="ankrimento_settings_extraction_summary">What new extracts are, highlights, tags, priority order</string>
+    <string name="ankrimento_settings_extraction_summary">What new extracts are, extract in one tap, highlights, tags, priority order</string>
     <string name="ankrimento_settings_reading_writing">Reading and writing</string>
     <string name="ankrimento_settings_reading_writing_summary">PDF page colour and details, writing backups and word count</string>
     <string name="ankrimento_settings_backup_restore">Backup and restore</string>
@@ -625,9 +625,10 @@
     <string name="ankrimento_settings_parent_context">Show parent</string>
     <string name="ankrimento_settings_parent_context_help">Adds Show parent to the reviewer and reader menus: the original parent of the card on screen, read-only.</string>
     <string name="ankrimento_extract_undo">Undo</string>
+    <string name="ankrimento_extract_show_topic">Show topic</string>
     <string name="ankrimento_extract_undone">Extract removed</string>
     <string name="ankrimento_settings_quick_extract">Extract in one tap</string>
-    <string name="ankrimento_settings_quick_extract_help">Selected text becomes a topic, or a cloze an item, at once, with Undo for a moment. Turn off to review the extract sheet first.</string>
+    <string name="ankrimento_settings_quick_extract_help">Selected text becomes a topic, or a cloze an item, at once, with Undo (and Show topic) for a moment. Turn off to review the extract sheet first.</string>
     <string name="ankrimento_preview_mode_priority">By priority</string>
     <string name="ankrimento_preview_mode_random">Picked at random</string>
     <string name="ankrimento_session_preview_start_new">Start a new session instead</string>

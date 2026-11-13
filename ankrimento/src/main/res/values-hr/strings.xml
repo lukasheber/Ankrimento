@@ -224,7 +224,7 @@
     <string name="ankrimento_settings_session_summary">%1$d elemenata · %2$d%% tema</string>
     <string name="ankrimento_settings_topics_items">Teme i stavke</string>
     <string name="ankrimento_settings_topics_items_summary">Gumbi za odgovor, kako se teme vraćaju, pijavice</string>
-    <string name="ankrimento_settings_extraction_summary">Što su novi izvadci, isticanja, oznake, redoslijed prioriteta</string>
+    <string name="ankrimento_settings_extraction_summary">Što su novi izvadci, izdvajanje jednim dodirom, isticanja, oznake, redoslijed prioriteta</string>
     <string name="ankrimento_settings_reading_writing">Čitanje i pisanje</string>
     <string name="ankrimento_settings_reading_writing_summary">Boja i pojedinosti PDF stranice, sigurnosne kopije pisanja i brojanje riječi</string>
     <string name="ankrimento_settings_backup_restore">Sigurnosna kopija i vraćanje</string>
@@ -642,9 +642,10 @@
     <string name="ankrimento_settings_parent_context">Prikaži izvor</string>
     <string name="ankrimento_settings_parent_context_help">Dodaje Prikaži izvor u izbornike ponavljanja i čitača: izvornik prikazane kartice, samo za čitanje.</string>
     <string name="ankrimento_extract_undo">Poništi</string>
+    <string name="ankrimento_extract_show_topic">Prikaži temu</string>
     <string name="ankrimento_extract_undone">Izdvojak uklonjen</string>
     <string name="ankrimento_settings_quick_extract">Izdvajanje jednim dodirom</string>
-    <string name="ankrimento_settings_quick_extract_help">Odabrani tekst odmah postaje tema, a cloze stavka, uz kratko Poništi. Isključite za pregled lista izdvajanja prije dodavanja.</string>
+    <string name="ankrimento_settings_quick_extract_help">Odabrani tekst odmah postaje tema, a cloze stavka, uz kratko Poništi (i Prikaži temu). Isključite za pregled lista izdvajanja prije dodavanja.</string>
     <string name="ankrimento_preview_mode_priority">Po prioritetu</string>
     <string name="ankrimento_preview_mode_random">Nasumično odabrano</string>
     <string name="ankrimento_session_preview_start_new">Umjesto toga započni novu sesiju</string>

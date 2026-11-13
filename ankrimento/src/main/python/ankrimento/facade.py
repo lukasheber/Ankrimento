@@ -1300,7 +1300,7 @@ def extract_draft(source_card_id: int) -> str:
 def create_extract(source_card_id: int, fields_json: str, note_type: str, kind: str, priority: float) -> str:
     """Add the extract as a note linked to its source document.
 
-    Returns the new note id and JavaScript refreshing the reader's page cards.
+    Returns the new note id, its card (to open it) and JavaScript refreshing the reader's page cards.
     """
     from ankrimento import extract, pdf_reader
 
@@ -1308,7 +1308,8 @@ def create_extract(source_card_id: int, fields_json: str, note_type: str, kind: 
     page = extract.draft(source_card_id)["page"] or 1
     note_id = extract.create(source_card_id, list(json.loads(fields_json)), note_type, kind, float(priority))
     script = pdf_reader.page_cards_script(source_card_id, page) if card_reader(source_card_id) == "pdf" else ""
-    return _dumps({"note_id": note_id, "script": script})
+    card_id = runtime.current().col.get_note(note_id).card_ids()[0]
+    return _dumps({"note_id": note_id, "card_id": card_id, "script": script})
 
 
 def topic_editable(card_id: int) -> str:

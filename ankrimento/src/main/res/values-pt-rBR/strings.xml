@@ -224,7 +224,7 @@
     <string name="ankrimento_settings_session_summary">%1$d elementos · %2$d%% tópicos</string>
     <string name="ankrimento_settings_topics_items">Tópicos e itens</string>
     <string name="ankrimento_settings_topics_items_summary">Botões de resposta, como os tópicos voltam, sanguessugas</string>
-    <string name="ankrimento_settings_extraction_summary">O que são os novos extratos, destaques, etiquetas, ordem de prioridade</string>
+    <string name="ankrimento_settings_extraction_summary">O que são os novos extratos, extrair com um toque, destaques, etiquetas, ordem de prioridade</string>
     <string name="ankrimento_settings_reading_writing">Leitura e escrita</string>
     <string name="ankrimento_settings_reading_writing_summary">Cor e detalhes da página do PDF, cópias de segurança da escrita e contagem de palavras</string>
     <string name="ankrimento_settings_backup_restore">Backup e restauração</string>
@@ -638,9 +638,10 @@
     <string name="ankrimento_settings_parent_context">Ver origem</string>
     <string name="ankrimento_settings_parent_context_help">Adiciona Ver origem aos menus do revisor e dos leitores: a origem do cartão na tela, somente leitura.</string>
     <string name="ankrimento_extract_undo">Desfazer</string>
+    <string name="ankrimento_extract_show_topic">Ver tópico</string>
     <string name="ankrimento_extract_undone">Extrato removido</string>
     <string name="ankrimento_settings_quick_extract">Extrair com um toque</string>
-    <string name="ankrimento_settings_quick_extract_help">O texto selecionado vira um tópico, ou um cloze vira um item, na hora, com Desfazer por alguns instantes. Desative para revisar a folha de extração antes.</string>
+    <string name="ankrimento_settings_quick_extract_help">O texto selecionado vira um tópico, ou um cloze vira um item, na hora, com Desfazer (e Ver tópico) por alguns instantes. Desative para revisar a folha de extração antes.</string>
     <string name="ankrimento_preview_mode_priority">Por prioridade</string>
     <string name="ankrimento_preview_mode_random">Sorteado</string>
     <string name="ankrimento_session_preview_start_new">Começar uma nova sessão</string>

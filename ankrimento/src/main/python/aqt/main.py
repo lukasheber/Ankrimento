@@ -10,6 +10,11 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any
 
 
+# Where the phone's defaults differ from the add-on's own config.json (the user's saved choice still wins): selected
+# text becomes a topic, where upstream's default is an item that would still need its answer.
+MOBILE_DEFAULTS: dict[str, dict[str, Any]] = {"incremento": {"extract_default_type": "topic"}}
+
+
 class AddonManager:
     """Add-on config storage with Anki desktop's on-disk layout.
 
@@ -34,9 +39,12 @@ class AddonManager:
         path = os.path.join(self.addonsFolder(addon), "config.json")
         try:
             with open(path, encoding="utf8") as file:
-                return json.load(file)
+                defaults = json.load(file)
         except Exception:
             return None
+        if isinstance(defaults, dict):
+            defaults.update(MOBILE_DEFAULTS.get(addon, {}))
+        return defaults
 
     def addonMeta(self, addon: str) -> dict[str, Any]:
         path = os.path.join(self.addonsFolder(addon), "meta.json")

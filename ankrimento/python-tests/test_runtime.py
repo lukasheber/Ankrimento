@@ -46,7 +46,8 @@ def test_config_reads_upstream_defaults_and_writes_meta_json(rt):
 
     defaults = json.loads((INCREMENTO_SOURCE / "config.json").read_text(encoding="utf8"))
     config = mw.addonManager.getConfig("incremento")
-    assert config == defaults
+    # Upstream's defaults, but for what the phone sets differently: selected text becomes a topic.
+    assert config == {**defaults, "extract_default_type": "topic"}
 
     config["ankrimento_test_key"] = 1
     mw.addonManager.writeConfig("incremento", config)

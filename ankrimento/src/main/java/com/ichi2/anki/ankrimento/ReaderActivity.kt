@@ -56,6 +56,7 @@ import com.ichi2.anki.ankrimento.ui.ReaderScaffold
 import com.ichi2.anki.ankrimento.ui.ReaderTool
 import com.ichi2.anki.ankrimento.ui.ReviewBarState
 import com.ichi2.anki.ankrimento.ui.RevisitDateDialog
+import com.ichi2.anki.ankrimento.ui.SnackbarWithSecondAction
 import com.ichi2.anki.ankrimento.ui.TimerChip
 import com.ichi2.anki.ankrimento.ui.TimerSheet
 import com.ichi2.anki.ankrimento.ui.TimerSummaryDialog
@@ -356,13 +357,10 @@ abstract class ReaderActivity : ComponentActivity() {
                         return@launch
                     }
             val draft = ExtractNoteTypes.choose(this@ReaderActivity, readerKind, loaded)
-            if (AnkrimentoSettings(this@ReaderActivity).quickExtract && canAddAtOnce(draft)) {
-                // One tap: the extract is added as the draft stands, with Undo a moment after.
-                addExtract(
-                    ExtractChoice(draft.fields, draft.noteType, draft.isTopic, draft.priority),
-                    rememberType = !draft.noteTypeConfigured,
-                    undoable = true,
-                )
+            val quick = if (AnkrimentoSettings(this@ReaderActivity).quickExtract) QuickExtract.choice(draft) else null
+            if (quick != null) {
+                // One tap: the extract is added at once, with Undo (and, for a topic, a way to open it) a moment after.
+                addExtract(quick, rememberType = !draft.noteTypeConfigured, undoable = true)
                 return@launch
             }
             sheet = {
@@ -484,12 +482,6 @@ abstract class ReaderActivity : ComponentActivity() {
         }
     }
 
-    /** What is added without asking: a topic, or an item that is complete as it stands (a cloze, or with its back filled in). */
-    private fun canAddAtOnce(draft: Ankrimento.ExtractDraft): Boolean {
-        if (draft.fields.firstOrNull().isNullOrBlank()) return false
-        return draft.isTopic || "{{c" in draft.fields[0] || draft.fields.drop(1).any { it.isNotBlank() }
-    }
-
     private val snackbars = SnackbarHostState()
 
     /**
@@ -528,20 +520,37 @@ abstract class ReaderActivity : ComponentActivity() {
                     toast(getString(R.string.ankrimento_extract_added_under, cardName))
                 } else {
                     snackbars.currentSnackbarData?.dismiss()
+                    val message =
+                        getString(if (choice.isTopic) R.string.ankrimento_extract_added_topic else R.string.ankrimento_extract_added_item)
+                    val undo = getString(R.string.ankrimento_extract_undo)
+                    // A topic can be opened to see or edit it; Back returns here, to the review.
                     val answer =
-                        snackbars.showSnackbar(
-                            getString(
-                                if (choice.isTopic) R.string.ankrimento_extract_added_topic else R.string.ankrimento_extract_added_item,
-                            ),
-                            actionLabel = getString(R.string.ankrimento_extract_undo),
-                            duration = SnackbarDuration.Long,
-                        )
+                        if (choice.isTopic) {
+                            snackbars.showSnackbar(
+                                SnackbarWithSecondAction(
+                                    message = message,
+                                    actionLabel = undo,
+                                    secondLabel = getString(R.string.ankrimento_extract_show_topic),
+                                    onSecond = { openCard(created.cardId) },
+                                ),
+                            )
+                        } else {
+                            snackbars.showSnackbar(message, actionLabel = undo, duration = SnackbarDuration.Long)
+                        }
                     if (answer == SnackbarResult.ActionPerformed) undoExtract(created.noteId)
                 }
             }.onFailure { error ->
                 Timber.w(error, "Adding an extract failed")
                 toast(getString(R.string.ankrimento_extract_failed, error.message ?: error.javaClass.simpleName))
             }
+        }
+    }
+
+    /** A card to look at, in the reader that shows it, outside the session: Back comes back to this reader. */
+    private fun openCard(card: Long) {
+        lifecycleScope.launch {
+            val reader = runCatching { withCol { Ankrimento.cardReader(card) } }.getOrDefault("")
+            intent(this@ReaderActivity, reader.ifEmpty { "item" }, card, session = false)?.let(::startActivity)
         }
     }
 

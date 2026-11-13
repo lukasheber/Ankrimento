@@ -41,7 +41,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Slider
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -142,7 +141,7 @@ internal fun ReaderScaffold(
     content: @Composable (Modifier) -> Unit,
 ) {
     Scaffold(
-        snackbarHost = { if (snackbar != null) SnackbarHost(snackbar) },
+        snackbarHost = { if (snackbar != null) ReaderSnackbarHost(snackbar) },
         topBar = {
             AnimatedVisibility(chromeVisible, enter = expandVertically(), exit = shrinkVertically()) {
                 TopAppBar(

@@ -1797,9 +1797,10 @@ object Ankrimento {
         priority: Double,
     ): String = createExtractNote(sourceCardId, fields, noteType, isTopic, priority).script
 
-    /** An extract just added: its note (to take back) and the script that marks it on the source's page. */
+    /** An extract just added: its note (to take back), its card (to open) and the script that marks it on the source's page. */
     class CreatedExtract(
         val noteId: Long,
+        val cardId: Long,
         val script: String,
     )
 
@@ -1816,7 +1817,7 @@ object Ankrimento {
             JSONObject(
                 requireFacade().callAttr("create_extract", sourceCardId, JSONArray(fields).toString(), noteType, kind, priority).toString(),
             )
-        return CreatedExtract(result.getLong("note_id"), result.getString("script"))
+        return CreatedExtract(result.getLong("note_id"), result.getLong("card_id"), result.getString("script"))
     }
 
     /** A topic's text for the in-app editor: formatted text, its source link a chip. */
