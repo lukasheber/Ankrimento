@@ -84,7 +84,7 @@ def start(branch_scope: dict | None = None, mode: str | None = None, count: int 
     if mode is not None:
         set_mode(mode, count)
         today.empty_session_decks(runtime.current().col)
-        if mode == today.MODE_TODAY:
+        if mode in (today.MODE_TODAY, today.MODE_AHEAD):
             # Chosen here, from the cards now back in their decks and with the day's plan completed (see preview).
             forget_preview()
             preview()
@@ -177,7 +177,10 @@ def preview(mode: str | None = None, count: int = 0) -> dict[str, Any]:
         topic_classifier=resolve_topic_card_classifier(copy.deepcopy(load_addon_config(mw.addonManager, "incremento")), scheduler_config=cfg),
         session_deck_name=incremento_session_deck_name(presets.selected()),
     )
-    picker.pick_until(cfg.session_card_count)
+    if _mode == today.MODE_AHEAD:
+        today.add_more_material(picker, rt.col, _count)
+    else:
+        picker.pick_until(cfg.session_card_count)
     if _mode == today.MODE_TODAY:
         today.add_due_documents(picker, rt.col)
         today.add_new_material(picker, rt.col, _count)

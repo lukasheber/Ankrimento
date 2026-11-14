@@ -361,3 +361,24 @@ def test_new_material_follows_the_priority_direction_chosen_in_the_settings(rt, 
     assert entered_review.wait(timeout=30)
     assert set(_session_cards(rt)) == due | set(ranked[-4:])
     facade.reviewer_closed()
+
+
+def test_more_new_material_after_the_day_is_incremento_material_by_priority(rt, host_events):  # noqa: F811
+    """The New material button: ordinary decks gave their share in the day's plan, so it takes Incremento's only."""
+    _events, entered_review = host_events
+    _due, _future, new = _scheduled(rt.col, due=0, new=12)
+    regular = _regular_deck(rt.col, per_day=20, count=4)
+    ranked = sorted(new)
+    _prioritised(rt, regular + ranked)  # the ordinary cards first
+
+    facade.start_session("ahead", 5)
+    assert entered_review.wait(timeout=30)
+    assert set(_session_cards(rt)) == set(ranked[:5])
+    facade.reviewer_closed()
+
+
+def test_the_preview_of_more_new_material_is_the_session(rt):
+    _scheduled(rt.col, due=0, new=12)
+    preview = json.loads(facade.session_preview("ahead", 5))
+    assert preview["count"] == 5
+    assert all(entry["mode_key"] == "priority" for entry in preview["entries"])

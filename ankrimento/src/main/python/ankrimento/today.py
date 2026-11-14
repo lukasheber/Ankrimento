@@ -4,7 +4,8 @@ Incremento's own session draws from a pool of every new card plus whatever is du
 finished session says nothing about the day. The plan is the schedule alone: reviewed cards that are due now.
 A *today* session takes all of them, plus new cards: ordinary Anki decks bring theirs up to each deck's own
 "New cards/day", and Incremento's material (topics, documents, the items made from them) comes in a daily amount
-of its own, the most important first. *Study ahead* is new material only, in a size the user chose. Neither changes the saved session settings: the mode is applied to the settings of that
+of its own, the most important first. *Study ahead* (the New material button, once the day is done) is more of
+Incremento's material, the most important first, in a size the user chose: ordinary decks gave their share. Neither changes the saved session settings: the mode is applied to the settings of that
 one session (see ``session.HeadlessSchedulerDialog.to_config``).
 """
 
@@ -51,25 +52,37 @@ def due_documents(col: Any) -> list[int]:
 def add_new_material(picker: Any, col: Any, per_day: int) -> None:
     """Mix the day's new cards into the session, then shuffle it all: what is left of the daily amount of Incremento
     material, the most important first, and the new cards of ordinary decks up to each deck's own limit."""
-    from incremento.backend import cards as card_utils
-
     kinds = new_material(col)
     left = new_left_today(col, per_day) if per_day > 0 else 0
-    if left:
-        ranked = card_utils.sort_cards_for_priority_mode(
-            [card_id for card_id in kinds if card_id not in picker.picked_ids],
-            picker.addon_dir,
-            lower_is_more_important=picker.cfg.priority_lower_is_more_important,
-            col=col,
-            profile=picker.profile,
-        )
-        for card_id in ranked[:left]:
-            _record(picker, card_id, kinds[card_id], "daily_plan_new")
+    _add_most_important(picker, col, kinds, left, "daily_plan_new")
     for card_id in regular_new(col, kinds):
         if card_id not in picker.picked_ids:
             _record(picker, card_id, "items", "daily_plan_deck_new")
     # Different materials, mixed: the order is not the order they were found in.
     random.shuffle(picker.selected_ids)
+
+
+def add_more_material(picker: Any, col: Any, count: int) -> None:
+    """A session of more Incremento material once the day is done: ``count`` pieces, the most important first."""
+    _add_most_important(picker, col, new_material(col), count, "study_ahead")
+    random.shuffle(picker.selected_ids)
+
+
+def _add_most_important(picker: Any, col: Any, kinds: dict[int, str], count: int, stage: str) -> None:
+    """Put the ``count`` most important of ``kinds`` into the session, in the priority direction of the settings."""
+    from incremento.backend import cards as card_utils
+
+    if count <= 0:
+        return
+    ranked = card_utils.sort_cards_for_priority_mode(
+        [card_id for card_id in kinds if card_id not in picker.picked_ids],
+        picker.addon_dir,
+        lower_is_more_important=picker.cfg.priority_lower_is_more_important,
+        col=col,
+        profile=picker.profile,
+    )
+    for card_id in ranked[:count]:
+        _record(picker, card_id, kinds[card_id], stage)
 
 
 def _record(picker: Any, card_id: int, card_type: str, stage: str) -> None:
@@ -244,8 +257,10 @@ def apply_mode(cfg: Any, mode: str, count: int, due: int) -> None:
         # The session is the day's plan as it stood at the start; nothing tops it up with other cards.
         cfg.auto_refill_session = False
     elif mode == MODE_AHEAD:
-        cfg.include_new = True
+        # The cards are chosen by add_more_material; the picker itself takes none.
+        cfg.include_new = False
         cfg.include_learning = False
         cfg.include_due = False
         cfg.session_card_count = max(1, count)
+        cfg.pdf_rate = 0.0
         cfg.auto_refill_session = False
