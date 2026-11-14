@@ -411,3 +411,24 @@ def test_a_daily_preview_left_without_starting_does_not_change_the_next_classic_
     assert entered_review.wait(timeout=30)
     assert set(_session_cards(rt)) == due
     facade.reviewer_closed()
+
+
+def test_the_preview_of_a_daily_session_counts_the_cards_a_session_still_holds(rt, host_events):  # noqa: F811
+    """While a session holds due cards their due is a position in it: the preview takes them by their own schedule."""
+    _events, entered_review = host_events
+    due, _future, _new = _scheduled(rt.col, due=6)
+    facade.start_session()
+    assert entered_review.wait(timeout=30)
+    facade.reviewer_closed()
+
+    preview = json.loads(facade.session_preview("today", 0))
+    assert {entry["card_id"] for entry in preview["entries"]} == due
+
+
+def test_the_preview_says_which_new_cards_come_in_deck_order(rt):
+    _scheduled(rt.col, due=1, new=2)
+    regular = _regular_deck(rt.col, per_day=2, count=2)
+    preview = json.loads(facade.session_preview("today", _amount(rt, 2)))
+    keys = {entry["card_id"]: entry["mode_key"] for entry in preview["entries"]}
+    assert {keys[card_id] for card_id in regular} == {"deck"}
+    assert "deck" not in {key for card_id, key in keys.items() if card_id not in regular}

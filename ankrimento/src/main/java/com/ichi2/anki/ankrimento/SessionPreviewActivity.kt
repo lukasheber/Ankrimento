@@ -157,6 +157,7 @@ class SessionPreviewActivity : ComponentActivity() {
                                             when (entry.modeKey) {
                                                 "priority" -> stringResource(R.string.ankrimento_preview_mode_priority)
                                                 "random" -> stringResource(R.string.ankrimento_preview_mode_random)
+                                                "deck" -> stringResource(R.string.ankrimento_preview_mode_deck)
                                                 else -> entry.mode.takeIf { it.isNotEmpty() }
                                             },
                                             entry.tag.takeIf { entry.hasTag && it.isNotEmpty() },

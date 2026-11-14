@@ -630,6 +630,7 @@
     <string name="ankrimento_settings_quick_extract">Extract in one tap</string>
     <string name="ankrimento_settings_quick_extract_help">Selected text becomes a topic, or a cloze an item, at once, with Undo (and Show topic) for a moment. Turn off to review the extract sheet first.</string>
     <string name="ankrimento_preview_mode_priority">By priority</string>
+    <string name="ankrimento_preview_mode_deck">In deck order</string>
     <string name="ankrimento_preview_mode_random">Picked at random</string>
     <string name="ankrimento_session_preview_start_new">Start a new session instead</string>
     <plurals name="ankrimento_session_resume">

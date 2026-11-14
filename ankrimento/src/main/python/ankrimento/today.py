@@ -57,7 +57,8 @@ def add_new_material(picker: Any, col: Any, per_day: int) -> None:
     _add_most_important(picker, col, kinds, left, "daily_plan_new")
     for card_id in regular_new(col, kinds):
         if card_id not in picker.picked_ids:
-            _record(picker, card_id, "items", "daily_plan_deck_new")
+            # Counted as a priority pick in the statistics, as upstream knows no other way; the preview says "deck order".
+            _record(picker, card_id, "items", "daily_plan_deck_new", order="deck")
     # Different materials, mixed: the order is not the order they were found in.
     random.shuffle(picker.selected_ids)
 
@@ -85,7 +86,29 @@ def _add_most_important(picker: Any, col: Any, kinds: dict[int, str], count: int
         _record(picker, card_id, kinds[card_id], stage)
 
 
-def _record(picker: Any, card_id: int, card_type: str, stage: str) -> None:
+def add_waiting_in_session(picker: Any, col: Any) -> None:
+    """Put the due cards a session deck still holds into a preview of a daily session.
+
+    A new session sends them home before it picks (see empty_session_decks); a preview made while they are held cannot
+    see them, as the deck gives them its positions as due, so it takes them by their own schedule (see plan).
+    """
+    from incremento.backend.topic_scheduler import is_topic_card
+
+    ids = col.find_cards(f'deck:"{SESSION_DECK_PREFIX}*"')
+    if not ids:
+        return
+    waiting = col.db.list(
+        f"select id from cards where id in ({','.join(map(str, ids))}) and queue = 2 and odue <= ?", col.sched.today
+    )
+    for card_id in [*waiting, *col.find_cards(SESSION_LEARNING)]:
+        if card_id in picker.picked_ids:
+            continue
+        card = col.get_card(card_id)
+        kind = "topics" if is_topic_card(card, classifier=picker.topic_classifier, col=col) else "items"
+        _record(picker, card_id, kind, "daily_plan")
+
+
+def _record(picker: Any, card_id: int, card_type: str, stage: str, order: str = "") -> None:
     """Put a card into the session as upstream records any pick."""
     from incremento.backend.session_selection import _record_selected_card
 
@@ -100,6 +123,7 @@ def _record(picker: Any, card_id: int, card_type: str, stage: str) -> None:
         added_to_filtered=picker.picked_ids,
         scheduler_counts=picker.scheduler_counts,
         session_counts=picker.session_counts,
+        extra_meta={"order": order} if order else None,
     )
 
 

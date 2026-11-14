@@ -613,6 +613,7 @@
     <string name="ankrimento_settings_quick_extract">一键摘录</string>
     <string name="ankrimento_settings_quick_extract_help">选中的文字立即成为主题，填空成为条目，并在片刻内可撤销或查看主题。关闭后会先显示摘录面板。</string>
     <string name="ankrimento_preview_mode_priority">按优先级</string>
+    <string name="ankrimento_preview_mode_deck">按牌组顺序</string>
     <string name="ankrimento_preview_mode_random">随机抽取</string>
     <string name="ankrimento_session_preview_start_new">改为开始新的学习</string>
     <plurals name="ankrimento_session_resume">

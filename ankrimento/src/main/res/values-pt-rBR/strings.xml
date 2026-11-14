@@ -643,6 +643,7 @@
     <string name="ankrimento_settings_quick_extract">Extrair com um toque</string>
     <string name="ankrimento_settings_quick_extract_help">O texto selecionado vira um tópico, ou um cloze vira um item, na hora, com Desfazer (e Ver tópico) por alguns instantes. Desative para revisar a folha de extração antes.</string>
     <string name="ankrimento_preview_mode_priority">Por prioridade</string>
+    <string name="ankrimento_preview_mode_deck">Na ordem do baralho</string>
     <string name="ankrimento_preview_mode_random">Sorteado</string>
     <string name="ankrimento_session_preview_start_new">Começar uma nova sessão</string>
     <plurals name="ankrimento_session_resume">
