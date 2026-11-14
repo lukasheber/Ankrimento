@@ -399,3 +399,15 @@ def test_a_preview_made_while_a_session_holds_the_due_cards_does_not_shape_the_n
     assert entered_review.wait(timeout=30)
     assert set(_session_cards(rt)) == due
     facade.reviewer_closed()
+
+
+def test_a_daily_preview_left_without_starting_does_not_change_the_next_classic_session(rt, host_events):  # noqa: F811
+    """Preview with the daily plan on, go back, turn the plan off, Start: upstream's own session, not the preview's mode."""
+    _events, entered_review = host_events
+    due, _future, _new = _scheduled(rt.col, due=6)
+    facade.session_preview("ahead", 5)  # nothing new to take: an "ahead" session would be empty
+
+    facade.start_session()
+    assert entered_review.wait(timeout=30)
+    assert set(_session_cards(rt)) == due
+    facade.reviewer_closed()

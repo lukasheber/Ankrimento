@@ -81,13 +81,14 @@ def start(branch_scope: dict | None = None, mode: str | None = None, count: int 
 
     from ankrimento import runtime, today
 
+    # Always the mode asked for, upstream's own when none is: a preview left without starting must not decide it.
+    set_mode(mode, count)
     if mode is not None:
-        set_mode(mode, count)
         today.empty_session_decks(runtime.current().col)
         if mode in (today.MODE_TODAY, today.MODE_AHEAD):
             # Chosen here, from the cards now back in their decks and with the day's plan completed (see preview).
             forget_preview()
-            preview()
+            preview(mode, count)
     try:
         learnFunction(branch_scope=branch_scope, dialog_factory=HeadlessSchedulerDialog)
     finally:
@@ -156,8 +157,7 @@ def _tag_label(value: object) -> str:
 def preview(mode: str | None = None, count: int = 0) -> dict[str, Any]:
     """The cards the next session would get, as the dialog's live preview picks them; kept for the session."""
     global _preview, _preview_signature
-    if mode is not None:
-        set_mode(mode, count)
+    set_mode(mode, count)  # upstream's own session when no mode is given
     from aqt import mw
     from incremento.backend.config_service import load_addon_config
     from incremento.backend.knowledge_tree import _card_title
