@@ -18,6 +18,7 @@ import android.system.Os
 import android.webkit.CookieManager
 import androidx.annotation.VisibleForTesting
 import androidx.core.net.toUri
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -67,12 +68,14 @@ import com.ichi2.anki.navigation.initializeNavigator
 import com.ichi2.anki.observability.ChangeManager
 import com.ichi2.anki.preferences.SharedPreferencesProvider
 import com.ichi2.anki.recorder.VoiceRecorder
+import com.ichi2.anki.reviewer.FullScreenMode
 import com.ichi2.anki.reviewreminders.ReminderLogTree
 import com.ichi2.anki.servicelayer.DebugInfoService
 import com.ichi2.anki.servicelayer.ThrowableFilterService
 import com.ichi2.anki.services.NotificationService
 import com.ichi2.anki.settings.Prefs
 import com.ichi2.anki.settings.PrefsRepository
+import com.ichi2.anki.settings.enums.HideSystemBars
 import com.ichi2.anki.startup.configureBackendTemporaryDirectory
 import com.ichi2.anki.startup.getDefaultAnkiDroidDirectory
 import com.ichi2.anki.startup.maybeSetDefaultCollectionPath
@@ -199,6 +202,7 @@ open class AnkiDroidApp :
         AnkrimentoApp.safetyBackup = { performBackupInBackground(force = true) }
         AnkrimentoApp.restartApp = { context -> safeRestartApp(context) }
         AnkrimentoApp.cardDisplay = IncrementoCardDisplay
+        AnkrimentoApp.studyHiddenBars = { studyHiddenBars() }
         WidgetStatus.register(Prefs) { context -> AnkiDroidWidgetSmall.UpdateService().doUpdate(context) }
         Animations.setPreferencesProvider { context -> PrefsRepository(context) }
         CollectionLockedException.messageProvider = {
@@ -544,6 +548,24 @@ open class AnkiDroidApp :
             TtsVoices.launchBuildLocalesJob()
         }
     }
+
+    /**
+     * The system bars AnkiDroid's study screen hides, for Ankrimento's session screens: the new study screen's
+     * Hide system bars, or the classic one's Fullscreen mode, which hides both.
+     */
+    private fun studyHiddenBars(): Int =
+        if (Prefs.isNewStudyScreenEnabled) {
+            when (Prefs.hideSystemBars) {
+                HideSystemBars.NONE -> 0
+                HideSystemBars.STATUS_BAR -> WindowInsetsCompat.Type.statusBars()
+                HideSystemBars.NAVIGATION_BAR -> WindowInsetsCompat.Type.navigationBars()
+                HideSystemBars.ALL -> WindowInsetsCompat.Type.systemBars()
+            }
+        } else if (FullScreenMode.isFullScreenReview(sharedPrefs())) {
+            WindowInsetsCompat.Type.systemBars()
+        } else {
+            0
+        }
 
     /**
      * Applies AnkiDroid-specific implementations of field filters

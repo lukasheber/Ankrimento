@@ -18,6 +18,12 @@ object AnkrimentoApp {
     /** Restarts the app once background work has finished and the collection is closed. */
     var restartApp: (suspend (Context) -> Unit)? = null
 
+    /**
+     * The system bars AnkiDroid's study screen hides (its Fullscreen mode), as `WindowInsetsCompat.Type` bits;
+     * a session's screens hide the same ones. 0 or unset: none.
+     */
+    var studyHiddenBars: (() -> Int)? = null
+
     /** AnkiDroid's own card display, for items in the learning screen; without it they open in the reviewer. */
     var cardDisplay: CardDisplay? = null
 

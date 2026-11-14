@@ -309,11 +309,23 @@ abstract class ReaderActivity : ComponentActivity() {
         view.onTap = { showChrome(!chromeVisible) }
     }
 
+    /**
+     * In a session, the system bars AnkiDroid's study screen hides (its Fullscreen mode): hidden with the reader's own
+     * bars showing too, back for a moment with a swipe from the edge.
+     */
+    private val studyHiddenBars by lazy { if (inSession) AnkrimentoApp.studyHiddenBars?.invoke() ?: 0 else 0 }
+
     private fun showChrome(show: Boolean) {
         chromeVisible = show
         WindowCompat.getInsetsController(window, window.decorView).apply {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            if (show) show(WindowInsetsCompat.Type.systemBars()) else hide(WindowInsetsCompat.Type.systemBars())
+            val bars = WindowInsetsCompat.Type.systemBars()
+            if (show) {
+                show(bars and studyHiddenBars.inv())
+                if (studyHiddenBars != 0) hide(studyHiddenBars)
+            } else {
+                hide(bars)
+            }
         }
     }
 
@@ -924,6 +936,8 @@ abstract class ReaderActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Again on return: another screen (the note editor) brings the bars back.
+        if (studyHiddenBars != 0 && chromeVisible) showChrome(true)
         if (editingNote) {
             editingNote = false
             onNoteEdited()
