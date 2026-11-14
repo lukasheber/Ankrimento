@@ -47,11 +47,12 @@ class AnkrimentoSettings(
         set(value) = preferences.edit { putBoolean(PREF_QUICK_EXTRACT, value) }
 
     /**
-     * Whether the session card follows the schedule: today's session takes what is due and nothing more, and new
-     * material is a separate "study ahead". Off: upstream's own sessions, drawn from the whole pool as on desktop.
+     * Whether the session card follows the schedule: today's session takes what is due plus the day's new cards,
+     * and more new material is a separate session once the day is done. Off (the default, what desktop users know):
+     * upstream's own sessions, drawn from the whole pool.
      */
     var dailyPlan: Boolean
-        get() = preferences.getBoolean(PREF_DAILY_PLAN, true)
+        get() = preferences.getBoolean(PREF_DAILY_PLAN, false)
         set(value) = preferences.edit { putBoolean(PREF_DAILY_PLAN, value) }
 
     /** How many new cards the day brings into its session, the most important first; 0 for none. */
