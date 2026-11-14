@@ -132,10 +132,10 @@ android {
         //
         // This ensures the correct ordering between the various types of releases (dev < alpha < beta < release) which is
         // needed for upgrades to be offered correctly.
-        // Ankrimento 0.1.0 beta 2 (AbbCCtDD = 0 01 00 2 02): its own number, not AnkiDroid's.
-        versionCode = 100202
+        // Ankrimento 0.1.0 beta 3 (AbbCCtDD = 0 01 00 2 03): its own number, not AnkiDroid's.
+        versionCode = 100203
         // If you change this to a new version, you probably also want to update .gradle/workflows/milestone.yml for the new version...
-        versionName = "0.1.0beta2"
+        versionName = "0.1.0beta3"
         testApplicationId = "com.ichi2.anki.tests"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner = "com.ichi2.testutils.NewCollectionPathTestRunner"
