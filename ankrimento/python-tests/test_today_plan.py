@@ -382,3 +382,20 @@ def test_the_preview_of_more_new_material_is_the_session(rt):
     preview = json.loads(facade.session_preview("ahead", 5))
     assert preview["count"] == 5
     assert all(entry["mode_key"] == "priority" for entry in preview["entries"])
+
+
+def test_a_preview_made_while_a_session_holds_the_due_cards_does_not_shape_the_next_one(rt, host_events):  # noqa: F811
+    """Seen on a device: a classic session held the due cards, the preview then saw none, and the new daily session
+    started from that same choice instead of from the cards sent home."""
+    _events, entered_review = host_events
+    due, _future, _new = _scheduled(rt.col, due=8)
+    facade.start_session()
+    assert entered_review.wait(timeout=30)
+    facade.reviewer_closed()
+    entered_review.clear()
+
+    facade.session_preview("today", 0)
+    facade.start_session("today", 0)
+    assert entered_review.wait(timeout=30)
+    assert set(_session_cards(rt)) == due
+    facade.reviewer_closed()
