@@ -677,7 +677,7 @@
     <string name="ankrimento_sync_hub_paired">Pareado com o hub</string>
     <string name="ankrimento_video_tip">Dica: + extrai o momento atual, o colchete marca um trecho, o marcador guarda o lugar. Toque no vídeo para ver os controles.</string>
     <string name="ankrimento_today_start" comment="Button that starts today's session of what is due">Começar hoje</string>
-    <string name="ankrimento_study_ahead" comment="Button that studies new material after the day's work is done">Estudar adiante</string>
+    <string name="ankrimento_study_ahead" comment="Button that studies new material after the day's work is done">Material novo</string>
     <string name="ankrimento_today_done">Tudo feito por hoje</string>
     <string name="ankrimento_today_progress" comment="Progress of the day: cards done, cards still due">%1$d feitos · %2$d restantes</string>
     <plurals name="ankrimento_today_due">
@@ -686,8 +686,8 @@
         <item quantity="other">%d para hoje</item>
     </plurals>
     <string name="ankrimento_settings_daily_plan">Plano diário</string>
-    <string name="ankrimento_settings_daily_plan_help">O cartão do Incremento segue a agenda: Começar leva tudo o que vence hoje e nada mais, e material novo fica em Estudar adiante, depois que o dia termina. Desligado: as sessões vêm de todo o conjunto, como no desktop.</string>
-    <string name="ankrimento_settings_study_ahead">Tamanho de Estudar adiante</string>
+    <string name="ankrimento_settings_daily_plan_help">O cartão do Incremento segue a agenda: Começar leva tudo o que vence hoje e nada mais, e o material que você ainda não começou fica no botão Material novo, depois que o dia termina. Desligado: as sessões vêm de todo o conjunto, como no desktop.</string>
+    <string name="ankrimento_settings_study_ahead">Material novo por sessão</string>
     <string name="ankrimento_session_in_progress" comment="Short status on the session card">Sessão em andamento</string>
     <string name="ankrimento_card_left" comment="Cards left in the session, on the session card">%d restantes</string>
 </resources>
