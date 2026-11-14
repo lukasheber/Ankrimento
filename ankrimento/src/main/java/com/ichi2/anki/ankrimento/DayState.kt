@@ -2,28 +2,33 @@
 
 package com.ichi2.anki.ankrimento
 
-/** What the schedule says today: cards due now, and cards answered today. */
+/** What the day holds: cards due now, new material still to come, and cards answered today. */
 internal data class TodayPlan(
     val due: Int,
     val done: Int,
+    /** New material the day still brings, of the daily amount. */
+    val new: Int = 0,
 ) {
+    /** Cards left today: what is due and the new material still to come. */
+    val left: Int get() = due + new
+
     /** How much of the day's work is finished, 0 to 1; a day with nothing planned is complete. */
-    val progress: Float get() = if (due + done == 0) 1f else done.toFloat() / (done + due)
+    val progress: Float get() = if (left + done == 0) 1f else done.toFloat() / (done + left)
 }
 
 /**
- * The kind of session to start next: today's when cards are due, new material (study ahead) once nothing is, and
- * upstream's own with the daily plan off.
+ * The kind of session to start next, with its number of cards: today's while anything is left of the day (the number
+ * is the daily amount of new material), more new material once nothing is, and upstream's own with the daily plan off.
  */
 internal fun nextSessionMode(
     plan: TodayPlan?,
     dailyPlan: Boolean,
-    studyAhead: Int,
+    newPerDay: Int,
 ): Pair<Ankrimento.SessionMode, Int> =
     when {
         !dailyPlan || plan == null -> Ankrimento.SessionMode.CLASSIC to 0
-        plan.due > 0 -> Ankrimento.SessionMode.TODAY to 0
-        else -> Ankrimento.SessionMode.AHEAD to studyAhead
+        plan.left > 0 -> Ankrimento.SessionMode.TODAY to newPerDay
+        else -> Ankrimento.SessionMode.AHEAD to (newPerDay.takeIf { it > 0 } ?: AnkrimentoSettings.DEFAULT_NEW_PER_DAY)
     }
 
 /**
@@ -36,12 +41,12 @@ internal sealed interface DayState {
         val remaining: Int,
     ) : DayState
 
-    /** Cards are due and no session is under way: today's session takes all of them. */
+    /** Cards are left today and no session is under way: today's session takes all of them. */
     data class Start(
-        val due: Int,
+        val left: Int,
     ) : DayState
 
-    /** Nothing is due: the day is done. New material is offered as studying ahead. */
+    /** Nothing is left: the day is done. More new material is offered, as a choice. */
     data class Done(
         val done: Int,
     ) : DayState
@@ -65,7 +70,7 @@ internal sealed interface DayState {
             when {
                 !dailyPlan || plan == null -> Classic(remaining)
                 remaining != null && remaining > 0 -> Continue(remaining)
-                plan.due > 0 -> Start(plan.due)
+                plan.left > 0 -> Start(plan.left)
                 else -> Done(plan.done)
             }
     }

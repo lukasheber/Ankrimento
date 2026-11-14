@@ -692,8 +692,8 @@
         <item quantity="other">%d za danas</item>
     </plurals>
     <string name="ankrimento_settings_daily_plan">Dnevni plan</string>
-    <string name="ankrimento_settings_daily_plan_help">Incremento kartica prati raspored: Počni uzima sve što je danas na redu i ništa više, a materijal koji još nisi započeo je zasebno gumb Novi materijal kad je dan gotov. Isključeno: sesije se biraju iz cijelog skupa, kao na računalu.</string>
-    <string name="ankrimento_settings_study_ahead">Novi materijal po sesiji</string>
+    <string name="ankrimento_settings_daily_plan_help">Incremento kartica prati raspored: Počni uzima sve što je danas na redu, plus količinu novog materijala postavljenu ispod (najvažnije prvo), sve pomiješano. Kad je dan gotov, gumb Novi materijal donosi još. Isključeno: sesije se biraju iz cijelog skupa, kao na računalu.</string>
+    <string name="ankrimento_settings_study_ahead">Novi materijal po danu</string>
     <string name="ankrimento_session_in_progress" comment="Short status on the session card">Sesija je u tijeku</string>
     <string name="ankrimento_card_left" comment="Cards left in the session, on the session card">preostalo: %d</string>
 </resources>

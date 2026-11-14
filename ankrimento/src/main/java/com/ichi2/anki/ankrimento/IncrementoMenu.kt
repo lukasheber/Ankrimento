@@ -136,7 +136,7 @@ class IncrementoMenu(
                 activity.startActivity(GettingStartedActivity.intent(activity))
             },
             SessionCardAction(IncrementoIcons.Contents, R.string.ankrimento_session_preview) {
-                val (mode, count) = nextSessionMode(plan, dailyPlan, settings.studyAheadCount)
+                val (mode, count) = nextSessionMode(plan, dailyPlan, settings.newPerDay)
                 preview.launch(SessionPreviewActivity.intent(activity, sessionRemaining ?: 0, mode, count))
             },
             SessionCardAction(IncrementoIcons.Search, R.string.ankrimento_search_all) {
@@ -183,7 +183,7 @@ class IncrementoMenu(
         // Needs the Python side; until that runs (or with the plan off) the card is upstream's own.
         plan =
             if (dailyPlan) {
-                runCatching { withContext(Dispatchers.IO) { Ankrimento.todayPlan() } }
+                runCatching { withContext(Dispatchers.IO) { Ankrimento.todayPlan(settings.newPerDay) } }
                     .onFailure { Timber.d(it, "The day's plan is not available yet") }
                     .getOrNull()
             } else {
@@ -226,8 +226,8 @@ class IncrementoMenu(
             sessionStarting = true
             withContext(Dispatchers.IO) {
                 // Chosen now, from what is due now (the card may have been showing yesterday's plan).
-                val today = if (settings.dailyPlan) runCatching { Ankrimento.todayPlan() }.getOrNull() else null
-                val (mode, count) = nextSessionMode(today, settings.dailyPlan, settings.studyAheadCount)
+                val today = if (settings.dailyPlan) runCatching { Ankrimento.todayPlan(settings.newPerDay) }.getOrNull() else null
+                val (mode, count) = nextSessionMode(today, settings.dailyPlan, settings.newPerDay)
                 Ankrimento.startSession(mode, count)
             }
         }.onFailure { error ->

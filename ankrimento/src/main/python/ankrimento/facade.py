@@ -30,8 +30,9 @@ def start_session(mode: str | None = None, count: int = 0) -> None:
 
     Runs in the background; when the deck is ready the host receives a
     ``move_to_state`` event with ``state == "review"``, or a message if no
-    cards were found. ``mode`` is ``"today"`` (everything due), ``"ahead"``
-    (``count`` new cards) or absent for upstream's own session.
+    cards were found. ``mode`` is ``"today"`` (everything due, and up to
+    ``count`` new cards a day mixed in), ``"ahead"`` (``count`` new cards) or
+    absent for upstream's own session.
     """
     from ankrimento import session
 
@@ -45,11 +46,11 @@ def session_preview(mode: str | None = None, count: int = 0) -> str:
     return _dumps(session.preview(mode, count))
 
 
-def today_plan() -> str:
-    """What is due today and how many cards were answered today."""
+def today_plan(new_per_day: int = 0) -> str:
+    """What is due today, how much new material the day still brings (of ``new_per_day``), and cards answered today."""
     from ankrimento import today
 
-    return _dumps(today.plan(runtime.current().col))
+    return _dumps(today.plan(runtime.current().col, int(new_per_day)))
 
 
 def session_settings() -> str:

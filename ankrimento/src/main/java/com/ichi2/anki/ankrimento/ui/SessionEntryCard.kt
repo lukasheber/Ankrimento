@@ -115,7 +115,7 @@ internal fun SessionEntryCard(
                 }
             }
         }
-        if (plan != null && plan.due + plan.done > 0) {
+        if (plan != null && plan.left + plan.done > 0) {
             // The day across the whole card, apart from the buttons.
             LinearProgressIndicator(
                 progress = { plan.progress },
@@ -130,7 +130,7 @@ internal fun SessionEntryCard(
 private fun statusText(state: DayState): String =
     when (state) {
         is DayState.Continue -> stringResource(R.string.ankrimento_session_in_progress)
-        is DayState.Start -> pluralStringResource(R.plurals.ankrimento_today_due, state.due, state.due)
+        is DayState.Start -> pluralStringResource(R.plurals.ankrimento_today_due, state.left, state.left)
         is DayState.Done -> stringResource(R.string.ankrimento_today_done)
         is DayState.Classic ->
             if ((state.remaining ?: 0) > 0) {
@@ -148,9 +148,9 @@ private fun countsText(
 ): String? =
     when {
         state is DayState.Classic -> state.remaining?.takeIf { it > 0 }?.let { stringResource(R.string.ankrimento_card_left, it) }
-        plan == null || plan.due + plan.done == 0 -> null
+        plan == null || plan.left + plan.done == 0 -> null
         state is DayState.Start && plan.done == 0 -> null
-        else -> stringResource(R.string.ankrimento_today_progress, plan.done, plan.due)
+        else -> stringResource(R.string.ankrimento_today_progress, plan.done, plan.left)
     }
 
 private fun buttonLabel(state: DayState): Int =

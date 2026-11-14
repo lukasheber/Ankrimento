@@ -33,8 +33,13 @@ def _isolated(rt):
     session.forget_preview()
 
 
-def _plan() -> dict:
-    return json.loads(facade.today_plan())
+def _amount(rt, n: int) -> int:
+    """A daily amount of ``n`` new cards on top of those the tests before this one already started today."""
+    return len(rt.col.find_cards("introduced:1")) + n
+
+
+def _plan(new_per_day: int = 0) -> dict:
+    return json.loads(facade.today_plan(new_per_day))
 
 
 def _scheduled(col, due=0, future=0, new=0):
@@ -53,7 +58,7 @@ def _scheduled(col, due=0, future=0, new=0):
 
 def test_the_plan_counts_what_is_due_and_nothing_scheduled_later_or_new(rt):
     _scheduled(rt.col, due=6, future=4, new=5)
-    assert _plan()["due"] == 6
+    assert _plan() == {"due": 6, "new": 0, "done": _plan()["done"]}
 
 
 def test_the_plan_counts_what_was_done_today(rt):
@@ -61,7 +66,7 @@ def test_the_plan_counts_what_was_done_today(rt):
     due, _future, _new = _scheduled(rt.col, due=6)
     for card_id in sorted(due)[:2]:
         _answer_good(rt.col, card_id)
-    assert _plan() == {"due": 4, "done": done_before + 2}
+    assert _plan() == {"due": 4, "new": 0, "done": done_before + 2}
 
 
 def test_nothing_due_means_the_day_is_done(rt):
@@ -172,6 +177,7 @@ def test_the_preview_of_a_daily_session_is_the_session(rt, host_events):  # noqa
     due, _future, _new = _scheduled(rt.col, due=40, new=10)
     preview = json.loads(facade.session_preview("today", 0))
     assert {entry["card_id"] for entry in preview["entries"]} == due
+    assert preview["target"] == preview["count"]  # the plan is the whole session: nothing "fewer than asked for"
 
     facade.start_session("today", 0)
     assert entered_review.wait(timeout=30)
@@ -184,3 +190,85 @@ def _session_cards(rt):
 
     deck_id = rt.col.decks.id_for_name(incremento_session_deck_name(None))
     return rt.col.find_cards(f"did:{deck_id}")
+
+
+def _prioritised(rt, card_ids):
+    """Give the cards priorities 1, 2, 3...: the first is the most important."""
+    from incremento.backend.priority_manager import set_priority
+
+    for rank, card_id in enumerate(card_ids, start=1):
+        set_priority(str(rt.addon_dir), rt.profile, card_id, float(rank))
+
+
+def test_new_material_is_mixed_in_up_to_the_daily_amount_by_priority(rt, host_events):  # noqa: F811
+    _events, entered_review = host_events
+    due, _future, new = _scheduled(rt.col, due=6, new=12)
+    ranked = sorted(new)
+    _prioritised(rt, ranked)
+
+    amount = _amount(rt, 4)
+    assert _plan(amount) == {"due": 6, "new": 4, "done": _plan(amount)["done"]}
+    facade.start_session("today", amount)
+    assert entered_review.wait(timeout=30)
+    assert set(_session_cards(rt)) == due | set(ranked[:4])
+    facade.reviewer_closed()
+
+
+def test_a_second_session_the_same_day_adds_only_what_is_left_of_the_amount(rt, host_events):  # noqa: F811
+    _events, entered_review = host_events
+    _due, _future, new = _scheduled(rt.col, due=2, new=12)
+    ranked = sorted(new)
+    _prioritised(rt, ranked)
+    amount = _amount(rt, 4)
+    facade.start_session("today", amount)
+    assert entered_review.wait(timeout=30)
+    for card_id in ranked[:3]:  # three of the four new cards are started
+        _answer_good(rt.col, card_id)
+    facade.reviewer_closed()
+    entered_review.clear()
+
+    assert _plan(amount)["new"] == 1
+    facade.start_session("today", amount)
+    assert entered_review.wait(timeout=30)
+    # The three started ones are learning cards now, due again: what is new in the session is the one that is left.
+    new_in_session = {card_id for card_id in _session_cards(rt) if rt.col.get_card(card_id).type == 0}
+    assert new_in_session == {ranked[3]}
+    facade.reviewer_closed()
+
+
+def test_the_plan_counts_no_more_new_material_than_there_is(rt):
+    _scheduled(rt.col, due=3, new=2)
+    assert _plan(_amount(rt, 5))["new"] == 2
+
+
+def test_no_daily_amount_means_no_new_material(rt, host_events):  # noqa: F811
+    _events, entered_review = host_events
+    due, _future, _new = _scheduled(rt.col, due=4, new=6)
+    facade.start_session("today", 0)
+    assert entered_review.wait(timeout=30)
+    assert set(_session_cards(rt)) == due
+    facade.reviewer_closed()
+
+
+def test_the_preview_of_a_daily_session_counts_its_new_material_in_its_size(rt):
+    _scheduled(rt.col, due=4, new=6)
+    preview = json.loads(facade.session_preview("today", _amount(rt, 3)))
+    assert preview["count"] == 7
+    assert preview["target"] == 7
+
+
+def test_new_material_waiting_in_the_session_is_still_left_of_the_day(rt, host_events):  # noqa: F811
+    _events, entered_review = host_events
+    _due, _future, new = _scheduled(rt.col, due=3, new=4)  # all the new material there is goes into the session
+    ranked = sorted(new)
+    _prioritised(rt, ranked)
+    amount = _amount(rt, 4)
+    assert _plan(amount)["new"] == 4
+
+    facade.start_session("today", amount)
+    assert entered_review.wait(timeout=30)
+    assert _plan(amount) == {"due": 3, "new": 4, "done": _plan(amount)["done"]}
+    _answer_good(rt.col, ranked[0])  # one of the four is started
+    plan = _plan(amount)
+    assert plan["new"] == 3
+    facade.reviewer_closed()

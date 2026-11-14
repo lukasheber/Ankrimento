@@ -415,7 +415,7 @@ object Ankrimento {
         requireFacade().callAttr("start_session")
     }
 
-    /** How a session is chosen: upstream's own, everything due today, or [count] new cards (study ahead). */
+    /** How a session is chosen: upstream's own, everything due today with a daily amount of new material, or [count] new cards. */
     enum class SessionMode(
         internal val key: String?,
     ) {
@@ -433,11 +433,11 @@ object Ankrimento {
         requireFacade().callAttr("start_session", mode.key, count)
     }
 
-    /** What the schedule says today: cards due now and cards answered today. */
+    /** What the day holds: cards due, new material still to come (of [newPerDay]) and cards answered. */
     @WorkerThread
-    internal fun todayPlan(): TodayPlan {
-        val json = JSONObject(requireFacade().callAttr("today_plan").toString())
-        return TodayPlan(due = json.getInt("due"), done = json.getInt("done"))
+    internal fun todayPlan(newPerDay: Int = 0): TodayPlan {
+        val json = JSONObject(requireFacade().callAttr("today_plan", newPerDay).toString())
+        return TodayPlan(due = json.getInt("due"), done = json.getInt("done"), new = json.getInt("new"))
     }
 
     /** The filtered deck sessions fill, as upstream names it. */

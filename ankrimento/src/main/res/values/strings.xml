@@ -668,12 +668,12 @@
     <string name="ankrimento_today_done">Done for today</string>
     <string name="ankrimento_today_progress" comment="Progress of the day: cards done, cards still due">%1$d done · %2$d left</string>
     <plurals name="ankrimento_today_due">
-        <item quantity="one">%d due today</item>
-        <item quantity="other">%d due today</item>
+        <item quantity="one">%d for today</item>
+        <item quantity="other">%d for today</item>
     </plurals>
     <string name="ankrimento_settings_daily_plan">Daily plan</string>
-    <string name="ankrimento_settings_daily_plan_help">The Incremento card follows the schedule: Start takes everything due today and nothing else, and material you have not started yet is a separate New material button once the day is done. Off: sessions are drawn from the whole pool, as on desktop.</string>
-    <string name="ankrimento_settings_study_ahead">New material per session</string>
+    <string name="ankrimento_settings_daily_plan_help">The Incremento card follows the schedule: Start takes everything due today, plus the amount of new material set below (the most important first), all mixed together. Once the day is done, the New material button brings in more. Off: sessions are drawn from the whole pool, as on desktop.</string>
+    <string name="ankrimento_settings_study_ahead">New material per day</string>
     <string name="ankrimento_session_in_progress" comment="Short status on the session card">Session in progress</string>
     <string name="ankrimento_card_left" comment="Cards left in the session, on the session card">%d left</string>
 </resources>

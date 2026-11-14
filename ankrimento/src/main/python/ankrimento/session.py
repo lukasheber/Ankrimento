@@ -180,6 +180,7 @@ def preview(mode: str | None = None, count: int = 0) -> dict[str, Any]:
     picker.pick_until(cfg.session_card_count)
     if _mode == today.MODE_TODAY:
         today.add_due_documents(picker, rt.col)
+        today.add_new_material(picker, rt.col, _count)
     result = picker.result()
     # Mirrors _session_preview_data.
     _preview = {
@@ -205,4 +206,6 @@ def preview(mode: str | None = None, count: int = 0) -> dict[str, Any]:
                 "has_tag": bool(meta.get("tag")) and meta.get("tag") != _no_tags_key(),
             }
         )
-    return {"count": len(entries), "target": int(cfg.session_card_count), "entries": entries}
+    # A day's plan is the whole session: its size is what it holds, so nothing is "fewer than asked for".
+    target = len(entries) if _mode == today.MODE_TODAY else int(cfg.session_card_count)
+    return {"count": len(entries), "target": target, "entries": entries}

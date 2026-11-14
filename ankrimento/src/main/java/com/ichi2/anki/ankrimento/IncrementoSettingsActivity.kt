@@ -712,10 +712,10 @@ class IncrementoSettingsActivity : ComponentActivity() {
             device.dailyPlan = it
         }
         if (dailyPlan) {
-            var ahead by remember { mutableStateOf(device.studyAheadCount) }
-            PercentSlider(R.string.ankrimento_settings_study_ahead, ahead, 1..100, suffix = "") {
-                ahead = it
-                device.studyAheadCount = it
+            var newPerDay by remember { mutableStateOf(device.newPerDay) }
+            PercentSlider(R.string.ankrimento_settings_study_ahead, newPerDay, 0..100, suffix = "") {
+                newPerDay = it
+                device.newPerDay = it
             }
         }
         Header(R.string.ankrimento_settings_size_mix)

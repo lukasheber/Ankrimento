@@ -649,11 +649,11 @@
     <string name="ankrimento_today_done">今天已完成</string>
     <string name="ankrimento_today_progress" comment="Progress of the day: cards done, cards still due">已完成 %1$d · 剩余 %2$d</string>
     <plurals name="ankrimento_today_due">
-        <item quantity="other">今天到期 %d</item>
+        <item quantity="other">今天 %d 项</item>
     </plurals>
     <string name="ankrimento_settings_daily_plan">每日计划</string>
-    <string name="ankrimento_settings_daily_plan_help">Incremento 卡片按日程进行：“开始”只学今天到期的全部内容，尚未开始的材料在当天完成后通过“新材料”按钮另行学习。关闭：像桌面版一样从整个池中抽取。</string>
-    <string name="ankrimento_settings_study_ahead">每次新材料数量</string>
+    <string name="ankrimento_settings_daily_plan_help">Incremento 卡片按日程进行：“开始”包含今天到期的全部内容，加上下面设定数量的新材料（最重要的优先），全部混合。当天完成后，“新材料”按钮可带来更多。关闭：像桌面版一样从整个池中抽取。</string>
+    <string name="ankrimento_settings_study_ahead">每天新材料数量</string>
     <string name="ankrimento_session_in_progress" comment="Short status on the session card">会话进行中</string>
     <string name="ankrimento_card_left" comment="Cards left in the session, on the session card">剩余 %d</string>
 </resources>

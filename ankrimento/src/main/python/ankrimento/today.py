@@ -9,10 +9,12 @@ one session (see ``session.HeadlessSchedulerDialog.to_config``).
 
 from __future__ import annotations
 
+import copy
+import random
 from typing import Any
 
 MODE_CLASSIC = "classic"  # upstream's own session, from the saved settings
-MODE_TODAY = "today"  # every reviewed card that is due, no new cards
+MODE_TODAY = "today"  # every card that is due, and a daily amount of new material mixed in
 MODE_AHEAD = "ahead"  # new material only, in the size asked for
 
 # Reviewed cards waiting to be studied: learning and review cards (not new, buried or suspended ones). A card in a
@@ -24,6 +26,8 @@ DUE_CARDS = "((is:learn is:due) OR (is:review is:due)) -deck:filtered"
 DOCUMENTS = 'note:"Incremento PDF" OR note:"Incremento EPUB"'
 SESSION_LEARNING = '(deck:"Incremento Session*" is:learn is:due)'
 SESSION_DECK_PREFIX = "Incremento Session"
+# Material not started yet that a session may bring in: not suspended, postponed or held in a filtered deck.
+NEW_READY = "is:new -is:suspended -is:buried -deck:filtered"
 
 
 def due_search(col: Any) -> str:
@@ -38,6 +42,38 @@ def due_documents(col: Any) -> list[int]:
     from incremento.backend.topic_review_actions import reader_revisit_filter
 
     return list(col.find_cards(f"{DUE_CARDS} ({DOCUMENTS}) {reader_revisit_filter(col)}"))
+
+
+def add_new_material(picker: Any, col: Any, per_day: int) -> None:
+    """Mix what is left of the day's new material into the session, the most important first, then shuffle it all."""
+    from incremento.backend import cards as card_utils
+    from incremento.backend.session_selection import _record_selected_card
+
+    left = new_left_today(col, per_day) if per_day > 0 else 0
+    if left:
+        kinds = new_material(col)
+        ranked = card_utils.sort_cards_for_priority_mode(
+            [card_id for card_id in kinds if card_id not in picker.picked_ids],
+            picker.addon_dir,
+            lower_is_more_important=picker.cfg.priority_lower_is_more_important,
+            col=col,
+            profile=picker.profile,
+        )
+        for card_id in ranked[:left]:
+            _record_selected_card(
+                card_id=card_id,
+                card_type=kinds[card_id],
+                tag=None,
+                mode="priority",
+                stage="daily_plan_new",
+                selected_ids=picker.selected_ids,
+                picked_meta=picker.picked_meta,
+                added_to_filtered=picker.picked_ids,
+                scheduler_counts=picker.scheduler_counts,
+                session_counts=picker.session_counts,
+            )
+    # Different materials, mixed: the order is not the order they were found in.
+    random.shuffle(picker.selected_ids)
 
 
 def empty_session_decks(col: Any) -> None:
@@ -73,9 +109,49 @@ def add_due_documents(picker: Any, col: Any) -> None:
         )
 
 
-def plan(col: Any) -> dict[str, int]:
-    """How many cards are due now (in the decks and still waiting in the session) and how many were answered today."""
-    return {"due": len(col.find_cards(due_search(col))) + _waiting_in_session(col), "done": len(col.find_cards("rated:1"))}
+def new_material(col: Any) -> dict[int, str]:
+    """The material not started yet that sessions may use, with its kind as upstream names it: topics, items, pdf, epub."""
+    from aqt import mw
+    from incremento.backend import cards as card_utils
+    from incremento.backend.config_service import load_addon_config
+    from incremento.backend.scheduler_config import load_scheduler_config
+    from incremento.backend.topic_scheduler import resolve_topic_card_classifier
+
+    cfg = load_scheduler_config()
+    classifier = resolve_topic_card_classifier(copy.deepcopy(load_addon_config(mw.addonManager, "incremento")), scheduler_config=cfg)
+    kinds: dict[int, str] = {}
+    for card_id in card_utils.get_all_item_cards(items_filter=cfg.items_filter, ready_filter=NEW_READY, col=col, topic_classifier=classifier):
+        kinds[card_id] = "items"
+    for card_id in card_utils.get_all_topic_cards(topics_filter=cfg.topics_filter, ready_filter=NEW_READY, col=col, topic_classifier=classifier):
+        kinds[card_id] = "topics"
+    for card_id in col.find_cards(f"{NEW_READY} ({DOCUMENTS})"):
+        kinds[card_id] = card_utils.get_document_card_type(card_id, col=col) or "pdf"
+    return kinds
+
+
+def new_left_today(col: Any, per_day: int) -> int:
+    """What is left of the daily amount of new material: new cards started today (answered for the first time) count."""
+    return max(0, int(per_day) - len(col.find_cards("introduced:1")))
+
+
+def plan(col: Any, new_per_day: int = 0) -> dict[str, int]:
+    """Cards due now (in the decks and still waiting in the session), new material the day still brings, cards answered today."""
+    left = new_left_today(col, new_per_day) if new_per_day > 0 else 0
+    # New material already in the session is still to come (a new session would send it home and choose again).
+    available = len(new_material(col)) + _new_in_session(col) if left else 0
+    return {
+        "due": len(col.find_cards(due_search(col))) + _waiting_in_session(col),
+        "new": min(left, available),
+        "done": len(col.find_cards("rated:1")),
+    }
+
+
+def _new_in_session(col: Any) -> int:
+    """New cards waiting in the session deck (not postponed)."""
+    ids = col.find_cards(f'deck:"{SESSION_DECK_PREFIX}*"')
+    if not ids:
+        return 0
+    return int(col.db.scalar(f"select count() from cards where id in ({','.join(map(str, ids))}) and queue = 0") or 0)
 
 
 def _waiting_in_session(col: Any) -> int:

@@ -54,10 +54,10 @@ class AnkrimentoSettings(
         get() = preferences.getBoolean(PREF_DAILY_PLAN, true)
         set(value) = preferences.edit { putBoolean(PREF_DAILY_PLAN, value) }
 
-    /** How many new cards a study-ahead session brings in. */
-    var studyAheadCount: Int
-        get() = preferences.getInt(PREF_STUDY_AHEAD, DEFAULT_STUDY_AHEAD)
-        set(value) = preferences.edit { putInt(PREF_STUDY_AHEAD, value.coerceAtLeast(1)) }
+    /** How many new cards the day brings into its session, the most important first; 0 for none. */
+    var newPerDay: Int
+        get() = preferences.getInt(PREF_NEW_PER_DAY, DEFAULT_NEW_PER_DAY)
+        set(value) = preferences.edit { putInt(PREF_NEW_PER_DAY, value.coerceAtLeast(0)) }
 
     /** The one-time hint about the video reader's icons has been shown. */
     var videoTipShown: Boolean
@@ -88,7 +88,10 @@ class AnkrimentoSettings(
     val deviceName: String
         get() = preferences.getString(PREF_DEVICE_NAME, null) ?: Build.MODEL
 
-    private companion object {
+    companion object {
+        /** New material the day brings into its session by default. */
+        const val DEFAULT_NEW_PER_DAY = 10
+
         const val PREF_PROFILE = "profile"
         const val PREF_SYNC_HUB = "sync_hub"
         const val PREF_DEVICE_NAME = "device_name"
@@ -97,13 +100,11 @@ class AnkrimentoSettings(
         const val PREF_ONBOARDING_VERSION = "onboarding_version"
         const val PREF_QUICK_EXTRACT = "quick_extract"
         const val PREF_DAILY_PLAN = "daily_plan"
-        const val PREF_STUDY_AHEAD = "study_ahead_count"
+        const val PREF_NEW_PER_DAY = "new_per_day"
         const val PREF_SYNC_ADDON = "sync_addon_enabled"
         const val PREF_VOLUME_KEYS = "volume_keys_turn_pages"
         const val PREF_EXTRACT_TIP = "extract_tip_shown"
         const val PREF_VIDEO_TIP = "video_tip_shown"
-
-        const val DEFAULT_STUDY_AHEAD = 10
 
         /** Upstream's default session deck name. */
         const val DEFAULT_SESSION_DECK = "Incremento Session"
