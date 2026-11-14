@@ -161,14 +161,15 @@ def preview(mode: str | None = None, count: int = 0) -> dict[str, Any]:
     from aqt import mw
     from incremento.backend.config_service import load_addon_config
     from incremento.backend.knowledge_tree import _card_title
-    from incremento.backend.session_selection import incremento_session_deck_name, select_session_cards
+    from incremento.backend.session_selection import SessionPicker, incremento_session_deck_name
     from incremento.backend.topic_scheduler import resolve_topic_card_classifier
 
-    from ankrimento import presets, runtime
+    from ankrimento import presets, runtime, today
 
     rt = runtime.current()
     cfg = scheduler_config()
-    result = select_session_cards(
+    # What select_session_cards does, with the picker in hand to add the due documents to a day's plan.
+    picker = SessionPicker(
         cfg,
         str(rt.addon_dir),
         col=rt.col,
@@ -176,6 +177,10 @@ def preview(mode: str | None = None, count: int = 0) -> dict[str, Any]:
         topic_classifier=resolve_topic_card_classifier(copy.deepcopy(load_addon_config(mw.addonManager, "incremento")), scheduler_config=cfg),
         session_deck_name=incremento_session_deck_name(presets.selected()),
     )
+    picker.pick_until(cfg.session_card_count)
+    if _mode == today.MODE_TODAY:
+        today.add_due_documents(picker, rt.col)
+    result = picker.result()
     # Mirrors _session_preview_data.
     _preview = {
         "selected_ids": list(result.selected_ids),

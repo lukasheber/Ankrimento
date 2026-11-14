@@ -18,13 +18,26 @@ MODE_AHEAD = "ahead"  # new material only, in the size asked for
 # Reviewed cards waiting to be studied: learning and review cards (not new, buried or suspended ones). A card in a
 # filtered deck has had its due replaced by a position in it, which says nothing about its schedule, so decks like
 # that are left out here and the session's own are counted from the due they had before (see _waiting_in_session).
-# PDF and EPUB documents are not here: upstream offers them to every session whether or not they are due, a share of
-# the topics set by "Documents within topics", so they cannot be part of what is "due today". (Videos and web pages
-# are ordinary topics, due when their schedule says so.)
+DUE_CARDS = "((is:learn is:due) OR (is:review is:due)) -deck:filtered"
+# Documents are topics with a due like any other. Upstream's picker ignores that due for them (it calls them
+# "normally due-independent readers"), so a daily session adds them itself, when they are due and not paused by Revisit.
 DOCUMENTS = 'note:"Incremento PDF" OR note:"Incremento EPUB"'
-DUE = f"((is:learn is:due) OR (is:review is:due)) -deck:filtered -({DOCUMENTS})"
-SESSION_LEARNING = f'(deck:"Incremento Session*" is:learn is:due -({DOCUMENTS}))'
+SESSION_LEARNING = '(deck:"Incremento Session*" is:learn is:due)'
 SESSION_DECK_PREFIX = "Incremento Session"
+
+
+def due_search(col: Any) -> str:
+    """What is due: reviewed cards whose date has come, except documents paused with Revisit."""
+    from incremento.backend.topic_review_actions import reader_revisit_filter
+
+    return f"{DUE_CARDS} (-({DOCUMENTS}) OR {reader_revisit_filter(col)})"
+
+
+def due_documents(col: Any) -> list[int]:
+    """The documents that are due and not paused with Revisit."""
+    from incremento.backend.topic_review_actions import reader_revisit_filter
+
+    return list(col.find_cards(f"{DUE_CARDS} ({DOCUMENTS}) {reader_revisit_filter(col)}"))
 
 
 def empty_session_decks(col: Any) -> None:
@@ -38,15 +51,37 @@ def empty_session_decks(col: Any) -> None:
             col.sched.empty_filtered_deck(deck.id)
 
 
+def add_due_documents(picker: Any, col: Any) -> None:
+    """Put the due documents the picker left out into the session, recorded as upstream records any pick."""
+    from incremento.backend import cards as card_utils
+    from incremento.backend.session_selection import _record_selected_card
+
+    for card_id in due_documents(col):
+        if card_id in picker.picked_ids:
+            continue
+        _record_selected_card(
+            card_id=card_id,
+            card_type=card_utils.get_document_card_type(card_id, col=col) or "pdf",
+            tag=None,
+            mode="priority",
+            stage="daily_plan",
+            selected_ids=picker.selected_ids,
+            picked_meta=picker.picked_meta,
+            added_to_filtered=picker.picked_ids,
+            scheduler_counts=picker.scheduler_counts,
+            session_counts=picker.session_counts,
+        )
+
+
 def plan(col: Any) -> dict[str, int]:
     """How many cards are due now (in the decks and still waiting in the session) and how many were answered today."""
-    return {"due": len(col.find_cards(DUE)) + _waiting_in_session(col), "done": len(col.find_cards("rated:1"))}
+    return {"due": len(col.find_cards(due_search(col))) + _waiting_in_session(col), "done": len(col.find_cards("rated:1"))}
 
 
 def _waiting_in_session(col: Any) -> int:
     """Cards still waiting in the session deck: review cards whose own due has come (the deck gives them a position
     as due, so that one says nothing), and learning cards that are due. Postponed (buried) ones are not waiting."""
-    ids = col.find_cards(f'deck:"{SESSION_DECK_PREFIX}*" -({DOCUMENTS})')
+    ids = col.find_cards(f'deck:"{SESSION_DECK_PREFIX}*"')
     if not ids:
         return 0
     reviews = col.db.scalar(
@@ -62,7 +97,7 @@ def apply_mode(cfg: Any, mode: str, count: int, due: int) -> None:
         cfg.include_learning = True
         cfg.include_due = True
         cfg.session_card_count = max(1, due)
-        # Documents are not part of the day's plan (see DOCUMENTS): their share would take slots from what is due.
+        # The picker's share of documents ignores their due; the due ones are added afterwards (add_due_documents).
         cfg.pdf_rate = 0.0
         # The session is the day's plan as it stood at the start; nothing tops it up with other cards.
         cfg.auto_refill_session = False

@@ -108,28 +108,31 @@ def test_cards_waiting_in_the_session_count_by_their_own_schedule(rt, host_event
     facade.reviewer_closed()
 
 
-def test_documents_are_not_part_of_the_days_plan(rt, tmp_path, host_events):  # noqa: F811
-    """Upstream offers documents to every session, due or not, as a share of the topics: they cannot be "due today"."""
+def test_a_document_is_a_topic_due_when_its_date_has_come(rt, tmp_path, host_events):  # noqa: F811
+    """Upstream's picker ignores a document's due; the daily plan does not: due ones are in, the others are not."""
     from test_pdf import _MINIMAL_PDF
 
-    source = tmp_path / "Due book.pdf"
-    source.write_bytes(_MINIMAL_PDF)
-    document = facade.import_pdf(str(source), "Due book", priority=50.0)
+    due_source, later_source = tmp_path / "Due book.pdf", tmp_path / "Later book.pdf"
+    due_source.write_bytes(_MINIMAL_PDF)
+    later_source.write_bytes(_MINIMAL_PDF)
+    due_document = facade.import_pdf(str(due_source), "Due book", priority=50.0)
+    later_document = facade.import_pdf(str(later_source), "Later book", priority=50.0)
     due, _future, _new = _scheduled(rt.col, due=6)
-    rt.col.sched.set_due_date([document], "0")
-    rt.col.db.execute(f"update cards set due = -3 where id = {document}")
-    assert _plan()["due"] == 6
+    rt.col.sched.set_due_date([due_document], "0")
+    rt.col.db.execute(f"update cards set due = -3 where id = {due_document}")
+    rt.col.sched.set_due_date([later_document], "30")
+    assert _plan()["due"] == 7
 
     _events, entered_review = host_events
     facade.start_session("today", 0)
     assert entered_review.wait(timeout=30)
-    assert set(_session_cards(rt)) == due
-    assert _plan()["due"] == 6
+    assert set(_session_cards(rt)) == due | {due_document}
     for card_id in _session_cards(rt):
         _answer_good(rt.col, card_id)
     assert _plan()["due"] == 0
     facade.reviewer_closed()
-    facade.discard_extract(document)
+    facade.discard_extract(due_document)
+    facade.discard_extract(later_document)
 
 
 def test_study_ahead_takes_new_material_only_up_to_its_size(rt, host_events):  # noqa: F811
