@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import copy
 import json
+import uuid
 
 import pytest
 
-from ankrimento import facade, session
+from ankrimento import facade, session, today
 from test_review_flow import _add_notes, _answer_good
 from test_session_lifecycle import host_events  # noqa: F401 - fixture
 
@@ -34,8 +35,27 @@ def _isolated(rt):
 
 
 def _amount(rt, n: int) -> int:
-    """A daily amount of ``n`` new cards on top of those the tests before this one already started today."""
-    return len(rt.col.find_cards("introduced:1")) + n
+    """A daily amount of ``n`` new pieces of Incremento material on top of those the tests before this one started today."""
+    return len(today.new_material(rt.col, "introduced:1")) + n
+
+
+def _regular_deck(col, per_day: int, count: int, name: str = "") -> list[int]:
+    """A deck of ordinary Anki cards (no Incremento tags) with its own "New cards/day", in the order Anki shows them."""
+    name = name or f"Anki {uuid.uuid4().hex[:8]}"
+    deck_id = col.decks.id(name)
+    config = col.decks.get_config(col.decks.add_config_returning_id(name))
+    config["new"]["perDay"] = per_day
+    col.decks.update_config(config)
+    deck = col.decks.get(deck_id)
+    deck["conf"] = config["id"]
+    col.decks.save(deck)
+    return _add_notes(col, name, count, "regular")
+
+
+def _tag(col, card_ids, tag: str) -> None:
+    if card_ids:
+        note_ids = col.db.list(f"select distinct nid from cards where id in ({','.join(map(str, card_ids))})")
+        col.tags.bulk_add(note_ids, tag)
 
 
 def _plan(new_per_day: int = 0) -> dict:
@@ -46,7 +66,9 @@ def _scheduled(col, due=0, future=0, new=0):
     """Cards due today, scheduled for later, and never seen."""
     due_ids = _add_notes(col, "Topics", due // 2, "due topic") + _add_notes(col, "Default", due - due // 2, "due item")
     future_ids = _add_notes(col, "Topics", future, "future topic")
-    new_ids = _add_notes(col, "Topics", new // 2, "new topic") + _add_notes(col, "Default", new - new // 2, "new item")
+    new_items = _add_notes(col, "Default", new - new // 2, "new item")
+    _tag(col, new_items, "item")  # an item made in Incremento, as an extract is
+    new_ids = _add_notes(col, "Topics", new // 2, "new topic") + new_items
     if due_ids:
         # Overdue by three days: an original due of 0 would read as "none" when a filtered deck sends the card home.
         col.sched.set_due_date(due_ids, "0")
@@ -272,3 +294,52 @@ def test_new_material_waiting_in_the_session_is_still_left_of_the_day(rt, host_e
     plan = _plan(amount)
     assert plan["new"] == 3
     facade.reviewer_closed()
+
+
+def test_ordinary_decks_bring_their_new_cards_up_to_their_own_daily_limit(rt, host_events):  # noqa: F811
+    _events, entered_review = host_events
+    due, _future, _new = _scheduled(rt.col, due=3)
+    first = _regular_deck(rt.col, per_day=3, count=6)
+    second = _regular_deck(rt.col, per_day=2, count=6)
+
+    assert _plan(0)["new"] == 5  # whatever the daily amount of Incremento material is
+    facade.start_session("today", 0)
+    assert entered_review.wait(timeout=30)
+    assert set(_session_cards(rt)) == due | set(first[:3]) | set(second[:2])
+    facade.reviewer_closed()
+
+
+def test_new_cards_started_today_count_against_their_decks_limit(rt):
+    cards = _regular_deck(rt.col, per_day=3, count=6)
+    _answer_good(rt.col, cards[0])
+    assert _plan(0)["new"] == 2
+
+
+def test_a_parent_decks_limit_holds_for_its_subdecks(rt):
+    parent = f"Anki {uuid.uuid4().hex[:8]}"
+    _regular_deck(rt.col, per_day=2, count=0, name=parent)
+    _regular_deck(rt.col, per_day=5, count=6, name=f"{parent}::Child")
+    assert _plan(0)["new"] == 2
+
+
+def test_the_daily_amount_is_for_incremento_material_only(rt, host_events):  # noqa: F811
+    """Ordinary cards follow their deck, never the daily amount, however important they are."""
+    _events, entered_review = host_events
+    due, _future, new = _scheduled(rt.col, due=2, new=6)
+    regular = _regular_deck(rt.col, per_day=0, count=4)
+    _prioritised(rt, regular + sorted(new))  # the ordinary cards first
+    amount = _amount(rt, 3)
+
+    assert _plan(amount)["new"] == 3
+    facade.start_session("today", amount)
+    assert entered_review.wait(timeout=30)
+    assert set(_session_cards(rt)) == due | set(sorted(new)[:3])
+    facade.reviewer_closed()
+
+
+def test_an_ordinary_card_started_today_leaves_the_daily_amount_alone(rt):
+    _scheduled(rt.col, due=1, new=6)
+    regular = _regular_deck(rt.col, per_day=5, count=3)
+    amount = _amount(rt, 4)
+    _answer_good(rt.col, regular[0])
+    assert _plan(amount)["new"] == 4 + 2

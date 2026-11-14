@@ -652,8 +652,8 @@
         <item quantity="other">今天 %d 项</item>
     </plurals>
     <string name="ankrimento_settings_daily_plan">每日计划</string>
-    <string name="ankrimento_settings_daily_plan_help">Incremento 卡片按日程进行：“开始”包含今天到期的全部内容，加上下面设定数量的新材料（最重要的优先），全部混合。当天完成后，“新材料”按钮可带来更多。关闭：像桌面版一样从整个池中抽取。</string>
-    <string name="ankrimento_settings_study_ahead">每天新材料数量</string>
+    <string name="ankrimento_settings_daily_plan_help">Incremento 卡片按日程进行：“开始”包含今天到期的全部内容、各 Anki 牌组在其“每日新卡片”上限内的新卡片，以及下面设定数量的 Incremento 新材料（主题、文档、摘录及由其制作的条目，最重要的优先），全部混合。当天完成后，“新材料”按钮可带来更多。关闭：像桌面版一样从整个池中抽取。</string>
+    <string name="ankrimento_settings_study_ahead">每天 Incremento 新材料数量</string>
     <string name="ankrimento_session_in_progress" comment="Short status on the session card">会话进行中</string>
     <string name="ankrimento_card_left" comment="Cards left in the session, on the session card">剩余 %d</string>
 </resources>

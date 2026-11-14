@@ -672,8 +672,8 @@
         <item quantity="other">%d for today</item>
     </plurals>
     <string name="ankrimento_settings_daily_plan">Daily plan</string>
-    <string name="ankrimento_settings_daily_plan_help">The Incremento card follows the schedule: Start takes everything due today, plus the amount of new material set below (the most important first), all mixed together. Once the day is done, the New material button brings in more. Off: sessions are drawn from the whole pool, as on desktop.</string>
-    <string name="ankrimento_settings_study_ahead">New material per day</string>
+    <string name="ankrimento_settings_daily_plan_help">The Incremento card follows the schedule: Start takes everything due today, the new cards of your Anki decks up to the New cards/day limit of each deck, and the amount of new Incremento material set below (topics, documents, extracts and the items made from them, the most important first), all mixed together. Once the day is done, the New material button brings in more. Off: sessions are drawn from the whole pool, as on desktop.</string>
+    <string name="ankrimento_settings_study_ahead">New Incremento material per day</string>
     <string name="ankrimento_session_in_progress" comment="Short status on the session card">Session in progress</string>
     <string name="ankrimento_card_left" comment="Cards left in the session, on the session card">%d left</string>
 </resources>
