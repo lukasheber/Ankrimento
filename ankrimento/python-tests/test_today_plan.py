@@ -343,3 +343,21 @@ def test_an_ordinary_card_started_today_leaves_the_daily_amount_alone(rt):
     amount = _amount(rt, 4)
     _answer_good(rt.col, regular[0])
     assert _plan(amount)["new"] == 4 + 2
+
+
+def test_new_material_follows_the_priority_direction_chosen_in_the_settings(rt, host_events):  # noqa: F811
+    """With higher numbers set as more important, the cards with the highest priorities come in first."""
+    from aqt import mw
+
+    config = mw.addonManager.getConfig("incremento")
+    config["priority_lower_is_more_important"] = False
+    mw.addonManager.writeConfig("incremento", config)
+    _events, entered_review = host_events
+    due, _future, new = _scheduled(rt.col, due=2, new=12)
+    ranked = sorted(new)
+    _prioritised(rt, ranked)  # priorities 1..12: here the last ones are the most important
+
+    facade.start_session("today", _amount(rt, 4))
+    assert entered_review.wait(timeout=30)
+    assert set(_session_cards(rt)) == due | set(ranked[-4:])
+    facade.reviewer_closed()
