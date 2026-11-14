@@ -688,4 +688,6 @@
     <string name="ankrimento_settings_daily_plan">Plano diário</string>
     <string name="ankrimento_settings_daily_plan_help">O cartão do Incremento segue a agenda: Começar leva tudo o que vence hoje e nada mais, e material novo fica em Estudar adiante, depois que o dia termina. Desligado: as sessões vêm de todo o conjunto, como no desktop.</string>
     <string name="ankrimento_settings_study_ahead">Tamanho de Estudar adiante</string>
+    <string name="ankrimento_session_in_progress" comment="Short status on the session card">Sessão em andamento</string>
+    <string name="ankrimento_card_left" comment="Cards left in the session, on the session card">%d restantes</string>
 </resources>

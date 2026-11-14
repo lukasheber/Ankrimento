@@ -79,8 +79,15 @@ def start(branch_scope: dict | None = None, mode: str | None = None, count: int 
     """
     from incremento.backend.session import learnFunction
 
+    from ankrimento import runtime, today
+
     if mode is not None:
         set_mode(mode, count)
+        today.empty_session_decks(runtime.current().col)
+        if mode == today.MODE_TODAY:
+            # Chosen here, from the cards now back in their decks and with the day's plan completed (see preview).
+            forget_preview()
+            preview()
     try:
         learnFunction(branch_scope=branch_scope, dialog_factory=HeadlessSchedulerDialog)
     finally:

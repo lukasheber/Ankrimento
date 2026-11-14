@@ -674,4 +674,6 @@
     <string name="ankrimento_settings_daily_plan">Daily plan</string>
     <string name="ankrimento_settings_daily_plan_help">The Incremento card follows the schedule: Start takes everything due today and nothing else, and new material is a separate Study ahead once the day is done. Off: sessions are drawn from the whole pool, as on desktop.</string>
     <string name="ankrimento_settings_study_ahead">Study ahead size</string>
+    <string name="ankrimento_session_in_progress" comment="Short status on the session card">Session in progress</string>
+    <string name="ankrimento_card_left" comment="Cards left in the session, on the session card">%d left</string>
 </resources>

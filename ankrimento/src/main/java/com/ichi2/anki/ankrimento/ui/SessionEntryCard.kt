@@ -29,6 +29,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.ichi2.anki.ankrimento.DayState
 import com.ichi2.anki.ankrimento.R
@@ -65,24 +67,23 @@ internal fun SessionEntryCard(
                 .padding(horizontal = 12.dp, vertical = 8.dp)
                 .pointerInput(Unit) { detectTapGestures { } },
     ) {
-        Row(Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(start = 16.dp, top = 12.dp, bottom = 8.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) {
                 Text(stringResource(R.string.ankrimento_name), style = MaterialTheme.typography.titleMedium)
                 Text(
-                    stateText(state),
+                    statusText(state),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
-                if (plan != null && plan.due + plan.done > 0) {
-                    LinearProgressIndicator(
-                        progress = { plan.progress },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, end = 12.dp),
-                    )
+                countsText(state, plan)?.let {
                     Text(
-                        stringResource(R.string.ankrimento_today_progress, plan.done, plan.due),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = 2.dp),
+                        it,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
                 }
             }
@@ -114,18 +115,42 @@ internal fun SessionEntryCard(
                 }
             }
         }
+        if (plan != null && plan.due + plan.done > 0) {
+            // The day across the whole card, apart from the buttons.
+            LinearProgressIndicator(
+                progress = { plan.progress },
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 14.dp),
+            )
+        }
     }
 }
 
+/** One short line on where things stand. The numbers of the day are the line below it. */
 @Composable
-private fun stateText(state: DayState): String =
+private fun statusText(state: DayState): String =
     when (state) {
-        is DayState.Continue -> pluralStringResource(R.plurals.ankrimento_session_remaining, state.remaining, state.remaining)
+        is DayState.Continue -> stringResource(R.string.ankrimento_session_in_progress)
         is DayState.Start -> pluralStringResource(R.plurals.ankrimento_today_due, state.due, state.due)
         is DayState.Done -> stringResource(R.string.ankrimento_today_done)
         is DayState.Classic ->
-            state.remaining?.takeIf { it > 0 }?.let { pluralStringResource(R.plurals.ankrimento_session_remaining, it, it) }
-                ?: stringResource(R.string.ankrimento_session_none)
+            if ((state.remaining ?: 0) > 0) {
+                stringResource(R.string.ankrimento_session_in_progress)
+            } else {
+                stringResource(R.string.ankrimento_session_none)
+            }
+    }
+
+/** The day's numbers, or what is left of a classic session; nothing when they would only repeat the line above. */
+@Composable
+private fun countsText(
+    state: DayState,
+    plan: TodayPlan?,
+): String? =
+    when {
+        state is DayState.Classic -> state.remaining?.takeIf { it > 0 }?.let { stringResource(R.string.ankrimento_card_left, it) }
+        plan == null || plan.due + plan.done == 0 -> null
+        state is DayState.Start && plan.done == 0 -> null
+        else -> stringResource(R.string.ankrimento_today_progress, plan.done, plan.due)
     }
 
 private fun buttonLabel(state: DayState): Int =
