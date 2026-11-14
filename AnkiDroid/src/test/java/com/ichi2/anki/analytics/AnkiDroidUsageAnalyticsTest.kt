@@ -14,7 +14,6 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.sameInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -34,6 +33,14 @@ class AnkiDroidUsageAnalyticsTest : RobolectricTest() {
             targetContext.getString(R.string.analytics_opt_in_key),
             equalTo(AnkiDroidUsageAnalytics.PREF_ANALYTICS_OPTIN),
         )
+    }
+
+    @Test
+    fun `nobody is asked to share usage while there is no property to report to`() {
+        // Ankrimento's build has no analytics property (ga_trackingId is empty): after an update the question would
+        // be one whose answer does nothing, even for someone who was never asked.
+        assertThat(getPreferences().contains(AnkiDroidUsageAnalytics.PREF_ANALYTICS_OPTIN), equalTo(false))
+        assertThat(AnkiDroidUsageAnalytics.shouldAskToOptIn(targetContext), equalTo(false))
     }
 
     @Test
@@ -66,35 +73,20 @@ class AnkiDroidUsageAnalyticsTest : RobolectricTest() {
         }
     }
 
-    /**
-     * `ThrowableFilterService` chains itself above the analytics handler at startup to
-     * strip PII. Rebuilding the client must leave that chain alone: re-installing the
-     * handler would put analytics ahead of the filter, and report each crash twice.
-     */
+    /** Ankrimento never reports crashes to AnkiDroid's analytics: starting or rebuilding it adds nothing to the chain. */
     @Test
-    fun `rebuilding the client leaves the exception handler chain untouched`() =
+    fun `analytics never puts itself in the crash handler chain`() =
         runTest {
             val base = Thread.getDefaultUncaughtExceptionHandler()
             try {
-                AnkiDroidUsageAnalytics.initialize(targetContext)
-                val analytics = Thread.getDefaultUncaughtExceptionHandler()
-                assertThat(analytics, instanceOf(AnalyticsExceptionHandler::class.java))
-                // stand in for ThrowableFilterService, which chains itself above us
-                val filter = PassThroughHandler(analytics)
+                // stand in for ThrowableFilterService, the handler the app does install
+                val filter = PassThroughHandler(base)
                 Thread.setDefaultUncaughtExceptionHandler(filter)
 
+                AnkiDroidUsageAnalytics.initialize(targetContext)
                 AnkiDroidUsageAnalytics.rebuild(targetContext)
 
-                assertThat(
-                    "the PII filter must stay outermost",
-                    Thread.getDefaultUncaughtExceptionHandler(),
-                    sameInstance<Any>(filter),
-                )
-                assertThat(
-                    "analytics must not be duplicated in the chain",
-                    (analytics as AnalyticsExceptionHandler).originalHandler,
-                    sameInstance<Any>(base),
-                )
+                assertThat(Thread.getDefaultUncaughtExceptionHandler(), sameInstance<Any>(filter))
             } finally {
                 Thread.setDefaultUncaughtExceptionHandler(base)
             }

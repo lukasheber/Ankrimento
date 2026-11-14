@@ -1963,7 +1963,7 @@ open class DeckPicker :
         } else if (skip < 2 && !InitialActivity.isLatestVersion(preferences)) {
             Timber.i("AnkiDroid is being updated and a collection already exists.")
             // The user might appreciate us now, see if they will help us get better?
-            if (!preferences.contains(AnkiDroidUsageAnalytics.PREF_ANALYTICS_OPTIN)) {
+            if (AnkiDroidUsageAnalytics.shouldAskToOptIn(this)) {
                 displayAnalyticsOptInDialog()
             }
 

@@ -36,6 +36,13 @@ import java.util.UUID
 @NeedsTest("Add coverage for opt-in handling, client id persistence and event/exception sending")
 internal object AnkiDroidUsageAnalytics : UsageAnalytics {
     const val PREF_ANALYTICS_OPTIN = UsageAnalytics.PREF_ANALYTICS_OPTIN
+
+    /**
+     * Ankrimento never reports usage: AnkiDroid's analytics would go to AnkiDroid's maintainers, who do not make this
+     * fork. Off in the code, not only by an empty tracking id, so a merge from AnkiDroid that brings its id back
+     * cannot turn it on.
+     */
+    private const val REPORTS_USAGE = false
     private const val PREF_ANALYTICS_CLIENT_ID = "googleAnalyticsClientId"
 
     /**
@@ -112,7 +119,9 @@ internal object AnkiDroidUsageAnalytics : UsageAnalytics {
     fun initialize(context: Context) {
         Timber.i("AnkiDroidUsageAnalytics:: initialize()")
         configure(context)
-        AnalyticsExceptionHandler.install(this::sendAnalyticsException)
+        if (REPORTS_USAGE) {
+            AnalyticsExceptionHandler.install(this::sendAnalyticsException)
+        }
     }
 
     /**
@@ -145,8 +154,11 @@ internal object AnkiDroidUsageAnalytics : UsageAnalytics {
         initializePrefKeys(analyticsContext)
     }
 
-    /** Whether there is a property to report to; this build has none, so analytics stay off whatever the preference says. */
-    fun trackingAvailable(context: Context): Boolean = context.getString(R.string.ga_trackingId).isNotBlank()
+    /** Whether usage can be reported at all; never in Ankrimento, so analytics stay off whatever the preference says. */
+    fun trackingAvailable(context: Context): Boolean = REPORTS_USAGE && context.getString(R.string.ga_trackingId).isNotBlank()
+
+    /** Whether to ask, after an update, if usage may be shared: only where it can be, and only if never answered. */
+    fun shouldAskToOptIn(context: Context): Boolean = trackingAvailable(context) && !context.sharedPrefs().contains(PREF_ANALYTICS_OPTIN)
 
     private fun handlePreferences(context: Context) {
         val userPrefs = context.sharedPrefs()
@@ -259,7 +271,7 @@ internal object AnkiDroidUsageAnalytics : UsageAnalytics {
     var isEnabled: Boolean
         get() = optIn
         set(value) {
-            optIn = value
+            optIn = value && REPORTS_USAGE
             appContext.sharedPrefs().edit {
                 putBoolean(PREF_ANALYTICS_OPTIN, value)
             }
@@ -290,5 +302,8 @@ internal object AnkiDroidUsageAnalytics : UsageAnalytics {
 context(application: Application)
 fun initializeAnalytics() {
     AnkiDroidUsageAnalytics.initialize(application)
-    Analytics.setAnalytics(AnkiDroidUsageAnalytics)
+    // Unregistered, [Analytics] drops every screen view, event and crash itself.
+    if (AnkiDroidUsageAnalytics.trackingAvailable(application)) {
+        Analytics.setAnalytics(AnkiDroidUsageAnalytics)
+    }
 }

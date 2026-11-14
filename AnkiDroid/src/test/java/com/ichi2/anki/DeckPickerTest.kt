@@ -504,12 +504,13 @@ class DeckPickerTest : RobolectricTest() {
     }
 
     @Test
-    fun deckPickerOpensWithHelpMakeAnkiDroidBetterDialog() {
-        // Refactor: It would be much better to use a spy - see if we can get this into Robolectric
+    fun deckPickerDoesNotAskToShareUsageWhenThereIsNowhereToReportTo() {
+        // Ankrimento's build has no analytics property (ga_trackingId is empty): asking after an update would be a
+        // question whose answer does nothing.
         try {
             grantWritePermissions()
             BackupManagerTestUtilities.setupSpaceForBackup(targetContext)
-            // We don't show it if the user is new.
+            // An update: the question was asked only then.
             targetContext
                 .sharedPrefs()
                 .edit { putString("lastVersion", "0.1") }
@@ -519,9 +520,9 @@ class DeckPickerTest : RobolectricTest() {
                     Intent(),
                 )
             assertThat(
-                "Analytics opt-in should be displayed",
+                "Analytics opt-in should not be displayed",
                 d.displayedAnalyticsOptIn,
-                equalTo(true),
+                equalTo(false),
             )
         } finally {
             revokeWritePermissions()
