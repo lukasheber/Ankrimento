@@ -117,6 +117,17 @@ class LearningLoopBarTest {
     }
 
     @Test
+    fun `a topic that hides its answer is revealed first, as desktop asks it`() {
+        var revealed = false
+        show(ReviewBarState(topicButtons, emptyList(), emptyList(), onBack = null, reveal = { revealed = true }, topic = true) {})
+
+        compose.onNodeWithText(text(R.string.ankrimento_show_answer)).assertIsDisplayed().performClick()
+        assertEquals(true, revealed)
+        // Read on only once the answer is seen.
+        assertEquals(0, compose.onAllNodesWithText(text(R.string.ankrimento_topic_next)).fetchSemanticsNodes().size)
+    }
+
+    @Test
     fun `a revealed item shows its grades, the usual one included`() {
         val answered = mutableListOf<Rating>()
         val itemButtons =

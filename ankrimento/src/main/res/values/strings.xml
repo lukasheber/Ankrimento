@@ -645,6 +645,11 @@
     <string name="ankrimento_edit_discard_title">Discard your changes?</string>
     <string name="ankrimento_edit_discard">Discard</string>
     <string name="ankrimento_edit_keep_editing">Keep editing</string>
+    <string name="ankrimento_to_item_title">Make it an item?</string>
+    <string name="ankrimento_to_item_cloze">This card has a cloze but is marked as a topic. Topics are read again over time; items are asked and graded. Change it to an item?</string>
+    <string name="ankrimento_to_item_answer">This card has a question and an answer but is marked as a topic. Topics are read again over time; items are asked and graded. Change it to an item?</string>
+    <string name="ankrimento_to_item_yes">Make it an item</string>
+    <string name="ankrimento_to_item_no">Keep as topic</string>
     <string name="ankrimento_edit_all_fields">Edit all fields…</string>
     <string name="ankrimento_edit_bold">Bold</string>
     <string name="ankrimento_edit_italic">Italic</string>

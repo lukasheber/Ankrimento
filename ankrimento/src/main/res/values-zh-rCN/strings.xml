@@ -626,6 +626,11 @@
     <string name="ankrimento_edit_discard_title">放弃所做的更改？</string>
     <string name="ankrimento_edit_discard">放弃</string>
     <string name="ankrimento_edit_keep_editing">继续编辑</string>
+    <string name="ankrimento_to_item_title">改为条目？</string>
+    <string name="ankrimento_to_item_cloze">这张卡片包含填空，但被标记为主题。主题会随时间重读；条目会被提问并评分。要改为条目吗？</string>
+    <string name="ankrimento_to_item_answer">这张卡片有问题和答案，但被标记为主题。主题会随时间重读；条目会被提问并评分。要改为条目吗？</string>
+    <string name="ankrimento_to_item_yes">改为条目</string>
+    <string name="ankrimento_to_item_no">保留为主题</string>
     <string name="ankrimento_edit_all_fields">编辑全部字段…</string>
     <string name="ankrimento_edit_bold">粗体</string>
     <string name="ankrimento_edit_italic">斜体</string>

@@ -772,6 +772,12 @@ object Ankrimento {
     var shownTopicCardId: Long? = null
         private set
 
+    /** Make the card an item: item tags in place of topic ones (desktop's convert to items). */
+    @WorkerThread
+    fun convertToItem(cardId: Long) {
+        requireFacade().callAttr("convert_to_item", cardId)
+    }
+
     /** Mark the topic done: suspend it and tag its note (desktop's Done). Returns a message. */
     @WorkerThread
     fun topicDone(cardId: Long): String = requireFacade().callAttr("topic_done", cardId).toString()

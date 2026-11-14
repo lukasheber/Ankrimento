@@ -488,6 +488,18 @@ def is_topic(card_id: int) -> bool:
     return reviewer_button_mode(runtime.current().col.get_card(int(card_id))) == "topic"
 
 
+def convert_to_item(card_id: int) -> None:
+    """Make the card an item: its note gets the item tags in place of the topic ones.
+
+    Desktop wiring: the browser's convert-to-items action (``apply_node_kind_to_cards``).
+    """
+    from incremento.backend import cards as card_utils
+    from incremento.backend.knowledge_tree import NODE_KIND_ITEM, apply_node_kind_to_card
+
+    apply_node_kind_to_card(int(card_id), NODE_KIND_ITEM, col=runtime.current().col)
+    card_utils.clear_topic_item_cache()
+
+
 def _publish(changes: Any) -> None:
     from aqt import mw
     from aqt.operations import on_op_finished

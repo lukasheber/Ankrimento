@@ -43,6 +43,31 @@ object CardPage {
             "<script src=\"/_anki/js/vendor/mathjax/tex-chtml-full.js\"></script>" +
             "<script>MathJax.startup.promise.then(function () { return MathJax.typesetPromise(); });</script>"
 
+    /** Whether [answer] shows text that [question] keeps hidden: a cloze's word, a note's back. */
+    fun answerHidesMore(
+        question: String,
+        answer: String,
+    ): Boolean = visibleText(answer) != visibleText(question)
+
+    private val HIDDEN_BLOCK = Regex("(?is)<(style|script)\\b.*?</\\1\\s*>")
+    private val TAG = Regex("(?s)<[^>]*>")
+    private val ENTITY = Regex("&(#x[0-9a-fA-F]+|#[0-9]+|[a-zA-Z]+);")
+    private val NAMED_ENTITIES = mapOf("nbsp" to " ", "amp" to "&", "lt" to "<", "gt" to ">", "quot" to "\"", "apos" to "'")
+
+    /** The words a page shows, whatever its markup and spacing. */
+    private fun visibleText(html: String): String {
+        val text =
+            TAG.replace(HIDDEN_BLOCK.replace(html, " "), " ").replace(ENTITY) { match ->
+                val name = match.groupValues[1]
+                when {
+                    name.startsWith("#x") -> name.drop(2).toIntOrNull(16)?.let { String(Character.toChars(it)) }
+                    name.startsWith("#") -> name.drop(1).toIntOrNull()?.let { String(Character.toChars(it)) }
+                    else -> NAMED_ENTITIES[name.lowercase()]
+                } ?: match.value
+            }
+        return text.split(Regex("[\\s\\u00a0]+")).filter { it.isNotEmpty() }.joinToString(" ")
+    }
+
     /** Desktop's `pycmd` for links in cards (a video extract's "▶ 0:19"), answered by [Links]. */
     private const val PYCMD =
         "window.pycmd = function (message) { if (window.AnkrimentoCard) AnkrimentoCard.pycmd(String(message)); return false; };"

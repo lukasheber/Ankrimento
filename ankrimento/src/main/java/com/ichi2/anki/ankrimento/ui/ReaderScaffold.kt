@@ -318,7 +318,8 @@ private fun OverflowMenu(entries: List<ReaderTool>) {
 private fun ReviewBar(state: ReviewBarState) {
     Surface(tonalElevation = 3.dp, shadowElevation = 3.dp) {
         Column(Modifier.navigationBarsPadding()) {
-            if (state.topic && state.buttons.size == 3) {
+            // A topic that hides its answer shows Show answer first, its actions above it, as an item does.
+            if (state.topic && state.buttons.size == 3 && state.reveal == null) {
                 TopicBar(state)
             } else {
                 if (state.topicActions.isNotEmpty() || state.revisitOptions.isNotEmpty()) TopicActionRow(state)

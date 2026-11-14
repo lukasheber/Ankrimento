@@ -142,3 +142,27 @@ def test_an_extract_can_be_undone_and_the_source_stays(rt, topic):
 
 def test_undoing_an_extract_that_is_already_gone_is_harmless(rt, topic):
     facade.undo_extract(topic, 123456789)
+
+
+def test_a_cloze_filed_as_a_topic_becomes_an_item_as_desktops_convert_to_items_makes_it(rt):
+    # A cloze added outside the extract flow, in the Topics deck with a topic tag: upstream calls it a topic.
+    from anki.models import MODEL_CLOZE
+
+    model = next(m for m in rt.col.models.all() if m["type"] == MODEL_CLOZE and len(m["flds"]) <= 2)
+    note = rt.col.new_note(model)
+    note.fields[0] = "Water boils at {{c1::100}} degrees."
+    note.tags = ["topic"]
+    rt.col.add_note(note, rt.col.decks.id("Topics"))
+    card_id = note.card_ids()[0]
+    try:
+        assert facade.is_topic(card_id)
+
+        facade.convert_to_item(card_id)
+
+        assert facade.is_topic(card_id) is False
+        tags = {tag.casefold() for tag in rt.col.get_note(note.id).tags}
+        assert "item" in tags and "topic" not in tags
+        # Asked as an item from now on, in the item screen.
+        assert facade.card_reader(card_id) == ""
+    finally:
+        rt.col.remove_notes([note.id])

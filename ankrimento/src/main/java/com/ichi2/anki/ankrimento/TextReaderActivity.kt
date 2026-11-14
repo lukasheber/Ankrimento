@@ -4,6 +4,7 @@ package com.ichi2.anki.ankrimento
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -27,9 +28,11 @@ import timber.log.Timber
 
 /**
  * A topic without a document: its note, as its card template renders it,
- * read like a page of a book. There is nothing to reveal, so no "Show
- * answer"; the review bar ends it like any other topic. Extract is on the
- * text-selection menu, as in the document readers.
+ * read like a page of a book. Usually there is nothing to reveal, so no "Show
+ * answer"; the review bar ends it like any other topic. A topic whose answer
+ * side hides something (a cloze, a note's back) asks its question first in a
+ * session, as desktop's reviewer does. Extract is on the text-selection menu,
+ * as in the document readers.
  *
  * Text size and page colour are this device's (desktop keeps no such setting
  * for an ordinary topic); typeface, spacing and margins are shared with the
@@ -40,6 +43,11 @@ class TextReaderActivity : ReaderActivity() {
     private lateinit var preferences: ReadingPreferences
     private var textScale = 1.0
     private var appearance = "original"
+
+    /** In a session, the question side was shown and then the answer ([reveal]). */
+    private var revealed = false
+
+    override val answerAlreadyShown get() = revealed
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,6 +174,7 @@ class TextReaderActivity : ReaderActivity() {
     }
 
     private suspend fun load() {
+        asking = false
         val (html, mediaDir) =
             runCatching {
                 withCol {
@@ -176,6 +185,10 @@ class TextReaderActivity : ReaderActivity() {
                     if (editing) {
                         val body = "<div id=\"ankrimento-editor\" contenteditable=\"true\">${Ankrimento.topicEditable(cardId)}</div>"
                         CardPage.html(output.css + EDITOR_CSS, body, look = look) to media.dir
+                    } else if (inSession && !revealed && CardPage.answerHidesMore(output.questionText, output.answerText)) {
+                        asking = true
+                        hidesCloze = card.noteType(this).isCloze
+                        CardPage.html(output.css, output.questionText, look = look) to media.dir
                     } else {
                         CardPage.html(output.css, output.answerText, look = look) to media.dir
                     }
@@ -187,6 +200,15 @@ class TextReaderActivity : ReaderActivity() {
                 return
             }
         val media = mediaDir.canonicalFile
+        if (asking) {
+            // Like an item: a tap on the question, or Show answer, shows the answer.
+            revealAction = ::reveal
+            webView.onTap = { revealAction?.invoke() }
+            if (!conversionOffered && cardId.toString() !in keptAsTopics()) {
+                conversionOffered = true
+                offerItem()
+            }
+        }
         val assetLoader =
             WebViewAssetLoader
                 .Builder()
@@ -218,6 +240,74 @@ class TextReaderActivity : ReaderActivity() {
                 }
             }
         webView.loadDataWithBaseURL(CardPage.BASE_URL, html, "text/html", "utf-8", null)
+    }
+
+    /** Whether the page loading is the question side of a topic that hides its answer. */
+    private var asking = false
+
+    /** What it hides is a cloze (otherwise a note's back). */
+    private var hidesCloze = false
+
+    /** Asked once per showing whether to make it an item. */
+    private var conversionOffered = false
+
+    /** Cards kept as topics when asked: not asked again on this device. */
+    private fun keptAsTopics(): Set<String> = getSharedPreferences(PREFERENCES, MODE_PRIVATE).getStringSet(PREF_KEPT_TOPICS, null).orEmpty()
+
+    /**
+     * A topic with a cloze or a back is likely an item filed as a topic (added outside the extract flow). Asks whether
+     * to make it one, as desktop's convert to items does; if so it is asked and graded as an item at once.
+     */
+    private fun offerItem() {
+        sheet = {
+            AlertDialog(
+                onDismissRequest = { sheet = null },
+                title = { Text(stringResource(R.string.ankrimento_to_item_title)) },
+                text = { Text(stringResource(if (hidesCloze) R.string.ankrimento_to_item_cloze else R.string.ankrimento_to_item_answer)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        sheet = null
+                        makeItem()
+                    }) { Text(stringResource(R.string.ankrimento_to_item_yes)) }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        sheet = null
+                        getSharedPreferences(PREFERENCES, MODE_PRIVATE).edit {
+                            putStringSet(PREF_KEPT_TOPICS, keptAsTopics() + cardId.toString())
+                        }
+                    }) { Text(stringResource(R.string.ankrimento_to_item_no)) }
+                },
+            )
+        }
+    }
+
+    private fun makeItem() {
+        lifecycleScope.launch {
+            runCatching { withCol { Ankrimento.convertToItem(cardId) } }
+                .onSuccess {
+                    // The same card, now in the item screen: Show answer, then the item's grades; the session goes on.
+                    ReaderActivity.intent(this@TextReaderActivity, "item", cardId, session = true)?.let {
+                        startActivity(it.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT))
+                    }
+                    finish()
+                }.onFailure { error ->
+                    Timber.w(error, "Making the topic an item failed")
+                    toast(error.message ?: error.javaClass.simpleName)
+                }
+        }
+    }
+
+    private fun reveal() {
+        revealAction = null
+        asking = false
+        revealed = true
+        toggleBarsOnTap(webView)
+        // Desktop times a review from the question to the answer.
+        lifecycleScope.launch {
+            withCol { Ankrimento.answerShown(cardId) }
+            load()
+        }
     }
 
     /** The editor takes the cursor at its end, with the keyboard up, and remembers the text it started with. */
@@ -336,6 +426,9 @@ class TextReaderActivity : ReaderActivity() {
         /** Shared with the item reader, which shows cards in the same text size and page colour. */
         internal const val PREFERENCES = "ankrimento_text_reader"
         internal const val PREF_SCALE = "text_scale"
+
+        /** Cards kept as topics when asked whether to make them items. */
+        private const val PREF_KEPT_TOPICS = "kept_as_topics"
         internal const val PREF_APPEARANCE = "appearance"
 
         /** The EPUB reader's limits (upstream's). */

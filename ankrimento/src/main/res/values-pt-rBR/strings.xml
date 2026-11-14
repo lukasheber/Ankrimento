@@ -658,6 +658,11 @@
     <string name="ankrimento_edit_discard_title">Descartar suas alterações?</string>
     <string name="ankrimento_edit_discard">Descartar</string>
     <string name="ankrimento_edit_keep_editing">Continuar editando</string>
+    <string name="ankrimento_to_item_title">Transformar em item?</string>
+    <string name="ankrimento_to_item_cloze">Este cartão tem uma omissão (cloze), mas está marcado como tópico. Tópicos são relidos com o tempo; itens são perguntados e avaliados. Transformar em item?</string>
+    <string name="ankrimento_to_item_answer">Este cartão tem pergunta e resposta, mas está marcado como tópico. Tópicos são relidos com o tempo; itens são perguntados e avaliados. Transformar em item?</string>
+    <string name="ankrimento_to_item_yes">Transformar em item</string>
+    <string name="ankrimento_to_item_no">Manter como tópico</string>
     <string name="ankrimento_edit_all_fields">Editar todos os campos…</string>
     <string name="ankrimento_edit_bold">Negrito</string>
     <string name="ankrimento_edit_italic">Itálico</string>

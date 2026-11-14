@@ -664,6 +664,11 @@
     <string name="ankrimento_edit_discard_title">Odbaciti promjene?</string>
     <string name="ankrimento_edit_discard">Odbaci</string>
     <string name="ankrimento_edit_keep_editing">Nastavi uređivati</string>
+    <string name="ankrimento_to_item_title">Pretvoriti u stavku?</string>
+    <string name="ankrimento_to_item_cloze">Ova kartica ima prazninu (cloze), ali je označena kao tema. Teme se s vremenom ponovno čitaju; stavke se ispituju i ocjenjuju. Pretvoriti je u stavku?</string>
+    <string name="ankrimento_to_item_answer">Ova kartica ima pitanje i odgovor, ali je označena kao tema. Teme se s vremenom ponovno čitaju; stavke se ispituju i ocjenjuju. Pretvoriti je u stavku?</string>
+    <string name="ankrimento_to_item_yes">Pretvori u stavku</string>
+    <string name="ankrimento_to_item_no">Ostavi kao temu</string>
     <string name="ankrimento_edit_all_fields">Uredi sva polja…</string>
     <string name="ankrimento_edit_bold">Podebljano</string>
     <string name="ankrimento_edit_italic">Kurziv</string>
