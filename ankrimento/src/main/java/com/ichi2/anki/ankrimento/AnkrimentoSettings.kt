@@ -46,6 +46,19 @@ class AnkrimentoSettings(
         get() = preferences.getBoolean(PREF_QUICK_EXTRACT, true)
         set(value) = preferences.edit { putBoolean(PREF_QUICK_EXTRACT, value) }
 
+    /**
+     * Whether the session card follows the schedule: today's session takes what is due and nothing more, and new
+     * material is a separate "study ahead". Off: upstream's own sessions, drawn from the whole pool as on desktop.
+     */
+    var dailyPlan: Boolean
+        get() = preferences.getBoolean(PREF_DAILY_PLAN, true)
+        set(value) = preferences.edit { putBoolean(PREF_DAILY_PLAN, value) }
+
+    /** How many new cards a study-ahead session brings in. */
+    var studyAheadCount: Int
+        get() = preferences.getInt(PREF_STUDY_AHEAD, DEFAULT_STUDY_AHEAD)
+        set(value) = preferences.edit { putInt(PREF_STUDY_AHEAD, value.coerceAtLeast(1)) }
+
     /** The one-time hint about the video reader's icons has been shown. */
     var videoTipShown: Boolean
         get() = preferences.getBoolean(PREF_VIDEO_TIP, false)
@@ -83,10 +96,14 @@ class AnkrimentoSettings(
         const val PREF_SESSION_DECK = "session_deck"
         const val PREF_ONBOARDING_VERSION = "onboarding_version"
         const val PREF_QUICK_EXTRACT = "quick_extract"
+        const val PREF_DAILY_PLAN = "daily_plan"
+        const val PREF_STUDY_AHEAD = "study_ahead_count"
         const val PREF_SYNC_ADDON = "sync_addon_enabled"
         const val PREF_VOLUME_KEYS = "volume_keys_turn_pages"
         const val PREF_EXTRACT_TIP = "extract_tip_shown"
         const val PREF_VIDEO_TIP = "video_tip_shown"
+
+        const val DEFAULT_STUDY_AHEAD = 10
 
         /** Upstream's default session deck name. */
         const val DEFAULT_SESSION_DECK = "Incremento Session"

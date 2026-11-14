@@ -644,4 +644,14 @@
     <string name="ankrimento_sync_hub_pairing">正在查找同步中心…</string>
     <string name="ankrimento_sync_hub_paired">已与同步中心配对</string>
     <string name="ankrimento_video_tip">提示：+ 摘录当前时刻，括号标记一个片段，书签保存位置。点按视频可显示控制按钮。</string>
+    <string name="ankrimento_today_start" comment="Button that starts today's session of what is due">开始今天</string>
+    <string name="ankrimento_study_ahead" comment="Button that studies new material after the day's work is done">提前学习</string>
+    <string name="ankrimento_today_done">今天已完成</string>
+    <string name="ankrimento_today_progress" comment="Progress of the day: cards done, cards still due">已完成 %1$d · 剩余 %2$d</string>
+    <plurals name="ankrimento_today_due">
+        <item quantity="other">今天到期 %d</item>
+    </plurals>
+    <string name="ankrimento_settings_daily_plan">每日计划</string>
+    <string name="ankrimento_settings_daily_plan_help">Incremento 卡片按日程进行：“开始”只学今天到期的全部内容，新材料在当天完成后通过“提前学习”另行学习。关闭：像桌面版一样从整个池中抽取。</string>
+    <string name="ankrimento_settings_study_ahead">提前学习数量</string>
 </resources>

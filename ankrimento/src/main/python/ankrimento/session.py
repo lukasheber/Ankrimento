@@ -20,6 +20,15 @@ from typing import Any
 # The last preview and the settings it was made with (the dialog's _live_preview_cache and signature).
 _preview: dict | None = None
 _preview_signature: str | None = None
+# What the next session or preview is: upstream's own, today's plan or study ahead (see ``today``), and its size.
+_mode: str = "classic"
+_count: int = 0
+
+
+def set_mode(mode: str = "classic", count: int = 0) -> None:
+    """Choose the kind of the next preview and session. A session forgets it once started."""
+    global _mode, _count
+    _mode, _count = mode or "classic", int(count or 0)
 
 
 class HeadlessSchedulerDialog:
@@ -36,9 +45,7 @@ class HeadlessSchedulerDialog:
         pass
 
     def to_config(self) -> Any:
-        from incremento.backend.scheduler_config import load_scheduler_config
-
-        return load_scheduler_config()
+        return scheduler_config()
 
     def get_preview_override(self) -> dict | None:
         # Mirrors _live_preview_cache_is_current: only a preview of these settings (not of a branch).
@@ -53,13 +60,33 @@ class HeadlessSchedulerDialog:
         return presets.selected()
 
 
-def start(branch_scope: dict | None = None) -> None:
-    """Start a session; the host is told to open the reviewer via ``move_to_state``."""
+def scheduler_config() -> Any:
+    """The saved scheduler settings, as the chosen mode changes them for the next session only."""
+    from incremento.backend.scheduler_config import load_scheduler_config
+
+    from ankrimento import runtime, today
+
+    cfg = load_scheduler_config()
+    if _mode != today.MODE_CLASSIC:
+        today.apply_mode(cfg, _mode, _count, today.plan(runtime.current().col)["due"])
+    return cfg
+
+
+def start(branch_scope: dict | None = None, mode: str | None = None, count: int = 0) -> None:
+    """Start a session; the host is told to open the reviewer via ``move_to_state``.
+
+    ``mode`` is ``"today"``, ``"ahead"`` or, when absent, upstream's session as the saved settings make it (see ``today``).
+    """
     from incremento.backend.session import learnFunction
 
-    learnFunction(branch_scope=branch_scope, dialog_factory=HeadlessSchedulerDialog)
-    # As the desktop dialog's cache goes with the dialog, a preview serves one session.
-    forget_preview()
+    if mode is not None:
+        set_mode(mode, count)
+    try:
+        learnFunction(branch_scope=branch_scope, dialog_factory=HeadlessSchedulerDialog)
+    finally:
+        # As the desktop dialog's cache goes with the dialog, a preview serves one session.
+        forget_preview()
+        set_mode()
 
 
 def forget_preview() -> None:
@@ -75,7 +102,7 @@ def _signature() -> str:
     from ankrimento import presets
 
     dialog = load_addon_config(mw.addonManager, "incremento").get("dialog", {})
-    return json.dumps({"dialog": dialog, "preset": presets.selected()}, sort_keys=True, default=str)
+    return json.dumps({"dialog": dialog, "preset": presets.selected(), "mode": [_mode, _count]}, sort_keys=True, default=str)
 
 
 def _type_label(value: object) -> str:
@@ -119,20 +146,21 @@ def _tag_label(value: object) -> str:
     return str(value)
 
 
-def preview() -> dict[str, Any]:
+def preview(mode: str | None = None, count: int = 0) -> dict[str, Any]:
     """The cards the next session would get, as the dialog's live preview picks them; kept for the session."""
     global _preview, _preview_signature
+    if mode is not None:
+        set_mode(mode, count)
     from aqt import mw
     from incremento.backend.config_service import load_addon_config
     from incremento.backend.knowledge_tree import _card_title
-    from incremento.backend.scheduler_config import load_scheduler_config
     from incremento.backend.session_selection import incremento_session_deck_name, select_session_cards
     from incremento.backend.topic_scheduler import resolve_topic_card_classifier
 
     from ankrimento import presets, runtime
 
     rt = runtime.current()
-    cfg = load_scheduler_config()
+    cfg = scheduler_config()
     result = select_session_cards(
         cfg,
         str(rt.addon_dir),

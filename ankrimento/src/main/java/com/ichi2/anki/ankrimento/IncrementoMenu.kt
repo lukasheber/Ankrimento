@@ -49,6 +49,8 @@ class IncrementoMenu(
     private var sessionStarting = false
     private var sessionDeckId by mutableStateOf<Long?>(null)
     private var sessionRemaining by mutableStateOf<Int?>(null)
+    private var plan by mutableStateOf<TodayPlan?>(null)
+    private var dailyPlan by mutableStateOf(settings.dailyPlan)
 
     /** The preview's Start: the session starts here, where its review opens. */
     private val preview =
@@ -71,6 +73,8 @@ class IncrementoMenu(
             if (settings.hasStarted) {
                 runCatching { CollectionManager.withCol { Ankrimento.start(activity, this) } }
                     .onFailure { Timber.w(it, "Ankrimento start failed") }
+                // The day's plan needs the backend: show it as soon as that is running.
+                refreshSessionEntry()
             }
         }
         // Desktop's automatic backups: when the app opens, then whenever the interval has passed.
@@ -105,7 +109,8 @@ class IncrementoMenu(
                 setContent {
                     IncrementoTheme {
                         SessionEntryCard(
-                            remaining = sessionRemaining,
+                            state = DayState.of(plan, sessionRemaining, dailyPlan),
+                            plan = plan.takeIf { dailyPlan },
                             onStudy = { activity.lifecycleScope.launch { continueOrStartSession() } },
                             onSettings = { activity.startActivity(IncrementoSettingsActivity.intent(activity)) },
                             actions = cardActions(),
@@ -131,7 +136,8 @@ class IncrementoMenu(
                 activity.startActivity(GettingStartedActivity.intent(activity))
             },
             SessionCardAction(IncrementoIcons.Contents, R.string.ankrimento_session_preview) {
-                preview.launch(SessionPreviewActivity.intent(activity, sessionRemaining ?: 0))
+                val (mode, count) = nextSessionMode(plan, dailyPlan, settings.studyAheadCount)
+                preview.launch(SessionPreviewActivity.intent(activity, sessionRemaining ?: 0, mode, count))
             },
             SessionCardAction(IncrementoIcons.Search, R.string.ankrimento_search_all) {
                 activity.startActivity(SearchAllActivity.intent(activity))
@@ -167,12 +173,22 @@ class IncrementoMenu(
     }
 
     private suspend fun refreshSessionEntry() {
+        dailyPlan = settings.dailyPlan
         runCatching {
             CollectionManager.withCol { SessionDeck.remaining(this, settings.sessionDeckName) }
         }.onSuccess { (deckId, remaining) ->
             sessionDeckId = deckId
             sessionRemaining = remaining
         }.onFailure { Timber.w(it, "Reading the Incremento session deck failed") }
+        // Needs the Python side; until that runs (or with the plan off) the card is upstream's own.
+        plan =
+            if (dailyPlan) {
+                runCatching { withContext(Dispatchers.IO) { Ankrimento.todayPlan() } }
+                    .onFailure { Timber.d(it, "The day's plan is not available yet") }
+                    .getOrNull()
+            } else {
+                null
+            }
     }
 
     /** Continues the session while its deck has cards; otherwise starts a new one. */
@@ -208,7 +224,12 @@ class IncrementoMenu(
                 toast(activity.getString(R.string.ankrimento_sync_failed, error.message ?: error.javaClass.simpleName))
             }
             sessionStarting = true
-            withContext(Dispatchers.IO) { Ankrimento.startSession() }
+            withContext(Dispatchers.IO) {
+                // Chosen now, from what is due now (the card may have been showing yesterday's plan).
+                val today = if (settings.dailyPlan) runCatching { Ankrimento.todayPlan() }.getOrNull() else null
+                val (mode, count) = nextSessionMode(today, settings.dailyPlan, settings.studyAheadCount)
+                Ankrimento.startSession(mode, count)
+            }
         }.onFailure { error ->
             Timber.w(error, "Incremento session failed")
             toast(activity.getString(R.string.ankrimento_session_failed, error.message ?: error.javaClass.simpleName))

@@ -14,7 +14,9 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,7 +30,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ichi2.anki.ankrimento.DayState
 import com.ichi2.anki.ankrimento.R
+import com.ichi2.anki.ankrimento.TodayPlan
 
 /** An entry of the session card's menu. */
 internal class SessionCardAction(
@@ -38,20 +42,21 @@ internal class SessionCardAction(
 )
 
 /**
- * The deck list's fixed way into incremental learning: the session deck
- * itself. With cards left its button continues the session; empty, it starts one.
- * Settings and a menu of Incremento's other places sit beside it.
+ * The deck list's fixed way into incremental learning. With the daily plan it shows the day: what is due, how much
+ * is done, and one button for the next step: continue the session under way, start today's, or, once nothing is
+ * due, study ahead. Settings and a menu of Incremento's other places sit beside it.
  *
- * @param remaining cards left in the session deck, or null before it is known
+ * @param state where the day stands
+ * @param plan the day's counts for the progress line; null without the daily plan
  */
 @Composable
 internal fun SessionEntryCard(
-    remaining: Int?,
+    state: DayState,
+    plan: TodayPlan?,
     onStudy: () -> Unit,
     onSettings: () -> Unit,
     actions: List<SessionCardAction>,
 ) {
-    val inProgress = remaining != null && remaining > 0
     // Only the button studies. The card still takes taps, so none reach the deck list behind it.
     ElevatedCard(
         modifier =
@@ -64,17 +69,28 @@ internal fun SessionEntryCard(
             Column(Modifier.weight(1f)) {
                 Text(stringResource(R.string.ankrimento_name), style = MaterialTheme.typography.titleMedium)
                 Text(
-                    if (inProgress) {
-                        pluralStringResource(R.plurals.ankrimento_session_remaining, remaining, remaining)
-                    } else {
-                        stringResource(R.string.ankrimento_session_none)
-                    },
+                    stateText(state),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (plan != null && plan.due + plan.done > 0) {
+                    LinearProgressIndicator(
+                        progress = { plan.progress },
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, end = 12.dp),
+                    )
+                    Text(
+                        stringResource(R.string.ankrimento_today_progress, plan.done, plan.due),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 2.dp),
+                    )
+                }
             }
-            Button(onClick = onStudy) {
-                Text(stringResource(if (inProgress) R.string.ankrimento_session_continue else R.string.ankrimento_session_start))
+            if (state is DayState.Done) {
+                // The day is complete: more is a choice, so it does not look like the day's main action.
+                OutlinedButton(onClick = onStudy) { Text(stringResource(R.string.ankrimento_study_ahead)) }
+            } else {
+                Button(onClick = onStudy) { Text(stringResource(buttonLabel(state))) }
             }
             IconButton(onClick = onSettings) {
                 Icon(IncrementoIcons.Settings, contentDescription = stringResource(R.string.ankrimento_settings))
@@ -100,3 +116,23 @@ internal fun SessionEntryCard(
         }
     }
 }
+
+@Composable
+private fun stateText(state: DayState): String =
+    when (state) {
+        is DayState.Continue -> pluralStringResource(R.plurals.ankrimento_session_remaining, state.remaining, state.remaining)
+        is DayState.Start -> pluralStringResource(R.plurals.ankrimento_today_due, state.due, state.due)
+        is DayState.Done -> stringResource(R.string.ankrimento_today_done)
+        is DayState.Classic ->
+            state.remaining?.takeIf { it > 0 }?.let { pluralStringResource(R.plurals.ankrimento_session_remaining, it, it) }
+                ?: stringResource(R.string.ankrimento_session_none)
+    }
+
+private fun buttonLabel(state: DayState): Int =
+    when (state) {
+        is DayState.Continue -> R.string.ankrimento_session_continue
+        is DayState.Start -> R.string.ankrimento_today_start
+        is DayState.Done -> R.string.ankrimento_study_ahead
+        is DayState.Classic ->
+            if ((state.remaining ?: 0) > 0) R.string.ankrimento_session_continue else R.string.ankrimento_session_start
+    }

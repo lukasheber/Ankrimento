@@ -706,6 +706,18 @@ class IncrementoSettingsActivity : ComponentActivity() {
                 modifier = Modifier.clickable { choosingPreset = true },
             )
         }
+        var dailyPlan by remember { mutableStateOf(device.dailyPlan) }
+        Toggle(R.string.ankrimento_settings_daily_plan, dailyPlan, R.string.ankrimento_settings_daily_plan_help) {
+            dailyPlan = it
+            device.dailyPlan = it
+        }
+        if (dailyPlan) {
+            var ahead by remember { mutableStateOf(device.studyAheadCount) }
+            PercentSlider(R.string.ankrimento_settings_study_ahead, ahead, 1..100, suffix = "") {
+                ahead = it
+                device.studyAheadCount = it
+            }
+        }
         Header(R.string.ankrimento_settings_size_mix)
         PercentSlider(R.string.ankrimento_settings_cards, s.cardCount, 10..300, suffix = "") { saveSession(s.copy(cardCount = it)) }
         PercentSlider(R.string.ankrimento_settings_topics, s.topicsPercent, 0..100) { saveSession(s.copy(topicsPercent = it)) }

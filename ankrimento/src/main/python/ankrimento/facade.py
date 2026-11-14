@@ -25,23 +25,31 @@ def profile_name() -> str:
     return runtime.current().profile
 
 
-def start_session() -> None:
+def start_session(mode: str | None = None, count: int = 0) -> None:
     """Start an Incremento session with upstream's ``learnFunction``.
 
     Runs in the background; when the deck is ready the host receives a
     ``move_to_state`` event with ``state == "review"``, or a message if no
-    cards were found.
+    cards were found. ``mode`` is ``"today"`` (everything due), ``"ahead"``
+    (``count`` new cards) or absent for upstream's own session.
     """
     from ankrimento import session
 
-    session.start()
+    session.start(mode=mode, count=count)
 
 
-def session_preview() -> str:
+def session_preview(mode: str | None = None, count: int = 0) -> str:
     """The cards the next session would get (upstream's selection); starting then uses them."""
     from ankrimento import session
 
-    return _dumps(session.preview())
+    return _dumps(session.preview(mode, count))
+
+
+def today_plan() -> str:
+    """What is due today and how many cards were answered today."""
+    from ankrimento import today
+
+    return _dumps(today.plan(runtime.current().col))
 
 
 def session_settings() -> str:

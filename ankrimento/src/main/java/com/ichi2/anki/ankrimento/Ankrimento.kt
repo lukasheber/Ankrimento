@@ -415,6 +415,31 @@ object Ankrimento {
         requireFacade().callAttr("start_session")
     }
 
+    /** How a session is chosen: upstream's own, everything due today, or [count] new cards (study ahead). */
+    enum class SessionMode(
+        internal val key: String?,
+    ) {
+        CLASSIC(null),
+        TODAY("today"),
+        AHEAD("ahead"),
+    }
+
+    /** Starts a session of [mode]; the saved session settings are left as they are. */
+    @WorkerThread
+    fun startSession(
+        mode: SessionMode,
+        count: Int = 0,
+    ) {
+        requireFacade().callAttr("start_session", mode.key, count)
+    }
+
+    /** What the schedule says today: cards due now and cards answered today. */
+    @WorkerThread
+    internal fun todayPlan(): TodayPlan {
+        val json = JSONObject(requireFacade().callAttr("today_plan").toString())
+        return TodayPlan(due = json.getInt("due"), done = json.getInt("done"))
+    }
+
     /** The filtered deck sessions fill, as upstream names it. */
     @WorkerThread
     fun sessionDeckName(): String = requireFacade().callAttr("session_deck_name").toString()
@@ -2138,8 +2163,11 @@ object Ankrimento {
 
     /** Upstream's selection for the next session; starting then uses these cards while the settings stay the same. */
     @WorkerThread
-    fun sessionPreview(): SessionPreview {
-        val preview = JSONObject(requireFacade().callAttr("session_preview").toString())
+    fun sessionPreview(
+        mode: SessionMode = SessionMode.CLASSIC,
+        count: Int = 0,
+    ): SessionPreview {
+        val preview = JSONObject(requireFacade().callAttr("session_preview", mode.key, count).toString())
         val entries = preview.getJSONArray("entries")
         return SessionPreview(
             preview.optInt("target"),

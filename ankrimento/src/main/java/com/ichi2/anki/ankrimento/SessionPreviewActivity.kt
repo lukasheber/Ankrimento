@@ -64,12 +64,14 @@ class SessionPreviewActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         inProgress = intent.getIntExtra(EXTRA_REMAINING, 0)
+        val mode = Ankrimento.SessionMode.valueOf(intent.getStringExtra(EXTRA_MODE) ?: Ankrimento.SessionMode.CLASSIC.name)
+        val count = intent.getIntExtra(EXTRA_COUNT, 0)
         setContent { IncrementoTheme { Preview() } }
         lifecycleScope.launch {
             runCatching {
                 withCol {
                     Ankrimento.start(this@SessionPreviewActivity, this)
-                    Ankrimento.sessionPreview()
+                    Ankrimento.sessionPreview(mode, count)
                 }
             }.onSuccess { preview = it }
                 .onFailure { error ->
@@ -218,10 +220,18 @@ class SessionPreviewActivity : ComponentActivity() {
         /** Result: carry on with the session under way. */
         const val RESULT_RESUME = RESULT_FIRST_USER
         private const val EXTRA_REMAINING = "remaining"
+        private const val EXTRA_MODE = "mode"
+        private const val EXTRA_COUNT = "count"
 
+        /** The preview of the next session of [mode] (and [count] cards, for study ahead). */
         fun intent(
             context: Context,
             remaining: Int = 0,
-        ) = Intent(context, SessionPreviewActivity::class.java).putExtra(EXTRA_REMAINING, remaining)
+            mode: Ankrimento.SessionMode = Ankrimento.SessionMode.CLASSIC,
+            count: Int = 0,
+        ) = Intent(context, SessionPreviewActivity::class.java)
+            .putExtra(EXTRA_REMAINING, remaining)
+            .putExtra(EXTRA_MODE, mode.name)
+            .putExtra(EXTRA_COUNT, count)
     }
 }
