@@ -533,7 +533,9 @@ private fun AnswerRow(state: ReviewBarState) {
                         }
                     }
                 }
-                val padding = ButtonDefaults.ContentPadding
+                // Four grades beside the Back button leave a phone too little room for "Again" inside Material's
+                // default 24 dp sides; three choices keep them.
+                val padding = if (buttons.size > 3) PaddingValues(horizontal = 4.dp, vertical = 8.dp) else ButtonDefaults.ContentPadding
                 if (emphasized) {
                     Button(onClick = { state.onAnswer(button.rating) }, modifier = modifier, contentPadding = padding) { label() }
                 } else {
