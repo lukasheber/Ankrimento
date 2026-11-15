@@ -332,23 +332,18 @@ private fun ReviewBar(state: ReviewBarState) {
 /**
  * A topic read in a session, as SuperMemo's Next: one large button reads on and keeps the topic's
  * pace (desktop's Same); Sooner and Later beside it change how often it returns (More and Less).
- * All three schedule it, so the line above says when it comes back. Done, Postpone and Revisit,
- * each with what it does, are in the Topic menu.
+ * All three schedule it, so the line above says when it comes back, beside Done; Postpone and
+ * Revisit, each with what it does, are in the Topic menu.
  */
 @Composable
 private fun TopicBar(state: ReviewBarState) {
     val (sooner, next, later) = state.buttons.sortedBy { it.rating.number }
     Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 56.dp, end = 4.dp, top = 4.dp),
+        modifier = Modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp, top = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            if (next.due.isNullOrEmpty()) "" else stringResource(R.string.ankrimento_topic_returns, next.due),
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1f),
-        )
-        // Done is the one topic action worth a tap of its own; Postpone and Revisit wait under More.
+        // Done is the one topic action worth a tap of its own; Postpone and Revisit wait under More. It sits at the
+        // start, over Back, which a slip only takes back: not over Later or Next, where a thumb aiming there caught it.
         val done = state.topicActions.firstOrNull { it.icon != null }
         if (done != null) {
             TextButton(onClick = done.onClick) {
@@ -357,6 +352,12 @@ private fun TopicBar(state: ReviewBarState) {
                 Text(done.label)
             }
         }
+        Text(
+            if (next.due.isNullOrEmpty()) "" else stringResource(R.string.ankrimento_topic_returns, next.due),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f).padding(start = if (done == null) 52.dp else 8.dp),
+        )
         if (state.topicActions.any { it !== done } || state.revisitOptions.isNotEmpty()) TopicMenu(state, skip = done)
     }
     Row(

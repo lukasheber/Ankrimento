@@ -248,6 +248,11 @@ abstract class ReaderActivity : ComponentActivity() {
             }
         }
         RecentDocuments.record(this, cardId)
+        // The previous element was a topic action (Done, Postpone, Revisit): it can be taken back from here.
+        intent.getStringExtra(EXTRA_UNDO_NOTE)?.let { note ->
+            intent.removeExtra(EXTRA_UNDO_NOTE)
+            if (savedInstanceState == null) lifecycleScope.launch { offerUndo(note) }
+        }
         // Readers add their own callbacks after this one, which run first.
         onBackPressedDispatcher.addCallback(this) { onBackRequested() }
         lifecycleScope.launch {
@@ -703,11 +708,27 @@ abstract class ReaderActivity : ComponentActivity() {
         lifecycleScope.launch { editedPriority = withCol { Ankrimento.priority(cardId) } }
     }
 
-    /** Runs a topic action and, once it rescheduled the card, moves on to the next element. */
+    /**
+     * Runs a topic action (Done, Postpone or Revisit) and, once it rescheduled the card, moves on to the next element,
+     * which says what was done with an Undo, as one slip of the thumb must not end a topic for good (Back takes it back
+     * too, but nothing said so).
+     */
     private fun topicAction(action: () -> String) {
-        continueAfter {
-            LearnLoop.afterAction { toast(withCol { action() }) }
+        var message = ""
+        continueAfter(undoNote = { message.ifEmpty { getString(R.string.ankrimento_done) } }) {
+            LearnLoop.afterAction { message = withCol { action() } }
         }
+    }
+
+    /** What the last topic action did, with Undo, which takes it back as Back does. */
+    private suspend fun offerUndo(note: String) {
+        val answer =
+            snackbars.showSnackbar(
+                note,
+                actionLabel = getString(R.string.ankrimento_extract_undo),
+                duration = SnackbarDuration.Long,
+            )
+        if (answer == SnackbarResult.ActionPerformed) goBack()
     }
 
     private fun goBack() {
@@ -727,6 +748,7 @@ abstract class ReaderActivity : ComponentActivity() {
     private fun continueAfter(
         back: Boolean = false,
         rating: Rating? = null,
+        undoNote: (() -> String)? = null,
         move: suspend () -> LearnLoop.Step?,
     ) {
         if (moving) return
@@ -750,7 +772,23 @@ abstract class ReaderActivity : ComponentActivity() {
                 return@launch
             }
             val following = (next as? LearnLoop.Next)?.let { intent(this@ReaderActivity, it.reader, it.cardId, session = true) }
+            val note = undoNote?.invoke()
+            if (following == null && note != null && next == LearnLoop.End) {
+                // The session's last element: the Undo is offered here, before the session closes.
+                val answer =
+                    snackbars.showSnackbar(
+                        note,
+                        actionLabel = getString(R.string.ankrimento_extract_undo),
+                        duration = SnackbarDuration.Long,
+                    )
+                if (answer == SnackbarResult.ActionPerformed) {
+                    moving = false
+                    goBack()
+                    return@launch
+                }
+            }
             if (following != null) {
+                note?.let { following.putExtra(EXTRA_UNDO_NOTE, it) }
                 // The reviewer waits for a result from this chain of readers.
                 startActivity(following.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT))
                 finish()
@@ -995,6 +1033,9 @@ abstract class ReaderActivity : ComponentActivity() {
 
         /** The [Rating] number of the answer chosen in a session. */
         const val EXTRA_RATING = "rating"
+
+        /** What the previous element's topic action did, offered with Undo on arrival. */
+        private const val EXTRA_UNDO_NOTE = "undo_note"
 
         /** The reader closed to show its card in the reviewer. */
         const val RESULT_SHOW_CARD = RESULT_FIRST_USER

@@ -15,6 +15,7 @@ import anki.scheduler.CardAnswer.Rating
 import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.R
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -98,6 +99,26 @@ class LearningLoopBarTest {
         compose.onNodeWithText("In 3 months").performClick()
 
         assertEquals(listOf("done", "postpone", "3 months"), done)
+    }
+
+    @Test
+    fun `Done is not above Later, where a thumb reaching for Later would catch it`() {
+        show(
+            ReviewBarState(
+                topicButtons,
+                topicActions = listOf(ReaderTool("Done", IncrementoIcons.Check, "Stop reviewing it") {}),
+                revisitOptions = emptyList(),
+                onBack = {},
+                topic = true,
+            ) {},
+        )
+
+        val done = compose.onNodeWithText("Done").fetchSemanticsNode().boundsInRoot
+        val later = compose.onNodeWithText(text(R.string.ankrimento_topic_later)).fetchSemanticsNode().boundsInRoot
+        val next = compose.onNodeWithText(text(R.string.ankrimento_topic_next)).fetchSemanticsNode().boundsInRoot
+        // Clear of Later and of Next, the button most taps go to.
+        assertTrue("Done ends at ${done.right}, Next starts at ${next.left}", done.right <= next.left)
+        assertTrue(done.right < later.left)
     }
 
     @Test
