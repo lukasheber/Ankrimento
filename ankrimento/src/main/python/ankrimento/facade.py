@@ -1559,9 +1559,36 @@ def engine_sync_hub(code: str, publish_only: bool = False, budget_seconds: float
     label = f"hub:{pairing.identity}:{hashlib.sha256(pairing.key).hexdigest()[:8]}"
     store = HttpStore.from_pairing(pairing)
     try:
-        return engine_sync(store, label, publish_only, budget_seconds)
+        result = json.loads(engine_sync(store, label, publish_only, budget_seconds))
+        result["peer_changed_at"] = None if publish_only else _peer_changed_at(store)
+        return _dumps(result)
     finally:
         store.close()
+
+
+def _peer_changed_at(store: Any) -> float | None:
+    """When another device (the computer) last published to the library, as the hub's file time.
+
+    Each device rewrites its ``devices/<id>/device.json`` only when what it announces changes, so the newest one of
+    the other devices is their last change, not their last sync. None when no other device has published yet.
+    """
+    from incremento.backend import db
+    from incremento.backend.sync_capture import sync_identity
+    from incremento.backend.sync_exchange import library_rel
+
+    rt = runtime.current()
+    identity = sync_identity(db.get_connection(str(rt.addon_dir), rt.profile))
+    if identity is None:
+        return None
+    devices = f"{library_rel(identity.library_id)}/devices"
+    newest = None
+    for entry in store.listdir(devices):
+        if not entry.is_dir or entry.name == identity.device_id:
+            continue
+        announced = store.stat(f"{devices}/{entry.name}/device.json")
+        if announced is not None and not announced.is_dir and announced.mtime:
+            newest = max(newest or 0.0, float(announced.mtime))
+    return newest
 
 
 def get_priority(card_id: int) -> float:

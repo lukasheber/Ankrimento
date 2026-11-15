@@ -294,6 +294,33 @@ def test_the_facade_syncs_with_a_desktop_through_a_hub(rt, phone_profile, runnin
     db.close_connection()
 
 
+def test_the_phone_learns_when_the_computer_last_changed_something(rt, phone_profile, running_hub, tmp_path):
+    """What the phone's sync dialog says: when the computer last published, not when the phone synced."""
+    import json
+    import time
+
+    from ankrimento import facade
+    from incremento.backend import db, sync_service
+    from incremento.backend.profile_startup import prepare_storage
+    from incremento.backend.sync_http import HttpStore, Pairing
+
+    hub, book = running_hub
+    phone_code = Pairing("127.0.0.1", hub.port, "phone", book.add("phone")).code()
+    desktop_store = HttpStore.from_pairing(Pairing("127.0.0.1", hub.port, "desktop", book.add("desktop")))
+    desktop = Device(rt.col, str(tmp_path / "desktop" / "addons21" / "incremento"), "Desktop hub")
+    prepare_storage(desktop.addon, desktop.profile)
+    sync_service.configure(desktop.addon, desktop.profile, "hub:desktop", query=rt.col.db.all, store=desktop_store)
+    card = _card(rt)
+
+    before = time.time() - 5
+    desktop.set_priority(card, 33.0)
+    desktop.sync(desktop_store)
+    result = json.loads(facade.engine_sync_hub(phone_code))
+
+    assert result["peer_changed_at"] is not None and before <= result["peer_changed_at"] <= time.time() + 5
+    db.close_connection()
+
+
 def test_a_bad_pairing_code_is_a_clear_error(rt, phone_profile):
     from ankrimento import facade
 

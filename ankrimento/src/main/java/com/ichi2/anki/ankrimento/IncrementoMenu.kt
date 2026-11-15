@@ -3,6 +3,7 @@
 package com.ichi2.anki.ankrimento
 
 import android.app.Activity
+import android.text.format.DateUtils
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,8 @@ import com.ichi2.anki.ankrimento.ui.SessionCardAction
 import com.ichi2.anki.ankrimento.ui.SessionEntryCard
 import com.ichi2.anki.ankrimento.ui.shouldShowOnboarding
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -41,6 +44,8 @@ import timber.log.Timber
  */
 class IncrementoMenu(
     private val activity: ComponentActivity,
+    /** The deck list opened to sync just after logging in to AnkiWeb: the first-run guide waits for the next start. */
+    deferGuide: Boolean = false,
     private val openReviewer: () -> Unit,
 ) {
     private val settings = AnkrimentoSettings(activity)
@@ -63,7 +68,8 @@ class IncrementoMenu(
 
     init {
         // Desktop's first-run guide: once, the first time Incremento opens (and again if its version rises).
-        if (!guideShown && shouldShowOnboarding(settings.onboardingCompletedVersion)) {
+        // Not over the first sync, which may ask which collection to keep: the guide waits for the next start.
+        if (!deferGuide && !guideShown && shouldShowOnboarding(settings.onboardingCompletedVersion)) {
             guideShown = true
             activity.startActivity(GettingStartedActivity.intent(activity))
         }
@@ -95,6 +101,12 @@ class IncrementoMenu(
                             openReviewer()
                         }
                         is Ankrimento.Event.Message -> if (sessionStarting) explainEmptySession(event.text) else toast(event.text)
+                        // The sync that follows each AnkiWeb sync: said only when it changed something.
+                        is Ankrimento.Event.Synced -> {
+                            toast(activity.getString(R.string.ankrimento_sync_done, event.result.sent, event.result.received))
+                            onDeckListChanged()
+                        }
+                        is Ankrimento.Event.SyncReport -> showSyncReport(event)
                         else -> Unit
                     }
                 }
@@ -122,6 +134,21 @@ class IncrementoMenu(
         activity.lifecycleScope.launch {
             activity.repeatOnLifecycle(Lifecycle.State.RESUMED) { refreshSessionEntry() }
         }
+    }
+
+    private var refreshJob: Job? = null
+
+    /**
+     * The deck list changed (a sync, above all one that replaced the collection): the card follows, as when the list
+     * comes back on screen. A moment later, so typing in the deck search does not ask for the day's plan at every key.
+     */
+    fun onDeckListChanged() {
+        refreshJob?.cancel()
+        refreshJob =
+            activity.lifecycleScope.launch {
+                delay(REFRESH_DELAY_MS)
+                refreshSessionEntry()
+            }
     }
 
     private fun cardActions(): List<SessionCardAction> =
@@ -295,8 +322,77 @@ class IncrementoMenu(
         activity.showToast(text)
     }
 
+    /**
+     * After a Sync the person asked for: the cards came through AnkiWeb, and this says whether the computer's
+     * Incremento data came too, and when the computer last changed something, so someone who studied there knows the
+     * phone has it before going on. Waits for OK; an unreachable computer offers to try again.
+     */
+    private fun showSyncReport(report: Ankrimento.Event.SyncReport) {
+        val result = report.result
+        val dialog = AlertDialog.Builder(activity)
+        if (result == null) {
+            val detail =
+                report.error
+                    .orEmpty()
+                    .replace(PYTHON_ERROR_NAME, "")
+                    .trim()
+            dialog
+                .setTitle(R.string.ankrimento_sync_report_unreached_title)
+                .setMessage(activity.getString(R.string.ankrimento_sync_report_unreached, detail).trim())
+                .setNeutralButton(R.string.ankrimento_sync_report_retry) { _, _ -> activity.lifecycleScope.launch { retrySyncReport() } }
+                .setPositiveButton(android.R.string.ok, null)
+        } else {
+            val resources = activity.resources
+            val lines =
+                buildList {
+                    add(activity.getString(R.string.ankrimento_sync_report_cards))
+                    add(
+                        if (result.changesIn > 0) {
+                            resources.getQuantityString(R.plurals.ankrimento_sync_report_received, result.changesIn, result.changesIn)
+                        } else {
+                            activity.getString(R.string.ankrimento_sync_report_nothing_new)
+                        },
+                    )
+                    if (result.sent > 0) add(resources.getQuantityString(R.plurals.ankrimento_sync_report_sent, result.sent, result.sent))
+                    result.peerChangedAt?.let { add(activity.getString(R.string.ankrimento_sync_report_last_change, whenText(it))) }
+                    if (result.conflicts > 0) add(activity.getString(R.string.ankrimento_sync_conflicts, result.conflicts))
+                }
+            dialog
+                .setTitle(R.string.ankrimento_sync_report_title)
+                .setMessage(lines.joinToString("\n"))
+                .setPositiveButton(android.R.string.ok, null)
+        }
+        dialog.show()
+        onDeckListChanged()
+    }
+
+    /** Try again: only Incremento's sync, the cards having come through already. */
+    private suspend fun retrySyncReport() {
+        val report =
+            runCatching { Ankrimento.syncInSlices() }.fold(
+                onSuccess = { Ankrimento.Event.SyncReport(it) },
+                onFailure = {
+                    Timber.w(it, "Incremento sync, tried again, failed")
+                    Ankrimento.Event.SyncReport(null, it.message ?: it.javaClass.simpleName)
+                },
+            )
+        showSyncReport(report)
+    }
+
+    /** "22:40" today, with the date on another day. */
+    private fun whenText(epochSeconds: Double): String {
+        val millis = (epochSeconds * 1000).toLong()
+        val flags = DateUtils.FORMAT_SHOW_TIME or if (DateUtils.isToday(millis)) 0 else DateUtils.FORMAT_SHOW_DATE
+        return DateUtils.formatDateTime(activity, millis, flags)
+    }
+
     private companion object {
         /** The first-run guide was opened in this run of the app. */
         var guideShown = false
+
+        private const val REFRESH_DELAY_MS = 300L
+
+        /** A Python exception's name in front of its message, as Chaquopy reports it ("StoreError: "). */
+        private val PYTHON_ERROR_NAME = Regex("^[A-Za-z_][A-Za-z0-9_.]*: ")
     }
 }

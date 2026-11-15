@@ -64,13 +64,31 @@
     <string name="ankrimento_sync_up_to_date">Os dados do Incremento estão atualizados</string>
     <string name="ankrimento_sync_failed">A sincronização dos dados do Incremento falhou: %s</string>
     <string name="ankrimento_sync_done">Dados do Incremento sincronizados: %1$d enviados, %2$d recebidos</string>
+    <string name="ankrimento_sync_report_title">Em dia com o computador</string>
+    <string name="ankrimento_sync_report_cards">Cartões: sincronizados com o AnkiWeb.</string>
+    <string name="ankrimento_sync_report_nothing_new">Dados do Incremento: nada novo do computador.</string>
+    <string name="ankrimento_sync_report_last_change">Última alteração no computador: %1$s.</string>
+    <string name="ankrimento_sync_report_unreached_title">Cartões sincronizados, mas o computador não foi alcançado</string>
+    <string name="ankrimento_sync_report_unreached">Posições de leitura, prioridades e documentos do computador não chegaram. O Anki está aberto no computador, na mesma rede Wi-Fi?\n\n%1$s</string>
+    <string name="ankrimento_sync_report_retry">Tentar de novo</string>
+    <plurals name="ankrimento_sync_report_received">
+        <item quantity="one">Dados do Incremento: %d alteração recebida do computador.</item>
+        <item quantity="many">Dados do Incremento: %d alterações recebidas do computador.</item>
+        <item quantity="other">Dados do Incremento: %d alterações recebidas do computador.</item>
+    </plurals>
+    <plurals name="ankrimento_sync_report_sent">
+        <item quantity="one">%d alteração enviada deste aparelho.</item>
+        <item quantity="many">%d alterações enviadas deste aparelho.</item>
+        <item quantity="other">%d alterações enviadas deste aparelho.</item>
+    </plurals>
     <string name="ankrimento_sync_conflicts">%1$d registros mudaram em dois aparelhos; o valor deste aparelho foi mantido</string>
     <string name="ankrimento_sync_problems">%1$d arquivos da pasta de sincronização foram ignorados</string>
     <string name="ankrimento_sync_working">Sincronizando os dados do Incremento… %1$d enviados, %2$d recebidos até agora</string>
     <string name="ankrimento_sync_hub">Hub de sincronização</string>
     <string name="ankrimento_sync_hub_none">Não definido. Pareie com um hub na sua rede para sincronizar os dados do Incremento</string>
-    <string name="ankrimento_sync_hub_message">Digite o código de 6 dígitos que o hub de sincronização mostra no computador que o executa (Incremento Sync, scripts/sync_hub.py serve). Se ele não achar o hub, acrescente o endereço depois de uma vírgula, como 483920,192.168.1.5. Deixe vazio para parar de sincronizar.</string>
-    <string name="ankrimento_sync_hub_summary">%1$s em %2$s</string>
+    <string name="ankrimento_sync_hub_message">No computador, abra o Anki e escolha Incremento → Sync Incremento Data… → Set up phone sync, depois digite o código de 6 dígitos que ele mostra. Se este aparelho não achar o computador, acrescente o endereço que o Anki mostra depois de uma vírgula, como 483920,192.168.1.5. Deixe vazio para parar de sincronizar.</string>
+    <string name="ankrimento_sync_hub_summary">O computador em %1$s</string>
+    <string name="ankrimento_sync_hub_failed">Não foi possível parear</string>
     <string name="ankrimento_sync_hub_invalid">Código de pareamento inválido</string>
     <string name="ankrimento_statistics_title">Estatísticas do Incremento</string>
     <string name="ankrimento_stats_tag_rows">Cartões revisados por etiqueta: cada linha mostra os cartões e o tempo de estudo.</string>

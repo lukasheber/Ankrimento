@@ -100,6 +100,7 @@ import com.ichi2.anki.android.back.exitViaDoubleTapBackCallback
 import com.ichi2.anki.android.input.ShortcutGroup
 import com.ichi2.anki.android.input.shortcut
 import com.ichi2.anki.android.view.locationInWindow
+import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.IncrementoMenu
 import com.ichi2.anki.common.android.AdaptionUtil
 import com.ichi2.anki.common.android.animationDisabled
@@ -556,7 +557,7 @@ open class DeckPicker :
 
         registerReceiver()
 
-        incrementoMenu = IncrementoMenu(this) { openReviewer() }
+        incrementoMenu = IncrementoMenu(this, deferGuide = intent.hasExtra(EXTRA_SYNC_FROM_LOGIN)) { openReviewer() }
         incrementoMenu.attachSessionEntry(findViewById(R.id.deckpicker_view))
 
         // create inherited navigation drawer layout here so that it can be used by parent class
@@ -813,7 +814,7 @@ open class DeckPicker :
                 setOnRefreshListener {
                     Timber.i("Pull to Sync: Syncing")
                     pullToSyncWrapper.isRefreshing = false
-                    sync()
+                    syncAskedByUser()
                 }
             }
         // Only allow pull-to-sync when the deck list is scrolled to the top.
@@ -933,6 +934,7 @@ open class DeckPicker :
                     },
                 hasSubDecks = deckList.hasSubDecks,
             )
+            incrementoMenu.onDeckListChanged()
         }
 
         fun onFocusedDeckChanged(deckId: DeckId?) {
@@ -1503,7 +1505,7 @@ open class DeckPicker :
                         monitorMediaSync(this@DeckPicker)
                     }
                 } else {
-                    sync()
+                    syncAskedByUser()
                 }
                 return true
             }
@@ -1614,7 +1616,8 @@ open class DeckPicker :
             intent.removeExtra(EXTRA_SYNC_FROM_LOGIN)
             Timber.i("Performing Sync on Resume")
             Permissions.requestNotificationPermissionsForSyncing(this)
-            sync()
+            // Asked for: the login was to sync, or the person chose to sync from AnkiWeb.
+            syncAskedByUser()
         } else {
             selectNavigationItem(R.id.nav_decks)
             updateDeckList()
@@ -1722,6 +1725,7 @@ open class DeckPicker :
                         SyncWorker.start(this, auth, shouldFetchMedia())
                     } else {
                         Timber.i("autoSync: starting foreground")
+                        Ankrimento.syncRequestedByUser = false
                         sync()
                     }
                     return true
@@ -1807,7 +1811,7 @@ open class DeckPicker :
             }
             KeyEvent.KEYCODE_Y -> {
                 Timber.i("Sync from keypress")
-                sync()
+                syncAskedByUser()
                 return true
             }
             KeyEvent.KEYCODE_SLASH -> {
@@ -2131,6 +2135,12 @@ open class DeckPicker :
 
     /** Preserve the original attempt's network restriction while the user chooses upload/download. */
     var mediaNetworkTypeOnConflict: NetworkType = NetworkType.UNMETERED
+
+    /** A sync the person asked for: afterwards Ankrimento says whether the computer's Incremento data came too. */
+    private fun syncAskedByUser() {
+        Ankrimento.syncRequestedByUser = true
+        sync()
+    }
 
     /**
      * The mother of all syncing attempts. This might be called from sync() as first attempt to sync a collection OR

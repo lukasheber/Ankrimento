@@ -90,6 +90,9 @@ class IncrementoSettingsActivity : ComponentActivity() {
     /** The preset being renamed, or "" for a new one. */
     private var namingPreset by mutableStateOf<String?>(null)
     private var deletingPreset by mutableStateOf<String?>(null)
+
+    /** Why pairing with the hub failed, shown until read. */
+    private var pairingError by mutableStateOf<String?>(null)
     private var values by mutableStateOf<JSONObject?>(null)
 
     /** Incremento note types to update (null until read); [confirmingFormats] asks before changing them. */
@@ -359,6 +362,7 @@ class IncrementoSettingsActivity : ComponentActivity() {
         if (choosingPreset) presets?.let { PresetSheet(it) }
         namingPreset?.let { PresetNameDialog(it) }
         deletingPreset?.let { DeletePresetDialog(it) }
+        pairingError?.let { PairingErrorDialog(it) }
     }
 
     /** Desktop's preset row: choose one to load it; save, update, rename or delete. */
@@ -1067,17 +1071,32 @@ class IncrementoSettingsActivity : ComponentActivity() {
                     toast(getString(R.string.ankrimento_sync_hub_paired))
                 }.onFailure { error ->
                     Timber.w(error, "Pairing with the hub failed")
-                    toast(error.message ?: error.javaClass.simpleName)
+                    // The sync engine's own sentence, without Python's exception name in front ("PairingRefused: …").
+                    pairingError = (error.message ?: error.javaClass.simpleName).replace(PYTHON_ERROR_NAME, "").trim()
                 }
         }
     }
 
-    /** "phone on 192.168.1.20:8765" for a pairing code, "invalid" for one that is not; null when there is none. */
+    /** A failed pairing, until read: a toast is gone before its sentence is. */
+    @Composable
+    private fun PairingErrorDialog(message: String) {
+        AlertDialog(
+            onDismissRequest = { pairingError = null },
+            title = { Text(stringResource(R.string.ankrimento_sync_hub_failed)) },
+            text = { Text(message) },
+            confirmButton = { TextButton(onClick = { pairingError = null }) { Text(stringResource(android.R.string.ok)) } },
+        )
+    }
+
+    /**
+     * "The computer at 192.168.1.20:8765" for a pairing code, "invalid" for one that is not; null when there is none.
+     * The code also names this device (as the hub knows it), which is not what anyone looks for here.
+     */
     @Composable
     private fun hubSummary(code: String): String? {
         if (code.isEmpty()) return null
         val parsed = runCatching { Ankrimento.describeHubCode(code) }.getOrNull()
-        return parsed?.let { stringResource(R.string.ankrimento_sync_hub_summary, it.first, it.second) }
+        return parsed?.let { stringResource(R.string.ankrimento_sync_hub_summary, it.second) }
             ?: stringResource(R.string.ankrimento_sync_hub_invalid)
     }
 
@@ -1234,6 +1253,9 @@ class IncrementoSettingsActivity : ComponentActivity() {
         /** How far a switch that depends on the one above sits in. */
         private val INDENT = 24.dp
         private const val DAYS_PER_YEAR = 365
+
+        /** A Python exception's name in front of its message, as Chaquopy reports it ("PairingRefused: "). */
+        private val PYTHON_ERROR_NAME = Regex("^[A-Za-z_][A-Za-z0-9_.]*: ")
 
         /** Desktop's writing backup intervals (writing_manager._BACKUP_SLOTS), in its order. */
         private val BACKUP_INTERVALS = listOf("1m", "5m", "15m", "30m", "1h", "6h", "1d", "7d")

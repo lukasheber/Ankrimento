@@ -60,13 +60,29 @@
     <string name="ankrimento_sync_up_to_date">Incremento data is up to date</string>
     <string name="ankrimento_sync_failed">Syncing Incremento data failed: %s</string>
     <string name="ankrimento_sync_done">Incremento data synced: %1$d sent, %2$d received</string>
+    <string name="ankrimento_sync_report_title">Up to date with your computer</string>
+    <string name="ankrimento_sync_report_cards">Cards: synced with AnkiWeb.</string>
+    <string name="ankrimento_sync_report_nothing_new">Incremento data: nothing new from your computer.</string>
+    <string name="ankrimento_sync_report_last_change">Last change on the computer: %1$s.</string>
+    <string name="ankrimento_sync_report_unreached_title">Cards synced, but your computer wasn\'t reached</string>
+    <string name="ankrimento_sync_report_unreached">Reading positions, priorities and documents from the computer have not arrived. Is Anki open on the computer, on the same Wi-Fi?\n\n%1$s</string>
+    <string name="ankrimento_sync_report_retry">Try again</string>
+    <plurals name="ankrimento_sync_report_received">
+        <item quantity="one">Incremento data: %d change received from your computer.</item>
+        <item quantity="other">Incremento data: %d changes received from your computer.</item>
+    </plurals>
+    <plurals name="ankrimento_sync_report_sent">
+        <item quantity="one">%d change sent from this device.</item>
+        <item quantity="other">%d changes sent from this device.</item>
+    </plurals>
     <string name="ankrimento_sync_conflicts">%1$d records changed on two devices; this device\'s value was kept</string>
     <string name="ankrimento_sync_problems">%1$d files in the sync library were skipped</string>
     <string name="ankrimento_sync_working">Syncing Incremento data… %1$d sent, %2$d received so far</string>
     <string name="ankrimento_sync_hub">Sync hub</string>
     <string name="ankrimento_sync_hub_none">Not set. Pair with a hub on your network to sync Incremento data</string>
-    <string name="ankrimento_sync_hub_message">Type the 6-digit code the sync hub shows on the computer that runs it (Incremento Sync, scripts/sync_hub.py serve). If it can\'t find the hub, add its address after a comma, like 483920,192.168.1.5. Leave empty to stop syncing.</string>
-    <string name="ankrimento_sync_hub_summary">%1$s on %2$s</string>
+    <string name="ankrimento_sync_hub_message">On the computer, open Anki and choose Incremento → Sync Incremento Data… → Set up phone sync, then type the 6-digit code it shows. If this device can\'t find the computer, add the address Anki shows after a comma, like 483920,192.168.1.5. Leave empty to stop syncing.</string>
+    <string name="ankrimento_sync_hub_summary">The computer at %1$s</string>
+    <string name="ankrimento_sync_hub_failed">Could not pair</string>
     <string name="ankrimento_sync_hub_invalid">Not a valid pairing code</string>
     <string name="ankrimento_statistics_title">Incremento statistics</string>
     <string name="ankrimento_stats_tag_rows">Reviewed cards by tag: each row gives the cards and their study time.</string>

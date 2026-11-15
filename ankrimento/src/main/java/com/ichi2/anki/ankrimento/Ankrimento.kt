@@ -63,6 +63,20 @@ object Ankrimento {
             val text: String,
         ) : Event
 
+        /** The Incremento sync after an automatic AnkiWeb sync changed something here or sent something from here. */
+        data class Synced(
+            val result: SyncResult,
+        ) : Event
+
+        /**
+         * The Incremento sync after an AnkiWeb sync the person asked for: what came in ([result]), or why the computer
+         * was not reached ([error]). Said in a dialog, so someone moving from the computer knows they can go on.
+         */
+        data class SyncReport(
+            val result: SyncResult?,
+            val error: String? = null,
+        ) : Event
+
         /** The reader showing [cardId] should close (e.g. the document was finished). */
         data class CloseReader(
             val cardId: Long,
@@ -252,7 +266,12 @@ object Ankrimento {
         val problems: List<String>,
         /** The time budget cut file transfer short: call again to continue. */
         val more: Boolean = false,
+        /** When the other device (the computer) last published, in epoch seconds; null when unknown. */
+        val peerChangedAt: Double? = null,
     ) {
+        /** What this device took in: records received, or applied from a snapshot the first time. */
+        val changesIn get() = maxOf(received, applied)
+
         operator fun plus(next: SyncResult) =
             SyncResult(
                 sent + next.sent,
@@ -261,8 +280,16 @@ object Ankrimento {
                 next.conflicts,
                 (problems + next.problems).distinct(),
                 next.more,
+                next.peerChangedAt ?: peerChangedAt,
             )
     }
+
+    /**
+     * The person pressed Sync (the button, pull to refresh, the Y key, or the sync after logging in), so the sync that
+     * follows the AnkiWeb one reports back ([Event.SyncReport]); an automatic sync leaves it false and stays quiet.
+     */
+    @Volatile
+    var syncRequestedByUser = false
 
     /** The sync add-on is switched on (it loads into Incremento beside it, as on desktop). */
     @Volatile
@@ -358,6 +385,7 @@ object Ankrimento {
             conflicts = json.getInt("conflicts"),
             problems = List(problems.length()) { problems.getString(it) },
             more = json.optBoolean("more", false),
+            peerChangedAt = if (json.isNull("peer_changed_at")) null else json.optDouble("peer_changed_at"),
         )
     }
 
@@ -839,15 +867,26 @@ object Ankrimento {
 
     /**
      * AnkiDroid has just synced the collection with AnkiWeb. Incremento data for cards that were still unknown
-     * to this collection (or to AnkiWeb) waits for exactly that, so run the sync engine now. Quiet: the user did
-     * not ask for it, so a failure is only logged.
+     * to this collection (or to AnkiWeb) waits for exactly that, so run the sync engine now. The user pressed Sync
+     * for the cards: what this one changed is said too ([Event.Synced]), but nothing when nothing changed, and a
+     * failure is only logged.
      */
     fun collectionSynced() {
+        val asked = syncRequestedByUser
+        syncRequestedByUser = false
         if (!isStarted || !isSyncConfigured) return
         operationScope.launch {
             runCatching { syncInSlices() }
-                .onSuccess { Timber.i("Incremento sync after the collection sync: %s", it) }
-                .onFailure { Timber.w(it, "Incremento sync after the collection sync failed") }
+                .onSuccess { result ->
+                    Timber.i("Incremento sync after the collection sync: %s", result)
+                    when {
+                        asked -> mutableEvents.tryEmit(Event.SyncReport(result))
+                        result != null && (result.sent > 0 || result.received > 0 || result.applied > 0) ->
+                            mutableEvents.tryEmit(Event.Synced(result))
+                    }
+                }.onFailure { error ->
+                    if (asked) mutableEvents.tryEmit(Event.SyncReport(null, error.message ?: error.javaClass.simpleName))
+                }.onFailure { Timber.w(it, "Incremento sync after the collection sync failed") }
         }
     }
 

@@ -351,6 +351,8 @@ abstract class ReaderActivity : ComponentActivity() {
             is Ankrimento.Event.OpenUrl -> openUrl(event.url)
             is Ankrimento.Event.Message -> toast(event.text)
             is Ankrimento.Event.PdfOpen, is Ankrimento.Event.PdfPageLinks -> onDocumentEvent(event)
+            // Said on the deck list; a reader stays on its document.
+            is Ankrimento.Event.Synced, is Ankrimento.Event.SyncReport -> Unit
             Ankrimento.Event.EnterReview ->
                 if (documentReviewStarting) {
                     documentReviewStarting = false

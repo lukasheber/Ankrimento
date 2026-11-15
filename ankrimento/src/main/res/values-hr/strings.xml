@@ -64,13 +64,31 @@
     <string name="ankrimento_sync_up_to_date">Incremento podaci su ažurni</string>
     <string name="ankrimento_sync_failed">Sinkronizacija Incremento podataka nije uspjela: %s</string>
     <string name="ankrimento_sync_done">Incremento podaci sinkronizirani: %1$d poslano, %2$d primljeno</string>
+    <string name="ankrimento_sync_report_title">Usklađeno s računalom</string>
+    <string name="ankrimento_sync_report_cards">Kartice: sinkronizirane s AnkiWebom.</string>
+    <string name="ankrimento_sync_report_nothing_new">Incremento podaci: ništa novo s računala.</string>
+    <string name="ankrimento_sync_report_last_change">Zadnja promjena na računalu: %1$s.</string>
+    <string name="ankrimento_sync_report_unreached_title">Kartice su sinkronizirane, ali računalo nije dostupno</string>
+    <string name="ankrimento_sync_report_unreached">Položaji čitanja, prioriteti i dokumenti s računala nisu stigli. Je li Anki otvoren na računalu, na istoj Wi-Fi mreži?\n\n%1$s</string>
+    <string name="ankrimento_sync_report_retry">Pokušaj ponovno</string>
+    <plurals name="ankrimento_sync_report_received">
+        <item quantity="one">Incremento podaci: s računala je primljena %d promjena.</item>
+        <item quantity="few">Incremento podaci: s računala su primljene %d promjene.</item>
+        <item quantity="other">Incremento podaci: s računala je primljeno %d promjena.</item>
+    </plurals>
+    <plurals name="ankrimento_sync_report_sent">
+        <item quantity="one">S ovog uređaja poslana je %d promjena.</item>
+        <item quantity="few">S ovog uređaja poslane su %d promjene.</item>
+        <item quantity="other">S ovog uređaja poslano je %d promjena.</item>
+    </plurals>
     <string name="ankrimento_sync_conflicts">%1$d zapisa promijenjeno je na dva uređaja; zadržana je vrijednost ovog uređaja</string>
     <string name="ankrimento_sync_problems">%1$d datoteka u mapi za sinkronizaciju je preskočeno</string>
     <string name="ankrimento_sync_working">Sinkronizacija Incremento podataka… dosad poslano %1$d, primljeno %2$d</string>
     <string name="ankrimento_sync_hub">Središte za sinkronizaciju</string>
     <string name="ankrimento_sync_hub_none">Nije postavljeno. Uparite s hubom na svojoj mreži za sinkronizaciju podataka Incrementa</string>
-    <string name="ankrimento_sync_hub_message">Upišite 6-znamenkasti kod koji sinkronizacijski hub prikazuje na računalu na kojem radi (Incremento Sync, scripts/sync_hub.py serve). Ako ne može pronaći hub, dodajte njegovu adresu iza zareza, npr. 483920,192.168.1.5. Ostavite prazno za prestanak sinkronizacije.</string>
-    <string name="ankrimento_sync_hub_summary">%1$s na %2$s</string>
+    <string name="ankrimento_sync_hub_message">Na računalu otvorite Anki i odaberite Incremento → Sync Incremento Data… → Set up phone sync, zatim upišite 6-znamenkasti kod koji se prikaže. Ako ovaj uređaj ne može pronaći računalo, dodajte adresu koju Anki prikazuje iza zareza, npr. 483920,192.168.1.5. Ostavite prazno za prestanak sinkronizacije.</string>
+    <string name="ankrimento_sync_hub_summary">Računalo na %1$s</string>
+    <string name="ankrimento_sync_hub_failed">Uparivanje nije uspjelo</string>
     <string name="ankrimento_sync_hub_invalid">Nije valjan kod za uparivanje</string>
     <string name="ankrimento_statistics_title">Incremento statistika</string>
     <string name="ankrimento_stats_tag_rows">Pregledane kartice po oznaci: svaki redak prikazuje kartice i vrijeme učenja.</string>
