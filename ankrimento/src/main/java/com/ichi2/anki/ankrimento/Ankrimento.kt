@@ -21,10 +21,15 @@ import com.ichi2.anki.observability.ChangeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
@@ -44,8 +49,20 @@ object Ankrimento {
     /** Passed to [sync] for no time limit on file transfer. */
     const val NO_BUDGET = -1.0
 
-    /** How long one slice of a large sync transfers files before other work on the collection gets a turn. */
-    private const val SLICE_SECONDS = 4.0
+    /**
+     * How long one slice of a large sync transfers files before other work on the collection gets a turn. Short, as
+     * every screen that reads the collection waits for the slice under way, and opening one may read it several times.
+     */
+    private const val SLICE_SECONDS = 1.0
+
+    /** The pause between slices, so the work that waited for the collection runs before the next slice takes it. */
+    private const val SLICE_PAUSE_MS = 200L
+
+    /**
+     * How long documents download between slices, outside the collection queue: the slow part of a big first sync,
+     * which then holds up nothing; the slice after it places what arrived, so documents open as they come.
+     */
+    private const val FETCH_SECONDS = 8.0
 
     /** A sync that is still not done after this many slices stops and finishes at the next sync. */
     private const val MAX_SLICES = 2000
@@ -268,9 +285,18 @@ object Ankrimento {
         val more: Boolean = false,
         /** When the other device (the computer) last published, in epoch seconds; null when unknown. */
         val peerChangedAt: Double? = null,
+        /** Documents (their files) taken in and sent by this sync. */
+        val filesReceived: Int = 0,
+        val filesSent: Int = 0,
+        /** Documents still to come from the computer, and still to go to it, after this sync. */
+        val filesToReceive: Int = 0,
+        val filesToSend: Int = 0,
     ) {
         /** What this device took in: records received, or applied from a snapshot the first time. */
         val changesIn get() = maxOf(received, applied)
+
+        /** Documents not moved yet: a later sync goes on with them. */
+        val filesLeft get() = filesToReceive + filesToSend
 
         operator fun plus(next: SyncResult) =
             SyncResult(
@@ -281,7 +307,23 @@ object Ankrimento {
                 (problems + next.problems).distinct(),
                 next.more,
                 next.peerChangedAt ?: peerChangedAt,
+                filesReceived + next.filesReceived,
+                filesSent + next.filesSent,
+                next.filesToReceive,
+                next.filesToSend,
             )
+    }
+
+    /**
+     * Documents a sync is moving, for a sync that needs more than one slice: [done] of [total] in this sync, coming
+     * from the computer ([incoming]) or going to it.
+     */
+    data class DocumentTransfer(
+        val incoming: Boolean,
+        val done: Int,
+        val total: Int,
+    ) {
+        val fraction get() = if (total > 0) done.toFloat() / total else 0f
     }
 
     /**
@@ -386,25 +428,143 @@ object Ankrimento {
             problems = List(problems.length()) { problems.getString(it) },
             more = json.optBoolean("more", false),
             peerChangedAt = if (json.isNull("peer_changed_at")) null else json.optDouble("peer_changed_at"),
+            filesReceived = json.optInt("files_received", 0),
+            filesSent = json.optInt("files_sent", 0),
+            filesToReceive = json.optInt("files_to_receive", 0),
+            filesToSend = json.optInt("files_to_send", 0),
         )
     }
 
+    private val mutableTransfer = MutableStateFlow<DocumentTransfer?>(null)
+
+    /** The documents a long sync is moving now; null when none is. The deck list's Incremento card shows it. */
+    val documentTransfer: StateFlow<DocumentTransfer?> = mutableTransfer
+
+    private val mutableDocumentsLeft = MutableStateFlow(0)
+
+    /**
+     * Documents still to come from the computer or to go to it, as of the last sync or [refreshDocumentsLeft]: a first
+     * sync that stopped early (the app was closed) leaves some, and the next sync goes on with them.
+     */
+    val documentsLeft: StateFlow<Int> = mutableDocumentsLeft
+
+    /** One sync loop at a time: a second one waits, then finds little left to do. */
+    private val syncLoop = Mutex()
+
+    /** A sync loop is running now. */
+    val isSyncing: Boolean
+        get() = syncLoop.isLocked
+
     /**
      * Sync in slices of about [SLICE_SECONDS], giving other work on the collection a turn between them, so a large
-     * first sync (many documents) does not hold everything up. [onProgress] hears about each slice that left more to do,
-     * with the slice's number.
+     * first sync (many documents) does not hold everything up. While documents are still moving after a slice,
+     * [documentTransfer] says how far it is. With [maxSlices] it stops early (the rest is [SyncResult.more]).
      */
-    suspend fun syncInSlices(onProgress: (SyncResult, Int) -> Unit = { _, _ -> }): SyncResult? {
-        var total: SyncResult? = null
-        repeat(MAX_SLICES) { index ->
-            val slice = CollectionManager.withCol { sync(budgetSeconds = SLICE_SECONDS) } ?: return total
-            total = total?.plus(slice) ?: slice
-            if (!slice.more) return total
-            onProgress(total, index + 1)
-            yield()
+    suspend fun syncInSlices(maxSlices: Int = MAX_SLICES): SyncResult? =
+        syncLoop.withLock {
+            var total: SyncResult? = null
+            try {
+                for (index in 0 until maxSlices) {
+                    val slice = CollectionManager.withCol { sync(budgetSeconds = SLICE_SECONDS) } ?: break
+                    val sum = total?.plus(slice) ?: slice
+                    total = sum
+                    mutableDocumentsLeft.value = slice.filesLeft
+                    if (!slice.more) break
+                    mutableTransfer.value = transferOf(sum)
+                    if (sum.filesToReceive > 0 && index + 1 < maxSlices) total = fetchOutsideCollection(sum)
+                    delay(SLICE_PAUSE_MS)
+                }
+            } finally {
+                mutableTransfer.value = null
+            }
+            total
         }
-        return total
+
+    /**
+     * Downloads documents [sum] still waits for, outside the collection queue (see `facade.engine_fetch_files`), and
+     * counts them in. A hub that fails here is left to the next slice, which says why.
+     */
+    private suspend fun fetchOutsideCollection(sum: SyncResult): SyncResult {
+        val fetched =
+            runCatching { withContext(Dispatchers.IO) { fetchFiles(FETCH_SECONDS) } }
+                .onFailure { Timber.w(it, "Fetching documents outside the collection failed") }
+                .getOrNull() ?: return sum
+        if (fetched.fetched == 0) return sum
+        val more = sum.copy(filesReceived = sum.filesReceived + fetched.fetched, filesToReceive = fetched.left)
+        mutableTransfer.value = transferOf(more)
+        mutableDocumentsLeft.value = more.filesLeft
+        return more
     }
+
+    /** What [fetchFiles] did: documents downloaded, and those still to come. */
+    data class FetchResult(
+        val fetched: Int,
+        val left: Int,
+    )
+
+    /** Downloads waiting documents from the hub for about [budgetSeconds], without the collection; null without a hub. */
+    @WorkerThread
+    fun fetchFiles(budgetSeconds: Double): FetchResult? {
+        if (!syncAddonEnabled || syncHubCode.isEmpty()) return null
+        val android = Python.getInstance().getModule("ankrimento.android")
+        val json = JSONObject(android.callAttr("fetch_files_hub", syncHubCode, budgetSeconds).toString())
+        return FetchResult(json.getInt("fetched"), json.getInt("left"))
+    }
+
+    /** How far [sum] is with documents: those coming in first, as a first sync on a phone mostly takes them in. */
+    private fun transferOf(sum: SyncResult): DocumentTransfer? =
+        when {
+            sum.filesToReceive > 0 -> DocumentTransfer(true, sum.filesReceived, sum.filesReceived + sum.filesToReceive)
+            sum.filesToSend > 0 -> DocumentTransfer(false, sum.filesSent, sum.filesSent + sum.filesToSend)
+            else -> null
+        }
+
+    /** Reads how many documents are still to move from this device's sync state, without reaching the computer. */
+    suspend fun refreshDocumentsLeft(): Int {
+        if (!isStarted || !isSyncConfigured) return 0
+        val left =
+            runCatching {
+                val json = JSONObject(CollectionManager.withCol { requireFacade().callAttr("sync_backlog").toString() })
+                json.optInt("files_to_receive", 0) + json.optInt("files_to_send", 0)
+            }.onFailure { Timber.w(it, "Reading the sync backlog failed") }.getOrDefault(0)
+        mutableDocumentsLeft.value = left
+        return left
+    }
+
+    /**
+     * A sync that stopped before all documents moved (the app was closed, or a session started) goes on in the
+     * background. Says what it took in ([Event.Synced]); a computer that cannot be reached is only logged, as the
+     * card still says how many documents are to come.
+     */
+    fun resumeUnfinishedSync() {
+        operationScope.launch {
+            if (refreshDocumentsLeft() == 0 || syncLoop.isLocked) return@launch
+            runCatching { syncInSlices() }
+                .onSuccess { result ->
+                    Timber.i("Incremento sync resumed: %s", result)
+                    if (result != null && result.hasNews) mutableEvents.tryEmit(Event.Synced(result))
+                }.onFailure { Timber.w(it, "Resuming the Incremento sync failed") }
+        }
+    }
+
+    /**
+     * Why a document cannot open: still on its way from the computer while a sync has documents left, else [missing]
+     * (the file is not on this device).
+     */
+    fun missingDocumentText(
+        context: Context,
+        missing: Int,
+    ): String {
+        val left = documentsLeft.value
+        return if (left > 0 && isSyncConfigured) {
+            context.resources.getQuantityString(R.plurals.ankrimento_document_arriving, left, left)
+        } else {
+            context.getString(missing)
+        }
+    }
+
+    /** Something to say about [this] sync: records or documents moved. */
+    private val SyncResult.hasNews get() = sent > 0 || received > 0 || applied > 0 || filesReceived > 0 || filesSent > 0
 
     /**
      * Desktop Anki fires `undo_state_did_change` after every operation, and
@@ -881,8 +1041,7 @@ object Ankrimento {
                     Timber.i("Incremento sync after the collection sync: %s", result)
                     when {
                         asked -> mutableEvents.tryEmit(Event.SyncReport(result))
-                        result != null && (result.sent > 0 || result.received > 0 || result.applied > 0) ->
-                            mutableEvents.tryEmit(Event.Synced(result))
+                        result != null && result.hasNews -> mutableEvents.tryEmit(Event.Synced(result))
                     }
                 }.onFailure { error ->
                     if (asked) mutableEvents.tryEmit(Event.SyncReport(null, error.message ?: error.javaClass.simpleName))

@@ -156,7 +156,7 @@ class PdfReaderActivity : ReaderActivity() {
         lifecycleScope.launch {
             val path = withCol { Ankrimento.pdfPath(cardId) }
             if (path.isEmpty()) {
-                this@PdfReaderActivity.showToast(R.string.ankrimento_pdf_missing)
+                this@PdfReaderActivity.showToast(Ankrimento.missingDocumentText(this@PdfReaderActivity, R.string.ankrimento_pdf_missing))
                 finish()
                 return@launch
             }

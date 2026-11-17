@@ -39,6 +39,13 @@ def sync_hub(code: str, publish_only: bool = False, budget_seconds: float = -1.0
     return facade.engine_sync_hub(code, publish_only, _budget(budget_seconds))
 
 
+def fetch_files_hub(code: str, budget_seconds: float = -1.0) -> str:
+    """Download waiting documents from the hub without the collection (see ``facade.engine_fetch_files_hub``)."""
+    from ankrimento import facade
+
+    return facade.engine_fetch_files_hub(code, _budget(budget_seconds))
+
+
 class _Closure(dynamic_proxy(Runnable)):  # type: ignore[misc]
     def __init__(self, closure: Callable[[], None]) -> None:
         super().__init__()

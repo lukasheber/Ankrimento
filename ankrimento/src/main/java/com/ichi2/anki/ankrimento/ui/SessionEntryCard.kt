@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.ichi2.anki.ankrimento.Ankrimento
 import com.ichi2.anki.ankrimento.DayState
 import com.ichi2.anki.ankrimento.R
 import com.ichi2.anki.ankrimento.TodayPlan
@@ -48,13 +49,20 @@ internal class SessionCardAction(
  * is done, and one button for the next step: continue the session under way, start today's, or, once nothing is
  * due, study ahead. Settings and a menu of Incremento's other places sit beside it.
  *
+ * A big sync with the computer shows here too, since it can take minutes: how many documents have arrived, with
+ * its own bar, or, between syncs, how many are still to come.
+ *
  * @param state where the day stands
  * @param plan the day's counts for the progress line; null without the daily plan
+ * @param transfer documents a sync is moving now; null when none is
+ * @param documentsLeft documents still to sync with the computer
  */
 @Composable
 internal fun SessionEntryCard(
     state: DayState,
     plan: TodayPlan?,
+    transfer: Ankrimento.DocumentTransfer? = null,
+    documentsLeft: Int = 0,
     onStudy: () -> Unit,
     onSettings: () -> Unit,
     actions: List<SessionCardAction>,
@@ -121,6 +129,35 @@ internal fun SessionEntryCard(
                 progress = { plan.progress },
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 14.dp),
             )
+        }
+        SyncLine(transfer, documentsLeft)
+    }
+}
+
+/** Documents moving to or from the computer, with a bar; or how many are still to come; nothing when all are here. */
+@Composable
+private fun SyncLine(
+    transfer: Ankrimento.DocumentTransfer?,
+    documentsLeft: Int,
+) {
+    val text =
+        when {
+            transfer == null && documentsLeft > 0 ->
+                pluralStringResource(R.plurals.ankrimento_sync_documents_left, documentsLeft, documentsLeft)
+            transfer == null -> return
+            transfer.incoming -> stringResource(R.string.ankrimento_sync_receiving_documents, transfer.done, transfer.total)
+            else -> stringResource(R.string.ankrimento_sync_sending_documents, transfer.done, transfer.total)
+        }
+    Column(Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 14.dp)) {
+        Text(
+            text,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+        )
+        if (transfer != null) {
+            LinearProgressIndicator(progress = { transfer.fraction }, modifier = Modifier.fillMaxWidth().padding(top = 6.dp))
         }
     }
 }

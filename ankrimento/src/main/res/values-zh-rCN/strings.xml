@@ -71,7 +71,24 @@
     </plurals>
     <string name="ankrimento_sync_conflicts">%1$d 条记录在两台设备上都被更改；已保留本设备的值</string>
     <string name="ankrimento_sync_problems">同步文件夹中有 %1$d 个文件被跳过</string>
-    <string name="ankrimento_sync_working">正在同步 Incremento 数据… 已发送 %1$d 项，已接收 %2$d 项</string>
+    <string name="ankrimento_sync_receiving_documents">正在从电脑接收文档：%1$d / %2$d</string>
+    <string name="ankrimento_sync_sending_documents">正在向电脑发送文档：%1$d / %2$d</string>
+    <string name="ankrimento_sync_report_still_title">仍在与电脑同步</string>
+    <plurals name="ankrimento_sync_documents_left">
+        <item quantity="other">还有 %d 个文档待与电脑同步</item>
+    </plurals>
+    <plurals name="ankrimento_sync_documents_received">
+        <item quantity="other">已从电脑接收 %d 个文档</item>
+    </plurals>
+    <plurals name="ankrimento_sync_documents_sent">
+        <item quantity="other">已向电脑发送 %d 个文档</item>
+    </plurals>
+    <plurals name="ankrimento_sync_report_documents_left">
+        <item quantity="other">还有 %d 个文档未到达。Ankrimento 打开且与电脑在同一 Wi-Fi 时会继续接收。</item>
+    </plurals>
+    <plurals name="ankrimento_document_arriving">
+        <item quantity="other">此文档尚未从电脑到达：还有 %d 个文档待接收。</item>
+    </plurals>
     <string name="ankrimento_sync_hub">同步中心</string>
     <string name="ankrimento_sync_hub_none">未设置。与你网络中的同步中心配对，即可同步 Incremento 数据</string>
     <string name="ankrimento_sync_hub_message">在电脑上打开 Anki，选择 Incremento → Sync Incremento Data… → Set up phone sync，然后输入它显示的 6 位数字码。如果本设备找不到电脑，请在码后面用逗号加上 Anki 显示的地址，例如 483920,192.168.1.5。留空则停止同步。</string>

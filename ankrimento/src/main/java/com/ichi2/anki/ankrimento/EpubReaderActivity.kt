@@ -690,7 +690,7 @@ class EpubReaderActivity : ReaderActivity() {
         val opened =
             runCatching { withCol { Ankrimento.epubOpen(cardId, index) } }.getOrElse { error ->
                 Timber.w(error, "Opening an EPUB chapter failed")
-                showToast(R.string.ankrimento_epub_missing)
+                showToast(Ankrimento.missingDocumentText(this, R.string.ankrimento_epub_missing))
                 finish()
                 return
             }

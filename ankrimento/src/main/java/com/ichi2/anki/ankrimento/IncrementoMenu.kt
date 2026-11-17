@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -81,6 +82,8 @@ class IncrementoMenu(
                     .onFailure { Timber.w(it, "Ankrimento start failed") }
                 // The day's plan needs the backend: show it as soon as that is running.
                 refreshSessionEntry()
+                // A first sync that stopped early (the app was closed) goes on by itself.
+                Ankrimento.resumeUnfinishedSync()
             }
         }
         // Desktop's automatic backups: when the app opens, then whenever the interval has passed.
@@ -103,7 +106,7 @@ class IncrementoMenu(
                         is Ankrimento.Event.Message -> if (sessionStarting) explainEmptySession(event.text) else toast(event.text)
                         // The sync that follows each AnkiWeb sync: said only when it changed something.
                         is Ankrimento.Event.Synced -> {
-                            toast(activity.getString(R.string.ankrimento_sync_done, event.result.sent, event.result.received))
+                            toast(doneText(event.result))
                             onDeckListChanged()
                         }
                         is Ankrimento.Event.SyncReport -> showSyncReport(event)
@@ -120,9 +123,13 @@ class IncrementoMenu(
             ComposeView(activity).apply {
                 setContent {
                     IncrementoTheme {
+                        val transfer by Ankrimento.documentTransfer.collectAsState()
+                        val documentsLeft by Ankrimento.documentsLeft.collectAsState()
                         SessionEntryCard(
                             state = DayState.of(plan, sessionRemaining, dailyPlan),
                             plan = plan.takeIf { dailyPlan },
+                            transfer = transfer,
+                            documentsLeft = documentsLeft,
                             onStudy = { activity.lifecycleScope.launch { continueOrStartSession() } },
                             onSettings = { activity.startActivity(IncrementoSettingsActivity.intent(activity)) },
                             actions = cardActions(),
@@ -245,8 +252,9 @@ class IncrementoMenu(
         runCatching {
             CollectionManager.withCol { Ankrimento.start(activity, this) }
             // Bring in other devices' reading before choosing cards. A hub that is off, or a folder that cannot be
-            // reached, must not stop the session: say so and go on with what this device has.
-            runCatching { sync(reportUpToDate = false) }.onFailure { error ->
+            // reached, must not stop the session: say so and go on with what this device has. One slice only: the
+            // records come at once, and documents still to come (a big first sync) follow in the background.
+            runCatching { sync(reportUpToDate = false, maxSlices = 1) }.onFailure { error ->
                 Timber.w(error, "Incremento sync before the session failed")
                 toast(activity.getString(R.string.ankrimento_sync_failed, error.message ?: error.javaClass.simpleName))
             }
@@ -295,19 +303,23 @@ class IncrementoMenu(
         }
     }
 
-    /** Syncs with the sync hub, reporting what changed. Records changed on two devices keep this device's value. */
-    private suspend fun sync(reportUpToDate: Boolean) {
-        val result =
-            Ankrimento.syncInSlices { progress, slice ->
-                // A large first sync: say it is working, at the start and every few slices after.
-                if (slice % 5 == 1) {
-                    toast(activity.getString(R.string.ankrimento_sync_working, progress.sent, progress.received))
-                }
-            } ?: return
-        val changed = result.sent > 0 || result.received > 0 || result.applied > 0
+    /**
+     * Syncs with the sync hub, reporting what changed. Records changed on two devices keep this device's value. While
+     * documents move, the session card shows how far it is. With [maxSlices] it stops early and the rest goes on in
+     * the background.
+     */
+    private suspend fun sync(
+        reportUpToDate: Boolean,
+        maxSlices: Int? = null,
+    ) {
+        // A quick sync does not wait behind a long one already bringing everything in.
+        if (maxSlices != null && Ankrimento.isSyncing) return
+        val result = (if (maxSlices == null) Ankrimento.syncInSlices() else Ankrimento.syncInSlices(maxSlices)) ?: return
+        if (result.more) Ankrimento.resumeUnfinishedSync()
+        val changed = result.sent > 0 || result.received > 0 || result.applied > 0 || result.filesReceived > 0 || result.filesSent > 0
         listOfNotNull(
             when {
-                changed -> activity.getString(R.string.ankrimento_sync_done, result.sent, result.received)
+                changed -> doneText(result)
                 reportUpToDate -> activity.getString(R.string.ankrimento_sync_up_to_date)
                 else -> null
             },
@@ -320,6 +332,21 @@ class IncrementoMenu(
 
     private fun toast(text: String) {
         activity.showToast(text)
+    }
+
+    /** What a sync moved, in words: documents first (what a big sync is mostly about), then records. */
+    private fun doneText(result: Ankrimento.SyncResult): String {
+        val resources = activity.resources
+        return listOfNotNull(
+            result.filesReceived.takeIf { it > 0 }?.let {
+                resources.getQuantityString(R.plurals.ankrimento_sync_documents_received, it, it)
+            },
+            result.filesSent.takeIf { it > 0 }?.let { resources.getQuantityString(R.plurals.ankrimento_sync_documents_sent, it, it) },
+            activity
+                .getString(R.string.ankrimento_sync_done, result.sent, result.received)
+                .takeIf { result.sent > 0 || result.received > 0 || (result.filesReceived == 0 && result.filesSent == 0) },
+            result.filesLeft.takeIf { it > 0 }?.let { resources.getQuantityString(R.plurals.ankrimento_sync_documents_left, it, it) },
+        ).joinToString("\n")
     }
 
     /**
@@ -346,19 +373,35 @@ class IncrementoMenu(
             val lines =
                 buildList {
                     add(activity.getString(R.string.ankrimento_sync_report_cards))
-                    add(
-                        if (result.changesIn > 0) {
-                            resources.getQuantityString(R.plurals.ankrimento_sync_report_received, result.changesIn, result.changesIn)
-                        } else {
-                            activity.getString(R.string.ankrimento_sync_report_nothing_new)
-                        },
-                    )
+                    when {
+                        result.changesIn > 0 ->
+                            add(resources.getQuantityString(R.plurals.ankrimento_sync_report_received, result.changesIn, result.changesIn))
+                        result.filesReceived == 0 -> add(activity.getString(R.string.ankrimento_sync_report_nothing_new))
+                    }
+                    if (result.filesReceived > 0) {
+                        add(
+                            resources.getQuantityString(
+                                R.plurals.ankrimento_sync_documents_received,
+                                result.filesReceived,
+                                result.filesReceived,
+                            ),
+                        )
+                    }
                     if (result.sent > 0) add(resources.getQuantityString(R.plurals.ankrimento_sync_report_sent, result.sent, result.sent))
+                    if (result.filesLeft > 0) {
+                        add(
+                            resources.getQuantityString(
+                                R.plurals.ankrimento_sync_report_documents_left,
+                                result.filesLeft,
+                                result.filesLeft,
+                            ),
+                        )
+                    }
                     result.peerChangedAt?.let { add(activity.getString(R.string.ankrimento_sync_report_last_change, whenText(it))) }
                     if (result.conflicts > 0) add(activity.getString(R.string.ankrimento_sync_conflicts, result.conflicts))
                 }
             dialog
-                .setTitle(R.string.ankrimento_sync_report_title)
+                .setTitle(if (result.filesLeft > 0) R.string.ankrimento_sync_report_still_title else R.string.ankrimento_sync_report_title)
                 .setMessage(lines.joinToString("\n"))
                 .setPositiveButton(android.R.string.ok, null)
         }

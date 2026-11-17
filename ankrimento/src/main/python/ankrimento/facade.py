@@ -1506,6 +1506,10 @@ def engine_sync(store: Any, label: str, publish_only: bool = False, budget_secon
     versions are saved), and files in the folder that were skipped. With ``publish_only`` this device's changes
     are sent and nothing is received: quick, for a screen that is closing. With ``budget_seconds`` a call transfers
     files for about that long and reports ``more`` when it stopped early; calling again continues.
+
+    Documents (their files) are counted apart from records, since a big first sync moves them over many calls:
+    ``files_received`` and ``files_sent`` in this call, and ``files_to_receive``, ``files_to_send`` and
+    ``bytes_to_send`` still left after it.
     """
     if not addon.sync_enabled():
         raise RuntimeError("Sync is switched off on this device")
@@ -1516,8 +1520,14 @@ def engine_sync(store: Any, label: str, publish_only: bool = False, budget_secon
     status = sync_service.status(addon_dir, profile)
     if not status.configured or status.folder != label:
         sync_service.configure(addon_dir, profile, label, query=query, store=store)
+    moved = {"receiving": 0, "sending": 0}
+
+    def heard(progress: Any) -> None:
+        if progress.stage in moved:
+            moved[progress.stage] = max(moved[progress.stage], progress.done)
+
     report = sync_service.sync_now(addon_dir, profile, query, store=store, publish_only=publish_only,
-                                   budget_seconds=budget_seconds)
+                                   budget_seconds=budget_seconds, on_progress=heard)
     return _dumps(
         {
             "sent": report.published,
@@ -1527,6 +1537,61 @@ def engine_sync(store: Any, label: str, publish_only: bool = False, budget_secon
             "problems": report.problems,
             "skipped": report.skipped,
             "more": report.more,
+            "files_received": moved["receiving"],
+            "files_sent": moved["sending"],
+            "files_to_receive": report.files_to_receive,
+            "files_to_send": report.files_to_send,
+            "bytes_to_send": report.bytes_to_send,
+        }
+    )
+
+
+def engine_fetch_files(store: Any, budget_seconds: float | None = None) -> str:
+    """Download documents the last sync is waiting for, without the Anki collection, as JSON: ``fetched``, ``left``.
+
+    Safe to call outside the collection queue, so a big first sync downloads while the screens keep working; the next
+    ``engine_sync`` places what arrived. See ``sync_service.fetch_files``.
+    """
+    if not addon.sync_enabled():
+        return _dumps({"fetched": 0, "left": 0})
+    from incremento.backend import sync_service
+
+    rt = runtime.current()
+    report = sync_service.fetch_files(str(rt.addon_dir), rt.profile, store=store, budget_seconds=budget_seconds)
+    return _dumps({"fetched": report.fetched, "left": report.left})
+
+
+def engine_fetch_files_hub(code: str, budget_seconds: float | None = None) -> str:
+    """``engine_fetch_files`` through the hub paired with ``code``."""
+    from incremento.backend.sync_http import HttpStore, Pairing
+
+    store = HttpStore.from_pairing(Pairing.from_code(code))
+    try:
+        return engine_fetch_files(store, budget_seconds)
+    finally:
+        store.close()
+
+
+def sync_backlog() -> str:
+    """Documents a sync has not moved yet, as JSON: ``files_to_receive``, ``files_to_send``, ``bytes_to_send``.
+
+    Read from this device's sync state only, without reaching the hub: a first sync that stopped early (the app was
+    closed) leaves documents to receive, and the app resumes it and says how many are still to come.
+    """
+    empty = {"files_to_receive": 0, "files_to_send": 0, "bytes_to_send": 0}
+    if not addon.sync_enabled():
+        return _dumps(empty)
+    from incremento.backend import sync_service
+
+    rt = runtime.current()
+    status = sync_service.status(str(rt.addon_dir), rt.profile)
+    if not status.configured:
+        return _dumps(empty)
+    return _dumps(
+        {
+            "files_to_receive": status.files_to_receive,
+            "files_to_send": status.files_to_send,
+            "bytes_to_send": status.bytes_to_send,
         }
     )
 

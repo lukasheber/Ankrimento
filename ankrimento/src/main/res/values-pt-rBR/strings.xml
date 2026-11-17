@@ -83,7 +83,34 @@
     </plurals>
     <string name="ankrimento_sync_conflicts">%1$d registros mudaram em dois aparelhos; o valor deste aparelho foi mantido</string>
     <string name="ankrimento_sync_problems">%1$d arquivos da pasta de sincronização foram ignorados</string>
-    <string name="ankrimento_sync_working">Sincronizando os dados do Incremento… %1$d enviados, %2$d recebidos até agora</string>
+    <string name="ankrimento_sync_receiving_documents">Recebendo documentos do computador: %1$d de %2$d</string>
+    <string name="ankrimento_sync_sending_documents">Enviando documentos para o computador: %1$d de %2$d</string>
+    <string name="ankrimento_sync_report_still_title">Ainda sincronizando com o computador</string>
+    <plurals name="ankrimento_sync_documents_left">
+        <item quantity="one">%d documento ainda a sincronizar com o computador</item>
+        <item quantity="many">%d documentos ainda a sincronizar com o computador</item>
+        <item quantity="other">%d documentos ainda a sincronizar com o computador</item>
+    </plurals>
+    <plurals name="ankrimento_sync_documents_received">
+        <item quantity="one">%d documento recebido do computador</item>
+        <item quantity="many">%d documentos recebidos do computador</item>
+        <item quantity="other">%d documentos recebidos do computador</item>
+    </plurals>
+    <plurals name="ankrimento_sync_documents_sent">
+        <item quantity="one">%d documento enviado para o computador</item>
+        <item quantity="many">%d documentos enviados para o computador</item>
+        <item quantity="other">%d documentos enviados para o computador</item>
+    </plurals>
+    <plurals name="ankrimento_sync_report_documents_left">
+        <item quantity="one">Ainda falta %d documento. Ele continua chegando enquanto o Ankrimento estiver aberto, no mesmo Wi-Fi do computador.</item>
+        <item quantity="many">Ainda faltam %d documentos. Eles continuam chegando enquanto o Ankrimento estiver aberto, no mesmo Wi-Fi do computador.</item>
+        <item quantity="other">Ainda faltam %d documentos. Eles continuam chegando enquanto o Ankrimento estiver aberto, no mesmo Wi-Fi do computador.</item>
+    </plurals>
+    <plurals name="ankrimento_document_arriving">
+        <item quantity="one">Este documento ainda não chegou do computador: falta %d documento.</item>
+        <item quantity="many">Este documento ainda não chegou do computador: faltam %d documentos.</item>
+        <item quantity="other">Este documento ainda não chegou do computador: faltam %d documentos.</item>
+    </plurals>
     <string name="ankrimento_sync_hub">Hub de sincronização</string>
     <string name="ankrimento_sync_hub_none">Não definido. Pareie com um hub na sua rede para sincronizar os dados do Incremento</string>
     <string name="ankrimento_sync_hub_message">No computador, abra o Anki e escolha Incremento → Sync Incremento Data… → Set up phone sync, depois digite o código de 6 dígitos que ele mostra. Se este aparelho não achar o computador, acrescente o endereço que o Anki mostra depois de uma vírgula, como 483920,192.168.1.5. Deixe vazio para parar de sincronizar.</string>

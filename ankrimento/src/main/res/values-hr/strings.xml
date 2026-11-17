@@ -83,7 +83,34 @@
     </plurals>
     <string name="ankrimento_sync_conflicts">%1$d zapisa promijenjeno je na dva uređaja; zadržana je vrijednost ovog uređaja</string>
     <string name="ankrimento_sync_problems">%1$d datoteka u mapi za sinkronizaciju je preskočeno</string>
-    <string name="ankrimento_sync_working">Sinkronizacija Incremento podataka… dosad poslano %1$d, primljeno %2$d</string>
+    <string name="ankrimento_sync_receiving_documents">Primanje dokumenata s računala: %1$d od %2$d</string>
+    <string name="ankrimento_sync_sending_documents">Slanje dokumenata na računalo: %1$d od %2$d</string>
+    <string name="ankrimento_sync_report_still_title">Sinkronizacija s računalom još traje</string>
+    <plurals name="ankrimento_sync_documents_left">
+        <item quantity="one">Još %d dokument za sinkronizaciju s računalom</item>
+        <item quantity="few">Još %d dokumenta za sinkronizaciju s računalom</item>
+        <item quantity="other">Još %d dokumenata za sinkronizaciju s računalom</item>
+    </plurals>
+    <plurals name="ankrimento_sync_documents_received">
+        <item quantity="one">S računala je primljen %d dokument</item>
+        <item quantity="few">S računala su primljena %d dokumenta</item>
+        <item quantity="other">S računala je primljeno %d dokumenata</item>
+    </plurals>
+    <plurals name="ankrimento_sync_documents_sent">
+        <item quantity="one">Na računalo je poslan %d dokument</item>
+        <item quantity="few">Na računalo su poslana %d dokumenta</item>
+        <item quantity="other">Na računalo je poslano %d dokumenata</item>
+    </plurals>
+    <plurals name="ankrimento_sync_report_documents_left">
+        <item quantity="one">Još stiže %d dokument. Stiže dok je Ankrimento otvoren, na istoj Wi-Fi mreži kao računalo.</item>
+        <item quantity="few">Još stižu %d dokumenta. Stižu dok je Ankrimento otvoren, na istoj Wi-Fi mreži kao računalo.</item>
+        <item quantity="other">Još stiže %d dokumenata. Stižu dok je Ankrimento otvoren, na istoj Wi-Fi mreži kao računalo.</item>
+    </plurals>
+    <plurals name="ankrimento_document_arriving">
+        <item quantity="one">Ovaj dokument još nije stigao s računala: još stiže %d dokument.</item>
+        <item quantity="few">Ovaj dokument još nije stigao s računala: još stižu %d dokumenta.</item>
+        <item quantity="other">Ovaj dokument još nije stigao s računala: još stiže %d dokumenata.</item>
+    </plurals>
     <string name="ankrimento_sync_hub">Središte za sinkronizaciju</string>
     <string name="ankrimento_sync_hub_none">Nije postavljeno. Uparite s hubom na svojoj mreži za sinkronizaciju podataka Incrementa</string>
     <string name="ankrimento_sync_hub_message">Na računalu otvorite Anki i odaberite Incremento → Sync Incremento Data… → Set up phone sync, zatim upišite 6-znamenkasti kod koji se prikaže. Ako ovaj uređaj ne može pronaći računalo, dodajte adresu koju Anki prikazuje iza zareza, npr. 483920,192.168.1.5. Ostavite prazno za prestanak sinkronizacije.</string>

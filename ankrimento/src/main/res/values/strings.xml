@@ -77,7 +77,29 @@
     </plurals>
     <string name="ankrimento_sync_conflicts">%1$d records changed on two devices; this device\'s value was kept</string>
     <string name="ankrimento_sync_problems">%1$d files in the sync library were skipped</string>
-    <string name="ankrimento_sync_working">Syncing Incremento data… %1$d sent, %2$d received so far</string>
+    <string name="ankrimento_sync_receiving_documents">Receiving documents from your computer: %1$d of %2$d</string>
+    <string name="ankrimento_sync_sending_documents">Sending documents to your computer: %1$d of %2$d</string>
+    <string name="ankrimento_sync_report_still_title">Still syncing with your computer</string>
+    <plurals name="ankrimento_sync_documents_left">
+        <item quantity="one">%d document still to sync with your computer</item>
+        <item quantity="other">%d documents still to sync with your computer</item>
+    </plurals>
+    <plurals name="ankrimento_sync_documents_received">
+        <item quantity="one">%d document received from your computer</item>
+        <item quantity="other">%d documents received from your computer</item>
+    </plurals>
+    <plurals name="ankrimento_sync_documents_sent">
+        <item quantity="one">%d document sent to your computer</item>
+        <item quantity="other">%d documents sent to your computer</item>
+    </plurals>
+    <plurals name="ankrimento_sync_report_documents_left">
+        <item quantity="one">%d document is still to come. It keeps arriving while Ankrimento is open, on the same Wi-Fi as the computer.</item>
+        <item quantity="other">%d documents are still to come. They keep arriving while Ankrimento is open, on the same Wi-Fi as the computer.</item>
+    </plurals>
+    <plurals name="ankrimento_document_arriving">
+        <item quantity="one">This document has not arrived from your computer yet: %d document is still to come.</item>
+        <item quantity="other">This document has not arrived from your computer yet: %d documents are still to come.</item>
+    </plurals>
     <string name="ankrimento_sync_hub">Sync hub</string>
     <string name="ankrimento_sync_hub_none">Not set. Pair with a hub on your network to sync Incremento data</string>
     <string name="ankrimento_sync_hub_message">On the computer, open Anki and choose Incremento → Sync Incremento Data… → Set up phone sync, then type the 6-digit code it shows. If this device can\'t find the computer, add the address Anki shows after a comma, like 483920,192.168.1.5. Leave empty to stop syncing.</string>

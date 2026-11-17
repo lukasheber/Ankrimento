@@ -379,6 +379,114 @@ def test_the_facade_reports_when_a_budget_cut_the_sync_short_and_a_later_call_fi
     db.close_connection()
 
 
+def test_the_facade_counts_the_documents_a_big_first_sync_receives_and_those_still_to_come(rt, phone_profile, tmp_path):
+    """A first sync of many documents takes many calls: each says how many documents it took in and how many are left."""
+    import json
+
+    from ankrimento import facade
+    from incremento.backend import db, paths, sync_service
+    from incremento.backend.profile_startup import prepare_storage
+    from incremento.backend.sync_store import MemoryStore
+
+    store = MemoryStore()
+    desktop = Device(rt.col, str(tmp_path / "desktop" / "addons21" / "incremento"), "Desktop documents")
+    prepare_storage(desktop.addon, desktop.profile)
+    sync_service.configure(desktop.addon, desktop.profile, "store:desktop", query=rt.col.db.all, store=store)
+    cards = [_card(rt) for _ in range(5)]
+    for index, card in enumerate(cards):
+        pdf = paths.get_pdf_dir(desktop.addon, desktop.profile) / f"big{index}.pdf"
+        pdf.parent.mkdir(parents=True, exist_ok=True)
+        pdf.write_bytes(b"%PDF-1.7\n" + f"big {index} ".encode() * 2000)
+        with db.get_connection(desktop.addon, desktop.profile) as conn:
+            conn.execute("INSERT INTO content_items(content_id, kind, card_id, note_id, storage_key, created_at, "
+                         "updated_at) VALUES (?, 'pdf', ?, ?, ?, 1, 1)",
+                         (f"{index + 101:032x}", card, rt.col.get_card(card).nid, f"pdfs/big{index}.pdf"))
+    desktop.sync(store)
+    assert json.loads(facade.sync_backlog()) == {"files_to_receive": 0, "files_to_send": 0, "bytes_to_send": 0}
+
+    reports = []
+    for _ in range(40):
+        reports.append(json.loads(facade.engine_sync(store, "saf:content://tree/big", budget_seconds=0.0)))
+        if not reports[-1]["more"]:
+            break
+
+    assert len(reports) > 1
+    assert sum(report["files_received"] for report in reports) == 5
+    left = [report["files_to_receive"] for report in reports]
+    assert left[0] > 0 and left == sorted(left, reverse=True) and left[-1] == 0
+    assert all(r["files_received"] + r["files_to_receive"] == before for r, before in zip(reports[1:], left))
+    assert json.loads(facade.sync_backlog())["files_to_receive"] == 0
+    db.close_connection()
+
+
+def test_the_backlog_counts_documents_left_behind_by_a_sync_that_stopped_early(rt, phone_profile, tmp_path):
+    import json
+
+    from ankrimento import facade
+    from incremento.backend import db, paths, sync_service
+    from incremento.backend.profile_startup import prepare_storage
+    from incremento.backend.sync_store import MemoryStore
+
+    store = MemoryStore()
+    desktop = Device(rt.col, str(tmp_path / "desktop" / "addons21" / "incremento"), "Desktop backlog")
+    prepare_storage(desktop.addon, desktop.profile)
+    sync_service.configure(desktop.addon, desktop.profile, "store:desktop", query=rt.col.db.all, store=store)
+    for index, card in enumerate(_card(rt) for _ in range(4)):
+        pdf = paths.get_pdf_dir(desktop.addon, desktop.profile) / f"left{index}.pdf"
+        pdf.parent.mkdir(parents=True, exist_ok=True)
+        pdf.write_bytes(b"%PDF-1.7\n" + f"left {index} ".encode() * 2000)
+        with db.get_connection(desktop.addon, desktop.profile) as conn:
+            conn.execute("INSERT INTO content_items(content_id, kind, card_id, note_id, storage_key, created_at, "
+                         "updated_at) VALUES (?, 'pdf', ?, ?, ?, 1, 1)",
+                         (f"{index + 201:032x}", card, rt.col.get_card(card).nid, f"pdfs/left{index}.pdf"))
+    desktop.sync(store)
+
+    first = json.loads(facade.engine_sync(store, "saf:content://tree/left", budget_seconds=0.0))  # the app is closed
+
+    assert first["more"] and json.loads(facade.sync_backlog())["files_to_receive"] == first["files_to_receive"] > 0
+    db.close_connection()
+
+
+def test_documents_are_fetched_apart_from_the_sync_and_the_next_sync_places_them(rt, phone_profile, tmp_path):
+    """The app downloads files outside the collection queue, so a big first sync does not hold up the screens."""
+    import json
+
+    from ankrimento import facade
+    from incremento.backend import db, paths, sync_service
+    from incremento.backend.profile_startup import prepare_storage
+    from incremento.backend.sync_store import MemoryStore
+
+    store = MemoryStore()
+    desktop = Device(rt.col, str(tmp_path / "desktop" / "addons21" / "incremento"), "Desktop fetch")
+    prepare_storage(desktop.addon, desktop.profile)
+    sync_service.configure(desktop.addon, desktop.profile, "store:desktop", query=rt.col.db.all, store=store)
+    for index, card in enumerate(_card(rt) for _ in range(4)):
+        pdf = paths.get_pdf_dir(desktop.addon, desktop.profile) / f"fetch{index}.pdf"
+        pdf.parent.mkdir(parents=True, exist_ok=True)
+        pdf.write_bytes(b"%PDF-1.7\n" + f"fetch {index} ".encode() * 2000)
+        with db.get_connection(desktop.addon, desktop.profile) as conn:
+            conn.execute("INSERT INTO content_items(content_id, kind, card_id, note_id, storage_key, created_at, "
+                         "updated_at) VALUES (?, 'pdf', ?, ?, ?, 1, 1)",
+                         (f"{index + 301:032x}", card, rt.col.get_card(card).nid, f"pdfs/fetch{index}.pdf"))
+    desktop.sync(store)
+    first = json.loads(facade.engine_sync(store, "saf:content://tree/fetch", budget_seconds=0.0))
+    assert first["files_to_receive"] > 0
+
+    fetched = []
+    while True:
+        fetched.append(json.loads(facade.engine_fetch_files(store, budget_seconds=0.0)))
+        if fetched[-1]["left"] == 0:
+            break
+        assert len(fetched) < 20
+    last = json.loads(facade.engine_sync(store, "saf:content://tree/fetch"))
+
+    assert sum(f["fetched"] for f in fetched) == first["files_to_receive"]
+    assert last["files_received"] == 0 and last["files_to_receive"] == 0 and not last["more"]
+    for index in range(4):
+        assert any(paths.get_pdf_dir(str(rt.addon_dir), rt.profile).glob(f"fetch{index}*.pdf"))
+    db.close_connection()
+
+
 def _managed_file(rt, device, folder, name, data):
     """A local file card with a managed copy in ``device``'s profile, as the add-on there makes it."""
     from incremento.backend.local_file_manager import add_local_file_card
