@@ -4,7 +4,6 @@ package com.ichi2.anki.ankrimento
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.text.format.DateUtils
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
@@ -15,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
+import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -347,7 +347,7 @@ class IncrementoMenu(
             .setTitle(R.string.ankrimento_update_title)
             .setMessage(activity.getString(R.string.ankrimento_update_message, release.name, current))
             .setPositiveButton(R.string.ankrimento_update_download) { _, _ ->
-                runCatching { activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(release.url))) }
+                runCatching { activity.startActivity(Intent(Intent.ACTION_VIEW, release.url.toUri())) }
                     .onFailure { Timber.w(it, "Opening the release page failed") }
             }.setNeutralButton(R.string.ankrimento_update_skip) { _, _ -> UpdateCheck.skip(activity, release.tag) }
             .setNegativeButton(R.string.ankrimento_update_later, null)

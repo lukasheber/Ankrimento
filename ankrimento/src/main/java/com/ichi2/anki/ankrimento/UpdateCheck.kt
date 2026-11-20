@@ -4,6 +4,7 @@ package com.ichi2.anki.ankrimento
 
 import android.content.Context
 import androidx.annotation.WorkerThread
+import com.ichi2.anki.common.time.TimeManager
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.IOException
@@ -65,7 +66,7 @@ object UpdateCheck {
     @WorkerThread
     fun check(
         context: Context,
-        now: Long = System.currentTimeMillis(),
+        now: Long = TimeManager.time.intTimeMS(),
         current: String? = installedVersion(context),
         fetch: () -> String = ::download,
     ): Release? {
@@ -107,7 +108,17 @@ object UpdateCheck {
             connection.setRequestProperty("Accept", "application/vnd.github+json")
             connection.setRequestProperty("User-Agent", "Ankrimento")
             if (connection.responseCode != HttpURLConnection.HTTP_OK) throw IOException("GitHub answered ${connection.responseCode}")
-            return connection.inputStream.use { String(it.readNBytes(MAX_BYTES), Charsets.UTF_8) }
+            // At most MAX_BYTES, read in a way every supported Android has (readNBytes needs API 33).
+            return connection.inputStream.use { stream ->
+                val out = java.io.ByteArrayOutputStream()
+                val buffer = ByteArray(8192)
+                while (out.size() < MAX_BYTES) {
+                    val read = stream.read(buffer, 0, minOf(buffer.size, MAX_BYTES - out.size()))
+                    if (read < 0) break
+                    out.write(buffer, 0, read)
+                }
+                out.toString(Charsets.UTF_8.name())
+            }
         } finally {
             connection.disconnect()
         }
