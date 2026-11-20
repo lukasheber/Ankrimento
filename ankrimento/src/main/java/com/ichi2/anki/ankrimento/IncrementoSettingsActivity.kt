@@ -1031,6 +1031,11 @@ class IncrementoSettingsActivity : ComponentActivity() {
             device.profile = it
             profile = device.profile
         }
+        var checkUpdates by remember { mutableStateOf(device.checkForUpdates) }
+        Toggle(R.string.ankrimento_settings_check_updates, checkUpdates, R.string.ankrimento_settings_check_updates_help) { on ->
+            checkUpdates = on
+            device.checkForUpdates = on
+        }
         var syncAddon by remember { mutableStateOf(device.syncAddonEnabled) }
         Toggle(R.string.ankrimento_settings_sync_addon, syncAddon, R.string.ankrimento_settings_sync_addon_help) { on ->
             syncAddon = on

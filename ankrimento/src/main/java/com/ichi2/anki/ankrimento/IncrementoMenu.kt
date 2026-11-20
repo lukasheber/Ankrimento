@@ -3,6 +3,8 @@
 package com.ichi2.anki.ankrimento
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.text.format.DateUtils
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
@@ -85,6 +87,8 @@ class IncrementoMenu(
                 // A first sync that stopped early (the app was closed) goes on by itself.
                 Ankrimento.resumeUnfinishedSync()
             }
+            // A newer version on GitHub: asked at most once a day, offered once per version.
+            UpdateCheck.check(activity)?.let { release -> withContext(Dispatchers.Main) { offerUpdate(release) } }
         }
         // Desktop's automatic backups: when the app opens, then whenever the interval has passed.
         activity.lifecycleScope.launch {
@@ -332,6 +336,22 @@ class IncrementoMenu(
 
     private fun toast(text: String) {
         activity.showToast(text)
+    }
+
+    /** A newer Ankrimento is out: open its page to download it, skip this version, or decide later. */
+    private fun offerUpdate(release: UpdateCheck.Release) {
+        if (activity.isFinishing) return
+        val current = runCatching { activity.packageManager.getPackageInfo(activity.packageName, 0).versionName }.getOrNull().orEmpty()
+        AlertDialog
+            .Builder(activity)
+            .setTitle(R.string.ankrimento_update_title)
+            .setMessage(activity.getString(R.string.ankrimento_update_message, release.name, current))
+            .setPositiveButton(R.string.ankrimento_update_download) { _, _ ->
+                runCatching { activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(release.url))) }
+                    .onFailure { Timber.w(it, "Opening the release page failed") }
+            }.setNeutralButton(R.string.ankrimento_update_skip) { _, _ -> UpdateCheck.skip(activity, release.tag) }
+            .setNegativeButton(R.string.ankrimento_update_later, null)
+            .show()
     }
 
     /** What a sync moved, in words: documents first (what a big sync is mostly about), then records. */

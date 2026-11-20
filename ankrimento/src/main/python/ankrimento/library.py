@@ -25,6 +25,36 @@ KINDS = {
 _QUEUE_SUSPENDED = -1
 
 
+def _on_device(addon_dir: str, profile: str, note: Any, kind: str) -> bool:
+    """Whether the file this document needs is on this device: a synced card's file may still be on its way.
+
+    PDFs and EPUBs are found as Incremento's reader finds them (the note's file name in the profile's folder); a video
+    needs a file only when it was downloaded, a local file only when it is a managed copy. Other kinds need none.
+    """
+    import os
+
+    from incremento.backend import paths
+
+    def named(field: str) -> str:
+        return os.path.basename(str(note[field] or "").strip()) if field in note.keys() else ""
+
+    if kind == "pdf":
+        name, folder = named("PDF_Filename"), paths.get_pdf_dir(addon_dir, profile)
+    elif kind == "epub":
+        name, folder = named("EPUB_Filename"), paths.get_epub_dir(addon_dir, profile)
+    elif kind == "video":
+        name, folder = named("Local_Video_File"), paths.get_videos_dir(addon_dir, profile)
+        if not name:
+            return True  # played online
+    elif kind == "file":
+        if "Local_File_Mode" not in note.keys() or str(note["Local_File_Mode"] or "").strip() != "managed_copy":
+            return True  # a reference to a path on a computer: never copied to a phone
+        name, folder = named("Local_File_Path"), paths.get_local_files_dir(addon_dir, profile)
+    else:
+        return True
+    return bool(name) and os.path.isfile(os.path.join(folder, name))
+
+
 def _cover(col: Any, note: Any, kind: str) -> str:
     """The cover image file desktop's bookshelf shows, or ""."""
     import os
@@ -99,6 +129,8 @@ def entries() -> list[dict[str, Any]]:
                 "coverage_label": coverage.label(figures.get(int(card_id))),
                 "done": card.queue == _QUEUE_SUSPENDED,
                 "cover": _cover(col, note, kind),
+                # False while a synced document's file has not arrived from the computer yet.
+                "on_device": _on_device(addon_dir, profile, note, kind),
             }
         )
     return result

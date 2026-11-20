@@ -138,3 +138,27 @@ def test_a_batch_naming_a_card_that_is_gone_changes_nothing(rt):
 
     entries = {entry["card_id"]: entry for entry in json.loads(facade.library())}
     assert entries[first]["priority"] == 50.0
+
+
+def test_each_entry_says_whether_its_file_is_on_this_device(rt, tmp_path):
+    """A document whose file has not arrived from the computer yet is marked, so the library can say so."""
+    import os
+
+    from incremento.backend import paths
+    from test_pdf import _MINIMAL_PDF
+
+    here = tmp_path / "On the phone.pdf"
+    here.write_bytes(_MINIMAL_PDF)
+    present = facade.import_pdf(str(here), "On the phone", priority=50.0)
+    away = tmp_path / "Still coming.pdf"
+    away.write_bytes(_MINIMAL_PDF)
+    missing = facade.import_pdf(str(away), "Still coming", priority=50.0)
+    filename = str(rt.col.get_card(missing).note()["PDF_Filename"])
+    os.remove(paths.get_pdf_dir(str(rt.addon_dir), rt.profile) / filename)  # as a synced card whose file is on its way
+    online = json.loads(facade.import_link("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "Online talk"))["card_id"]
+
+    entries = {entry["card_id"]: entry for entry in json.loads(facade.library())}
+
+    assert entries[present]["on_device"] is True
+    assert entries[missing]["on_device"] is False
+    assert entries[online]["on_device"] is True  # an online video needs no file here

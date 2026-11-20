@@ -249,6 +249,12 @@
     <string name="ankrimento_library">Biblioteca</string>
     <string name="ankrimento_continue_reading">Continuar lendo</string>
     <string name="ankrimento_all_documents">Documentos</string>
+    <string name="ankrimento_library_not_on_device">Ainda não está neste aparelho</string>
+    <plurals name="ankrimento_library_on_device">
+        <item quantity="one">%1$d de %2$d documento está neste aparelho. Os demais chegam do computador ao sincronizar.</item>
+        <item quantity="many">%1$d de %2$d documentos estão neste aparelho. Os demais chegam do computador ao sincronizar.</item>
+        <item quantity="other">%1$d de %2$d documentos estão neste aparelho. Os demais chegam do computador ao sincronizar.</item>
+    </plurals>
     <string name="ankrimento_library_empty">Ainda não há documentos. Adicione um PDF, um EPUB, uma página da web ou um vídeo em Adicionar.</string>
     <string name="ankrimento_add">Adicionar</string>
     <string name="ankrimento_add_pdf_file">Documento PDF</string>
@@ -724,6 +730,13 @@
     <string name="ankrimento_settings_volume_keys_help">Nos leitores de PDF, EPUB, texto e web. Desligado: elas mudam o volume.</string>
     <string name="ankrimento_settings_sync_addon">Incremento Sync</string>
     <string name="ankrimento_settings_sync_addon_help">Sincroniza os dados do próprio Incremento com um hub na sua rede. Desligado: o Incremento roda sem ele e nada sincroniza; os dados de sincronização deste aparelho são mantidos, então ligar de novo retoma.</string>
+    <string name="ankrimento_update_title">Nova versão disponível</string>
+    <string name="ankrimento_update_message">%1$s está disponível. Você tem %2$s. Instale por cima desta: seus dados ficam.</string>
+    <string name="ankrimento_update_download">Baixar</string>
+    <string name="ankrimento_update_skip">Pular esta versão</string>
+    <string name="ankrimento_update_later">Depois</string>
+    <string name="ankrimento_settings_check_updates">Procurar novas versões</string>
+    <string name="ankrimento_settings_check_updates_help">Pergunta ao GitHub no máximo uma vez por dia se há um Ankrimento mais novo e oferece a página de download. Nada sobre você é enviado.</string>
     <string name="ankrimento_sync_hub_pairing">Procurando o hub…</string>
     <string name="ankrimento_sync_hub_paired">Pareado com o hub</string>
     <string name="ankrimento_video_tip">Dica: + extrai o momento atual, o colchete marca um trecho, o marcador guarda o lugar. Toque no vídeo para ver os controles.</string>

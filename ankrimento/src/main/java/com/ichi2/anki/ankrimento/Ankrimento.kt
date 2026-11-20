@@ -1072,6 +1072,8 @@ object Ankrimento {
         val viewedPercent: Double? = null,
         val markedPercent: Double? = null,
         val coverageLabel: String = "",
+        /** The file it needs is on this device; false while a synced document's file is still to come. */
+        val onDevice: Boolean = true,
     )
 
     /** Desktop's review buttons (`group`, `done`, `postpone`, `extract`) and whether each is shown. */
@@ -1130,6 +1132,7 @@ object Ankrimento {
                 viewedPercent = if (entry.isNull("viewed_percent")) null else entry.optDouble("viewed_percent"),
                 markedPercent = if (entry.isNull("marked_percent")) null else entry.optDouble("marked_percent"),
                 coverageLabel = entry.optString("coverage_label"),
+                onDevice = entry.optBoolean("on_device", true),
             )
         }
     }

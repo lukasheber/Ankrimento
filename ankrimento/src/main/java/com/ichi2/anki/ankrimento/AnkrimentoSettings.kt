@@ -80,6 +80,21 @@ class AnkrimentoSettings(
         get() = preferences.getBoolean(PREF_SYNC_ADDON, true)
         set(value) = preferences.edit { putBoolean(PREF_SYNC_ADDON, value) }
 
+    /** Whether to ask GitHub, at most once a day, if a newer Ankrimento is out (see [UpdateCheck]). */
+    var checkForUpdates: Boolean
+        get() = preferences.getBoolean(PREF_CHECK_UPDATES, true)
+        set(value) = preferences.edit { putBoolean(PREF_CHECK_UPDATES, value) }
+
+    /** When GitHub was last asked, in epoch milliseconds (0: never). */
+    var updateCheckedAt: Long
+        get() = preferences.getLong(PREF_UPDATE_CHECKED_AT, 0)
+        set(value) = preferences.edit { putLong(PREF_UPDATE_CHECKED_AT, value) }
+
+    /** The release tag the user chose to skip ("": none). */
+    var updateDeclined: String
+        get() = preferences.getString(PREF_UPDATE_DECLINED, null).orEmpty()
+        set(value) = preferences.edit { putString(PREF_UPDATE_DECLINED, value) }
+
     /** The filtered deck sessions fill, as upstream names it; known once Incremento has started. */
     var sessionDeckName: String
         get() = preferences.getString(PREF_SESSION_DECK, null) ?: DEFAULT_SESSION_DECK
@@ -106,6 +121,9 @@ class AnkrimentoSettings(
         const val PREF_VOLUME_KEYS = "volume_keys_turn_pages"
         const val PREF_EXTRACT_TIP = "extract_tip_shown"
         const val PREF_VIDEO_TIP = "video_tip_shown"
+        const val PREF_CHECK_UPDATES = "check_for_updates"
+        const val PREF_UPDATE_CHECKED_AT = "update_checked_at"
+        const val PREF_UPDATE_DECLINED = "update_declined"
 
         /** Upstream's default session deck name. */
         const val DEFAULT_SESSION_DECK = "Incremento Session"

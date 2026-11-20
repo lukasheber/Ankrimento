@@ -223,6 +223,10 @@
     <string name="ankrimento_library">书库</string>
     <string name="ankrimento_continue_reading">继续阅读</string>
     <string name="ankrimento_all_documents">文档</string>
+    <string name="ankrimento_library_not_on_device">尚未下载到此设备</string>
+    <plurals name="ankrimento_library_on_device">
+        <item quantity="other">此设备上有 %1$d / %2$d 个文档。其余文档会在与电脑同步时陆续到达。</item>
+    </plurals>
     <string name="ankrimento_library_empty">还没有文档。点“添加”来添加 PDF、EPUB、网页或视频。</string>
     <string name="ankrimento_add">添加</string>
     <string name="ankrimento_add_pdf_file">PDF 文档</string>
@@ -678,6 +682,13 @@
     <string name="ankrimento_settings_volume_keys_help">适用于 PDF、EPUB、文本和网页阅读器。关闭时音量键调节音量。</string>
     <string name="ankrimento_settings_sync_addon">Incremento 同步</string>
     <string name="ankrimento_settings_sync_addon_help">与你网络中的同步中心同步 Incremento 自己的数据。关闭后 Incremento 不带同步运行，也不会同步；此设备上的同步数据会保留，重新开启后继续。</string>
+    <string name="ankrimento_update_title">有新版本</string>
+    <string name="ankrimento_update_message">%1$s 已发布。您使用的是 %2$s。直接覆盖安装即可，数据会保留。</string>
+    <string name="ankrimento_update_download">下载</string>
+    <string name="ankrimento_update_skip">跳过此版本</string>
+    <string name="ankrimento_update_later">以后</string>
+    <string name="ankrimento_settings_check_updates">检查新版本</string>
+    <string name="ankrimento_settings_check_updates_help">每天最多向 GitHub 询问一次是否有更新的 Ankrimento，并提供下载页面。不会发送任何关于您的信息。</string>
     <string name="ankrimento_sync_hub_pairing">正在查找同步中心…</string>
     <string name="ankrimento_sync_hub_paired">已与同步中心配对</string>
     <string name="ankrimento_video_tip">提示：+ 摘录当前时刻，括号标记一个片段，书签保存位置。点按视频可显示控制按钮。</string>

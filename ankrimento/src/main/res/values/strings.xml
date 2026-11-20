@@ -236,6 +236,11 @@
     <string name="ankrimento_library">Library</string>
     <string name="ankrimento_continue_reading">Continue reading</string>
     <string name="ankrimento_all_documents">Documents</string>
+    <string name="ankrimento_library_not_on_device">Not on this phone yet</string>
+    <plurals name="ankrimento_library_on_device">
+        <item quantity="one">%1$d of %2$d document is on this phone. The rest come from your computer as it syncs.</item>
+        <item quantity="other">%1$d of %2$d documents are on this phone. The rest come from your computer as it syncs.</item>
+    </plurals>
     <string name="ankrimento_library_empty">No documents yet. Add a PDF, an EPUB, a web page or a video with Add.</string>
     <string name="ankrimento_add">Add</string>
     <string name="ankrimento_add_pdf_file">PDF document</string>
@@ -704,6 +709,13 @@
     <string name="ankrimento_settings_volume_keys_help">In the PDF, EPUB, text and web readers. Off: they change the volume.</string>
     <string name="ankrimento_settings_sync_addon">Incremento Sync</string>
     <string name="ankrimento_settings_sync_addon_help">Syncs Incremento\'s own data with a hub on your network. Off: Incremento runs without it and nothing syncs; the sync data on this device is kept, so turning it on resumes.</string>
+    <string name="ankrimento_update_title">New version available</string>
+    <string name="ankrimento_update_message">%1$s is available. You have %2$s. Install it over this one: your data stays.</string>
+    <string name="ankrimento_update_download">Download</string>
+    <string name="ankrimento_update_skip">Skip this version</string>
+    <string name="ankrimento_update_later">Later</string>
+    <string name="ankrimento_settings_check_updates">Check for new versions</string>
+    <string name="ankrimento_settings_check_updates_help">Asks GitHub at most once a day whether a newer Ankrimento is out, and offers its download page. Nothing about you is sent.</string>
     <string name="ankrimento_sync_hub_pairing">Looking for the hub…</string>
     <string name="ankrimento_sync_hub_paired">Paired with the hub</string>
     <string name="ankrimento_video_tip">Tip: + extracts the moment you are at, the bracket marks a segment, the bookmark saves your place. Tap the video for its controls.</string>

@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -393,6 +394,19 @@ class IncrementoHubActivity : ComponentActivity() {
                     }
                 }
                 item { SectionTitle(R.string.ankrimento_all_documents) }
+                val missing = all?.count { !it.onDevice } ?: 0
+                if (missing > 0) {
+                    // A synced library whose files are still coming from the computer: say how many are here.
+                    item {
+                        val total = all?.size ?: 0
+                        Text(
+                            pluralStringResource(R.plurals.ankrimento_library_on_device, total, total - missing, total),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                        )
+                    }
+                }
                 item { SearchAndSort() }
                 item { KindFilters() }
                 val shown = all?.let(::shown).orEmpty()
@@ -727,6 +741,7 @@ class IncrementoHubActivity : ComponentActivity() {
                     else -> entry.position.takeIf { it.isNotEmpty() }
                 },
                 if (withPriority) stringResource(R.string.ankrimento_priority_chip, entry.priority.roundToInt()) else null,
+                if (entry.onDevice) null else stringResource(R.string.ankrimento_library_not_on_device),
             )
         return parts.joinToString(" · ")
     }
